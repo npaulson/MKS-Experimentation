@@ -1,0 +1,7 @@
+Import microstructures: 0.562 seconds
+Size of microstructure function in frequency space: 444528000 bytes
+Convert microstructure function to frequency space: 2.39 seconds
+FE results loaded
+Import microstructures: 0.125 seconds
+Size of microstructure function in frequency space: 444528000 bytes
+Convert microstructure function to frequency space: 2.4 seconds
