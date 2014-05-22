@@ -164,7 +164,7 @@ def independent_columns(A, tol = 1e-05):
     independent = np.where(np.abs(R.diagonal()) > tol)[0]
     return independent
 
-def load_fe(filename,set_id,read_dat,ns,el):
+def load_fe(filename1,set_id,read_dat,ns,el):
     """    
     Summary:        
         This function loads the finite element (FE) responses from '.dat' 
@@ -185,17 +185,17 @@ def load_fe(filename,set_id,read_dat,ns,el):
     if read_dat == 1:
         start = time.time()    
 
-        micr_flag_BASE = sio.loadmat(filename)
+        micr_flag_BASE = sio.loadmat(filename1)
         ## ori_mats contains a 3x3 orientation matrix for each spatial location
         ## in each sample microstructure
         ori_mat = micr_flag_BASE['orientation']
         
-        resp = np.zeros((el,el,el,6,ns),dtype = 'float64')
+        resp = np.zeros((el**3,6,ns),dtype = 'float64')
         for sn in xrange(ns):
-            filename = "hcp_21el_200s_val_%s.dat" %(sn+1) 
-            resp[:,:,:,:,sn] = res_red(filename,ori_mat,el,sn)
+            filename = "hcp_21el_200s_%s.dat" %(sn+1) 
+            resp[:,:,sn] = res_red(filename,ori_mat,el,sn)
         
-        np.save('FE_results_%s%s' %(ns,set_id),resp)    
+        sio.savemat('FE_cal200_vect.mat', {'FE_cal200_vect':resp})
         
         end = time.time()
         timeE = np.round((end - start),1)
@@ -204,7 +204,7 @@ def load_fe(filename,set_id,read_dat,ns,el):
     ## if read_dat == 0 the script will simply reload the results from a 
     ## previously saved FE_results_#.npy
     else:
-        resp = np.load('FE_results_%s%s.npy' %(ns,set_id))
+        resp = np.load('FE_500_cal_vect.npy')
         msg = "FE results loaded"  
     
     return [resp,msg]
@@ -390,13 +390,8 @@ def res_red(filename,ori_mat,el,sn):
                 
         Etot[k,:] = [E_ten_samp[0,0],E_ten_samp[1,1],E_ten_samp[2,2],
                      E_ten_samp[0,1],E_ten_samp[1,2],E_ten_samp[1,2]]
-    
-    # here we reshape the data from a 9261 length vector to a 21x21x21 3D matrix     
-    Emat = np.zeros([el,el,el,6])   
-    for r in range(6):    
-        Emat[:,:,:,r] = np.swapaxes(np.reshape(np.flipud(Etot[:,r]), [el,el,el]),1,2)
 
-    return Emat
+    return Etot
 
 
 def WP(msg,filename):
