@@ -1,17 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-3D, Isotropic, 7th Order MKS
-
-This code is designed to calibrate with 7th order terms for the nearest
-neighbors, and to run on the PACE cluster
-
-It should require a large amount of RAM (64Gb) and can only be run on a
-single processor
-
-It saves the mks_R.npy file which contains the response of the validation
-microstructure
-
-It also writes updates to the 'output.txt' file
+3D, 1st Order, Polycrystalline MKS
 
 Noah Paulson, 5/7/2014
 """
@@ -63,42 +52,45 @@ rr.WP(msg,wrt_file)
 
 
 ### FINITE ELEMENT RESPONSES ###
-[resp, msg] = rr.load_fe('orientation1.mat',1,ns,el)
+[resp_all, msg] = rr.load_fe('orientation1.mat',0,ns,el)
+resp = resp_all[:,:,:,0,:]
 #resp_val = resp[:,:,:,-1]
 rr.WP(msg,wrt_file)
 
-### responses in frequency space
-#start = time.time()
-#resp_fft = np.fft.fftn(resp, axes = [0,1,2]) 
-#end = time.time()
-#timeE = np.round((end - start),3)
-#
-#msg = 'Convert FE results to frequency space: %s seconds' %timeE
-#rr.WP(msg,wrt_file)
-#
-#
-#### CALIBRATION OF INFLUENCE COEFFICIENTS ###
-#
-#start = time.time()
-#specinfc = np.zeros((el**3,H),dtype = 'complex64')
-#
-#specinfc[0,:] = rr.calib(0,M,resp_fft,0,H,el,ns)
-#[specinfc[1,:],p] = rr.calib(1,M,resp_fft,0,H,el,ns)
-#
-### calib_red is simply calib with some default arguments
-#calib_red = partial(rr.calib,M=M,resp_fft=resp_fft,p=p,H=H,el=el,ns=ns)
-#
-##specinfc[2:(el**3),:] = np.asarray(map(calib_red,range(2,el**3)))
-#result = map(calib_red,range(2,el**3))
-#specinfc[2:(el**3),:] = np.asarray(result)
-#del result    
-#
-#end = time.time()
-#timeE = np.round((end - start),3)
-#msg = 'Calibration: %s seconds' %timeE
-#rr.WP(msg,wrt_file)
-#
-#
+## responses in frequency space
+start = time.time()
+resp_fft = np.fft.fftn(resp, axes = [0,1,2]) 
+end = time.time()
+timeE = np.round((end - start),3)
+
+msg = 'Convert FE results to frequency space: %s seconds' %timeE
+rr.WP(msg,wrt_file)
+
+
+### CALIBRATION OF INFLUENCE COEFFICIENTS ###
+
+start = time.time()
+specinfc = np.zeros((el**3,H),dtype = 'complex64')
+
+specinfc[0,:] = rr.calib(0,M,resp_fft,0,H,el,ns)
+[specinfc[1,:],p] = rr.calib(1,M,resp_fft,0,H,el,ns)
+
+## calib_red is simply calib with some default arguments
+calib_red = partial(rr.calib,M=M,resp_fft=resp_fft,p=p,H=H,el=el,ns=ns)
+
+#specinfc[2:(el**3),:] = np.asarray(map(calib_red,range(2,el**3)))
+result = map(calib_red,range(2,el**3))
+specinfc[2:(el**3),:] = np.asarray(result)
+del result    
+
+np.save('specinfc_ti_alpha_ord1_samp%s' %ns,specinfc)
+
+end = time.time()
+timeE = np.round((end - start),3)
+msg = 'Calibration: %s seconds' %timeE
+rr.WP(msg,wrt_file)
+
+
 #### VALIDATION WITH RANDOM ARRANGEMENT ###
 #M_val = np.fft.fftn(rr.mf_sn(micr[:,:,:,-1],el,order, H), axes = [0,1,2])
 #mks_R = rr.validate(M_val,specinfc,H,el)

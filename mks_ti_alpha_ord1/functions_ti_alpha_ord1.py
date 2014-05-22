@@ -48,6 +48,7 @@ def calib(k,M,resp_fft,p,H,el,ns):
  
     if k < 2:
         p = independent_columns(MM, .001)
+        print p
 
     calred = MM[p,:][:,p]
     resred = PM[p,0].conj().T
