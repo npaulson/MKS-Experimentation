@@ -23,7 +23,7 @@ mks_R = np.load('MKS_R_ord%s_%s_old.npy' %(order,ns_val))
 plt.close()
 
 ## pick a slice perpendicular to the x-direction
-slc = 20
+slc = 6
 sn = 49
 
 
