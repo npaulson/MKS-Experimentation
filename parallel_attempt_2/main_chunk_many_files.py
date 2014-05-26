@@ -31,7 +31,7 @@ ns = 151
 ## specify the number of local states you are using
 H = 2
 ## specify the file to write messages to 
-wrt_file = 'output_%s.txt' %time.strftime("%Y%m%d%H%M%S") 
+wrt_file = 'output_%s.txt' %time.strftime("%Y-%m-%d_h%Hm%M") 
 
 
 ### THE MICROSTRUCTURE FUNCTION ###
@@ -40,7 +40,7 @@ start = time.time()
 
 micr = rr.gen_micr('M_seventhorder.mat',0, ns, el)
 
-main_dir = 'M_main_%s' % time.strftime("%Y%m%d%H%M") 
+main_dir = 'M_main_%s' % time.strftime("%Y-%m-%d_h%Hm%M") 
 os.mkdir(main_dir)
 os.chdir(main_dir)
 
@@ -56,6 +56,9 @@ for n in range(ns):
         os.chdir(sub_dir)
 
         [u,v,w] = np.unravel_index(k,[el,el,el])
+        
+
+        
         
         file_M = 'M_samp%s_freq%s' %(n, k)        
         np.save(file_M, M_samp[u,v,w,:])
