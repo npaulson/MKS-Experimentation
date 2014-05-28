@@ -81,7 +81,7 @@ def eval_meas(mks_R_indv,resp_indv,el):
         
     return avgE, MASE
 
-def gen_micr(filename1,filename2,set_id,ns,el,H):
+def gen_micr(filename1,filename2,set_id,read_dat,ns,el,H):
     """
     Summary:
         This function reads the microstructures for all samples (calibration
@@ -98,39 +98,50 @@ def gen_micr(filename1,filename2,set_id,ns,el,H):
         micr ([el,el,el,ns],int8): The binary microstructures for calibration
         and validation
     """
+    if read_dat == 1:        
         
-    start = time.time()
+        start = time.time()
 
-    ## convert the matlab files arrays in python        
-    
-    micr_flag_BASE = sio.loadmat(filename2)
-    ## micr_flag contains 9261 flags for each sample microsturcture,
-    ## each representing an orientation. The number in these flags
-    ## corresponds with an orientation in ex_ori_fr
-    micr_flag = micr_flag_BASE['ct']         
+        ## convert the matlab files arrays in python        
+        
+        micr_flag_BASE = sio.loadmat(filename2)
+        ## micr_flag contains 9261 flags for each sample microsturcture,
+        ## each representing an orientation. The number in these flags
+        ## corresponds with an orientation in ex_ori_fr
+        micr_flag = micr_flag_BASE['ct']         
 
-    ex_ori_BASE = sio.loadmat(filename1)    
-    ## ex_ori_fr contains 522 sets of 15 GSH coefficients, where each 
-    ## set corresponds with an orientation on the surface of the
-    ## hexagonal-triclinic fundamental zone.        
-    ex_ori_fr = ex_ori_BASE['extremeorienth_fr']  
-           
-    pre_micr = np.zeros((el**3,ns,H),dtype = 'complex64')
-    for k in range(el**3):
+        ex_ori_BASE = sio.loadmat(filename1)    
+        ## ex_ori_fr contains 522 sets of 15 GSH coefficients, where each 
+        ## set corresponds with an orientation on the surface of the
+        ## hexagonal-triclinic fundamental zone.        
+        ex_ori_fr = ex_ori_BASE['extremeorienth_fr']  
+               
+        pre_micr = np.zeros((el**3,ns,H),dtype = 'complex64')
+        for k in range(el**3):
+            for n in range(ns):
+                pre_micr[k,n,:] = ex_ori_fr[micr_flag[k,n]-1,:]
+        
+        ## here we perform flips and reshapes to enact the proper arrangement 
+        ## of spatial locations in the 3D cub
+        micr = np.zeros((el,el,el,ns,H),dtype = 'complex64') 
         for n in range(ns):
-            pre_micr[k,n,:] = ex_ori_fr[micr_flag[k,n]-1,:]
+            for h in range(H):
+                micr[:,:,:,n,h] = np.swapaxes(np.reshape(
+                            np.flipud(pre_micr[:,n,h]), [el,el,el]),1,2)
     
-    ## here we perform flips and reshapes to enact the proper arrangement 
-    ## of spatial locations in the 3D cub
-    micr = np.zeros((el,el,el,ns,H),dtype = 'complex64') 
-    for n in range(ns):
-        for h in range(H):
-            micr[:,:,:,n,h] = np.swapaxes(np.reshape(
-                        np.flipud(pre_micr[:,n,h]), [el,el,el]),1,2)
+        ## save the microstructure array
+        np.save('micr_%s%s' %(ns,set_id),micr)
 
-    end = time.time()
-    timeE = np.round((end - start),3)
+        end = time.time()
+        timeE = np.round((end - start),3)
+    
+    else:        
 
+        start = time.time()
+        micr = np.load('micr_%s%s.npy' %(ns,set_id))
+        end = time.time()
+        timeE = np.round((end - start),3)
+    
     return [micr, timeE]
 
 
@@ -153,7 +164,7 @@ def independent_columns(A, tol = 1e-05):
     independent = np.where(np.abs(R.diagonal()) > tol)[0]
     return independent
 
-def load_fe(filename,set_id,ns,el):
+def load_fe(filename1,set_id,read_dat,ns,el):
     """    
     Summary:        
         This function loads the finite element (FE) responses from '.dat' 
@@ -161,6 +172,8 @@ def load_fe(filename,set_id,ns,el):
     Inputs:
         filename (string): The '.mat' file containing orientation information
         for the set of microstructures        
+        read_dat (int): if read_dat = 1 the '.dat' files are read and compiled,
+        if read_dat = 0 resp is simply loaded from an existing '.npy' file
         ns (int): the total number microstructures (calibration or validation)
         el (int): the number of elements per side of the microstructure cube        
     Outputs:
@@ -169,21 +182,30 @@ def load_fe(filename,set_id,ns,el):
         msg (string): A message detailing how resp was loaded
     """    
 
-    start = time.time()    
+    if read_dat == 1:
+        start = time.time()    
 
-    micr_flag_BASE = sio.loadmat(filename)
-    ## ori_mats contains a 3x3 orientation matrix for each spatial location
-    ## in each sample microstructure
-    ori_mat = micr_flag_BASE['orientation']
+        micr_flag_BASE = sio.loadmat(filename1)
+        ## ori_mats contains a 3x3 orientation matrix for each spatial location
+        ## in each sample microstructure
+        ori_mat = micr_flag_BASE['orientation']
+        
+        resp = np.zeros((el**3,6,ns),dtype = 'float64')
+        for sn in xrange(ns):
+            filename = "hcp_21el_200s_%s.dat" %(sn+1) 
+            resp[:,:,sn] = res_red(filename,ori_mat,el,sn)
+        
+        sio.savemat('FE_cal200_vect.mat', {'FE_cal200_vect':resp})
+        
+        end = time.time()
+        timeE = np.round((end - start),1)
+        msg = "Import FE results: %s seconds" %timeE
     
-    resp = np.zeros((el,el,el,ns),dtype = 'float64')
-    for sn in xrange(ns):
-        filename = "hcp_21el_200s_val_%s.dat" %(sn+1) 
-        resp[:,:,:,sn] = res_red(filename,ori_mat,el,sn)  
-    
-    end = time.time()
-    timeE = np.round((end - start),1)
-    msg = "Import FE results: %s seconds" %timeE
+    ## if read_dat == 0 the script will simply reload the results from a 
+    ## previously saved FE_results_#.npy
+    else:
+        resp = np.load('FE_500_cal_vect.npy')
+        msg = "FE results loaded"  
     
     return [resp,msg]
 
@@ -354,7 +376,7 @@ def res_red(filename,ori_mat,el,sn):
     # here we average all 8 integration points in each element cell
     E = np.mean(E, axis=1)
     
-    Etot = np.zeros([el**3])
+    Etot = np.zeros([el**3,6])
     # here we convert the strain tensor at each location from crystal to 
     # sample frame
     for k in range(21**3):
@@ -366,14 +388,10 @@ def res_red(filename,ori_mat,el,sn):
         # Here we convert from crystal to sample frame
         E_ten_samp = np.dot(ori_mat[:,:,k,sn].T ,np.dot(E_ten_cry,ori_mat[:,:,k,sn]))
                 
-        Etot[k] = E_ten_samp[0,0]
-#        Etot[k,:] = [E_ten_samp[0,0],E_ten_samp[1,1],E_ten_samp[2,2],
-#                     E_ten_samp[0,1],E_ten_samp[1,2],E_ten_samp[1,2]]
-    
-    # here we reshape the data from a 9261 length vector to a 21x21x21 3D matrix       
-    Emat = np.swapaxes(np.reshape(np.flipud(Etot), [el,el,el]),1,2)
+        Etot[k,:] = [E_ten_samp[0,0],E_ten_samp[1,1],E_ten_samp[2,2],
+                     E_ten_samp[0,1],E_ten_samp[1,2],E_ten_samp[1,2]]
 
-    return Emat
+    return Etot
 
 
 def WP(msg,filename):
