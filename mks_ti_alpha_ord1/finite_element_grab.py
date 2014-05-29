@@ -14,17 +14,17 @@ el = 21
 ## select which order terms with nearest neighbors you would like to analyze
 order = 1
 ## the number of sample microstructures for calibration.
-ns = 50
+ns = 200
 ## specify the number of local states you are using
 H = 15
 ## specify the set designation (string format)
-set_id = 'val'
+set_id = 'cal'
 ## specify the file to write messages to 
 wrt_file = 'fe_%s%s_%s.txt' %(ns,set_id,time.strftime("%Y-%m-%d_h%Hm%M")) 
 
 
 ### FINITE ELEMENT RESPONSES: CALIBRATION ###
-[resp, msg] = rr.load_fe('orientation2.mat',set_id,ns,el)
+[resp, msg] = rr.load_fe('orientation1.mat',set_id,ns,el)
 np.save('FE_results_%s%s' %(ns,set_id),resp)  
 rr.WP(msg,wrt_file)
 

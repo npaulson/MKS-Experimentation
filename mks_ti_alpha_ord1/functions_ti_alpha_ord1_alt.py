@@ -4,7 +4,7 @@ Functions connected to 3D, isotropic MKS analyses
 
 In general these functions are not for parallel processing or chunking of data
 
-Noah Paulson, 5/9/2014
+Noah Paulson, 5/28/2014
 """
 
 import numpy as np
@@ -16,20 +16,23 @@ import scipy.io as sio
 def calib(k,M,resp_fft,p,H,el,ns):
     """
     Summary: This function calibrates the influence coefficients from the 
-        frequency space calibration microstructures and FEM responses
+        frequency space calibration microstructures and FEM responses for a 
+        specific frequency
     Inputs:
-        M: (el,el,el,ns,H) The microstructure function in frequency space.
-        Includes all local states (from any order terms)
-        resp_fft: (el,el,el,ns) The response of the calibration FEM analyses
-        after fftn
-        H: (scalar) The number of local states in the microstructure function
-        el: (scalar) The number of elements per side of the 'cube'
-        ns: (scalar) The number of samples (assumed to be n-1 calibration and 1 
-        validation)
-        filename (string): The filename to write messages to
+        k (int): The frequency on which to perform the calibration.
+        M ([el,el,el,ns,H], complex): The microstructure function in
+        frequency space. Includes all local states (from any order terms)
+        resp_fft ([el,el,el,ns],complex): The response of the calibration
+        FEM analyses after fftn
+        H (int): The number of local states in the microstructure function
+        el (int): The number of elements per side of the 'cube'
+        ns (int): The number of calibration samples
     Outputs:
-        specinfc_k:(H) influence coefficients in frequency space for the k'th
-        frequency
+        specinfc_k:([H],complex) influence coefficients in frequency space
+        for the k'th frequency
+        p: ([p],int) the locations of the independent columns for the 1st
+        frequency. It is expected that all rows and columns but the 0th
+        should be independent for frequencies 1 through (el^3 - 1)
     """    
     
     [u,v,w] = np.unravel_index(k,[el,el,el])
@@ -63,15 +66,15 @@ def calib(k,M,resp_fft,p,H,el,ns):
 
 def eval_meas(mks_R_indv,resp_indv,el):
     """
-    Summary:
+    Summary: Calculates the MASE and average error
     Inputs:
-        mks_R: (el,el,el) The response predicted by the MKS for the validation
-        microstructure
-        resp: (el,el,el,ns) the FEM responses of all microstructures
-        el: (scalar) The number of elements per side of the 'cube'
+        mks_R ([el,el,el],float): The response predicted by the MKS for
+        validation microstructures
+        resp ([el,el,el],float): the FEM responses of all microstructures
+        el (int): The number of elements per side of the 'cube'
     Outputs:
-        avgE: (scalar)
-        MASE: (scalar)
+        avgE (float): The average strain value for the microstructure
+        MASE (float): Mean Absolute Square Error
     """
     avgE = np.average(mks_R_indv)
     MASE = 0
@@ -88,15 +91,18 @@ def gen_micr(filename1,filename2,set_id,ns,el,H):
         and validation) from a matlab data file, rearanges them into ns # of
         el x el x el cubes, and saves them in the .npy file format
     Inputs:
-        file_name (string): the filename for the matlab '.mat' file
-        read_dat (int): if read_dat = 1 the '.mat' file is read and rearanged,
-        if read_dat = 0 micr is simply loaded from the '.npy' file
+        filename2 (string): a '.mat' file containing orientation flags for 
+        each of the 9261 spatial bins for each RVE in the set
+        filename1 (string): a '.mat' file containing a set of GSH coefficients
+        for each of the flags in file 'filename1'        
+        set_id (string):
         ns (int): the total number of microstructures (for calibration and 
         validation)
         el (int): the number of elements per side of the microstructure cube
     Output:
-        micr ([el,el,el,ns],int8): The binary microstructures for calibration
+        micr ([el,el,el,ns],int): The binary microstructures for calibration
         and validation
+        timeE (float): Total time elapsed for function
     """
         
     start = time.time()
@@ -160,7 +166,8 @@ def load_fe(filename,set_id,ns,el):
         files. This version is used for files with orientation information
     Inputs:
         filename (string): The '.mat' file containing orientation information
-        for the set of microstructures        
+        for the set of microstructures
+        set_id (string): The set - ID        
         ns (int): the total number microstructures (calibration or validation)
         el (int): the number of elements per side of the microstructure cube        
     Outputs:
@@ -178,7 +185,7 @@ def load_fe(filename,set_id,ns,el):
     
     resp = np.zeros((el,el,el,ns),dtype = 'float64')
     for sn in xrange(ns):
-        filename = "hcp_21el_200s_val_%s.dat" %(sn+1) 
+        filename = "hcp_200s_%s%s.dat" %(sn+1,set_id) 
         resp[:,:,:,sn] = res_red(filename,ori_mat,el,sn)  
     
     end = time.time()
@@ -248,6 +255,7 @@ def mf_sn(micr_sn, el, order, H):
         micr_sn ([el,el,el],int8): the arangement of black and white cells in
         the cube for a single microstructure (from the micr variable)
         el (int): the number of elements per side of the microstructure cube
+        order (int): the order of the terms used        
         H (int): the total number of local states in the microstructure
         function (including higher order comformations)
         order (int): the order of the terms used for 
@@ -321,10 +329,12 @@ def res_red(filename,ori_mat,el,sn):
         this script.
     Inputs:
         filename (string): the name of the '.dat' file containing the 
-        FEM response        
+        FEM response
+        ori_mat ([3,3,el^3,ns],float): an array containing the orientation
+        matrices (g) for each spatial location of each RVE in the set      
         el (int): the number of elements per side of the microstructure cube
     Outputs:
-        e11mat ([el,el,el],float): the FEM response of the '.dat' file of
+        Emat ([el,el,el],float): the FEM response of the '.dat' file of
         interest
     """
     f = open(filename, "r")
@@ -333,7 +343,7 @@ def res_red(filename,ori_mat,el,sn):
 
     # finds a location several lines above the start of the data
     # linelist[n] reads the entire line at location n
-    for ln in range(1000):
+    for ln in xrange(1000):
         if 'THE FOLLOWING TABLE' in linelist[ln]:
             break
 
@@ -344,8 +354,8 @@ def res_red(filename,ori_mat,el,sn):
     c = -1
 
     # this series of loops generates a 9261x8 dataset of E11s (element x integration point) 
-    for k in range(21**3):
-        for jj in range(8):
+    for k in xrange(21**3):
+        for jj in xrange(8):
             c += 1                        
             E[k,jj,:] = linelist[line0 + c].split()[3:]
     
@@ -357,7 +367,7 @@ def res_red(filename,ori_mat,el,sn):
     Etot = np.zeros([el**3])
     # here we convert the strain tensor at each location from crystal to 
     # sample frame
-    for k in range(21**3):
+    for k in xrange(21**3):
         # E_ten_cry is the strain tensor at the spatial location of interest
         # in the crystal frame
         E_ten_cry = np.array([[    E[k,0], 0.5*E[k,3], 0.5*E[k,4]],
@@ -384,6 +394,8 @@ def WP(msg,filename):
     Inputs:
         msg (string): the message to write and print.
         filename (string): the full name of the file to append to.
+    Outputs:
+        both prints the message and writes the message to the specified file
     """
     fil = open(filename, 'a')
     print msg
@@ -403,7 +415,5 @@ def validate(M_val,specinfc,H,el=21):
     lin_sum = np.sum(np.conjugate(specinfc) * lin_M, 1)
     mks_F = np.reshape(lin_sum,[21,21,21])
     mks_R = np.fft.ifftn(mks_F).real
-
-    #np.save('MKS_2stOrd_resp',mks_R) 
     
     return mks_R
