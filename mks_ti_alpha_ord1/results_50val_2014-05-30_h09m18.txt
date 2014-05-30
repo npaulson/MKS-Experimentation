@@ -1,0 +1,3 @@
+The average strain is 0.000999999981876
+The mean absolute strain error (MASE) is 0.11248293871%
+The maximum error is 1.08818745932%

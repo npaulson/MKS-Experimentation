@@ -58,8 +58,8 @@ rr.WP(msg,wrt_file)
 plt.close()
 
 ## pick a slice perpendicular to the x-direction
-slc = 6
-sn = 49
+slc = 10
+sn = 25
 
 
 ## find the min and max of both datasets for the slice of interest
@@ -101,12 +101,12 @@ bn = 100
 n, bins, patches = plt.hist(fe, bins = bn, histtype = 'step', hold = True,
                             range = (dmin, dmax), color = 'white')
 bincenters = 0.5*(bins[1:]+bins[:-1])
-fe, = plt.plot(bincenters,n,'k', linestyle = '-', lw = 1.5)
+fe, = plt.plot(bincenters,n,'k', linestyle = '-', lw = 0.5)
 
 # 1st order terms MKS histogram
 n, bins, patches = plt.hist(mks, bins = bn, histtype = 'step', hold = True,
                             range = (dmin, dmax), color = 'white')
-mks, = plt.plot(bincenters,n,'b', linestyle = '-', lw = 1.5)
+mks, = plt.plot(bincenters,n,'b', linestyle = '-', lw = 0.5)
 
 plt.grid(True)
 
