@@ -18,8 +18,6 @@ import matplotlib.pyplot as plt
 el = 21 
 ## select which order terms with nearest neighbors you would like to analyze
 order = 1
-## select the desired strain component of which to view results.
-comp = 0 
 ## the number of sample microstructures for validation.
 ns = 50
 ## specify the number of local states you are using
@@ -29,8 +27,8 @@ set_id = 'val'
 ## specify the file to write messages to 
 wrt_file = 'results_%s%s_%s.txt' %(ns,set_id,time.strftime("%Y-%m-%d_h%Hm%M")) 
 
-mks_R = np.load('mksR_ord%s_%s%s.npy' %(order,ns,set_id))[:,:,:,comp,:]
-resp = np.load('FE_results_%s%s.npy' %(ns,set_id))[:,:,:,comp,:]
+mks_R = np.load('mksR_ord%s_%s%s.npy' %(order,ns,set_id))
+resp = np.load('FE_results_%s%s.npy' %(ns,set_id))
 
 
 #### MEAN ABSOLUTE STRAIN ERROR (MASE) ###

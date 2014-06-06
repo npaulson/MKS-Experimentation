@@ -35,11 +35,9 @@ M = np.load('M_%s%s.npy' %(ns,set_id))
 specinfc = np.load('specinfc_%s%s.npy' %(ns_cal,set_id_cal))
 
 
-mks_R = np.zeros([el,el,el,6,ns])
-
-for c in xrange(6):
-    for sn in xrange(ns):
-        mks_R[:,:,:,c,sn] = rr.validate(M[:,:,:,sn,:],specinfc[:,c,:],H,el)
+mks_R = np.zeros([el,el,el,ns])
+for sn in xrange(ns):
+    mks_R[:,:,:,sn] = rr.validate(M[:,:,:,sn,:],specinfc,H,el)
 
 msg = 'validation performed'
 rr.WP(msg,wrt_file)
