@@ -109,17 +109,15 @@ def gen_micr(filename1,filename2,set_id,ns,el,H):
 
     ## convert the matlab files arrays in python        
     
-    micr_flag_BASE = sio.loadmat(filename2)
     ## micr_flag contains 9261 flags for each sample microsturcture,
     ## each representing an orientation. The number in these flags
     ## corresponds with an orientation in ex_ori_fr
-    micr_flag = micr_flag_BASE['ct']         
-
-    ex_ori_BASE = sio.loadmat(filename1)    
+    micr_flag = sio.loadmat(filename2)['ct']         
+  
     ## ex_ori_fr contains 522 sets of 15 GSH coefficients, where each 
     ## set corresponds with an orientation on the surface of the
     ## hexagonal-triclinic fundamental zone.        
-    ex_ori_fr = ex_ori_BASE['extremeorienth_fr']  
+    ex_ori_fr = sio.loadmat(filename1) ['extremeorienth_fr']  
            
     pre_micr = np.zeros((el**3,ns,H),dtype = 'complex64')
     for k in range(el**3):
@@ -178,10 +176,9 @@ def load_fe(filename,set_id,ns,el):
 
     start = time.time()    
 
-    micr_flag_BASE = sio.loadmat(filename)
     ## ori_mats contains a 3x3 orientation matrix for each spatial location
     ## in each sample microstructure
-    ori_mat = micr_flag_BASE['orientation']
+    ori_mat = sio.loadmat(filename)['orientation']
     
     resp = np.zeros((el,el,el,6,ns),dtype = 'float64')
     for sn in xrange(ns):
