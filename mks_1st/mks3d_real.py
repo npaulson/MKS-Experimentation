@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-3D, Isotropic, 1st Order MKS
+3D, Isotropic, 1st Order MKS in real space
 
 This script calibrates against reference datasets and plots the FE and MKS
 response for a validation microstructure.
 
-Noah Paulson, 3/27/2014
+Noah Paulson
 """
 
 import numpy as np
-import res_red as rr
+import mks_func as rr
 import matplotlib.pyplot as plt
-from mks_func import *
+
 
 # Generate the black and white delta microstructures. 
 # Black cells = 1, White cells = 0
@@ -31,12 +31,6 @@ micr = rr.pha_loc("msf.txt")
 m = np.zeros((el,el,el,ns+1, H))
 for h in range(H):
     m[:,:,:,:,h] = (micr[:,:,:,:] == h)
-    
-## Microstructure functions in frequency space
-M = np.zeros((el, el, el, ns+1, H)) + 0j*np.zeros((el, el, el, ns+1, H))
-for n in range(ns+1):
-    for h in range(H):
-        M[:,:,:,n,h] = np.fft.fftn(m[:,:,:,n,h])
 
 
 ### FINITE ELEMENT RESPONSES ###
@@ -47,76 +41,64 @@ resp = np.zeros((el,el,el,ns+1))
 for n in range(ns+1):
     filename = "21_%s_noah.dat" %(n+1) 
     resp[:,:,:,n] = rr.res_red(filename)
-    print "%s is loaded" %filename 
-
-## responses in frequency space
-resp_fft = np.zeros((el,el,el,ns)) + 0j*np.zeros((el,el,el,ns))
-for n in range(ns):
-    resp_fft[:,:,:,n] = np.fft.fftn(resp[:,:,:,n])
+    print "%s is loaded" %filename
     
 
 ### CALIBRATION OF INFLUENCE COEFFICIENTS ###
 
-#MM = np.zeros((H,H,el**3)) + 0j*np.zeros((H,H,el**3))
-#PM = np.zeros((H,el**3)) + 0j*np.zeros((H,el**3))
-specinfc = np.zeros((el**3,H)) + 0j*np.zeros((el**3,H))
-for k in range(el**3):
+spec = np.zeros([el**3,H])
+#for t in xrange(el**3):
+for t in xrange(4620,4640):
     
-    [u,v,w] = np.unravel_index(k,[el,el,el])
+    [u,v,w] = np.unravel_index(t,[el,el,el])
+    mroll = np.roll(np.roll(np.roll(m,u,0),v,1),w,2)
 
-    MM = np.zeros((H,H)) + 0j*np.zeros((H,H))
-    PM = np.zeros((H,1)) + 0j*np.zeros((H,1))
+    MM = np.zeros([H,H])
+    PM = np.zeros([H,1])
     
     for n in range(ns):
-        mSQc = np.conjugate(M[u,v,w,n,:])        
-        mSQt = np.mat(M[u,v,w,n,:]).T  
+        for s in range(el**3):
+            [h,k,l] = np.unravel_index(s,[el,el,el])
+            
+            mSQ = np.array(mroll[h,k,l,n,:])     
+            mSQt = mSQ[:,None]
+            
+            MM += np.outer(mSQt, mSQ)
+            PM[:,0] += resp[h,k,l,n] * mSQ
         
-#        MM[:, :, k] = MM[:, :, k] + np.outer(mSQt,mSQc)
-        MM = MM + np.outer(mSQt,mSQc)
-        
-#        PM[:, k] = PM[:, k] + (resp_fft[u,v,w,n] * mSQc)
-        PM = PM + (resp_fft[u,v,w,n] * mSQc)
-        
-    if k < 2:
-#        p = independent_columns(MM[:, :, k], .001)
-        p = independent_columns(MM, .001)
-    
-#    calred = MM[p,:, k][:,p]
-#    resred = PM[p, k].conj().T
-    calred = MM[p,:][:,p]
-    resred = PM[p,0].conj().T
+#            if t == 5 and n == 1:
+#                print s                
+#                print mSQ
+#                print resp[h,k,l,n]
 
-    ## for examining variables at desired frequency    
-    if k == 0:
-        print calred
-        print resred
-        print np.linalg.solve(calred,resred)
-    
-    specinfc[k, p] = np.linalg.solve(calred, resred)
+#    p = rr.independent_columns(MM, .001)
+#    calred = MM[p,:][:,p]
+#    resred = PM[p,0].T   
+#    spec[t, p] = np.linalg.solve(calred, resred)
+#    p = np.array([0, 1])
+    spec[t, :] = np.linalg.solve(MM, PM).T
 
-    if k % 500 == 0:
-        print "frequency completed: %s" % k
+    if t % 1 == 0:
+        print spec[t, :]        
+        print "Vector index completed: %s" % t
 
 print "Calibration Completed"      
 
 
 ### VALIDATION WITH RANDOM ARRANGEMENT ###
 
-## vectorize the frequency-space microstructure function for the validation
-## dataset
-lin_M = np.zeros((el**3,H)) + 0j*np.zeros((el**3,H))
-for h in range(H):
-    lin_M[:,h] = np.reshape(M[:,:,:,-1,h],el**3)
+mks_R = np.zeros([el,el,el])
 
-## find the frequency-space response of the validation microstructure
-## and convert to the real space
-lin_sum = np.sum(np.conjugate(specinfc) * lin_M, 1)
-mks_F = np.reshape(lin_sum,[21,21,21])
-mks_R = np.fft.ifftn(mks_F).real
+for t in xrange(el**3):
+    for h in xrange(H):
+        [u,v,w] = np.unravel_index(t,[el,el,el])
+
+        mroll = np.roll(np.roll(np.roll(m[:,:,:,-1,h],u,0),v,1),w,2)        
+        
+        mks_R += spec[t,h] * mroll
 
 
 ### MEAN ABSOLUTE STRAIN ERROR (MASE) ###
-
 MASE = 0
 avgE = np.average(resp[:,:,:,-1])
 print "The average strain is %s" %avgE
@@ -132,7 +114,6 @@ print "The mean absolute strain error (MASE) is %s%%" %(MASE*100)
 ## VISUALIZATION OF MKS VS. FEM ###
 
 plt.close()
-#fig = plt.figure()
 
 ## pick a slice perpendicular to the x-direction
 slice = 10
@@ -155,10 +136,10 @@ plt.title('FE response, E11')
 
 plt.subplot(133)
 
-feb = remzer(np.reshape(resp[:,:,:,-1]*m[:,:,:,-1,1],el**3))
-few = remzer(np.reshape(resp[:,:,:,-1]*m[:,:,:,-1,0],el**3))
-mksb = remzer(np.reshape(mks_R[:,:,:]*m[:,:,:,-1,1],el**3))
-mksw = remzer(np.reshape(mks_R[:,:,:]*m[:,:,:,-1,0],el**3))
+feb = rr.remzer(np.reshape(resp[:,:,:,-1]*m[:,:,:,-1,1],el**3))
+few = rr.remzer(np.reshape(resp[:,:,:,-1]*m[:,:,:,-1,0],el**3))
+mksb = rr.remzer(np.reshape(mks_R*m[:,:,:,-1,1],el**3))
+mksw = rr.remzer(np.reshape(mks_R*m[:,:,:,-1,0],el**3))
 bn = 40
 
 n, bins, patches = plt.hist(feb, bins = bn, histtype = 'step', hold = True,

@@ -23,7 +23,7 @@ print micr
 # a 3-D array sliced in the x direction, choosing roll(~,~,0) cycles the
 # slices, roll(~,~,1) shifts the numbers in each slice down, and roll(~,~,2)
 # shifts the numbers in each slice to the right.
-roll_micr = np.roll(micr,1,0)
+roll_micr = np.roll(micr,1,1)
 print roll_micr
 
 print "specific case"
