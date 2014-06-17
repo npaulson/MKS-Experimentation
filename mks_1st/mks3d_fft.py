@@ -64,21 +64,22 @@ for k in range(el**3):
     [u,v,w] = np.unravel_index(k,[el,el,el])
 
     MM = np.zeros((H,H), dtype='complex128')
-    PM = np.zeros((H,1), dtype='complex128')
+    PM = np.zeros(H, dtype='complex128')
+
     
     for n in range(ns):
-        mSQc = np.conjugate(M[u,v,w,n,:])        
-        mSQt = np.mat(M[u,v,w,n,:]).T  
+        mSQ = M[u,v,w,n,:]
+        mSQc = np.conj(mSQ) 
         
-        MM += np.outer(mSQt,mSQc)
-        PM[:,0] += resp_fft[u,v,w,n] * mSQc
+        MM += np.outer(mSQ,mSQc)
+
+        PM += resp_fft[u,v,w,n] * mSQc
         
     if k < 2:
         p = rr.independent_columns(MM, .001) 
 
     calred = MM[p,:][:,p]
-#    resred = PM[p,0].conj().T
-    resred = PM[p,0].T
+    resred = PM[p]
 
     ## for examining variables at desired frequency    
     if k == 0:

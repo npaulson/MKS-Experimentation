@@ -51,22 +51,22 @@ spec = np.zeros([el**3,H])
 for t in xrange(4620,4640):
     
     [u,v,w] = np.unravel_index(t,[el,el,el])
-    mroll = np.roll(np.roll(np.roll(m,u,0),v,1),w,2)
+    mroll = np.roll(np.roll(np.roll(m,-u,0),-v,1),-w,2)
 
     MM = np.zeros([H,H])
-    PM = np.zeros([H,1])
+    PM = np.zeros(H)
     
     for n in range(ns):
         for s in range(el**3):
             [h,k,l] = np.unravel_index(s,[el,el,el])
             
             mSQ = np.array(mroll[h,k,l,n,:])     
-            mSQt = mSQ[:,None]
+#            mSQt = mSQ[:,None]
             
-            MM += np.outer(mSQt, mSQ)
-            PM[:,0] += resp[h,k,l,n] * mSQ
+            MM += np.outer(mSQ, mSQ)
+            PM += resp[h,k,l,n] * mSQ
         
-#            if t == 5 and n == 1:
+#            if t == 4622 and n == 1 and np.allclose(mSQ,np.array([1.,0.])) == True:
 #                print s                
 #                print mSQ
 #                print resp[h,k,l,n]
@@ -87,13 +87,15 @@ print "Calibration Completed"
 
 ### VALIDATION WITH RANDOM ARRANGEMENT ###
 
+spec = spec/20
 mks_R = np.zeros([el,el,el])
 
 for t in xrange(el**3):
-    for h in xrange(H):
-        [u,v,w] = np.unravel_index(t,[el,el,el])
+    [u,v,w] = np.unravel_index(t,[el,el,el])    
 
-        mroll = np.roll(np.roll(np.roll(m[:,:,:,-1,h],u,0),v,1),w,2)        
+    for h in xrange(H):
+
+        mroll = np.roll(np.roll(np.roll(m[:,:,:,-1,h],-u,0),-v,1),-w,2)        
         
         mks_R += spec[t,h] * mroll
 
