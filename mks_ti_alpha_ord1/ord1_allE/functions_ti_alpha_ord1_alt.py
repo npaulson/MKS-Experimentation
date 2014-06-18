@@ -46,8 +46,8 @@ def calib(k,M,resp_fft,p,H,el,ns):
         mSQc = np.conj(mSQ[None,:])
         mSQt = mSQ[:,None]
         
-        MM = MM + np.dot(mSQt, mSQc)
-        PM[:,0] = PM[:,0] + np.dot(resp_fft[u,v,w,n],mSQc)
+        MM += np.dot(mSQt, mSQc)
+        PM[:,0] += np.dot(resp_fft[u,v,w,n],mSQc)
  
     if k < 2:
         p = independent_columns(MM, .001)
@@ -80,7 +80,7 @@ def eval_meas(mks_R_indv,resp_indv,el):
     MASE = 0
     for k in xrange(el**3):
         [u,v,w] = np.unravel_index(k,[el,el,el])
-        MASE = MASE + ((np.abs(resp_indv[u,v,w] - mks_R_indv[u,v,w]))/(avgE * el**3))
+        MASE += ((np.abs(resp_indv[u,v,w] - mks_R_indv[u,v,w]))/(avgE * el**3))
         
     return avgE, MASE
 
@@ -109,17 +109,15 @@ def gen_micr(filename1,filename2,set_id,ns,el,H):
 
     ## convert the matlab files arrays in python        
     
-    micr_flag_BASE = sio.loadmat(filename2)
     ## micr_flag contains 9261 flags for each sample microsturcture,
     ## each representing an orientation. The number in these flags
     ## corresponds with an orientation in ex_ori_fr
-    micr_flag = micr_flag_BASE['ct']         
-
-    ex_ori_BASE = sio.loadmat(filename1)    
+    micr_flag = sio.loadmat(filename2)['ct']         
+  
     ## ex_ori_fr contains 522 sets of 15 GSH coefficients, where each 
     ## set corresponds with an orientation on the surface of the
     ## hexagonal-triclinic fundamental zone.        
-    ex_ori_fr = ex_ori_BASE['extremeorienth_fr']  
+    ex_ori_fr = sio.loadmat(filename1) ['extremeorienth_fr']  
            
     pre_micr = np.zeros((el**3,ns,H),dtype = 'complex64')
     for k in range(el**3):
@@ -178,15 +176,14 @@ def load_fe(filename,set_id,ns,el):
 
     start = time.time()    
 
-    micr_flag_BASE = sio.loadmat(filename)
     ## ori_mats contains a 3x3 orientation matrix for each spatial location
     ## in each sample microstructure
-    ori_mat = micr_flag_BASE['orientation']
+    ori_mat = sio.loadmat(filename)['orientation']
     
-    resp = np.zeros((el,el,el,ns),dtype = 'float64')
+    resp = np.zeros((el,el,el,6,ns),dtype = 'float64')
     for sn in xrange(ns):
         filename = "hcp_200s_%s%s.dat" %(sn+1,set_id) 
-        resp[:,:,:,sn] = res_red(filename,ori_mat,el,sn)  
+        resp[:,:,:,:,sn] = res_red(filename,ori_mat,el,sn)  
     
     end = time.time()
     timeE = np.round((end - start),1)
@@ -364,7 +361,7 @@ def res_red(filename,ori_mat,el,sn):
     # here we average all 8 integration points in each element cell
     E = np.mean(E, axis=1)
     
-    Etot = np.zeros([el**3])
+    Etot = np.zeros([el**3,6])
     # here we convert the strain tensor at each location from crystal to 
     # sample frame
     for k in xrange(21**3):
@@ -376,12 +373,14 @@ def res_red(filename,ori_mat,el,sn):
         # Here we convert from crystal to sample frame
         E_ten_samp = np.dot(ori_mat[:,:,k,sn].T ,np.dot(E_ten_cry,ori_mat[:,:,k,sn]))
                 
-        Etot[k] = E_ten_samp[0,0]
-#        Etot[k,:] = [E_ten_samp[0,0],E_ten_samp[1,1],E_ten_samp[2,2],
-#                     E_ten_samp[0,1],E_ten_samp[1,2],E_ten_samp[1,2]]
+#        Etot[k] = E_ten_samp[0,0]
+        Etot[k,:] = [E_ten_samp[0,0],E_ten_samp[1,1],E_ten_samp[2,2],
+                     E_ten_samp[0,1],E_ten_samp[1,2],E_ten_samp[1,2]]
     
     # here we reshape the data from a 9261 length vector to a 21x21x21 3D matrix       
-    Emat = np.swapaxes(np.reshape(np.flipud(Etot), [el,el,el]),1,2)
+    Emat = np.zeros([el,el,el,6])
+    for c in xrange(6):    
+        Emat[:,:,:,c] = np.swapaxes(np.reshape(np.flipud(Etot[:,c]), [el,el,el]),1,2)
 
     return Emat
 

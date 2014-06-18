@@ -1,0 +1,7 @@
+Size of microstructure function in frequency space: 44749152 bytes
+Convert microstructure function to frequency space: 0.22 seconds
+FE results loaded
+Convert FE results to frequency space: 0.103 seconds
+Calibration: 19.427 seconds
+The average strain is 0.0009999999654
+The mean absolute strain error (MASE) is 7.5840069196%

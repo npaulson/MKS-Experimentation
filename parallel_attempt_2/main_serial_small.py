@@ -18,9 +18,9 @@ Noah Paulson, 5/7/2014
 
 import time
 import numpy as np
-import mks_functions_serial_chunk_v2 as rr
+import functions_serial_small as rr
 from functools import partial
-import os
+
 
 ## el is the # of elements per side of the cube 
 el = 21 
@@ -31,9 +31,8 @@ ns = 151
 ## specify the number of local states you are using
 H = 2
 ## specify the file to write messages to 
-wrt_file = 'output_%s.txt' %time.strftime("%Y%m%d%H%M%S") 
+wrt_file = 'output_serial_%s.txt' %time.strftime("%Y-%m-%d_%H-%M") 
 
-cwd = os.getcwd()
 
 ### THE MICROSTRUCTURE FUNCTION ###
 
@@ -58,7 +57,7 @@ rr.WP(msg,wrt_file)
 
 
 ### FINITE ELEMENT RESPONSES ###
-[resp_all, msg] = rr.load_fe(1,ns,el)
+[resp_all, msg] = rr.load_fe(0,ns,el)
 resp = resp_all[:,:,:,0,:]
 
 resp_val = resp[:,:,:,-1]
@@ -85,10 +84,10 @@ specinfc[0,:] = rr.calib(0,M,resp_fft,0,H,el,ns)
 ## calib_red is simply calib with some default arguments
 calib_red = partial(rr.calib,M=M,resp_fft=resp_fft,p=p,H=H,el=el,ns=ns)
 
-#specinfc[2:(el**3),:] = np.asarray(map(calib_red,range(2,el**3)))
-result = map(calib_red,range(2,el**3))
-specinfc[2:(el**3),:] = np.asarray(result)
-del result    
+specinfc[2:(el**3),:] = np.asarray(map(calib_red,range(2,el**3)))
+#result = map(calib_red,range(2,el**3))
+#specinfc[2:(el**3),:] = np.asarray(result)
+#del result    
 
 end = time.time()
 timeE = np.round((end - start),3)
