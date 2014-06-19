@@ -8,6 +8,7 @@ Created on Mon Jun 16 11:32:08 2014
 import functions_ti_alpha_fip_v1 as rr
 import numpy as np
 import time
+import scipy.io as sio
 
 
 ## el is the # of elements per side of the cube 
@@ -34,7 +35,9 @@ for sn in xrange(ns):
     fip[:,:,:,sn] = np.swapaxes(np.reshape
                         (np.flipud(fip_temp), [el,el,el]),1,2)
 
+
 np.save('euler_%s%s' %(ns,set_id), euler)
+sio.savemat('euler_%s%s' %(ns,set_id), {'euler':euler})
 np.save('fip_%s%s' %(ns,set_id), fip)
 
 

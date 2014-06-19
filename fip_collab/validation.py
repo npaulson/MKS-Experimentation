@@ -10,7 +10,7 @@ a specific set-ID using a previously calibrated MKS
 
 import time
 import numpy as np
-import functions_ti_alpha_ord1_alt as rr
+import functions_ti_alpha_fip_v1 as rr
 
 
 ## el is the # of elements per side of the cube 
@@ -35,10 +35,10 @@ M = np.load('M_%s%s.npy' %(ns,set_id))
 specinfc = np.load('specinfc_%s%s.npy' %(ns_cal,set_id_cal))
 
 
-mks_R = np.zeros([el,el,el,6,ns])
+mks_R = np.zeros([el,el,el,ns])
 
 for sn in xrange(ns):
-    mks_R[:,:,:,sn] = rr.validate(M[:,:,:,sn,:],specinfc[:,:],H,el)
+    mks_R[:,:,:,sn] = rr.validate(M[:,:,:,sn,:],specinfc,H,el)
 
 msg = 'validation performed'
 rr.WP(msg,wrt_file)

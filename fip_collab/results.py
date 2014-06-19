@@ -11,7 +11,7 @@ fields and histograms.
 
 import time
 import numpy as np
-import functions_ti_alpha_ord1_alt as rr
+import functions_ti_alpha_fip_v1 as rr
 import matplotlib.pyplot as plt
 
 ## el is the # of elements per side of the cube 
@@ -19,7 +19,7 @@ el = 21
 ## select which order terms with nearest neighbors you would like to analyze
 order = 1
 ## the number of sample microstructures for validation.
-ns = 50
+ns = 5
 ## specify the number of local states you are using
 H = 15
 ## specify the set designation (string format)
@@ -28,26 +28,26 @@ set_id = 'val'
 wrt_file = 'results_%s%s_%s.txt' %(ns,set_id,time.strftime("%Y-%m-%d_h%Hm%M")) 
 
 mks_R = np.load('mksR_ord%s_%s%s.npy' %(order,ns,set_id))
-resp = np.load('FE_results_%s%s.npy' %(ns,set_id))
+resp = np.load('fip_%s%s.npy' %(ns,set_id))
 
 
 #### MEAN ABSOLUTE STRAIN ERROR (MASE) ###
 avgE_tot = 0
-MASE_tot = 0
+MAE_tot = 0
 
 for sn in xrange(ns):
-    [avgE_indv, MASE_indv] = rr.eval_meas(mks_R[:,:,:,sn],
+    [avgE_indv, MAE_indv] = rr.eval_meas(mks_R[:,:,:,sn],
                                 resp[:,:,:,sn],el)
     avgE_tot += avgE_indv
-    MASE_tot += MASE_indv
+    MAE_tot += MAE_indv
 
 avgE = avgE_tot/ns
-MASE = MASE_tot/ns
+MAE = MAE_tot/ns
 max_err = np.amax(resp-mks_R)/avgE
 
-msg = 'The average strain is %s' %avgE
+msg = 'The average fip is %s' %avgE
 rr.WP(msg,wrt_file)
-msg = 'The mean absolute strain error (MASE) is %s%%' %(MASE*100)
+msg = 'The mean absolute error (MAE) is %s%%' %(MAE*100)
 rr.WP(msg,wrt_file)
 msg = 'The maximum error is %s%%' %(max_err*100)
 rr.WP(msg,wrt_file)
@@ -58,12 +58,14 @@ rr.WP(msg,wrt_file)
 plt.close()
 
 ## pick a slice perpendicular to the x-direction
-slc = 10
-sn = 25
+slc = 14
+sn = 0
 
 
 ## find the min and max of both datasets for the slice of interest
 #(needed to scale both images the same) 
+#dmin = np.amin(mks_R[slc,:,:,sn])
+#dmax = np.amax(mks_R[slc,:,:,sn])
 dmin = np.amin([resp[slc,:,:,sn],mks_R[slc,:,:,sn]])
 dmax = np.amax([resp[slc,:,:,sn],mks_R[slc,:,:,sn]])
 
@@ -73,13 +75,13 @@ plt.subplot(221)
 ax = plt.imshow(mks_R[slc,:,:,sn], origin='lower', interpolation='none',
     cmap='jet', vmin=dmin, vmax=dmax)
 plt.colorbar(ax)
-plt.title('MKS, 1st order terms, E11')
+plt.title('MKS FIP, 1st order terms')
 
 plt.subplot(222)
 ax = plt.imshow(resp[slc,:,:,sn], origin='lower', interpolation='none',
     cmap='jet', vmin=dmin, vmax=dmax)
 plt.colorbar(ax)
-plt.title('FE response, E11')
+plt.title('CPFEM FIP')
 
 
 # Plot a histogram representing the frequency of strain levels with separate
@@ -95,7 +97,7 @@ mks = np.reshape(mks_R,ns*(el**3))
 
 
 # select the desired number of bins in the histogram
-bn = 100
+bn = 200
 
 # FEM histogram
 n, bins, patches = plt.hist(fe, bins = bn, histtype = 'step', hold = True,
@@ -110,8 +112,8 @@ mks, = plt.plot(bincenters,n,'b', linestyle = '-', lw = 0.5)
 
 plt.grid(True)
 
-plt.legend([fe, mks], ["FE response", "MKS, 1st order terms"])
+plt.legend([fe, mks], ["CPFEM FIP response", "MKS, 1st order terms"])
 
-plt.xlabel("Strain")
+plt.xlabel("FIP value")
 plt.ylabel("Frequency")
-plt.title("Frequency comparison of 1st order MKS with FE results")
+plt.title("Frequency comparison of 1st order MKS with CPFEM FIP results")

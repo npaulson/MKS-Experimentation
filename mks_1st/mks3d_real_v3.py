@@ -13,10 +13,6 @@ import mks_func as rr
 import matplotlib.pyplot as plt
 
 
-# Generate the black and white delta microstructures. 
-# Black cells = 1, White cells = 0
-# The black delta has a high stiffness cell surrounded by low stiffness cells,
-# The white delta has a low stiffness cell surrounded by high stiffness cells
 el = 21
 ns = 2
 H = 2
@@ -57,71 +53,34 @@ for sn in range(ns):
         for t in xrange(el**3):
             [u,v,w] = np.unravel_index(t,[el,el,el])
             c = (h * el**3) + t
-            preMM[:,c] = np.reshape(np.roll(np.roll(np.roll(m[:,:,:,sn,h],-u,0),-v,1),-w,2),el**3).T
+            preMM[:,c] = np.reshape(np.roll(np.roll(np.roll(
+                                    m[:,:,:,sn,h],-u,0),-v,1),-w,2),el**3).T
     
-            if t % 3000 == 0:
+            if t % 1000 == 0:
                 print 't=%s ,h=%s, sn=%s' %(t,h,sn)
     
     MM += np.dot(preMM.T,preMM)
     PM += np.dot(preMM.T,np.reshape(resp[:,:,:,sn],el**3))
 
-
 spec = np.linalg.solve(MM, PM).T
 
-
-
-#spec = np.zeros([el**3,H])
-##for t in xrange(el**3):
-#for t in xrange(4620,4640):
-#    
-#    [u,v,w] = np.unravel_index(t,[el,el,el])
-#    mroll = np.roll(np.roll(np.roll(m,-u,0),-v,1),-w,2)
-#
-#    MM = np.zeros([H,H])
-#    PM = np.zeros(H)
-#    
-#    for n in range(ns):
-#        for s in range(el**3):
-#            [h,k,l] = np.unravel_index(s,[el,el,el])
-#            
-#            mSQ = np.array(mroll[h,k,l,n,:])     
-##            mSQt = mSQ[:,None]
-#            
-#            MM += np.outer(mSQ, mSQ)
-#            PM += resp[h,k,l,n] * mSQ
-#        
-##            if t == 4622 and n == 1 and np.allclose(mSQ,np.array([1.,0.])) == True:
-##                print s                
-##                print mSQ
-##                print resp[h,k,l,n]
-#
-##    p = rr.independent_columns(MM, .001)
-##    calred = MM[p,:][:,p]
-##    resred = PM[p,0].T   
-##    spec[t, p] = np.linalg.solve(calred, resred)
-##    p = np.array([0, 1])
-#    spec[t, :] = np.linalg.solve(MM, PM).T
-#
-#    if t % 1 == 0:
-#        print spec[t, :]        
-#        print "Vector index completed: %s" % t
-
-print "Calibration Completed"      
-
+print 'calibration completed'
 
 ### VALIDATION WITH RANDOM ARRANGEMENT ###
 
-#spec = spec/20
-#mks_R = np.zeros([el,el,el])
-#
-#for t in xrange(el**3):
-#    [u,v,w] = np.unravel_index(t,[el,el,el])    
-#
-#    for h in xrange(H):
-#
-#        mroll = np.roll(np.roll(np.roll(m[:,:,:,-1,h],-u,0),-v,1),-w,2)        
-#        
-#        mks_R += spec[t,h] * mroll
+mks_R = np.zeros([el,el,el])
+
+preMM = np.zeros([el**3, H * el**3],dtype='int8')    
+for h in xrange(H):    
+    for t in xrange(el**3):
+        [u,v,w] = np.unravel_index(t,[el,el,el])
+        c = (h * el**3) + t
+        preMM[:,c] = np.reshape(np.roll(np.roll(np.roll(m[:,:,:,-1,h],-u,0),-v,1),-w,2),el**3).T
+
+        if t % 3000 == 0:
+            print 't=%s ,h=%s' %(t,h)
+
+lin_mks_R = np.dot(preMM,spec)
 
 
 ### MEAN ABSOLUTE STRAIN ERROR (MASE) ###
