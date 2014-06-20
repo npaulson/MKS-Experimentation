@@ -28,26 +28,31 @@ set_id = 'val'
 wrt_file = 'results_%s%s_%s.txt' %(ns,set_id,time.strftime("%Y-%m-%d_h%Hm%M")) 
 
 mks_R = np.load('mksR_ord%s_%s%s.npy' %(order,ns,set_id))
-resp = np.load('fip_%s%s.npy' %(ns,set_id))
+resp = np.load('E11_%s%s.npy' %(ns,set_id))
 
 
 #### MEAN ABSOLUTE STRAIN ERROR (MASE) ###
-avgE_tot = 0
-MAE_tot = 0
+avgE_fe_tot = 0
+avgE_mks_tot = 0
+MASE_tot = 0
 
 for sn in xrange(ns):
-    [avgE_indv, MAE_indv] = rr.eval_meas(mks_R[:,:,:,sn],
+    [avgE_fe_indv,avgE_mks_indv, MASE_indv] = rr.eval_meas(mks_R[:,:,:,sn],
                                 resp[:,:,:,sn],el)
-    avgE_tot += avgE_indv
-    MAE_tot += MAE_indv
+    avgE_fe_tot += avgE_fe_indv
+    avgE_mks_tot += avgE_mks_indv
+    MASE_tot += MASE_indv
 
-avgE = avgE_tot/ns
-MAE = MAE_tot/ns
-max_err = np.amax(resp-mks_R)/avgE
+avgE_fe = avgE_fe_tot/ns
+avgE_mks = avgE_mks_tot/ns
+MASE = MASE_tot/ns
+max_err = np.amax(resp-mks_R)/avgE_fe
 
-msg = 'The average fip is %s' %avgE
+msg = 'The average E11 from the CPFEM %s' %avgE_fe
 rr.WP(msg,wrt_file)
-msg = 'The mean absolute error (MAE) is %s%%' %(MAE*100)
+msg = 'The average E11 from the MKS %s' %avgE_mks
+rr.WP(msg,wrt_file)
+msg = 'The mean absolute error (MASE) is %s%%' %(MASE*100)
 rr.WP(msg,wrt_file)
 msg = 'The maximum error is %s%%' %(max_err*100)
 rr.WP(msg,wrt_file)
@@ -58,14 +63,12 @@ rr.WP(msg,wrt_file)
 plt.close()
 
 ## pick a slice perpendicular to the x-direction
-slc = 11
+slc = 10
 sn = 0
 
 
 ## find the min and max of both datasets for the slice of interest
 #(needed to scale both images the same) 
-#dmin = np.amin(mks_R[slc,:,:,sn])
-#dmax = np.amax(mks_R[slc,:,:,sn])
 dmin = np.amin([resp[slc,:,:,sn],mks_R[slc,:,:,sn]])
 dmax = np.amax([resp[slc,:,:,sn],mks_R[slc,:,:,sn]])
 
@@ -97,7 +100,7 @@ mks = np.reshape(mks_R,ns*(el**3))
 
 
 # select the desired number of bins in the histogram
-bn = 300
+bn = 40
 
 # FEM histogram
 n, bins, patches = plt.hist(fe, bins = bn, histtype = 'step', hold = True,
