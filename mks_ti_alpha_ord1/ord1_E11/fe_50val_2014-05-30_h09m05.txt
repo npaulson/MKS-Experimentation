@@ -1,2 +1,0 @@
-Import FE results: 25.4 seconds
-Convert calibration FE results to frequency space: 0.117 seconds
