@@ -8,9 +8,11 @@ response for a validation microstructure.
 Noah Paulson
 """
 
+import time
 import numpy as np
 import mks_func as rr
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
+wrt_file = 'nofft_%s.txt' %time.strftime("%Y-%m-%d_h%Hm%M")
 
 
 el = 21
@@ -37,8 +39,8 @@ resp = np.zeros((el,el,el,ns+1))
 for n in range(ns+1):
     filename = "21_%s_noah.dat" %(n+1) 
     resp[:,:,:,n] = rr.res_red(filename)
-    print "%s is loaded" %filename
-    
+    msg = "%s is loaded" %filename
+    rr.WP(msg,wrt_file)
 
 ### CALIBRATION OF INFLUENCE COEFFICIENTS ###
 
@@ -57,24 +59,44 @@ for sn in range(ns):
                                     m[:,:,:,sn,h],-u,0),-v,1),-w,2),el**3).T
     
             if t % 9000 == 0:
-                print 't=%s ,h=%s, sn=%s' %(t,h,sn)
-    
-    print MM.shape
-    print preMM.shape
-    print preMM.astype('int8')
-    print preMM.T.shape
-    print preMM.nbytes
+                msg = 't=%s ,h=%s, sn=%s' %(t,h,sn)
+                rr.WP(msg,wrt_file)
+        
+#    print MM.shape
+#    print preMM.shape
+#    print preMM.astype('int8')
+#    print preMM.T.shape
+#    print preMM.nbytes
+#    if sn == 0:    
+#        np.save('preMM2',preMM)
 #    print np.dot(preMM.T,preMM).nbytes
     
-#    MM += np.dot(preMM.T,preMM)
-#    print 'MM, sn=%s' %sn
-#    PM += np.dot(preMM.T,np.reshape(resp[:,:,:,sn],el**3))
-#    print 'PM, sn=%s' %sn
-#
-#spec = np.linalg.solve(MM, PM).T
-#
-#print 'calibration completed'
-#
+    start = time.time() 
+    MM += np.dot(preMM.T,preMM)
+    end = time.time()
+    timeE = end - start       
+    msg = 'MM, sn=%s, time=%s' %(sn, timeE)
+    rr.WP(msg,wrt_file)
+    
+    start = time.time()     
+    PM += np.dot(preMM.T,np.reshape(resp[:,:,:,sn],el**3))
+    end = time.time()
+    timeE = end - start       
+    msg = 'PM, sn=%s, time=%s' %(sn, timeE)
+    rr.WP(msg,wrt_file)
+
+start = time.time()     
+spec = np.linalg.solve(MM, PM).T
+end = time.time()
+timeE = end - start       
+msg = 'lin solve, time=%s' %timeE
+rr.WP(msg,wrt_file)
+
+np.save('spec',spec)
+
+msg = 'calibration completed'
+rr.WP(msg,wrt_file)
+
 #### VALIDATION WITH RANDOM ARRANGEMENT ###
 #
 #mks_R = np.zeros([el,el,el])

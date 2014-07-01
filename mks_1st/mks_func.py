@@ -7,6 +7,7 @@ Created on Tue Mar 25 13:06:24 2014
 
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.io as sio
 
 def pha_loc(filename = "msf.txt"):
     
@@ -36,6 +37,40 @@ def pha_loc(filename = "msf.txt"):
         
     return micr
     
+def gen_micr(file_name, read_dat, ns, el):
+    """
+    Summary:
+        This function reads the microstructures for all samples (calibration
+        and validation) from a matlab data file, rearanges them into ns # of
+        el x el x el cubes, and saves them in the .npy file format
+    Inputs:
+        file_name (string): the filename for the matlab '.mat' file
+        read_dat (int): if read_dat = 1 the '.mat' file is read and rearanged,
+        if read_dat = 0 micr is simply loaded from the '.npy' file
+        ns (int): the total number of microstructures (for calibration and 
+        validation)
+        el (int): the number of elements per side of the microstructure cube
+    Output:
+        micr ([el,el,el,ns],int8): The binary microstructures for calibration
+        and validation
+    """
+    if read_dat == 1:        
+        ## convert the matlab file to an array in python        
+        pre_micr = sio.loadmat(file_name)    
+        pre_micr = pre_micr['micr'].astype(int)   
+        
+        ## here we perform flips and reshapes to enact the proper arrangement 
+        ## of spatial locations in the 3D cub
+        micr = np.zeros((el,el,el,ns),dtype = 'int8') 
+        for jj in range(ns):    
+            micr[:,:,:,jj] = np.swapaxes(np.reshape(np.flipud(pre_micr[:,jj]), [el,el,el]),1,2)
+    
+        ## save the microstructure array
+        np.save('micr_%s' %ns,micr)
+    else:        
+        micr = np.load('micr_%s.npy' %ns)
+    
+    return micr
     
 
 def res_red(filename = "21_1_noah.dat", slice=10):
@@ -114,3 +149,21 @@ def remzer(r_ini):
             c = c + 1
     
     return np.trim_zeros(r)
+
+    
+def WP(msg,filename):
+    """
+    Summary:
+        This function takes an input message and a filename, and appends that
+        message to the file. This function also prints the message
+    Inputs:
+        msg (string): the message to write and print.
+        filename (string): the full name of the file to append to.
+    Outputs:
+        both prints the message and writes the message to the specified file
+    """
+    fil = open(filename, 'a')
+    print msg
+    fil.write(msg)
+    fil.write('\n')
+    fil.close()

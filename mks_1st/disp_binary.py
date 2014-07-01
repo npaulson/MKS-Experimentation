@@ -12,7 +12,7 @@ preMM = np.load('preMM2.npy')
 shp = preMM.shape
 print shp
 
-blk_sz = 20
+blk_sz = 10
 
 ht = np.floor(shp[0]/blk_sz).astype('int32')
 print 'ht: %s' %ht
@@ -23,10 +23,10 @@ pixelize = np.zeros([ht-1,wd-1])
 
 # here we take an average over a square (with a side specified by blk_sz)
 # and put it into a new cell in pixelize
-for h in xrange(ht-1):
+for h in xrange(1,ht-1):
     if h % 100 == 0:   
         print 'h: %s' %h
-    for w in xrange(wd-1):
+    for w in xrange(1,wd-1):
         # ht_lb and wd_lb are the lower bounds of the location of the square
         # which is averaged over in preMM
         # ht_ub and wd_ub are the upper bounds
@@ -42,11 +42,11 @@ for h in xrange(ht-1):
 plt.close()
 
 plt.subplot(121)
-ax = plt.imshow(pixelize[:,:(wd/2)], origin='lower', interpolation='none',
+ax = plt.imshow(pixelize[1:,1:(wd/2)], origin='lower', interpolation='none',
     cmap='binary')
 plt.colorbar(ax)
 
 plt.subplot(122)
-ax = plt.imshow(pixelize[:,(wd/2):], origin='lower', interpolation='none',
+ax = plt.imshow(pixelize[1:,((wd/2)+1):], origin='lower', interpolation='none',
     cmap='binary')
 plt.colorbar(ax)
