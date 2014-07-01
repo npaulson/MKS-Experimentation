@@ -1,3 +1,0 @@
-Import val microstructures: 5.582 seconds
-Size of microstructure function in frequency space: 111132000 bytes
-Convert calibration microstructure function to frequency space: 1.48 seconds
