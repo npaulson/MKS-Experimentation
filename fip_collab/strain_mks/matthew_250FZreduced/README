@@ -1,0 +1,41 @@
+README
+
+This folder contains results of Matthew Priddy's CPFEM simulations, and MKS analyses by Noah Paulson
+
+Calibration: 250 trials with 7 steps each, a total of 1750 simulations. These are completely
+random microstructures with random orientations picked from the phi2=0 face,
+(0<=phi1<=360, 0<=Phi<=90, 0<=phi2<=60), of the hexagonal fundamental zone in Bunge Euler space.
+
+Validation: 50 trials with 7 steps each, a total of 50 simulations. These are completely
+random microstructures with random orientations picked from Bunge Euler space.
+
+
+The deformation in the CPFEM simulations was strain controlled (macroscopically). The following steps
+each had a unique associated simulation:
+# step 00: zero macroscopic strain
+# step 01: positive macroscopic strain
+# step 02: negative macroscopic strain
+# step 03: positive macroscopic strain
+# step 04: negative macroscopic strain
+# step 05: positive macroscopic strain
+# step 06: negative macroscopic strain
+
+
+The data files are in the VTK format and contain the following information:
+# The dimensions of dataset
+# The locations of the voxels
+# element numbers
+# Bunge Euler angles for each element
+# The FIP value for each voxel
+# The stress tensor in each voxel in sample coordinates
+# The total strain tensor in each voxel in sample coordinates
+# The plastic strain tensor in each voxel in sample coordinates
+
+
+
+Calibrations were performed on the E11 strain component (elastic + plastic) for steps 1 and 6.
+
+The results were not as good as desired with MASE around 1% and max error around 15% on average.
+These simulations were run using boundary conditions from Dr.McDowell's group. We speculate that by using the
+periodic boundary conditions from Dr. Kalidindi's group these results might give errors approaching
+that of purely elastic simulations.
