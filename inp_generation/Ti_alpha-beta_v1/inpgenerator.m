@@ -4,7 +4,7 @@
 function inpgenerator()
 
 el=21;
-na=3;
+na=1;
 set_id = 'trial1';
 
 nodesets(el);
