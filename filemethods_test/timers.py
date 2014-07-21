@@ -39,7 +39,7 @@ timeE = np.round((end - start),5)
 print "time to save each row in '.npy' format: %s seconds" % timeE
 
 
-### Save each row of R into 'R_append.txt' by appending each line
+### Save each row of R into 'R_append.npy' by appending each line
 start = time.time()
 np.save('R_append',R[0,:])
 for ii in range(1,len(R[:,0])):    
@@ -60,11 +60,3 @@ end = time.time()
 timeE = np.round((end - start),5)
 print "time to save each row in '.txt' format: %s seconds" % timeE
 
-### Save each row of R in '.txt' format
-start = time.time()
-for ii in range(len(R[:,0])):
-    filename = 'R_%s' % ii    
-    np.savetxt(filename,R[ii,:])    
-end = time.time()
-timeE = np.round((end - start),5)
-print "time to save each row in '.txt' format: %s seconds" % timeE

@@ -36,32 +36,22 @@ def calib(k,M,E11_fft,p,H,el,ns):
     [u,v,w] = np.unravel_index(k,[el,el,el])
 
     MM = np.zeros((H,H),dtype = 'complex128')
-#    PM = np.zeros((H,1),dtype = 'complex128')
     PM = np.zeros(H,dtype = 'complex128')
 
     
     for n in xrange(ns-1):
 
         mSQ = np.array(M[u,v,w,n,:])     
-#        mSQc = np.conj(mSQ[None,:])
-        mSQc = np.conj(mSQ)        
-#        mSQt = mSQ[:,None]
         
-#        MM += np.dot(mSQt, mSQc)
-        MM += np.outer(mSQ, mSQc)
-
-#        PM[:,0] += np.dot(fip_fft[u,v,w,n],mSQc)
-        PM += np.dot(E11_fft[u,v,w,n],mSQc)
-
+        MM += np.outer(mSQ, np.conj(mSQ))
+        PM += np.dot(E11_fft[u,v,w,n],np.conj(mSQ))
  
     if k < 2:
         p = independent_columns(MM, .001)
 
     calred = MM[p,:][:,p]
-#    resred = PM[p,0].conj().T
     resred = PM[p].conj()
 
-    
     specinfc_k = np.zeros(H,dtype = 'complex64')
     specinfc_k[p] = np.linalg.solve(calred, resred)
     
@@ -204,7 +194,7 @@ def validate(M_val,specinfc,H,el=21):
     ## vectorize the frequency-space microstructure function for the validation
     ## dataset
     lin_M = np.zeros((el**3,H),dtype = 'complex64')
-    for h in xrange(H):
+    for h in xrange(H):np.conj(mSQ)
         lin_M[:,h] = np.reshape(M_val[:,:,:,h],el**3)
     
     ## find the frequency-space response of the validation microstructure
