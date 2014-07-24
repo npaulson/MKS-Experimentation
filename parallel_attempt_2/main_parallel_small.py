@@ -18,7 +18,7 @@ Noah Paulson, 5/7/2014
 
 import time
 import numpy as np
-import functions_serial_small as rr
+import functions_small as rr
 from functools import partial
 from IPython.parallel import Client
 

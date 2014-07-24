@@ -6,9 +6,10 @@ Created on Thu Jul 17 20:20:42 2014
 """
 
 import numpy as np
+import time
 
-n = 100
-m = 250
+n = 1000
+m = 25
 #R = np.random.rand(n,m)
 
 #### Save each row of R in '.npy' format
@@ -61,9 +62,6 @@ def keep_open():
     
     for ii in xrange(n):
         f[ii].close()
-        
-def blank_func():
-    print "hello world"
 
     
 def closed():  
@@ -78,6 +76,12 @@ def closed():
             f = open(filename, 'a')
             f.write(str(T[ii]) + '\n')
             f.close()
+            
+if __name__ == "__main__":
+    start = time.time()
+    keep_open()
+    end = time.time()
+    print "elapsed time: %s" % (end - start)
             
         
  

@@ -33,11 +33,11 @@ for ii = 1:phi1_num
     end
 end
 
-extremeorienth = fz_f_CT;
-for k = 1 : c
-    extremeorienth_fr = GSH_Cubic_Triclinic(fz_f_CT(k,1),fz_f_CT(k,2),fz_f_CT(k,3));
-end
-save('extremeorientc_cube.mat','extremeorienth','extremeorienth_fr')
+% extremeorienth = fz_f_CT;
+% for k = 1 : c
+%     extremeorienth_fr = GSH_Cubic_Triclinic(fz_f_CT(k,1),fz_f_CT(k,2),fz_f_CT(k,3));
+% end
+% save('extremeorientc_cube.mat','extremeorienth','extremeorienth_fr')
 
 
 figure(1)

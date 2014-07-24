@@ -18,7 +18,7 @@ Noah Paulson, 5/7/2014
 
 import time
 import numpy as np
-import functions_serial_small as rr
+import functions_small as rr
 from functools import partial
 
 
@@ -85,9 +85,7 @@ specinfc[0,:] = rr.calib(0,M,resp_fft,0,H,el,ns)
 calib_red = partial(rr.calib,M=M,resp_fft=resp_fft,p=p,H=H,el=el,ns=ns)
 
 specinfc[2:(el**3),:] = np.asarray(map(calib_red,range(2,el**3)))
-#result = map(calib_red,range(2,el**3))
-#specinfc[2:(el**3),:] = np.asarray(result)
-#del result    
+
 
 end = time.time()
 timeE = np.round((end - start),3)
