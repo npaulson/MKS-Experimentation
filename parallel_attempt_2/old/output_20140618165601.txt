@@ -1,2 +1,0 @@
-Size of microstructure function in frequency space: 44749152 bytes
-Convert microstructure function to frequency space: 0.26 seconds

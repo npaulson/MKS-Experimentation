@@ -10,6 +10,19 @@ import matplotlib.pyplot as plt
 import scipy.io as sio
 
 def pha_loc(filename = "msf.txt"):
+    """
+    Summary:    
+        Opens file with microstructure info where is column represents a single
+        microstructure. Converts each microstructure column vector into a 
+        cube data structure with indexing which matches that of the 
+        Finite Element structure
+    Inputs:
+        filename (string): the name of the '.txt' file containing the 
+        microstructures    
+    Output: 
+        micr ([el,el,el,ns]): The binary microstructures for calibration
+        and validation
+    """            
     
     f = open(filename, "r")
 
@@ -22,11 +35,6 @@ def pha_loc(filename = "msf.txt"):
             pre_micr1[ii,jj] = linelist[ii].split()[jj]
 
     f.close()
-            
-    # element 4630 is at the centroid of a 21x21x21 dataset
-    #print e11cond[4630]
-
-    # here we reshape the data from a 9261 length vector to a 21x21x21 3D matrix
         
     pre_micr2 = np.zeros((21,21,21,3))
     micr = pre_micr2
@@ -107,33 +115,26 @@ def res_red(filename = "21_1_noah.dat", slice=10):
     pre_e11mat = np.reshape(e11cond, [21,21,21])
     e11mat = np.swapaxes(pre_e11mat,1,2)
 
-
-    # here we generate an image and scalebar for a particular slice of the 3D matrix
-    if __name__ == '__main__':
-        
-        plt.clf()        
-                
-        plt.imshow(e11mat[slice,:,:], origin='lower', interpolation='none',
-                   cmap='jet')
-        
-        plt.colorbar()
-        
-    else:
-        return e11mat
+    return e11mat
 
 
 def independent_columns(A, tol = 1e-05):
     """
-    The following code is comes from: http://stackoverflow.com/q/13312498
-
-    Return an array composed of independent columns of A.
-
-    Note the answer may not be unique; this function returns one of many
-    possible answers.
+    Summary:    
+        This function returns an vector of the independent columns of a matrix        
+        Note: the answer may not be unique; this function returns one of many
+        possible answers.
+        Source: http://stackoverflow.com/q/1331249
+    Inputs:
+        A (generic array {numerical})
+        tol (float): This number specifies how numerically close two columns
+        must be to be dependent.
+    Outputs:
+        independent (vector of int): vector containing the indices of the 
+        independent columns of A
     """
     Q, R = np.linalg.qr(A)
     independent = np.where(np.abs(R.diagonal()) > tol)[0]
-    #return A[:, independent]
     return independent
     
     

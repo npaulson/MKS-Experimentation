@@ -28,9 +28,9 @@ fprintf(fid1,'1.\n');
 fprintf(fid1,'** Name: material-2, beta phase titanium\n');
 fprintf(fid1,'*Material, name=material-2\n');
 fprintf(fid1,'*Elastic,type=anisotropic\n');
-fprintf(fid1,'156, 83, 156, 83, 83, 156, 0, 0\n');
-fprintf(fid1,'0, 55, 0, 0, 0, 0, 55, 0\n');
-fprintf(fid1,'0, 0, 0, 0, 55\n');
+fprintf(fid1,'98, 83, 98, 83, 83, 98, 0, 0\n');
+fprintf(fid1,'0, 38, 0, 0, 0, 0, 38, 0\n');
+fprintf(fid1,'0, 0, 0, 0, 38\n');
 fprintf(fid1,'**\n');
 
 fclose(fid1);

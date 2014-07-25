@@ -12,7 +12,8 @@ import time
 import itertools as it
 import scipy.io as sio
 
-def calibrator(M,resp_fft,filename,H,el=21,ns=151):
+
+def calib(k,M,resp_fft,p,H,el,ns):
     """
     Summary: This function calibrates the influence coefficients from the 
         frequency space calibration microstructures and FEM responses
@@ -27,51 +28,40 @@ def calibrator(M,resp_fft,filename,H,el=21,ns=151):
         validation)
         filename (string): The filename to write messages to
     Outputs:
-        specinfc:(el**3,H) influence coefficients in frequency space
-        timeE: (scalar) Total elapsed time for this function
-        miscelaneous: Prints a message when certain frequencies have been 
-        completed
+        specinfc_k:(H) influence coefficients in frequency space for the k'th
+        frequency
     """    
-    start = time.time()
-    specinfc = np.zeros((el**3,H),dtype = 'complex64')
-    for k in xrange(el**3):
+    
+    [u,v,w] = np.unravel_index(k,[el,el,el])
+
+    MM = np.zeros((H,H),dtype = 'complex128')
+    PM = np.zeros((H,1),dtype = 'complex128')
+    
+    for n in xrange(ns-1):
+
+        mSQ = np.array(M[u,v,w,n,:])     
+        mSQc = np.conj(mSQ[None,:])
+        mSQt = mSQ[:,None]
         
-        [u,v,w] = np.unravel_index(k,[el,el,el])
+        MM = MM + np.dot(mSQt, mSQc)
+        PM[:,0] = PM[:,0] + np.dot(resp_fft[u,v,w,n],mSQc)
+ 
+    if k < 2:
+        p = independent_columns(MM, .001)
+
+    calred = MM[p,:][:,p]
+    resred = PM[p,0].conj().T
     
-        MM = np.zeros((H,H),dtype = 'complex128')
-        PM = np.zeros((H,1),dtype = 'complex128')
-        
-        for n in xrange(ns-1):
+    specinfc_k = np.zeros(H,dtype = 'complex64')
+    specinfc_k[p] = np.linalg.solve(calred, resred)
     
-            mSQ = np.array(M[u,v,w,n,:])     
-            mSQc = np.conj(mSQ[None,:])
-            mSQt = mSQ[:,None]
-            
-            MM = MM + np.dot(mSQt, mSQc)
-            PM[:,0] = PM[:,0] + np.dot(resp_fft[u,v,w,n],mSQc)
-     
-        if k < 2:
-            p = independent_columns(MM, .001)
-#        else:
-#            p = [0,1,2,3]
-#        if np.array_equal(p,[0,1,2,3]) == False:
-#            print "at frequency %s, p = %s" %(k,p)
-    
-        calred = MM[p,:][:,p]
-        resred = PM[p,0].conj().T
-        specinfc[k, p] = np.linalg.solve(calred, resred)
-    
-        if k % 1000 == 0:
-            msg ='frequency completed: %s' %k
-            WP(msg, filename)
-    
-    end = time.time()
-    timeE = np.round((end - start),3)
-    
-    return(specinfc,timeE)
+    if k == 1:
+        return specinfc_k, p
+    else:
+        return specinfc_k
 
 
-def eval_meas(mks_R, resp, el=21):
+def eval_meas(mks_R, resp_val, el=21):
     """
     Summary:
     Inputs:
@@ -87,7 +77,7 @@ def eval_meas(mks_R, resp, el=21):
     MASE = 0
     for k in xrange(el**3):
         [u,v,w] = np.unravel_index(k,[el,el,el])
-        MASE = MASE + ((np.abs(resp[u,v,w,-1] - mks_R[u,v,w]))/(avgE * el**3))
+        MASE = MASE + ((np.abs(resp_val[u,v,w] - mks_R[u,v,w]))/(avgE * el**3))
         
     return avgE, MASE
 
@@ -166,12 +156,12 @@ def load_fe(read_dat=0,ns=151,el=21):
     if read_dat == 1:
         start = time.time()    
         
-        resp = np.zeros((el,el,el,ns),dtype = 'float64')
+        resp = np.zeros((el,el,el,6,ns),dtype = 'float64')
         for n in xrange(ns):
             filename = "sq21_5cont_%s.dat" %(n+1) 
-            resp[:,:,:,n] = res_red(filename)
+            resp[:,:,:,:,n] = res_red(filename)
         
-        np.save('FE_results_%' %ns,resp)    
+        np.save('FE_results_%s_v2' %ns,resp)    
         
         end = time.time()
         timeE = np.round((end - start),1)
@@ -180,26 +170,25 @@ def load_fe(read_dat=0,ns=151,el=21):
     ## if read_dat == 0 the script will simply reload the results from a 
     ## previously saved FE_results.npy
     else:
-        resp = np.load('FE_results_%s.npy' %ns)
+        resp = np.load('FE_results_%s_v2.npy' %ns)
         msg = "FE results loaded"  
     
     return [resp,msg]
 
 
 
-def mf(micr,el=21,ns=1001, order=1):
+def mf(micr_sub,el,order, H):
    
-    start = time.time()      
-
     ## microstructure functions
-    pm = np.zeros([el,el,el,ns,2])
-    pm[:,:,:,:,0] = (micr == 0)
-    pm[:,:,:,:,1] = (micr == 1)
+        
+    sub_len = len(micr_sub[0,0,0,:])
+    pm = np.zeros([el,el,el,sub_len,2])
+    pm[:,:,:,:,0] = (micr_sub == 0)
+    pm[:,:,:,:,1] = (micr_sub == 1)
     pm = pm.astype(int)
 
     if order == 1:
-        m = pm        
-        H = 2    
+        m_sub = pm         
         
     if order == 2:
         
@@ -207,14 +196,12 @@ def mf(micr,el=21,ns=1001, order=1):
         vec = np.array([[1,0],[1,1],[1,2]])
         
         k = 0
-        # H is the # of conformations of location and phase
-        H = len(hs[:,0]) * len(vec[:,0])
-        m = np.zeros([el,el,el,ns,H])
+        m_sub = np.zeros([el,el,el,sub_len,H])
         for hh in xrange(len(hs[:,0])):
             for t in xrange(len(vec[:,0])):
                 a1 = pm[:,:,:,:,hs[hh,0]]
                 a2 = np.roll(pm[:,:,:,:,hs[hh,1]],vec[t,0],vec[t,1])
-                m[:,:,:,:,k] = a1 * a2
+                m_sub[:,:,:,:,k] = a1 * a2
                 k = k + 1
         
     if order ==7:            
@@ -222,10 +209,8 @@ def mf(micr,el=21,ns=1001, order=1):
         hs = np.array(list(it.product([0,1],repeat=7)))
         vec = np.array([[1,0],[1,1],[1,2],[-1,0],[-1,1],[-1,2]])
         
-        # H is the # of conformations of location and phase
-        H = len(hs[:,0])
         vlen = len(vec[:,0])
-        m = np.zeros([el,el,el,ns,H])
+        m_sub = np.zeros([el,el,el,sub_len,H])
         
         for hh in xrange(H):  
             a1 = pm[:,:,:,:,hs[hh,0]]    
@@ -233,13 +218,86 @@ def mf(micr,el=21,ns=1001, order=1):
             for t in xrange(vlen):      
                 a_n = np.roll(pm[:,:,:,:,hs[hh,t+1]],vec[t,0],vec[t,1])
                 pre_m = pre_m * a_n  
-            m[:,:,:,:,hh] = pre_m
+            m_sub[:,:,:,:,hh] = pre_m
             
-    m = m.astype(int)
+    m_sub = m_sub.astype(int)
+     
+    return m_sub
 
-    end = time.time()
-    timeE = np.round((end - start),2)        
-    return [m,H,pm,timeE]
+def mf_sn(micr_sn, el, order, H):
+    """
+    Summary:
+        This function takes in a single microstructure, and generates all of
+        the local states based on the desired order of terms. It does this by
+        shifting the microstructure in pre-defined directions, and then
+        performing an element-wise multiplication. This reveals the
+        conformation for a higher order local state.
+    Inputs:
+        micr_sn ([el,el,el],int8): the arangement of black and white cells in
+        the cube for a single microstructure (from the micr variable)
+        el (int): the number of elements per side of the microstructure cube
+        H (int): the total number of local states in the microstructure
+        function (including higher order comformations)
+        order (int): the order of the terms used for 
+    Output:
+        m_sn ([el,el,el,H],int): The microstructure function for a single
+        microstructure, including higher order local state conformations
+    """
+    ## 1st order microstructure function generation
+    pm = np.zeros([el,el,el,2])
+    pm[:,:,:,0] = (micr_sn == 0)
+    pm[:,:,:,1] = (micr_sn == 1)
+    pm = pm.astype(int)
+
+    if order == 1:
+        ## pm already represents the microstructure function for first order
+        ## terms        
+        m_sn = pm          
+        
+    if order == 2:
+        ## in hs, the first element of each row represents the desired local
+        ## state of the original cell (black or white), and the second is
+        ## the desired local state after the microstructure is shifted.
+        hs = np.array([[1,1],[0,0],[1,0],[0,1]])
+        ## in vec, the first element of each row represents the number of 
+        ## elements to shift the microstructure, and the second is the
+        ## dimension along which the microstructure should be shifted
+        vec = np.array([[1,0],[1,1],[1,2]])
+        
+        ## in the generation of the microstructure for second order
+        ## localization terms the microstructure is rolled in a single
+        ## direction for each term.
+        k = 0
+        m_sn = np.zeros([el,el,el,H])
+        for hh in xrange(len(hs[:,0])):
+            for t in xrange(len(vec[:,0])):
+                a1 = pm[:,:,:,hs[hh,0]]
+                a2 = np.roll(pm[:,:,:,hs[hh,1]],vec[t,0],vec[t,1])
+                m_sn[:,:,:,k] = a1 * a2
+                k = k + 1
+        
+    if order == 7:            
+        ## Here hs is automatically generated
+        hs = np.array(list(it.product([0,1],repeat=7)))
+        vec = np.array([[1,0],[1,1],[1,2],[-1,0],[-1,1],[-1,2]])
+        
+        vlen = len(vec[:,0])
+        m_sn = np.zeros([el,el,el,H])
+        
+        ## in the generation of the microstructure for seventh order terms
+        ## the microstructure is rolled in all 6 directions. These 7 
+        ## microstructures are all multiplied together.
+        for hh in xrange(H):  
+            a1 = pm[:,:,:,hs[hh,0]]    
+            pre_m = a1  
+            for t in xrange(vlen):      
+                a_n = np.roll(pm[:,:,:,hs[hh,t+1]],vec[t,0],vec[t,1])
+                pre_m = pre_m * a_n  
+            m_sn[:,:,:,hh] = pre_m
+            
+    m_sn = m_sn.astype(int)
+   
+    return m_sn
 
 
 def pha_loc(filename="msf.txt",read_dat=0,el=21):   
@@ -294,7 +352,7 @@ def pha_loc(filename="msf.txt",read_dat=0,el=21):
     return micr
 
 
-def res_red(filename = "21_1_noah.dat", el = 21, slc = 10):
+def res_red(filename = "21_1_noah.dat", el = 21):
     """
     Summary:    
         This function reads the E11 values from a .dat file and reorganizes
@@ -324,28 +382,27 @@ def res_red(filename = "21_1_noah.dat", el = 21, slc = 10):
     # line0 is the index of first line of the data
     line0 = n + 5;      
 
-    e11 = np.zeros((21**3,8))
-    c = 0
+    e11 = np.zeros((21**3,8,6))
+    c = -1
 
     # this series of loops generates a 9261x8 dataset of E11s (element x integration point) 
     for ii in range(21**3):
         for jj in range(8):
-            e11pre = linelist[line0 + c].split()[2]
-            c = c + 1
-            e11[ii,jj] = float(e11pre)
+            c += 1                         
+            e11[ii,jj,:] = linelist[line0 + c].split()[2:]
     
     f.close()    
     
     # here we average all 8 integration points in each element cell
-    e11cond = np.flipud(np.mean(e11, axis=1))
-    # element 4630 is at the centroid of a 21x21x21 dataset
-    #print e11cond[4630]
-
+    e11mean = np.mean(e11, axis=1)
+    
     # here we reshape the data from a 9261 length vector to a 21x21x21 3D matrix
-    pre_e11mat = np.reshape(e11cond, [21,21,21])
-    e11mat = np.swapaxes(pre_e11mat,1,2)
+    e11mat = np.zeros([el,el,el,6])    
+    for r in range(6):    
+        e11mat[:,:,:,r] = np.swapaxes(np.reshape(np.flipud(e11mean[:,r]), [21,21,21]),1,2)
 
     return e11mat
+
 
 def WP(msg,filename):
     """
@@ -362,20 +419,20 @@ def WP(msg,filename):
     fil.write('\n')
     fil.close()
 
-def validate(M,specinfc,H,el=21):
+def validate(M_val,specinfc,H,el=21):
     ## vectorize the frequency-space microstructure function for the validation
     ## dataset
     lin_M = np.zeros((el**3,H),dtype = 'complex64')
     for h in xrange(H):
-        lin_M[:,h] = np.reshape(M[:,:,:,-1,h],el**3)
+        lin_M[:,h] = np.reshape(M_val[:,:,:,h],el**3)
+#        lin_M[:,h] = np.reshape(M[:,:,:,-1,h],el**3)
     
     ## find the frequency-space response of the validation microstructure
     ## and convert to the real space
     lin_sum = np.sum(np.conjugate(specinfc) * lin_M, 1)
     mks_F = np.reshape(lin_sum,[21,21,21])
     mks_R = np.fft.ifftn(mks_F).real
-    
-    del lin_sum, mks_F
+
     #np.save('MKS_2stOrd_resp',mks_R) 
     
     return mks_R
