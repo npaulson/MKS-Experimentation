@@ -14,7 +14,7 @@ import time
 ## el is the # of elements per side of the cube 
 el = 21 
 ## the number of sample microstructures for calibration.
-ns = 200
+ns = 250
 ## specify the number of local states you are using
 H = 15
 ## specify the set designation (string format)
