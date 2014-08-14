@@ -74,6 +74,7 @@ dmin = np.amin([max_el[:,:,slc],max_pl[:,:,slc]])
 dmax = np.amax([max_el[:,:,slc],max_pl[:,:,slc]])
 
 ## Plot slices of the response
+
 plt.subplot(231)
 ax = plt.imshow(max_el[:,:,slc], origin='lower', interpolation='none',
     cmap='jet', vmin=dmin, vmax=dmax)

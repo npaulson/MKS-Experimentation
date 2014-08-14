@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri May 23 14:25:50 2014
+Created on Thursday, August 14th, 2014
 
-This script evaluates the success of a given MKS calibration and validation
-through metrics like MASE and maximum error as well as plotting strain
-fields and histograms.
 
 @author: nhpnp3
 """
@@ -14,7 +11,7 @@ import matplotlib.pyplot as plt
 import functions_ti_alpha_fip_v1 as rr
 import time
 
-set_id = 'CmaxE33_plastic_comparison'
+set_id = 'CmaxE11_plastic_comparison'
 
 ## specify the file to write messages to 
 wrt_file = '%s_%s.txt' %(set_id,time.strftime("%Y-%m-%d_h%Hm%M"))
@@ -23,8 +20,8 @@ wrt_file = '%s_%s.txt' %(set_id,time.strftime("%Y-%m-%d_h%Hm%M"))
 ## el is the # of elements per side of the cube 
 el = 21 
 
-st_comp = "E33"
-comp_latex = "$\epsilon^p_{33}$"
+st_comp = "E11"
+comp_latex = "$\epsilon^p_{11}$"
 
 ### READ DATA FROM TEXT FILE ###
 
@@ -52,121 +49,201 @@ def file_read(filename, column_num):
 
     return E
 
-column_num = 3
+column_num = 1
+
+C_cp = np.zeros([el,el,el,3])
+C_py = np.zeros([el,el,el,3])
 
 filename = 'Results_Ti64_RandomMicroFZreducedNewBCs_21x21x21_AbqInp_PowerLaw_00001_data_strain_pl_max_C1_Python.txt'
-C1 = file_read(filename,column_num)
+C_py[:,:,:,0] = file_read(filename,column_num)
 
 filename = 'Results_Ti64_RandomMicroFZreducedNewBCs_21x21x21_AbqInp_PowerLaw_00001_data_strain_pl_max_C2_Python.txt'
-C2 = file_read(filename,column_num)
+C_py[:,:,:,1] = file_read(filename,column_num)
 
 filename = 'Results_Ti64_RandomMicroFZreducedNewBCs_21x21x21_AbqInp_PowerLaw_00001_data_strain_pl_max_C3_Python.txt'
-C3 = file_read(filename,column_num)
+C_py[:,:,:,2] = file_read(filename,column_num)
 
+filename = 'Results_Ti64_RandomMicroFZreducedNewBCs_21x21x21_AbqInp_PowerLaw_00001_data_strain_pl_max_C1.txt'
+C_cp[:,:,:,0] = file_read(filename,column_num)
 
-### VISUAL COMPARISON OF ELASTIC AND PLASTIC SIMULATIONS ###
+filename = 'Results_Ti64_RandomMicroFZreducedNewBCs_21x21x21_AbqInp_PowerLaw_00001_data_strain_pl_max_C2.txt'
+C_cp[:,:,:,1] = file_read(filename,column_num)
+
+filename = 'Results_Ti64_RandomMicroFZreducedNewBCs_21x21x21_AbqInp_PowerLaw_00001_data_strain_pl_max_C3.txt'
+C_cp[:,:,:,2] = file_read(filename,column_num)
+
+### VISUAL COMPARISON OF CPFEM AND LE+PY SIMULATIONS ###
 
 plt.close()
 
 ## pick a slice perpendicular to the z-direction
 slc = 10
 
-## find the min and max of both datasets for the slice of interest
-#(needed to scale both images the same) 
-dmin = np.amin([C1[:,:,slc],C2[:,:,slc],C3[:,:,slc]])
-dmax = np.amax([C1[:,:,slc],C2[:,:,slc],C3[:,:,slc]])
 
 ## Plot slices of the response
-plt.subplot(231)
-ax = plt.imshow(C1[:,:,slc], origin='lower', interpolation='none',
-    cmap='jet', vmin=dmin, vmax=dmax)
-plt.title('Cycle 1 maximum, %s' %comp_latex)
+plt.figure(1)
 
+## find the min and max of both datasets for the slice of interest
+#(needed to scale both images the same) 
+dmin = np.amin(C_cp[:,:,slc,:])
+dmax = np.amax(C_cp[:,:,slc,:])
 
-plt.subplot(232)
-ax = plt.imshow(C2[:,:,slc], origin='lower', interpolation='none',
-    cmap='jet', vmin=dmin, vmax=dmax)
-plt.title('Cycle 2 maximum, %s' %comp_latex)
+for ii in xrange(3):
+    plt_num = 231 + ii
+    cyc = ii + 1
 
+    plt.subplot(plt_num)
+    ax = plt.imshow(C_cp[:,:,slc,ii], origin='lower', interpolation='none',
+        cmap='jet', vmin=dmin, vmax=dmax)
+    plt.title('Cycle %s maximum, CPFEM, %s' %(cyc, comp_latex))
+    
+    if ii == 2:
+        plt.colorbar(ax)
 
-plt.subplot(233)
-ax = plt.imshow(C3[:,:,slc], origin='lower', interpolation='none',
-    cmap='jet')
-plt.colorbar(ax)
-plt.title('Cycle 3 maximum, %s' %comp_latex)
+## find the min and max of both datasets for the slice of interest
+#(needed to scale both images the same) 
+dmin = np.amin(C_py[:,:,slc,:])
+dmax = np.amax(C_py[:,:,slc,:])
 
+for ii in xrange(3):
+    plt_num = 234 + ii
+    cyc = ii + 1
+
+    plt.subplot(plt_num)
+    ax = plt.imshow(C_py[:,:,slc,ii], origin='lower', interpolation='none',
+        cmap='jet', vmin=dmin, vmax=dmax)
+    plt.title('Cycle %s maximum, LE+PY, %s' %(cyc, comp_latex))
+
+    if ii == 2:
+        plt.colorbar(ax)
 
 # Plot a histogram representing the frequency of strain levels with separate
 # channels for each phase of each type of response.
-plt.subplot(212)
+plt.figure(2)
 
 ## find the min and max of both datasets
-dmin = np.amin([C1,C2,C3])
-dmax = np.amax([C1,C2,C3])
+dmin = np.amin([C_cp,C_py])
+dmax = np.amax([C_cp,C_py])
 
-C1_lin = np.reshape(C1,el**3)
-C2_lin = np.reshape(C2,el**3)
-C3_lin = np.reshape(C3,el**3)
+C_cp_lin = np.zeros([el**3,3])
+C_py_lin = np.zeros([el**3,3])
+
+for ii in xrange(3):
+    C_cp_lin[:,ii] = np.reshape(C_cp[:,:,:,ii],el**3)
+    C_py_lin[:,ii] = np.reshape(C_py[:,:,:,ii],el**3)
+
 
 # select the desired number of bins in the histogram
-bn = 250
+#bn = 250
 
 # response histograms
-n, bins, patches = plt.hist(C1_lin, bins = bn, histtype = 'step', hold = True,
-                            range = (dmin, dmax), color = 'white')
-bincenters = 0.5*(bins[1:]+bins[:-1])
-C1_lin, = plt.plot(bincenters,n,'k', linestyle = '-', lw = 0.5)
+for ii in xrange(3):
+    plt_num = ii+2
+    cyc = ii + 1
 
-n, bins, patches = plt.hist(C2_lin, bins = bn, histtype = 'step', hold = True,
-                            range = (dmin, dmax), color = 'white')
-C2_lin, = plt.plot(bincenters,n,'b', linestyle = '-', lw = 0.5)
+    plt.figure(plt_num)
+    
+#    n, bins, patches = plt.hist(C_cp_lin[:,ii], bins = bn, histtype = 'step', hold = True,
+#                                range = (dmin, dmax), color = 'white')
+#    bincenters = 0.5*(bins[1:]+bins[:-1])
+#    C_cp_lins = C_cp_lin[:,ii]
+#    C_cp_lins, = plt.plot(bincenters,n,'k', linestyle = '-', lw = 0.5)
+#    
+#    n, bins, patches = plt.hist(C_py_lin[:,ii], bins = bn, histtype = 'step', hold = True,
+#                                range = (dmin, dmax), color = 'white')
+#    C_py_lins = C_py_lin[:,ii]
+#    C_py_lins, = plt.plot(bincenters,n,'b', linestyle = '-', lw = 0.5)
+    
+    bins = [-1.0E-6,-1.0E-7,-1.0E-8,-1.0E-9,-1.0E-10,-1.0E-11,-1.0E-12,0,1.0E-11,1.0E-10,1.0E-9,1.0E-8]    
+#    bins = [-1.0E-6,-1.0E-7,-1.0E-8,-1.0E-9,-1.0E-10,-1.0E-11,-1.0E-12]    
+    plt.hist(C_cp_lin[:,ii],bins=bins)    
+    
+    
+#    plt.grid(True)
+#    
+#    plt.legend([C_cp_lins,C_py_lins], ["CPFEM", "LE+PY"])
+#    
+    plt.xlabel(comp_latex)
+    plt.ylabel("Frequency")
+#    plt.xscale('log')
+#    plt.axis([-1.0E-6,1.0E-8, 0, 1000])
+    plt.axis([-1.0E-6,1.0E-12, 0, 1000])
 
-n, bins, patches = plt.hist(C3_lin, bins = bn, histtype = 'step', hold = True,
-                            range = (dmin, dmax), color = 'white')
-C3_lin, = plt.plot(bincenters,n,'g', linestyle = '-', lw = 0.5)
+#    plt.title("Frequency comparison of %s in CPFEM and LE+PY for cycle %s" %(comp_latex,cyc))
 
 
-plt.grid(True)
 
-plt.legend([C1_lin,C2_lin,C3_lin], ["Cycle 1 Max", "Cycle 2 Max", "Cycle 3 Max"])
-
-plt.xlabel(comp_latex)
-plt.ylabel("Frequency")
-plt.title("Frequency comparison of plastic strain over 3 loading cycles")
+## Generate data file for statistical summary
+C_cp_avg = np.zeros(3)
+for ii in xrange(3):
+    C_cp_avg[ii] = np.average(C_cp[:,:,:,ii])
 
 
-msg = 'Average %s, Cycle 1: %s' %(st_comp,np.average(C1))
-rr.WP(msg,wrt_file)
-msg = 'Average %s, Cycle 2: %s' %(st_comp,np.average(C2))
-rr.WP(msg,wrt_file)
-msg = 'Average %s, Cycle 3: %s' %(st_comp,np.average(C3))
-rr.WP(msg,wrt_file)
+def mase_meas(C_cp,C_py,C_cp_avg):    
+    MASE = 0
+    for k in xrange(el**3):
+        [u,v,w] = np.unravel_index(k,[el,el,el])
+        MASE += ((np.abs(C_cp[u,v,w] - C_py[u,v,w]))/(C_cp_avg * el**3))
+        
+    return MASE
+    
+def max_err_meas(C_cp,C_py,C_cp_avg):
+    max_err = np.amax(C_cp-C_py)/C_cp_avg  
+    
+    return max_err
 
-msg = 'Standard deviation %s, Cycle 1: %s' %(st_comp,np.std(C1))
-rr.WP(msg,wrt_file)
-msg = 'Standard deviation %s, Cycle 2: %s' %(st_comp,np.std(C2))
-rr.WP(msg,wrt_file)
-msg = 'Standard deviation %s, Cycle 3: %s' %(st_comp,np.std(C3))
-rr.WP(msg,wrt_file)
 
-msg = 'Minimum %s, Cycle 1: %s' %(st_comp,np.min(C1))
-rr.WP(msg,wrt_file)
-msg = 'Minimum %s, Cycle 2: %s' %(st_comp,np.min(C2))
-rr.WP(msg,wrt_file)
-msg = 'Minimum %s, Cycle 3: %s' %(st_comp,np.min(C3))
-rr.WP(msg,wrt_file)
 
-msg = 'Maximum %s, Cycle 1: %s' %(st_comp,np.max(C1))
-rr.WP(msg,wrt_file)
-msg = 'Maximum %s, Cycle 2: %s' %(st_comp,np.max(C2))
-rr.WP(msg,wrt_file)
-msg = 'Maximum %s, Cycle 3: %s' %(st_comp,np.max(C3))
-rr.WP(msg,wrt_file)
+for ii in xrange(3):
+    cyc = ii + 1
+    msg = 'Average %s, CPFEM, Cycle %s: %s' %(st_comp,cyc,np.average(C_cp[:,:,:,ii]))
+    rr.WP(msg,wrt_file)
+    msg = 'Average %s, LE+PY, Cycle %s: %s' %(st_comp,cyc,np.average(C_py[:,:,:,ii]))
+    rr.WP(msg,wrt_file)
 
-#MASE = 0
-#for k in xrange(el**3):
-#    [u,v,w] = np.unravel_index(k,[el,el,el])
-#    MASE += ((np.abs(max_pl[u,v,w] - max_el[u,v,w]))/(avg_CPFEM * el**3))
-#
-#max_err = np.amax(max_pl-max_el)/avg_CPFEM    
+for ii in xrange(3):
+    cyc = ii + 1
+    msg = 'Standard deviation %s, CPFEM, Cycle %s: %s' %(st_comp,cyc,np.std(C_cp[:,:,:,ii]))
+    rr.WP(msg,wrt_file)
+    msg = 'Standard deviation %s, LE+PY, Cycle %s: %s' %(st_comp,cyc,np.std(C_py[:,:,:,ii]))
+    rr.WP(msg,wrt_file)    
+    
+for ii in xrange(3):
+    cyc = ii + 1
+    msg = 'Minimum %s, CPFEM, Cycle %s: %s' %(st_comp,cyc,np.min(C_cp[:,:,:,ii]))
+    rr.WP(msg,wrt_file)
+    msg = 'Minimum %s, LE+PY, Cycle %s: %s' %(st_comp,cyc,np.min(C_py[:,:,:,ii]))
+    rr.WP(msg,wrt_file)
+    
+for ii in xrange(3):
+    cyc = ii + 1
+    msg = 'Maximum %s, CPFEM, Cycle %s: %s' %(st_comp,cyc,np.max(C_cp[:,:,:,ii]))
+    rr.WP(msg,wrt_file)
+    msg = 'Maximum %s, LE+PY, Cycle %s: %s' %(st_comp,cyc,np.max(C_py[:,:,:,ii]))
+    rr.WP(msg,wrt_file)
+    
+for ii in xrange(3):
+    cyc = ii + 1
+    msg = 'Mean absolute strain error (MASE), Cycle %s: %s%%' %(cyc,mase_meas(C_cp[:,:,:,ii],C_py[:,:,:,ii],C_cp_avg[ii])*100)
+    rr.WP(msg,wrt_file)
+
+for ii in xrange(3):
+    cyc = ii + 1
+    msg = 'Maximum error, Cycle %s: %s%%' %(cyc,max_err_meas(C_cp[:,:,:,ii],C_py[:,:,:,ii],C_cp_avg[ii])*100)
+    rr.WP(msg,wrt_file)
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
 
