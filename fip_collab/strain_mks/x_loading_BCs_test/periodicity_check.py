@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 el = 21
 
-field_pr = np.load("E33_fft_250cal.npy")
+field_pr = np.load("E11_fft_5bc_test.npy")
 lin_field_pr = np.reshape(field_pr[:,:,:,0],el**3)
 
 
@@ -39,6 +39,10 @@ plt.title('Response with stable BCs: real space')
 plt.subplot(414)
 plt.plot(np.imag(lin_field_ya[1:]),'b.')
 plt.title('Response with stable BCs: imaginary space')
+
+
+E = np.load('E_5bc_test.npy')
+print np.mean(E[:,:,0], axis = 0)
 
 
 

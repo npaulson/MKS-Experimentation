@@ -9,9 +9,9 @@ import numpy as np
 import GSH_func as gsh
 #import scipy.io as sio
 
-ns = 200
+ns = 50
 el = 21
-set_id = 'cal'
+set_id = 'val'
 
 euler = np.load('euler_%s%s.npy' %(ns,set_id))
 
@@ -19,7 +19,6 @@ euler_GSH = np.zeros([el**3,ns,15], dtype= 'complex128')
 
 for sn in range(ns):
     for k in range(el**3):
-#        euler_GSH[k,sn,:] = gsh.GSH_Hexagonal_Triclinic(euler[k,sn,0],euler[k,sn,1],euler[k,sn,2])
         euler_GSH[k,sn,:] = gsh.GSH_Hexagonal_Triclinic(euler[k,sn,:])
     print sn
 

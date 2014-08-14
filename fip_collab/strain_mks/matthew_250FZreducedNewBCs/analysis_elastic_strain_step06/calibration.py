@@ -19,7 +19,7 @@ el = 21
 ## select which order terms with nearest neighbors you would like to analyze
 order = 1
 ## the number of sample microstructures for calibration.
-ns = 200
+ns = 250
 ## specify the number of local states you are using
 H = 15
 ## specify the set designation (string format)
@@ -29,7 +29,7 @@ wrt_file = 'calib_%s%s_%s.txt' %(ns,set_id,time.strftime("%Y-%m-%d_h%Hm%M"))
 
 
 M = np.load('M_%s%s.npy' %(ns,set_id))
-E11_fft = np.load('E11_fft_%s%s.npy' %(ns,set_id))
+E33_fft = np.load('E33_fft_%s%s.npy' %(ns,set_id))
 
 start = time.time()
 
@@ -37,11 +37,11 @@ specinfc = np.zeros((el**3,H),dtype = 'complex64')
 
 ## here we perform the calibration for the scalar FIP
 
-specinfc[0,:] = rr.calib(0,M,E11_fft,0,H,el,ns)
-[specinfc[1,:],p] = rr.calib(1,M,E11_fft,0,H,el,ns)
+specinfc[0,:] = rr.calib(0,M,E33_fft,0,H,el,ns)
+[specinfc[1,:],p] = rr.calib(1,M,E33_fft,0,H,el,ns)
 
 ## calib_red is simply calib with some default arguments
-calib_red = partial(rr.calib,M=M,E11_fft=E11_fft,
+calib_red = partial(rr.calib,M=M,E33_fft=E33_fft,
                     p=p,H=H,el=el,ns=ns)
 specinfc[2:(el**3),:] = np.asarray(map(calib_red,range(2,el**3)))
  

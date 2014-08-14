@@ -28,7 +28,7 @@ set_id = 'val'
 wrt_file = 'results_%s%s_%s.txt' %(ns,set_id,time.strftime("%Y-%m-%d_h%Hm%M")) 
 
 mks_R = np.load('mksR_ord%s_%s%s.npy' %(order,ns,set_id))
-resp = np.load('E11_%s%s.npy' %(ns,set_id))
+resp = np.load('E33_%s%s.npy' %(ns,set_id))
 
 
 #### MEAN ABSOLUTE STRAIN ERROR (MASE) ###
@@ -54,9 +54,9 @@ max_err = np.amax(resp-mks_R)/avgE_fe
 max_err_avg = max_err_sum/(ns * avgE_fe)
     
 
-msg = 'The average E11 from the CPFEM %s' %avgE_fe
+msg = 'The average E33 from the CPFEM %s' %avgE_fe
 rr.WP(msg,wrt_file)
-msg = 'The average E11 from the MKS %s' %avgE_mks
+msg = 'The average E33 from the MKS %s' %avgE_mks
 rr.WP(msg,wrt_file)
 msg = 'The mean absolute error (MASE) is %s%%' %(MASE*100)
 rr.WP(msg,wrt_file)
@@ -71,28 +71,28 @@ rr.WP(msg,wrt_file)
 plt.close()
 
 ## pick a slice perpendicular to the x-direction
-slc = 10
-sn = 0
+slc = 9
+sn = 15
 
 
 ## find the min and max of both datasets for the slice of interest
 #(needed to scale both images the same) 
-dmin = np.amin([resp[slc,:,:,sn],mks_R[slc,:,:,sn]])
-dmax = np.amax([resp[slc,:,:,sn],mks_R[slc,:,:,sn]])
+dmin = np.amin([resp[:,:,slc,sn],mks_R[:,:,slc,sn]])
+dmax = np.amax([resp[:,:,slc,sn],mks_R[:,:,slc,sn]])
 
 
 ## Plot slices of the response
 plt.subplot(221)
-ax = plt.imshow(mks_R[slc,:,:,sn], origin='lower', interpolation='none',
+ax = plt.imshow(mks_R[:,:,slc,sn], origin='lower', interpolation='none',
     cmap='jet', vmin=dmin, vmax=dmax)
 plt.colorbar(ax)
-plt.title('MKS FIP, 1st order terms')
+plt.title('MKS E33, 1st order terms')
 
 plt.subplot(222)
-ax = plt.imshow(resp[slc,:,:,sn], origin='lower', interpolation='none',
+ax = plt.imshow(resp[:,:,slc,sn], origin='lower', interpolation='none',
     cmap='jet', vmin=dmin, vmax=dmax)
 plt.colorbar(ax)
-plt.title('CPFEM FIP')
+plt.title('CPFEM E33')
 
 
 # Plot a histogram representing the frequency of strain levels with separate
@@ -125,6 +125,6 @@ plt.grid(True)
 
 plt.legend([fe, mks], ["CPFEM FIP response", "MKS, 1st order terms"])
 
-plt.xlabel("FIP value")
+plt.xlabel("E33")
 plt.ylabel("Frequency")
-plt.title("Frequency comparison of 1st order MKS with CPFEM FIP results")
+plt.title("Frequency comparison of 1st order MKS with CPFEM results")

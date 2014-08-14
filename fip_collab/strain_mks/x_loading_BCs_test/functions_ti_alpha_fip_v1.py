@@ -142,13 +142,14 @@ def read_vtk(filename):
     Euler   = data.GetCellData().GetArray(reader.GetVectorsNameInFile(0))
 #    grain_ID = data.GetCellData().GetArray(reader.GetScalarsNameInFile(0))    
 #    FIP_FS  = data.GetCellData().GetArray(reader.GetScalarsNameInFile(1))
-    E33tot  = data.GetCellData().GetArray(reader.GetTensorsNameInFile(1))    
+    Etot  = data.GetCellData().GetArray(reader.GetTensorsNameInFile(1))    
 #    E11pl = data.GetCellData().GetArray(reader.GetTensorsNameInFile(2))
     
 #    fip_py = np.zeros([el_total])
 #    grain_id_py = np.zeros([el_total])
     euler_py = np.zeros([el_total, 3])    
-    E33tot_py = np.zeros([el_total])        
+#    E33tot_py = np.zeros([el_total])        
+    Etot_py = np.zeros([el_total, 9])
 #    E11pl_py = np.zeros([el_total])    
     
 #    for ii in range(el_total):
@@ -164,23 +165,23 @@ def read_vtk(filename):
         euler_py[ii,2] = Euler.GetValue(ii*3 + 2)
     
     for ii in xrange(el_total):
-        E33tot_py[ii] = E33tot.GetValue(ii*9 + 8)
-#        tensor1[ii,0] = StressT_Max.GetValue(ii*9 + 0)
-#        tensor1[ii,1] = StressT_Max.GetValue(ii*9 + 1)
-#        tensor1[ii,2] = StressT_Max.GetValue(ii*9 + 2)
-#        tensor1[ii,3] = StressT_Max.GetValue(ii*9 + 3)
-#        tensor1[ii,4] = StressT_Max.GetValue(ii*9 + 4)
-#        tensor1[ii,5] = StressT_Max.GetValue(ii*9 + 5)
-#        tensor1[ii,6] = StressT_Max.GetValue(ii*9 + 6)
-#        tensor1[ii,7] = StressT_Max.GetValue(ii*9 + 7)
-#        tensor1[ii,8] = StressT_Max.GetValue(ii*9 + 8)
+#        E33tot_py[ii] = E33tot.GetValue(ii*9 + 8)
+        Etot_py[ii,0] = Etot.GetValue(ii*9 + 0)
+        Etot_py[ii,1] = Etot.GetValue(ii*9 + 1)
+        Etot_py[ii,2] = Etot.GetValue(ii*9 + 2)
+        Etot_py[ii,3] = Etot.GetValue(ii*9 + 3)
+        Etot_py[ii,4] = Etot.GetValue(ii*9 + 4)
+        Etot_py[ii,5] = Etot.GetValue(ii*9 + 5)
+        Etot_py[ii,6] = Etot.GetValue(ii*9 + 6)
+        Etot_py[ii,7] = Etot.GetValue(ii*9 + 7)
+        Etot_py[ii,8] = Etot.GetValue(ii*9 + 8)
 
 #    for ii in xrange(el_total):
 #        E11pl_py[ii] = E11pl.GetValue(ii*9)
 #
 #    E11_py = E11tot_py - E11pl_py    
     
-    return [euler_py, E33tot_py]
+    return [euler_py, Etot_py]
 
 
 def WP(msg,filename):

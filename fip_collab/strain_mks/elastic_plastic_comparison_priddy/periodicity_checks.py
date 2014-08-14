@@ -46,7 +46,7 @@ def file_read(filename):
 
 
 
-filename = 'Results_Ti64_RandomMicroFZreducedNewBCs_21x21x21_AbqInp_AnisoLE_00001_data_stress_max_C3.txt'
+filename = 'Results_Ti64_RandomMicroFZreducedNewBCs_21x21x21_AbqInp_AnisoLE_00001_data_strain_max_C3.txt'
 resp = file_read(filename)
 
 
@@ -65,7 +65,7 @@ plt.close()
 
 
 
-field_pr_fft = np.fft.fftn(np.swapaxes(np.reshape(np.flipud(resp[:,3]), [el,el,el]),1,2), axes = [0])
+field_pr_fft = np.fft.fftn(np.swapaxes(np.reshape(np.flipud(resp[:,3]), [el,el,el]),1,2), axes = [0,1,2])
 #resp_lin = np.reshape(resp_fft, el**3)
 
 vec_pr = field_pr_fft[:,10,9]

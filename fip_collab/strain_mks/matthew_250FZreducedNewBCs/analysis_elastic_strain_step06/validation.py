@@ -20,7 +20,7 @@ order = 1
 ## the number of sample microstructures for validation.
 ns = 50
 ## the number of sample microsturctures for calibration.
-ns_cal = 200
+ns_cal = 250
 ## specify the number of local states you are using
 H = 15
 ## specify the set designation (string format)

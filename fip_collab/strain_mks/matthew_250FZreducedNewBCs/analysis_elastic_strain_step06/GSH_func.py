@@ -14,7 +14,7 @@ def GSH_Hexagonal_Triclinic(e_angles):
     
     
     if abs(Phi) < 10e-17:
-        Phi = Phi + np.rand()*10e-7
+        Phi = Phi + np.random.rand()*10e-7
     
     Tsym = np.zeros([15], dtype = 'complex128')    
     

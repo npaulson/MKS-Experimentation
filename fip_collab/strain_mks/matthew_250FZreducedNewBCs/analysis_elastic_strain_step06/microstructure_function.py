@@ -39,7 +39,7 @@ rr.WP(msg,wrt_file)
 ## Microstructure functions in frequency space
 start = time.time()
 M = np.fft.fftn(micr, axes = [0,1,2])
-#del micr
+del micr
 size = M.nbytes
 np.save('M_%s%s' %(ns,set_id),M)
 end = time.time()

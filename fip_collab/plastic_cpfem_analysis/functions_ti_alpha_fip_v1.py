@@ -11,7 +11,7 @@ import numpy as np
 import vtk
 
 
-def calib(k,M,E33_fft,p,H,el,ns):
+def calib(k,M,E11_fft,p,H,el,ns):
     """
     Summary: This function calibrates the influence coefficients from the 
         frequency space calibration microstructures and FEM responses for a 
@@ -51,7 +51,7 @@ def calib(k,M,E33_fft,p,H,el,ns):
         MM += np.outer(mSQ, mSQc)
 
 #        PM[:,0] += np.dot(fip_fft[u,v,w,n],mSQc)
-        PM += np.dot(E33_fft[u,v,w,n],mSQc)
+        PM += np.dot(E11_fft[u,v,w,n],mSQc)
 
  
     if k < 2:
@@ -137,18 +137,18 @@ def read_vtk(filename):
     elx = vec[0]
     	
     # Calculate the total number of elements
-    el_total = elx**3
+    el_total = elx * elx * elx
 
     Euler   = data.GetCellData().GetArray(reader.GetVectorsNameInFile(0))
 #    grain_ID = data.GetCellData().GetArray(reader.GetScalarsNameInFile(0))    
 #    FIP_FS  = data.GetCellData().GetArray(reader.GetScalarsNameInFile(1))
-    E33tot  = data.GetCellData().GetArray(reader.GetTensorsNameInFile(1))    
+    E11tot  = data.GetCellData().GetArray(reader.GetTensorsNameInFile(1))    
 #    E11pl = data.GetCellData().GetArray(reader.GetTensorsNameInFile(2))
     
 #    fip_py = np.zeros([el_total])
 #    grain_id_py = np.zeros([el_total])
     euler_py = np.zeros([el_total, 3])    
-    E33tot_py = np.zeros([el_total])        
+    E11tot_py = np.zeros([el_total])        
 #    E11pl_py = np.zeros([el_total])    
     
 #    for ii in range(el_total):
@@ -164,7 +164,7 @@ def read_vtk(filename):
         euler_py[ii,2] = Euler.GetValue(ii*3 + 2)
     
     for ii in xrange(el_total):
-        E33tot_py[ii] = E33tot.GetValue(ii*9 + 8)
+        E11tot_py[ii] = E11tot.GetValue(ii*9)
 #        tensor1[ii,0] = StressT_Max.GetValue(ii*9 + 0)
 #        tensor1[ii,1] = StressT_Max.GetValue(ii*9 + 1)
 #        tensor1[ii,2] = StressT_Max.GetValue(ii*9 + 2)
@@ -180,7 +180,7 @@ def read_vtk(filename):
 #
 #    E11_py = E11tot_py - E11pl_py    
     
-    return [euler_py, E33tot_py]
+    return [euler_py, E11tot_py]
 
 
 def WP(msg,filename):
