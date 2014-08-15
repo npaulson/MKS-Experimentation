@@ -11,17 +11,17 @@ import matplotlib.pyplot as plt
 import functions_ti_alpha_fip_v1 as rr
 import time
 
-set_id = 'CmaxE11_plastic_comparison'
+set_id = 'C_Epeff_comparison'
+st_comp = "Epeff"
+comp_latex = "$\epsilon^p_{eff}$"
+column_num = 10
 
 ## specify the file to write messages to 
 wrt_file = '%s_%s.txt' %(set_id,time.strftime("%Y-%m-%d_h%Hm%M"))
 
-
 ## el is the # of elements per side of the cube 
 el = 21 
 
-st_comp = "E11"
-comp_latex = "$\epsilon^p_{11}$"
 
 ### READ DATA FROM TEXT FILE ###
 
@@ -48,8 +48,6 @@ def file_read(filename, column_num):
     E = np.swapaxes(np.reshape(np.flipud(E_pre), [el,el,el]),1,2)
 
     return E
-
-column_num = 1
 
 C_cp = np.zeros([el,el,el,3])
 C_py = np.zeros([el,el,el,3])
@@ -135,7 +133,7 @@ dmax = np.amax([C_cp_lin,C_py_lin])
 # select the desired number of bins in the histogram
 #bn = 250
 
-# response histograms
+## response histograms
 for ii in xrange(3):
     plt_num = ii+2
     cyc = ii + 1
@@ -156,20 +154,21 @@ for ii in xrange(3):
     bins = [1.0E-15,3.162E-15,1.0E-14,3.162E-14,1.0E-13,3.162E-13,1.0E-12,3.162E-12,1.0E-11,3.162E-11,1.0E-10,3.162E-10,1.0E-9,3.162E-9,1.0E-8,3.162E-8,1.0E-7,3.162E-7]    
     weight = np.ones_like(C_cp_lins)/(el**3)
     
-    plt.hist([C_cp_lins,C_py_lins],histtype='step',bins=bins,color=['blue','purple'],weights=[weight, weight],label=['poo','fart'])    
+    plt.hist([C_cp_lins,C_py_lins],histtype='step',bins=bins,color=['blue','purple'],weights=[weight, weight])    
+#    plt.hist([C_cp_lins,C_py_lins],histtype='step',bins=bins,color=['blue','purple'],weights=[weight, weight],label=['poo','fart'])    
+
     
     plt.grid(True)
     
-#    plt.legend([C_cp_lins], ["CPFEM"])
+#    plt.legend([C_cp_lins,C_py_lins], ["CPFEM","LE+PY"])
     
     plt.xlabel(comp_latex)
     plt.ylabel("Number Fraction")
     plt.xscale('log')
 
-    plt.axis([1.0E-15,5.0E-7, 0, 0.075])
+    plt.axis([1.0E-15,5.0E-7, 0, 0.1])
 
-    plt.title("Frequency comparison of %s in CPFEM and LE+PY for cycle %s" %(comp_latex,cyc))
-
+    plt.title("Frequency comparison of %s in CPFEM (blue) and LE+PY (purple) for cycle %s" %(comp_latex,cyc))
 
 
 ## Generate data file for statistical summary
@@ -230,19 +229,3 @@ for ii in xrange(3):
     cyc = ii + 1
     msg = 'Maximum error, Cycle %s: %s%%' %(cyc,max_err_meas(C_cp[:,:,:,ii],C_py[:,:,:,ii],C_cp_avg[ii])*100)
     rr.WP(msg,wrt_file)
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-

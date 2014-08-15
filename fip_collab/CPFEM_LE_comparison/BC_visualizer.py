@@ -19,7 +19,7 @@ el = 21
 
 ### READ DATA FROM TEXT FILE ###
 
-filename = 'Results_Ti64_RandomMicroFZreducedNewBCs_21x21x21_AbqInp_PowerLaw_00001_data_strain_max_C3.txt'
+filename = 'Results_Ti64_RandomMicroFZreducedNewBCs_21x21x21_AbqInp_AnisoLE_00001_data_strain_max_C3.txt'
 
 f = open(filename, "r")
 
@@ -33,7 +33,7 @@ c = -1
 
 ## This reads through all the lines in the file.
 ## column_num picks the component to save from the .txt file.
-column_num = 1
+column_num = 3
  
 for k in xrange(21**3):
     c += 1                        
@@ -60,41 +60,41 @@ dmax = np.amax([resp[:,:,0],resp[:,:,1],resp[:,:,2],resp[:,:,3],resp[:,:,17],res
 ## Plot slices of the response
 
 plt.subplot(241)
-ax = plt.imshow(resp[slc,:,:], origin='lower', interpolation='none',
+ax = plt.imshow(resp[:,:,slc], origin='lower', interpolation='none',
     cmap='jet', vmin=dmin, vmax=dmax)
 plt.colorbar(ax)
 
 plt.subplot(242)
-ax = plt.imshow(resp[slc+1,:,:], origin='lower', interpolation='none',
+ax = plt.imshow(resp[:,:,slc+1], origin='lower', interpolation='none',
     cmap='jet', vmin=dmin, vmax=dmax)
 plt.colorbar(ax)
 
 plt.subplot(243)
-ax = plt.imshow(resp[slc+2,:,:], origin='lower', interpolation='none',
+ax = plt.imshow(resp[:,:,slc+2], origin='lower', interpolation='none',
     cmap='jet', vmin=dmin, vmax=dmax)
 plt.colorbar(ax)
 
 plt.subplot(244)
-ax = plt.imshow(resp[slc+3,:,:], origin='lower', interpolation='none',
+ax = plt.imshow(resp[:,:,slc+3], origin='lower', interpolation='none',
     cmap='jet', vmin=dmin, vmax=dmax)
 plt.colorbar(ax)
 
 plt.subplot(245)
-ax = plt.imshow(resp[el-4,:,:], origin='lower', interpolation='none',
+ax = plt.imshow(resp[:,:,el-4], origin='lower', interpolation='none',
     cmap='jet', vmin=dmin, vmax=dmax)
 plt.colorbar(ax)
 
 plt.subplot(246)
-ax = plt.imshow(resp[el-3,:,:], origin='lower', interpolation='none',
+ax = plt.imshow(resp[:,:,el-3], origin='lower', interpolation='none',
     cmap='jet', vmin=dmin, vmax=dmax)
 plt.colorbar(ax)
 
 plt.subplot(247)
-ax = plt.imshow(resp[el-2,:,:], origin='lower', interpolation='none',
+ax = plt.imshow(resp[:,:,el-2], origin='lower', interpolation='none',
     cmap='jet', vmin=dmin, vmax=dmax)
 plt.colorbar(ax)
 
 plt.subplot(248)
-ax = plt.imshow(resp[el-1,:,:], origin='lower', interpolation='none',
+ax = plt.imshow(resp[:,:,el-1], origin='lower', interpolation='none',
     cmap='jet', vmin=dmin, vmax=dmax)
 plt.colorbar(ax)

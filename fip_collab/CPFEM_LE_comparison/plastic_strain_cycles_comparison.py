@@ -11,17 +11,17 @@ import matplotlib.pyplot as plt
 import functions_ti_alpha_fip_v1 as rr
 import time
 
-set_id = 'CmaxE11_plastic_comparison'
+set_id = 'C_E11p_comparison'
+st_comp = "E11p"
+comp_latex = "$\epsilon^p_{11}$"
+column_num = 1
 
 ## specify the file to write messages to 
 wrt_file = '%s_%s.txt' %(set_id,time.strftime("%Y-%m-%d_h%Hm%M"))
 
-
 ## el is the # of elements per side of the cube 
 el = 21 
 
-st_comp = "E11"
-comp_latex = "$\epsilon^p_{11}$"
 
 ### READ DATA FROM TEXT FILE ###
 
@@ -48,8 +48,6 @@ def file_read(filename, column_num):
     E = np.swapaxes(np.reshape(np.flipud(E_pre), [el,el,el]),1,2)
 
     return E
-
-column_num = 1
 
 C_cp = np.zeros([el,el,el,3])
 C_py = np.zeros([el,el,el,3])
