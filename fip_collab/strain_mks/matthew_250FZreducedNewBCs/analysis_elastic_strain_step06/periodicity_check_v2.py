@@ -10,14 +10,14 @@ import matplotlib.pyplot as plt
 
 el = 21
 # select the desired number of bins in the histogram
-bn = 400
+bn = 200
 
 
 field_pr = np.load("E33_fft_50val.npy")
-lin_field_pr = np.absolute(np.reshape(field_pr,50*el**3)[100:])/np.absolute(np.mean(field_pr))
+lin_field_pr = np.absolute(np.reshape(field_pr[:,:,:,:5],5*el**3)[100:])/np.mean(np.absolute(field_pr[:,:,:,:5]))
 
 field_ya = np.load("FE_results_fft_200cal.npy")
-lin_field_ya = np.absolute(np.reshape(field_ya[:,:,:,:50],50*el**3)[100:])/np.absolute(np.mean(field_ya[:,:,:,:50]))
+lin_field_ya = np.absolute(np.reshape(field_ya[:,:,:,:5],5*el**3)[100:])/np.mean(np.absolute(field_ya[:,:,:,:5]))
 
 dmin = np.amin([lin_field_pr,lin_field_ya])
 dmax = np.amax([lin_field_pr,lin_field_ya])
@@ -26,12 +26,14 @@ dmax = np.amax([lin_field_pr,lin_field_ya])
 
 plt.close()
 
+weight = np.ones_like(lin_field_pr)/(lin_field_pr.size)
+
 #plt.subplot(211)
 #plt.plot(lin_field_pr[1:],'k.')
 #plt.title('Response with unstable BCs: real space')
 
 n, bins, patches = plt.hist(lin_field_pr, bins = bn, histtype = 'step', hold = True,
-                            range = (dmin, dmax), color = 'white')
+                            range = (dmin, dmax), weights=weight, color = 'white')
 bincenters = 0.5*(bins[1:]+bins[:-1])
 lin_field_pr, = plt.plot(bincenters,n,'k', linestyle = '-', lw = 0.5)
 
@@ -41,7 +43,7 @@ lin_field_pr, = plt.plot(bincenters,n,'k', linestyle = '-', lw = 0.5)
 #plt.title('Response with stable BCs: real space')
 
 n, bins, patches = plt.hist(lin_field_ya, bins = bn, histtype = 'step', hold = True,
-                            range = (dmin, dmax), color = 'white')
+                            range = (dmin, dmax), weights=weight, color = 'white')
 bincenters = 0.5*(bins[1:]+bins[:-1])
 lin_field_ya, = plt.plot(bincenters,n,'b', linestyle = '-', lw = 0.5)
 

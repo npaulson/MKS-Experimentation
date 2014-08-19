@@ -29,7 +29,7 @@ E11 = np.zeros([el,el,el,ns])
 
 for sn in xrange(ns):
     l_sn = str(sn+1).zfill(5)  
-    [euler_temp,E_temp] = rr.read_vtk('Results_Ti64_RandomMicroFZreducedNewBCs_21x21x21_AbqInp_PowerLaw_%s_data_v2_06.vtk' %l_sn)
+    [euler_temp,E_temp] = rr.read_vtk('Results_Ti64_RandomMicroFZreducedNewBCs_21x21x21_AbqInp_PowerLaw_%s_data_v2_05.vtk' %l_sn)
     euler[:,sn,:] = euler_temp
     E[:,:,sn] = E_temp
     E11[:,:,:,sn] = np.swapaxes(np.reshape

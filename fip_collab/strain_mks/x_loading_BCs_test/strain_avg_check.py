@@ -37,7 +37,7 @@ def file_read(filename):
 
 
 
-filename = 'Results_Ti64_RandomMicroFZreducedNewBCs_21x21x21_AbqInp_PowerLaw_00001_data_strain_min_C3.txt'
+filename = 'Results_Ti64_RandomMicroFZreducedNewBCs_21x21x21_AbqInp_PowerLaw_00001_data_strain_max_C3.txt'
 resp = file_read(filename)
 
 
