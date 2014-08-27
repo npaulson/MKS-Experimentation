@@ -159,20 +159,24 @@ def res_red(filename):
     # line0 is the index of first line of the data
     line0 = ln + 5;      
 
-    E = np.zeros(21**3)
+    E = np.zeros([21**3,8])
     c = -1
 
     # this series of loops generates a 9261x8 dataset of E11s (element x integration point) 
     for k in xrange(21**3):
-        c += 1                        
-        E[k] = linelist[line0 + c].split()[3]
+        for jj in xrange(8):
+            c += 1                        
+            E[k,jj] = linelist[line0 + c].split()[3]
     
     f.close()    
+    
+    # here we average all 8 integration points in each element cell
+    E = np.mean(E, axis=1)  
     
     # here we reshape the data from a 9261 length vector to a 21x21x21 3D matrix       
     Emat = np.swapaxes(np.reshape(np.flipud(E), [el,el,el]),1,2)
 
-    return Emat
+    return (Emat,E)
     
 
 def WP(msg,filename):
