@@ -72,7 +72,7 @@ C_cp[:,:,:,2] = file_read(filename,column_num)
 
 ### VISUAL COMPARISON OF CPFEM AND LE+PY SIMULATIONS ###
 
-plt.close()
+plt.close('all')
 
 ## pick a slice perpendicular to the z-direction
 slc = 10
@@ -151,7 +151,7 @@ for ii in xrange(3):
     C_py_lins = C_py_lin[:,ii]
 #    C_py_lins, = plt.plot(bincenters,n,'b', linestyle = '-', lw = 0.5)
     
-    bins = [1.0E-15,3.162E-15,1.0E-14,3.162E-14,1.0E-13,3.162E-13,1.0E-12,3.162E-12,1.0E-11,3.162E-11,1.0E-10,3.162E-10,1.0E-9,3.162E-9,1.0E-8,3.162E-8,1.0E-7,3.162E-7]    
+    bins = [1.0E-15,3.162E-15,1.0E-14,3.162E-14,1.0E-13,3.162E-13,1.0E-12,3.162E-12,1.0E-11,3.162E-11,1.0E-10,3.162E-10,1.0E-9,3.162E-9,1.0E-8,3.162E-8,1.0E-7,3.162E-7,1.0E-6,3.162E-6,1.0E-5,3.162E-5,1.0E-4,3.162E-4,1.0E-3]    
     weight = np.ones_like(C_cp_lins)/(el**3)
     
     plt.hist([C_cp_lins,C_py_lins],histtype='step',bins=bins,color=['blue','purple'],weights=[weight, weight])    
@@ -166,7 +166,7 @@ for ii in xrange(3):
     plt.ylabel("Number Fraction")
     plt.xscale('log')
 
-    plt.axis([1.0E-15,5.0E-7, 0, 0.1])
+    plt.axis([1.0E-15,1.0E-3, 0, 0.2])
 
     plt.title("Frequency comparison of %s in CPFEM (blue) and LE+PY (purple) for cycle %s" %(comp_latex,cyc))
 
