@@ -9,14 +9,14 @@ function [euler]=orientationgenerator(sn)
 rng('shuffle');
 
 % Number of data sets
-na=1;
+na=2;
 
 % Number of elements on an edge
 el=21;
 
 orientation=zeros(3,3,el^3,na);
 
-load extremeorientc_hexa.mat
+load extremeorientv_hexa.mat
 
 ct=zeros(el^3,na);
 
@@ -27,7 +27,7 @@ for ms=1:na
     ct(:,ms)=c;
     
     euler=extremeorienth(c,:);
-%     scatter(euler(1:200,1),euler(1:200,2))
+    scatter(euler(1:200,1),euler(1:200,2))
     
     % Rotation matrix
     

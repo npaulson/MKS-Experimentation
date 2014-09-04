@@ -49,7 +49,7 @@ def file_read(filename):
     return euler
 
 
-filename = 'Ti64_RandomMicroFZ_21x21x21_EulerAngles_00001.txt'
+filename = 'Ti64_RandomMicro_21x21x21_EulerAngles_FundZoneZeroPhi2_00200.txt'
 euler = file_read(filename)
 
 fig = plt.figure()

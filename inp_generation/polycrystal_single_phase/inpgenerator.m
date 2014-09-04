@@ -1,7 +1,7 @@
 function inpgenerator()
 
 el=21;
-na=1;
+na=2;
 
 nodesets(el);
 fprintf('Data set loaded\n')

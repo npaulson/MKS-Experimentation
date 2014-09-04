@@ -70,4 +70,7 @@ fprintf(fid,'3, 0\n');
 fprintf(fid,'**');
 
 fclose(fid);
+
+orifile=['orientation' int2str(sn) '.mat'];
+save(orifile,'orientation');
     
