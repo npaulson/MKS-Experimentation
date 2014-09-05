@@ -9,67 +9,9 @@ Noah Paulson, 5/28/2014
 
 import numpy as np
 import time
-import itertools as it
 import scipy.io as sio
 
-
-def gen_micr(filename1,filename2,set_id,ns,el,H):
-    """
-    Summary:
-        This function reads the microstructures for all samples (calibration
-        and validation) from a matlab data file, rearanges them into ns # of
-        el x el x el cubes, and saves them in the .npy file format
-    Inputs:
-        filename2 (string): a '.mat' file containing orientation flags for 
-        each of the 9261 spatial bins for each RVE in the set
-        filename1 (string): a '.mat' file containing a set of GSH coefficients
-        for each of the flags in file 'filename1'        
-        set_id (string):
-        ns (int): the total number of microstructures (for calibration and 
-        validation)
-        el (int): the number of elements per side of the microstructure cube
-    Output:
-        micr ([el,el,el,ns],int): The binary microstructures for calibration
-        and validation
-        timeE (float): Total time elapsed for function
-    """
-        
-    start = time.time()
-
-    ## convert the matlab files arrays in python        
-    
-    micr_flag_BASE = sio.loadmat(filename2)
-    ## micr_flag contains 9261 flags for each sample microsturcture,
-    ## each representing an orientation. The number in these flags
-    ## corresponds with an orientation in ex_ori_fr
-    micr_flag = micr_flag_BASE['ct']         
-
-    ex_ori_BASE = sio.loadmat(filename1)    
-    ## ex_ori_fr contains 522 sets of 15 GSH coefficients, where each 
-    ## set corresponds with an orientation on the surface of the
-    ## hexagonal-triclinic fundamental zone.        
-    ex_ori_fr = ex_ori_BASE['extremeorienth_fr']  
-           
-    pre_micr = np.zeros((el**3,ns,H),dtype = 'complex64')
-    for k in range(el**3):
-        for n in range(ns):
-            pre_micr[k,n,:] = ex_ori_fr[micr_flag[k,n]-1,:]
-    
-    ## here we perform flips and reshapes to enact the proper arrangement 
-    ## of spatial locations in the 3D cub
-    micr = np.zeros((el,el,el,ns,H),dtype = 'complex64') 
-    for n in range(ns):
-        for h in range(H):
-            micr[:,:,:,n,h] = np.swapaxes(np.reshape(
-                        np.flipud(pre_micr[:,n,h]), [el,el,el]),1,2)
-
-    end = time.time()
-    timeE = np.round((end - start),3)
-
-    return [micr, timeE]
-
-
-def load_fe(filename,el):
+def load_fe(ori_file,dat_file,el):
     """    
     Summary:        
         This function loads the finite element (FE) responses from '.dat' 
@@ -88,13 +30,12 @@ def load_fe(filename,el):
 
     start = time.time()    
 
-    micr_flag_BASE = sio.loadmat(filename)
+    micr_flag_BASE = sio.loadmat(ori_file)
     ## ori_mats contains a 3x3 orientation matrix for each spatial location
     ## in each sample microstructure
     ori_mat = micr_flag_BASE['orientation']
 
-    filename = "yuksel_ori_test.dat" 
-    resp = res_red(filename,ori_mat,el)  
+    resp = res_red(dat_file,ori_mat,el)  
     
     end = time.time()
     timeE = np.round((end - start),1)
@@ -133,20 +74,16 @@ def res_red(filename,ori_mat,el):
     # line0 is the index of first line of the data
     line0 = ln + 5;      
 
-    E = np.zeros((21**3,8,6))
+    E = np.zeros([21**3,6])
     c = -1
 
     # this series of loops generates a 9261x8 dataset of E11s (element x integration point) 
     for k in xrange(21**3):
-        for jj in xrange(8):
-            c += 1                        
-            E[k,jj,:] = linelist[line0 + c].split()[3:]
+        c += 1                        
+        E[k,:] = linelist[line0 + c].split()[3:]
     
     f.close()    
-    
-    # here we average all 8 integration points in each element cell
-    E = np.mean(E, axis=1)
-    
+   
     Etot = np.zeros([el**3])
     # here we convert the strain tensor at each location from crystal to 
     # sample frame

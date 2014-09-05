@@ -7,7 +7,7 @@ Created on Fri May 23 14:25:50 2014
 
 import time
 import numpy as np
-import function_load_fe_single as rr
+import function_load_fe_single_C3D8R as rr
 
 ## el is the # of elements per side of the cube 
 el = 21 
@@ -24,7 +24,7 @@ wrt_file = 'fe_%s%s_%s.txt' %(ns,set_id,time.strftime("%Y-%m-%d_h%Hm%M"))
 
 
 ### FINITE ELEMENT RESPONSES: CALIBRATION ###
-[resp, msg] = rr.load_fe('orientation1.mat',el)
+[resp, msg] = rr.load_fe('orientation1.mat','yuksel_ori_test_C3D8R.dat',el)
 np.save('FE_results_%s%s' %(ns,set_id),resp)  
 rr.WP(msg,wrt_file)
 

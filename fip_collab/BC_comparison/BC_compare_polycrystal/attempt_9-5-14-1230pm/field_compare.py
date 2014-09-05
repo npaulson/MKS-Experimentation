@@ -19,6 +19,7 @@ dat1 = np.load('FE_results_1test.npy')
 filename = 'Results_Ti64_RandomMicroFZreducedNewBCs_21x21x21_AbqInp_AnisoLE_00001_data_strain_max_C1.txt'
 dat2 = fs.file_read(filename,column_num, el = el)
 
+np.save('dat2',dat2)
 
 slc = 10
    
@@ -32,7 +33,7 @@ plt.figure(num=1, figsize=[14,5])
 plt.subplot(121)
 ax = plt.imshow(dat1[slc,:,:], origin='lower', interpolation='none',
     cmap='jet', vmin=dmin, vmax=dmax)
-plt.title('MINED LE, E11, C3D8R')
+plt.title('MINED LE, E11, C3D8')
 plt.colorbar(ax)  
 
 plt.subplot(122)
@@ -40,6 +41,7 @@ ax = plt.imshow(dat2[slc,:,:], origin='lower', interpolation='none',
     cmap='jet', vmin=dmin, vmax=dmax)
 plt.title('GOALI-Ti LE, E11, C3D8R')
 plt.colorbar(ax)
+
 
 def mase_meas(dat1,dat2,dat1avg):    
     MASE = 0
@@ -53,21 +55,21 @@ def max_err_meas(dat1,dat2,dat1avg):
     max_err = np.amax(dat1-dat2)/dat1avg  
     
     return max_err
-
-## specify the file to write messages to 
-wrt_file = 'stats_compare_MINED_GOALI_C3D8R_%s.txt' %(time.strftime("%Y-%m-%d_h%Hm%M")) 
-msg = 'Mean E11, MINED: ' + str(np.mean(dat1))
-fs.WP(msg,wrt_file)
-msg = 'Mean E11, GOALI: ' + str(np.mean(dat2))
-fs.WP(msg,wrt_file)
-msg = 'E11 Standard Deviation, MINED: ' + str(np.std(dat1))
-fs.WP(msg,wrt_file)
-msg = 'E11 Standard Deviation, GOALI: ' + str(np.std(dat2))
-fs.WP(msg,wrt_file)
-msg = 'E11 Mean Absolute Strain Error: ' + str(mase_meas(dat1,dat2,np.mean(dat1))*100) + '%'
-fs.WP(msg,wrt_file)
-msg = 'E11 Maximum Error: ' + str(max_err_meas(dat1,dat2,np.mean(dat1))*100) + '%'
-fs.WP(msg,wrt_file)
+#
+### specify the file to write messages to 
+#wrt_file = 'stats_compare_MINED_GOALI_C3D8R_%s.txt' %(time.strftime("%Y-%m-%d_h%Hm%M")) 
+#msg = 'Mean E11, C3D8, MINED: ' + str(np.mean(dat1))
+#fs.WP(msg,wrt_file)
+#msg = 'Mean E11, C3D8R, GOALI: ' + str(np.mean(dat2))
+#fs.WP(msg,wrt_file)
+#msg = 'E11 Standard Deviation, C3D8, MINED: ' + str(np.std(dat1))
+#fs.WP(msg,wrt_file)
+#msg = 'E11 Standard Deviation, C3D8R, GOALI: ' + str(np.std(dat2))
+#fs.WP(msg,wrt_file)
+#msg = 'E11 Mean Absolute Strain Error: ' + str(mase_meas(dat1,dat2,np.mean(dat1))*100) + '%'
+#fs.WP(msg,wrt_file)
+#msg = 'E11 Maximum Error: ' + str(max_err_meas(dat1,dat2,np.mean(dat1))*100) + '%'
+#fs.WP(msg,wrt_file)
 
 
 #plt.subplot(121)
