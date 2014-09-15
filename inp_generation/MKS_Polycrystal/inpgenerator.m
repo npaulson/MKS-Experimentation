@@ -1,7 +1,7 @@
 function inpgenerator()
 
 el=21;
-na=1;
+na=50;
 
 nodesets(el);
 fprintf('Data set loaded\n')
@@ -24,7 +24,7 @@ fclose(nodesetspbc);
 fclose('all');
 
 for ii=1:na
-    combined=fopen(['matthew_compare.inp'],'w+');
+    combined=fopen(['hcp_' int2str(el) 'el_200s_' int2str(ii) '.inp'],'w+');
     fwrite(combined,A);
     fprintf(combined,'\n');
     fwrite(combined,nodesetspbcx);

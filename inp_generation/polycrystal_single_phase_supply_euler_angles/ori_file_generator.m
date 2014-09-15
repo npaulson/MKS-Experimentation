@@ -15,7 +15,7 @@ sn=1;
 
 orientation=zeros(3,3,el^3);
 
-load euler_priddy_test.mat
+load euler4mat.mat
 
 % Rotation matrix
 

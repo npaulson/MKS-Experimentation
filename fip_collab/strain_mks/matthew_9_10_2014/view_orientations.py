@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 
-euler = np.load('euler_250cal.npy')
+euler = np.load('euler_50val.npy')
 
 sn=0
 max = 1000
@@ -23,3 +23,5 @@ fig = plt.figure()
 ax3D = fig.add_subplot(111, projection='3d')
 p3d = ax3D.scatter(euler[:max,sn,0],euler[:max,sn,1],euler[:max,sn,2])
 
+plt.figure(2)
+plt.scatter(euler[:max,sn,0],euler[:max,sn,1])

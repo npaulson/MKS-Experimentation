@@ -1,16 +1,6 @@
 function [Tsym]=GSH_Hexagonal_Triclinic(phi1,Phi,phi2)
-% This code was modified to solve issues when Phi ~= 0
 
-if abs(Phi) < 10e-17
-    lil_const = 1e-7;
-    binary = round(rand());
-    if binary == 0
-        random_num = -lil_const;
-    elseif binary == 1
-        random_num = lil_const;
-    end
-    Phi = Phi + random_num;
-end
+if abs(Phi) < 10e-17; Phi = Phi + rand()*10e-7; end
 
 t1 = sqrt(0.6e1);
 t3 = exp((-2*i) * phi1);

@@ -77,8 +77,15 @@ def mase_meas(C_cp,C_py,C_cp_avg):
     return MASE
     
     
-def max_err_meas(C_cp,C_py,C_cp_avg):
-    max_err = np.amax(C_cp-C_py)/C_cp_avg  
+def max_err_meas(C_cp,C_py):
+    difmat = C_cp - C_py    
+    max_dev = np.amax(difmat)
+    indx = np.where(difmat == max_dev) 
+    print max_dev    
+    print indx
+    cp_str = C_cp[indx[0][0], indx[1][0], indx[2][0]]
+    print cp_str
+    max_err = max_dev/cp_str
     
     return max_err
 
@@ -270,7 +277,7 @@ def data_gen(C_CPFEM,C_LE,cyc,comp,comp_latex,SA_lvl,typ,st_comp,wrt_file):
     msg = 'Mean absolute strain error (MASE), Cycle %s: %s%%' %(cyc,MASE)
     WP(msg,wrt_file)
     
-    MAX_ERR = max_err_meas(C_CPFEM,C_LE,np.average(C_CPFEM))*100
+    MAX_ERR = max_err_meas(C_CPFEM,C_LE)*100
     msg = 'Maximum error, Cycle %s: %s%%' %(cyc,MAX_ERR)
     WP(msg,wrt_file)
 
