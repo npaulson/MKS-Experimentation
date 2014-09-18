@@ -16,11 +16,11 @@ import functions_ti_alpha_fip_v1 as rr
 ## el is the # of elements per side of the cube 
 el = 21 
 ## the number of sample microstructures for calibration.
-ns = 50
+ns = 200
 ## specify the number of local states you are using
 H = 15
 ## specify the set designation (string format)
-set_id = 'val'
+set_id = 'cal'
 ## specify the file to write messages to 
 wrt_file = 'mf_%s%s_%s.txt' %(ns,set_id,time.strftime("%Y-%m-%d_h%Hm%M")) 
 
