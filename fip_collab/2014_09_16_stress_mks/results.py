@@ -26,31 +26,33 @@ def results(ns,set_id,comp,typ,real_comp):
     
     
     #### MEAN ABSOLUTE STRAIN ERROR (MASE) ###
-    avgE_fe_tot = 0
-    avgE_mks_tot = 0
+    avgr_fe_tot = 0
+    avgr_mks_tot = 0
     MASE_tot = 0
     max_err_sum = 0
     max_err_all = np.zeros(ns)
     
     for sn in xrange(ns):
-        [avgE_fe_indv,avgE_mks_indv, MASE_indv] = rr.eval_meas(mks_R[:,:,:,sn],
+        [avgr_fe_indv,avgr_mks_indv, MASE_indv] = rr.eval_meas(mks_R[:,:,:,sn],
                                     resp[:,:,:,sn],el)
-        avgE_fe_tot += avgE_fe_indv
-        avgE_mks_tot += avgE_mks_indv
+        avgr_fe_tot += avgr_fe_indv
+        avgr_mks_tot += avgr_mks_indv
         MASE_tot += MASE_indv
         max_err_sum += np.amax(resp[:,:,:,sn]-mks_R[:,:,:,sn])
         max_err_all[sn] = np.amax(resp[:,:,:,sn]-mks_R[:,:,:,sn])
-    
-    avgE_fe = avgE_fe_tot/ns
-    avgE_mks = avgE_mks_tot/ns
-    MASE = MASE_tot/ns
-    max_err = np.amax(resp-mks_R)/avgE_fe
-    max_err_avg = max_err_sum/(ns * avgE_fe)
+
         
+    avgr_fe = avgr_fe_tot/ns
+    avgr_mks = avgr_mks_tot/ns
+    MASE = MASE_tot/ns
+    max_err = np.amax(resp-mks_R)/avgr_fe
+    max_err_avg = max_err_sum/(ns * avgr_fe)
     
-    msg = 'Average, %s%s, CPFEM: %s' %(typ,real_comp,avgE_fe)
+
+    
+    msg = 'Average, %s%s, CPFEM: %s' %(typ,real_comp,avgr_fe)
     rr.WP(msg,wrt_file)
-    msg = 'Average, %s%s, MKS: %s' %(typ,real_comp,avgE_mks)
+    msg = 'Average, %s%s, MKS: %s' %(typ,real_comp,avgr_mks)
     rr.WP(msg,wrt_file)
     msg = 'Standard deviation, %s%s, CPFEM: %s' %(typ,real_comp,np.std(resp))
     rr.WP(msg,wrt_file)
@@ -78,6 +80,19 @@ def results(ns,set_id,comp,typ,real_comp):
     msg = 'Average maximum error over all samples: %s%%' %(max_err_avg*100)
     rr.WP(msg,wrt_file)
     
+    resp_range_all = np.max(resp) - np.min(resp)
+    mean_diff_meas = np.mean(resp-mks_R)/resp_range_all
+    mean_max_diff_meas = np.mean(max_err_all)/resp_range_all
+    max_diff_meas_all = np.amax(resp-mks_R)/resp_range_all
+   
+    
+    msg = 'Mean voxel difference over all microstructures (divided by total FE response range): %s%%' %(mean_diff_meas*100)
+    rr.WP(msg,wrt_file)
+    msg = 'Average Maximum voxel difference per microstructure (divided by total FE response range): %s%%' %(mean_max_diff_meas*100)
+    rr.WP(msg,wrt_file)  
+    msg = 'Maximum voxel difference in all microstructures (divided by total FE response range): %s%%' %(max_diff_meas_all*100)
+    rr.WP(msg,wrt_file)
+  
     
     
     ### VISUALIZATION OF MKS VS. FEM ###
