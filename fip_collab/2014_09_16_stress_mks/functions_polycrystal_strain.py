@@ -36,31 +36,21 @@ def calib(k,M,r_fft,p,H,el,ns):
     [u,v,w] = np.unravel_index(k,[el,el,el])
 
     MM = np.zeros((H,H),dtype = 'complex128')
-#    PM = np.zeros((H,1),dtype = 'complex128')
     PM = np.zeros(H,dtype = 'complex128')
-
     
     for n in xrange(ns-1):
 
         mSQ = np.array(M[u,v,w,n,:])     
-#        mSQc = np.conj(mSQ[None,:])
         mSQc = np.conj(mSQ)        
-#        mSQt = mSQ[:,None]
         
-#        MM += np.dot(mSQt, mSQc)
         MM += np.outer(mSQ, mSQc)
-
-#        PM[:,0] += np.dot(fip_fft[u,v,w,n],mSQc)
         PM += np.dot(r_fft[u,v,w,n],mSQc)
-
  
     if k < 2:
         p = independent_columns(MM, .001)
 
     calred = MM[p,:][:,p]
-#    resred = PM[p,0].conj().T
     resred = PM[p].conj()
-
     
     specinfc_k = np.zeros(H,dtype = 'complex64')
     specinfc_k[p] = np.linalg.solve(calred, resred)
@@ -113,7 +103,7 @@ def independent_columns(A, tol = 1e-05):
     return independent
 
 
-def read_vtk_tensor(filename, tensor_id, comp_num):
+def read_vtk_tensor(filename, tensor_id, comp):
     """
     Summary:
         Much of this code was taken from Matthew Priddy's example
@@ -152,12 +142,12 @@ def read_vtk_tensor(filename, tensor_id, comp_num):
     meas_py = np.zeros([el_total])        
     
     for ii in xrange(el_total):
-        meas_py[ii,0] = meas.GetValue(ii*9 + comp_num)
+        meas_py[ii] = meas.GetValue(ii*9 + comp)
     
     return meas_py
 
 
-def read_vtk_vector(filename, comp_num):
+def read_vtk_vector(filename):
     """
     Summary:
         Much of this code was taken from Matthew Priddy's example

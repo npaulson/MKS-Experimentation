@@ -21,7 +21,7 @@ def calibration_procedure(ns,set_id,comp,wrt_file):
     ## specify the number of local states you are using
     H = 15
     
-    M = np.load('M%s_%s%s.npy' %(comp,ns,set_id))
+    M = np.load('M_%s%s.npy' %(ns,set_id))
     r_fft = np.load('r%s_fft_%s%s.npy' %(comp,ns,set_id))
     
     start = time.time()

@@ -21,7 +21,7 @@ def validation_procedure(ns_cal,ns_val,set_id_cal,set_id_val,comp,wrt_file):
     ## H is the number of GSH coefficients    
     H = 15
     
-    M = np.load('M%s_%s%s.npy' %(comp,ns_val,set_id_val))
+    M = np.load('M_%s%s.npy' %(ns_val,set_id_val))
     specinfc = np.load('specinfc%s_%s%s.npy' %(comp,ns_cal,set_id_cal))
     
     mks_R = np.zeros([el,el,el,ns_val])

@@ -13,7 +13,7 @@ import numpy as np
 import functions_polycrystal_strain as rr
 
 
-def micr_func(ns,set_id,comp,wrt_file):
+def micr_func(ns,set_id,wrt_file):
     
     start = time.time()    
     
@@ -42,12 +42,12 @@ def micr_func(ns,set_id,comp,wrt_file):
     M = np.fft.fftn(micr, axes = [0,1,2])
     del micr
     size = M.nbytes
-    np.save('M%s_%s%s' %(comp,ns,set_id),M)
+    np.save('M_%s%s' %(ns,set_id),M)
     
     end = time.time()
     timeE = np.round((end - start),3)
     
-    msg = "FFT3 conversion of micr to M%s_%s%s: %s seconds" %(comp,ns,set_id,timeE)
+    msg = "FFT3 conversion of micr to M_%s%s: %s seconds" %(ns,set_id,timeE)
     rr.WP(msg,wrt_file)
-    msg = 'Size of M%s_%s%s: %s bytes' %(comp,ns,set_id,size)
+    msg = 'Size of M_%s%s: %s bytes' %(ns,set_id,size)
     rr.WP(msg,wrt_file)
