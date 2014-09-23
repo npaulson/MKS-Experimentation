@@ -1,24 +1,28 @@
 %% Orientation Selection
 
-% v_phi1,V_phi,v_phi2: vectors which discretize the hexagonal fundamental
-% zone into a number of orienations
-v_phi1 = linspace(0,2*pi(),10);
-v_Phi = linspace(0,pi()/2,5);
-v_phi2 = linspace(0,pi()/3,5);
+% % v_phi1,V_phi,v_phi2: vectors which discretize the hexagonal fundamental
+% % zone into a number of orienations
+% v_phi1 = linspace(0,2*pi(),41);
+% v_Phi = linspace(0,pi()/2,12);
+% v_phi2 = linspace(0,pi()/3,10);
+% 
+% [X,Y,Z] = meshgrid(v_phi1,v_Phi,v_phi2);
+% % ori: array containing bunge-euler angles for all trial orientations
+% ori = [X(:),Y(:),Z(:)];
+% 
+% close('all')
+% 
+% figure(1)
+% scatter(ori(:,1),ori(:,2),'.')
+% axis equal
+% 
+% figure(2)
+% scatter(ori(:,2),ori(:,3),'.')
+% axis equal
 
-[X,Y,Z] = meshgrid(v_phi1,v_Phi,v_phi2);
-% ori: array containing bunge-euler angles for all trial orientations
-ori = [X(:),Y(:),Z(:)];
+load red_ori.mat
 
-close('all')
-
-figure(1)
-scatter(ori(:,1),ori(:,2),'.')
-axis equal
-
-figure(2)
-scatter(ori(:,2),ori(:,3),'.')
-axis equal
+ori = red_ori;
 
 % ori_len: number of trial orientations
 N = length(ori(:,1));

@@ -210,7 +210,8 @@ def error_hist(ns,set_id,typ):
     
     plt.close('all')
     
-    for comp in xrange(7,8):
+    
+    for comp in xrange(8,9):
         
         real_comp = real_comp_desig[comp]        
         
@@ -219,38 +220,65 @@ def error_hist(ns,set_id,typ):
         
         ### VISUALIZATION OF ERROR HISTOGRAM ###
         
+        error = np.reshape(error,ns*(el**3))
+        resp_lin = np.reshape(resp[:,:,:,comp,:],ns*(el**3))
+
         # Plot a histogram representing the frequency of strain levels with separate
         # channels for each phase of each type of response.
-        plt.figure(num=comp,figsize=[12,5])
-        
-        
-        # find the min and max of both datasets (in full)
-        dmin = np.amin(error)
-        dmax = np.amax(error)
-        
-        error = np.reshape(error,ns*(el**3))
+        plt.figure(num=1,figsize=[12,5])        
                
         # select the desired number of bins in the histogram
-        bn = 40
-        weight = np.ones_like(error)/(ns * el**3)
+        bn = 10
         
-        # error histogram
-        n, bins, patches = plt.hist(error, bins = bn, histtype = 'step', hold = True,
-                                    range = (dmin, dmax), weights=weight, color = 'white')
+        # find the bin locations for the CPFEM response of interest
+        n, bins, patches = plt.hist(resp_lin, bins = bn, histtype = 'step', hold = True,
+                                    color = 'white')
+                                    
+        print "values per bin: "
+        print n
+        
         bincenters = 0.5*(bins[1:]+bins[:-1])
-        error, = plt.plot(bincenters,n,'r', linestyle = '-', lw = 1)
+        bincenters_l = list(np.round(bincenters).astype(int).astype(str))
+        
+        print bincenters_l
+
+        
+        min_error = np.zeros(bn)
+        quart1_error = np.zeros(bn)        
+        mean_error = np.zeros(bn)        
+        quart3_error = np.zeros(bn)        
+        max_error = np.zeros(bn)      
+        
+        error_in_bin_list = []     
         
         
-        plt.grid(True)
+        for ii in xrange(bn):
+            in_bin = (resp_lin >= bins[ii]) * (resp_lin < bins[ii + 1])
+            error_in_bin = error * in_bin          
+            error_in_bin_list.append(error_in_bin)            
+            
+#            min_error[ii] = np.min(error_in_bin)
+#            quart1_error[ii] = np.percentile(error_in_bin,25)
+#            mean_error[ii] = np.mean(error_in_bin)
+#            quart3_error[ii] = np.percentile(error_in_bin,75)            
+#            max_error[ii] = np.max(error_in_bin)
+            
+        plt.boxplot(x = error_in_bin_list)
+    
         
+#        error, = plt.plot(bincenters,n,'r', linestyle = '-', lw = 1)       
+#        plt.plot(bincenters, min_error, )        
+#        
+#        plt.grid(True)
+#        
 #        plt.legend([error], ["Von-Mises Normalized Error"])
-        
-        plt.xlabel("Percent Error, $\%s_{%s}$" %(typ,real_comp))
-        plt.ylabel("Number Fraction")
-        plt.title("Error Histogram, $\%s_{%s}$" %(typ,real_comp))
-        plt.xscale('log')
-        plt.yscale('log')
-        plt.axis([.01,1.1, 1e-5, 0.2])
+#        
+#        plt.xlabel("Percent Error, $\%s_{%s}$" %(typ,real_comp))
+#        plt.ylabel("Number Fraction")
+#        plt.title("Error Histogram, $\%s_{%s}$" %(typ,real_comp))
+#        plt.xscale('log')
+#        plt.yscale('log')
+#        plt.axis([.01,2, 1e-6, 0.2])
         
 #        plt.savefig('hist_error%s_%s%s.png' %(comp,ns,set_id)
           

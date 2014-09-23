@@ -11,13 +11,14 @@ import euler_to_gsh as gsh
 import microstructure_function as msf
 import calibration
 import validation
+import results
 
 wrt_file = 'log_%s.txt' %time.strftime("%Y-%m-%d_h%Hm%M")
 
-ns_cal = 10
+ns_cal = 200
 set_id_cal = 'cal'
 
-ns_val = 5
+ns_val = 50
 set_id_val = 'val'
 
 
@@ -79,6 +80,5 @@ for comp in xrange(9):
     validation.validation_procedure(ns_cal,ns_val,set_id_cal,set_id_val,comp,wrt_file)
     
 
-    
-
+results.results_all(ns_val, set_id_val, 'sigma')
 
