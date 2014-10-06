@@ -6,7 +6,6 @@ Created on Tue Sep 23 12:24:47 2014
 """
 
 import numpy as np
-import functions_polycrystal_strain as rr
 import matplotlib.pyplot as plt
 
 ns = 50
@@ -34,12 +33,12 @@ mean_resp_vm = np.mean(resp[:,:,:,9,:])
 plt.close('all')
 
 
-comp = 9;
+comp = 9
     
 real_comp = real_comp_desig[comp]        
 
 ### DIFFERENCE MEASURE ###
-error = (100*abs(resp[:,:,:,comp,:]-mks_R[:,:,:,comp,:]))/mean_resp_vm
+error = (100*(resp[:,:,:,comp,:]-mks_R[:,:,:,comp,:]))/mean_resp_vm
 
 ### VISUALIZATION OF ERROR HISTOGRAM ###
 
@@ -89,14 +88,14 @@ for ii in xrange(bn):
     perc99_error[ii] = np.percentile(error_in_bin,98)    
     max_error[ii] = np.max(error_in_bin)
     
-    label_cur = str(int(round(bins[ii]))) + ' - ' + str(int(round(bins[ii + 1])) - 1)
+    label_cur = str(int(round(bins[ii]))) + ' - ' + str(int(round(bins[ii + 1])) - 1) + ' MPa\n ' + str(int(n[ii])) + ' points'
     bin_labels.append(label_cur)
 
 plt.figure(num=2,figsize=[12,5])        
 
 plt.boxplot(x = error_in_bin_list, labels = bin_labels)
 
-plt.xticks(rotation=45)
+plt.xticks(rotation='vertical')
 
 plt.xlabel("bin ranges, $\%s_{%s}$ MPa" %(typ,real_comp))
 plt.ylabel("%% error (normalized by mean $\%s_{vm}$)" %typ)
@@ -122,10 +121,37 @@ plt.legend((p1, p2, p3, p4, p5, p6, p7),
            fontsize=8)
 
 plt.grid(True)
-plt.axis([400,610,-.1,3])
+#plt.axis([400,610,-.1,3])
 
 plt.xlabel("bin centers, $\%s_{%s}$ MPa" %(typ,real_comp))
 plt.ylabel("%% error (normalized by mean $\%s_{vm}$)" %typ)
 plt.title("Error Histogram, $\%s_{%s}$" %(typ,real_comp))
 
 #plt.savefig('hist_error%s_%s%s.png' %(comp,ns,set_id)
+
+
+plt.figure(num=4,figsize=[12,5])
+
+# select the desired number of bins in the histogram
+bn_er = 40
+
+# find the bin locations for the CPFEM response of interest
+n, bins, patches = plt.hist(resp_lin, bins = bn_er, histtype = 'step', hold = True,
+                            color = 'white')
+bincenters = 0.5*(bins[1:]+bins[:-1])
+plt.plot(bincenters,n)
+plt.axis([401,607,0,70000])
+
+x = np.arange(1,bn + 1) 
+
+fig, ax = plt.subplots(1, figsize=(12,7))
+
+ax.violinplot(dataset = error_in_bin_list, showextrema = False, showmedians= False, showmeans = False)
+ax.set_xticks(x)
+ax.set_xticklabels(bin_labels, rotation = 'vertical')
+
+plt.xlabel("bin centers, $\%s_{%s}$ MPa - number of samples" %(typ,real_comp))
+plt.ylabel("%% error (normalized by mean $\%s_{vm}$)" %typ)
+plt.title("Error Histogram, $\%s_{%s}$" %(typ,real_comp))
+plt.grid(True)
+plt.tight_layout(pad = 0.1)
