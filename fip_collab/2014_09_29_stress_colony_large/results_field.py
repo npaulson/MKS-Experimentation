@@ -22,10 +22,12 @@ def results(el,ns,set_id,step,comp,typ):
 
     ### VISUALIZATION OF MKS VS. FEM ###
 
-    
     ## pick a slice perpendicular to the x-direction
-    slc = 11
+    slc = 0
     sn = 0
+
+    dmin = np.min([mks_R[slc,:,:,sn],resp[slc,:,:,sn]])
+    dmax = np.max([mks_R[slc,:,:,sn],resp[slc,:,:,sn]])
 
 
     ## Plot slices of the response
@@ -33,12 +35,12 @@ def results(el,ns,set_id,step,comp,typ):
     
     plt.subplot(121)
     ax = plt.imshow(mks_R[slc,:,:,sn], origin='lower', interpolation='none',
-        cmap='jet')#, vmin=dmin, vmax=dmax)
+        cmap='jet', vmin=dmin, vmax=dmax)
     plt.colorbar(ax)
     plt.title('MKS $\%s_{%s}$ response, slice %s' %(typ,real_comp,slc))
     
     plt.subplot(122)
     ax = plt.imshow(resp[slc,:,:,sn], origin='lower', interpolation='none',
-        cmap='jet')#, vmin=dmin, vmax=dmax)
+        cmap='jet', vmin=dmin, vmax=dmax)
     plt.colorbar(ax)
     plt.title('CPFEM $\%s_{%s}$ response, slice %s' %(typ,real_comp,slc))

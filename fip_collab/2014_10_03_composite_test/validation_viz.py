@@ -13,6 +13,8 @@ import numpy as np
 import functions_composite as rr
 import matplotlib.pyplot as plt
 
+
+
 def validation_zero_pad(el_cal,el_val,ns_cal,ns_val,H,set_id_cal,set_id_val,wrt_file):
 
     start = time.time()
@@ -21,7 +23,7 @@ def validation_zero_pad(el_cal,el_val,ns_cal,ns_val,H,set_id_cal,set_id_val,wrt_
     pre_pre_specinfc = np.load('specinfc_%s%s.npy' %(ns_cal,set_id_cal)) 
     
     pre_specinfc= np.zeros([el_cal,el_cal,el_cal,H],dtype='complex64')
-#    pre_specinfc = np.fft.ifftn(np.reshape(pre_specinfc,[el_cal,el_cal,el_cal,H]))  
+ 
     for h in xrange(H):
         pre_specinfc[:,:,:,h] = np.fft.ifftn(np.reshape(pre_pre_specinfc[:,h],[el_cal,el_cal,el_cal]))
     
@@ -36,11 +38,9 @@ def validation_zero_pad(el_cal,el_val,ns_cal,ns_val,H,set_id_cal,set_id_val,wrt_
     plt.colorbar(ax)
     plt.title('original influence coefficients')  
     
+    pre_specinfc = np.fft.fftshift(pre_specinfc, axes = [0,1,2])    
     
-    shift = np.floor(0.5*el_cal).astype(int)
-    pre_specinfc = np.roll(np.roll(np.roll(pre_specinfc, shift, 0),shift,1),shift,2)   
-    edgeHvec = pre_specinfc[0,0,0,:]  
-    
+#    edgeHvec = pre_specinfc[0,0,0,:]  
 
     plt.subplot(222)
     slc = np.floor(0.5*el_cal).astype(int)
@@ -53,45 +53,32 @@ def validation_zero_pad(el_cal,el_val,ns_cal,ns_val,H,set_id_cal,set_id_val,wrt_
 
 #    for h in xrange(H):    
 #        specinfc_pad[:,:,:,h] = edgeHvec[h]
-    
-    specinfc_pad[:el_cal,:el_cal,:el_cal,:] = pre_specinfc
 
+    el_gap = int(0.5*(el_val-el_cal))
+    el_end = el_val - el_gap    
+    specinfc_pad[el_gap:el_end,el_gap:el_end,el_gap:el_end,:] = pre_specinfc    
+    del pre_specinfc
 
     plt.subplot(223)
-    slc = np.floor(0.5*el_cal).astype(int)
+    slc = np.floor(0.5*el_val).astype(int)
     ax = plt.imshow(specinfc_pad[slc,:,:,h_comp].real, origin='lower', interpolation='none',
         cmap='jet', vmin=dmin, vmax=dmax)
     plt.colorbar(ax)
     plt.title('padded/centered influence coefficients')  
    
    
-    specinfc_pad = np.roll(np.roll(np.roll(specinfc_pad, -shift, 0),-shift,1),-shift,2)
-     
+    specinfc_pad = np.fft.ifftshift(specinfc_pad, axes = [0,1,2])  
      
     plt.subplot(224)
     ax = plt.imshow(specinfc_pad[0,:,:,h_comp].real, origin='lower', interpolation='none',
         cmap='jet', vmin=dmin, vmax=dmax)
     plt.colorbar(ax)
     plt.title('padded influence coefficients')    
+   
     
     
-    del pre_specinfc
+    specinfc = np.fft.fftn(specinfc_pad, axes = [0,1,2])       
     
-#    specinfc = np.reshape(np.fft.fftn(specinfc_pad, axes = [0,1,2]),[el_large**3,H])
-    specinfc = np.fft.fftn(specinfc_pad, axes = [0,1,2])
-#    specinfc = specinfc_pad    
-    
-    del specinfc_pad
-
-
-    ## debug section
-    pre_specinfc2 = np.load('specinfc_%s%s.npy' %(ns_cal,set_id_cal))
-    specinfc2 = np.reshape(pre_specinfc2,[el_cal,el_cal,el_cal,H])
-
-    a = [0,0,1]
-    print specinfc[a[0],a[1],a[2],:]
-    print specinfc2[a[0],a[1],a[2],:]
-
 
     ## perform the prediction procedure    
     
@@ -100,8 +87,6 @@ def validation_zero_pad(el_cal,el_val,ns_cal,ns_val,H,set_id_cal,set_id_val,wrt_
     mks_R = np.zeros([el_val,el_val,el_val,ns_val])
     
     for sn in xrange(ns_val):
-#        specinfc_sqr = np.reshape(specinfc,[el_large,el_large,el_large,H])
-#        mks_F = np.sum(np.conjugate(specinfc_sqr) * M[:,:,:,sn,:],3)
         mks_F = np.sum(np.conjugate(specinfc) * M[:,:,:,sn,:],3)
         mks_R[:,:,:,sn] = np.fft.ifftn(mks_F).real
 
@@ -113,3 +98,15 @@ def validation_zero_pad(el_cal,el_val,ns_cal,ns_val,H,set_id_cal,set_id_val,wrt_
 
     msg = 'validation performed: %s seconds' %timeE
     rr.WP(msg,wrt_file)
+    
+    
+#    # write to vtk file    
+#    
+#    from pyevtk.hl import gridToVTK    
+#    
+#    maxx = maxy = maxz = el_val + 1
+#    x = np.arange(0, maxx, 1, dtype='float64')
+#    y = np.arange(0, maxy, 1, dtype='float64') 
+#    z = np.arange(0, maxz, 1, dtype='float64')
+#    
+#    gridToVTK("testvtk", x, y, z, cellData = {"specinfc_real" : specinfc_pad[:,:,:,0].real, "specinfc_imaginary" : specinfc_pad[:,:,:,0].imag})

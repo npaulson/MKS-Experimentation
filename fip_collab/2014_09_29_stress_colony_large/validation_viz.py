@@ -13,102 +13,101 @@ import numpy as np
 import functions_polycrystal as rr
 import matplotlib.pyplot as plt
 
-def validation_zero_pad(el_large,ns_cal,ns_val,set_id_cal,set_id_val,step,comp,wrt_file):
 
-    start = time.time()
+def validation_zero_pad(el_cal,el_val,ns_cal,ns_val,H,set_id_cal,set_id_val,step,wrt_file):
 
-    ## el is the # of elements per side of the calibration cube 
-    el = 21
-    ## H is the number of GSH coefficients    
-    H = 15
+    for comp in xrange(9):
 
-    ## zero-pad the influence coefficients    
-    pre_specinfc = np.load('specinfc%s_%s%s_s%s.npy' %(comp,ns_cal,set_id_cal,step)) 
-    
-#    pre_specinfc = np.fft.ifftn(np.reshape(pre_specinfc,[el,el,el,H])).real
-    pre_specinfc = np.fft.ifftn(np.reshape(pre_specinfc,[el,el,el,H]))
-    
-    print 'pre_specinfc[1,1,1,:]'
-    print pre_specinfc[1,1,1,:]
-    print pre_specinfc[11,11,11,:]    
-    
-    h_comp = 12
-    plt.figure(num=1,figsize=[12,8])
-    dmin = np.amin(pre_specinfc[0,:,:,h_comp].real)
-    dmax = np.amax(pre_specinfc[0,:,:,h_comp].real)
-    
-    plt.subplot(221)
-    ax = plt.imshow(pre_specinfc[0,:,:,h_comp].real, origin='lower', interpolation='none',
-        cmap='jet', vmin=dmin, vmax=dmax)
-    plt.colorbar(ax)
-    plt.title('original influence coefficients')  
-    
-    
-    shift = np.floor(0.5*el).astype(int)
-    pre_specinfc = np.roll(np.roll(np.roll(pre_specinfc, shift, 0),shift,1),shift,2)   
-    edgeHvec = pre_specinfc[0,0,0,:]  
-    
-    print edgeHvec
+        start = time.time()
 
-    plt.subplot(222)
-    slc = np.floor(0.5*el).astype(int)
-    ax = plt.imshow(pre_specinfc[slc,:,:,h_comp].real, origin='lower', interpolation='none',
-        cmap='jet', vmin=dmin, vmax=dmax)
-    plt.colorbar(ax)
-    plt.title('centered influence coefficients')  
-    
-    specinfc_pad = np.zeros([el_large,el_large,el_large, H], dtype = 'complex64')
-
-#    for h in xrange(H):    
-#        specinfc_pad[:,:,:,h] = edgeHvec[h]
-    
-    specinfc_pad[:el,:el,:el,:] = pre_specinfc
-
-
-    plt.subplot(223)
-    slc = np.floor(0.5*el).astype(int)
-    ax = plt.imshow(specinfc_pad[slc,:,:,h_comp].real, origin='lower', interpolation='none',
-        cmap='jet', vmin=dmin, vmax=dmax)
-    plt.colorbar(ax)
-    plt.title('padded/centered influence coefficients')  
-   
-   
-    specinfc_pad = np.roll(np.roll(np.roll(specinfc_pad, -shift, 0),-shift,1),-shift,2)
-    print 'specinfc_pad[1,1,1,:]'    
-    print specinfc_pad[1,1,1,:]
+        ## zero-pad the influence coefficients    
+        pre_pre_specinfc = np.load('specinfc%s_%s%s_s%s.npy' %(comp,ns_cal,set_id_cal,step)) 
+        
+        pre_specinfc= np.zeros([el_cal,el_cal,el_cal,H],dtype='complex64')
      
-    plt.subplot(224)
-    ax = plt.imshow(specinfc_pad[0,:,:,h_comp].real, origin='lower', interpolation='none',
-        cmap='jet', vmin=dmin, vmax=dmax)
-    plt.colorbar(ax)
-    plt.title('padded influence coefficients')    
+        for h in xrange(H):
+            pre_specinfc[:,:,:,h] = np.fft.ifftn(np.reshape(pre_pre_specinfc[:,h],[el_cal,el_cal,el_cal]))
+        
+        h_comp = 1
+        plt.figure(num=1,figsize=[12,8])
+        dmin = np.amin(pre_specinfc[0,:,:,h_comp].real)
+        dmax = np.amax(pre_specinfc[0,:,:,h_comp].real)
+        
+        plt.subplot(221)
+        ax = plt.imshow(pre_specinfc[0,:,:,h_comp].real, origin='lower', interpolation='none',
+            cmap='jet', vmin=dmin, vmax=dmax)
+        plt.colorbar(ax)
+        plt.title('original influence coefficients')  
+        
+        pre_specinfc = np.fft.fftshift(pre_specinfc, axes = [0,1,2])    
+        
+    #    edgeHvec = pre_specinfc[0,0,0,:]  
     
+        plt.subplot(222)
+        slc = np.floor(0.5*el_cal).astype(int)
+        ax = plt.imshow(pre_specinfc[slc,:,:,h_comp].real, origin='lower', interpolation='none',
+            cmap='jet', vmin=dmin, vmax=dmax)
+        plt.colorbar(ax)
+        plt.title('centered influence coefficients')  
+        
+        specinfc_pad = np.zeros([el_val,el_val,el_val, H],dtype='complex64')
     
-    del pre_specinfc
+    #    for h in xrange(H):    
+    #        specinfc_pad[:,:,:,h] = edgeHvec[h]
     
-#    specinfc = np.reshape(np.fft.fftn(specinfc_pad, axes = [0,1,2]),[el_large**3,H])
-    specinfc = np.fft.fftn(specinfc_pad, axes = [0,1,2])
+        el_gap = int(0.5*(el_val-el_cal))
+        el_end = el_val - el_gap    
+        specinfc_pad[el_gap:el_end,el_gap:el_end,el_gap:el_end,:] = pre_specinfc    
+        del pre_specinfc
     
-    del specinfc_pad
-
-
-    ## perform the prediction procedure    
+        plt.subplot(223)
+        slc = np.floor(0.5*el_val).astype(int)
+        ax = plt.imshow(specinfc_pad[slc,:,:,h_comp].real, origin='lower', interpolation='none',
+            cmap='jet', vmin=dmin, vmax=dmax)
+        plt.colorbar(ax)
+        plt.title('padded/centered influence coefficients')  
+       
+       
+        specinfc_pad = np.fft.ifftshift(specinfc_pad, axes = [0,1,2])  
+         
+        plt.subplot(224)
+        ax = plt.imshow(specinfc_pad[0,:,:,h_comp].real, origin='lower', interpolation='none',
+            cmap='jet', vmin=dmin, vmax=dmax)
+        plt.colorbar(ax)
+        plt.title('padded influence coefficients')    
+       
+        
+        
+        specinfc = np.fft.fftn(specinfc_pad, axes = [0,1,2])       
+        
     
-    M = np.load('M_%s%s.npy' %(ns_val,set_id_val))
+        ## perform the prediction procedure    
+        
+        M = np.load('M_%s%s.npy' %(ns_val,set_id_val))
+        
+        mks_R = np.zeros([el_val,el_val,el_val,ns_val])
+        
+        for sn in xrange(ns_val):
+            mks_F = np.sum(np.conjugate(specinfc) * M[:,:,:,sn,:],3)
+            mks_R[:,:,:,sn] = np.fft.ifftn(mks_F).real
     
-    mks_R = np.zeros([el_large,el_large,el_large,ns_val])
+        
+        np.save('mksR%s_%s%s_step%s' %(comp,ns_val,set_id_val,step), mks_R)
     
-    for sn in xrange(ns_val):
-#        specinfc_sqr = np.reshape(specinfc,[el_large,el_large,el_large,H])
-#        mks_F = np.sum(np.conjugate(specinfc_sqr) * M[:,:,:,sn,:],3)
-        mks_F = np.sum(np.conjugate(specinfc) * M[:,:,:,sn,:],3)
-        mks_R[:,:,:,sn] = np.fft.ifftn(mks_F).real
-
+        end = time.time()
+        timeE = np.round((end - start),3)
     
-    np.save('mksR%s_%s%s_step%s' %(comp,ns_val,set_id_val,step), mks_R)
-
-    end = time.time()
-    timeE = np.round((end - start),3)
-
-    msg = 'validation performed for component %s: %s seconds' %(comp, timeE)
-    rr.WP(msg,wrt_file)
+        msg = 'validation performed: %s seconds' %timeE
+        rr.WP(msg,wrt_file)
+        
+        
+    #    # write to vtk file    
+    #    
+    #    from pyevtk.hl import gridToVTK    
+    #    
+    #    maxx = maxy = maxz = el_val + 1
+    #    x = np.arange(0, maxx, 1, dtype='float64')
+    #    y = np.arange(0, maxy, 1, dtype='float64') 
+    #    z = np.arange(0, maxz, 1, dtype='float64')
+    #    
+    #    gridToVTK("testvtk", x, y, z, cellData = {"specinfc_real" : specinfc_pad[:,:,:,0].real, "specinfc_imaginary" : specinfc_pad[:,:,:,0].imag})
