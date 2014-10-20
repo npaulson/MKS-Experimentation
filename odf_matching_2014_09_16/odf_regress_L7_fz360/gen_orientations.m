@@ -1,35 +1,40 @@
+%% Prepare GSH Coefficients for the optimization
+% Noah Paulson, Dipen Patel 2014-10-17
+%
+% Select orientations from the Hexagonal-Triclinic fundamental zone and
+% generate the set of GSH coefficients which each represent the ODF
+% function for a single orientation.
+
 %% Orientation Selection
 
 % v_phi1,V_phi,v_phi2: vectors which discretize the hexagonal fundamental
 % zone into a number of orienations
-% v_phi1 = linspace(0,2*pi(),41);
-% v_Phi = linspace(0,pi()/2,12);
-% v_phi2 = linspace(0,pi()/3,10);
-
-v_phi1 = linspace(0,2*pi(),20);
-v_Phi = linspace(0,pi()/2,7);
-v_phi2 = linspace(0,pi()/3,5);
+v_phi1 = linspace(0,2*pi(),15);
+v_Phi = linspace(0,pi()/2,6);
+v_phi2 = linspace(0,pi()/3,4);
 
 [X,Y,Z] = meshgrid(v_phi1,v_Phi,v_phi2);
+
 % ori: array containing bunge-euler angles for all trial orientations
 ori = [X(:), Y(:), Z(:)];
-% ori = [ori (1:length(ori))']
+
+% plot the selected orientations for phi1 vs. Phi and Phi vs. phi2
 close('all')
 
 figure(1)
 scatter(ori(:,1),ori(:,2),'.')
-axis equal
+xlabel phi1 ; ylabel Phi; axis equal;
 
 figure(2)
 scatter(ori(:,2),ori(:,3),'.')
-axis equal
+xlabel Phi ; ylabel phi2; axis equal;
 
 % ori_len: number of trial orientations
 N = length(ori(:,1));
 
 %% Read OIM coefficient file
 
-fileID = fopen('OIM_coeff_L04.txt','r');
+fileID = fopen('OIM_coeff_L07.txt','r');
 formatSpec = '%d %d %d %f %f';
 sizeA = [5, inf];
 A = fscanf(fileID,formatSpec,sizeA)';
@@ -56,40 +61,17 @@ for ii = 1:N
     gsh_res = gsh_hcp_tri_L_7(ori(ii,1),ori(ii,2),ori(ii,3))';
     
     for jj = 1:length(gsh_res)
-        %
+
         l = lvec(jj);
-        %
+
         K = (exp(-0.25*(l^2)*(w^2))-exp(-0.25*((l+1)^2)*(w^2)))/(1-exp(-0.25*w^2));
-        %
+        
         X_coeff(jj,ii) = (2*l+1)*K*gsh_res(jj);
-        %       X_coeff(jj,ii) = gsh_res(jj);
-        
-        
+%         X_coeff(jj,ii) = gsh_res(jj);
+
     end
 end
 
-save X_coeff.mat X_coeff % Corresponding GSH basis function evaluated at descrete orientation
+save orientations.mat ori % Save array of the orientations used in the optimization
+save X_coeff.mat X_coeff % Corresponding GSH basis function evaluated at discrete orientation
 save Y_coeff.mat Y_coeff % Target ODF
-
-%%
-% vol_frac: the vector of volume fractions from the regression
-% vol_frac = regress(Y_coeff,X_coeff);
-%
-% disp(vol_frac)
-
-%% Debug
-
-% for ii = 1
-%
-% %     gsh_res = GSH_Hexagonal_Triclinic(ori(ii,1),ori(ii,2),ori(ii,3))';
-%
-%     for jj = 1:length(gsh_res)
-%
-%         l = lvec(jj);
-%
-%         K = (exp(-0.25*(l^2)*(w^2))-exp(-0.25*((l+1)^2)*(w^2)))/(1-exp(-0.25*w^2));
-%
-%         temp = ((2*l+1)/N)*K
-%
-%     end
-% end

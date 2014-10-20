@@ -1,0 +1,126 @@
+---------------------------------------
+Begin PBS Prologue Thu Oct 16 20:18:30 EDT 2014
+Job ID:     171512.dedicated-sched.pace.gatech.edu
+User ID:    nhpnp3
+Job name:   odfmatching_L04_fz20
+Queue:      granulous
+End PBS Prologue Thu Oct 16 20:18:30 EDT 2014
+---------------------------------------
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2013 The MathWorks, Inc.
+                    R2013b (8.2.0.701) 64-bit (glnxa64)
+                              August 13, 2013
+
+ 
+To get started, type one of these: helpwin, helpdesk, or demo.
+For product information, visit www.mathworks.com.
+ 
+
+ans = 
+
+  fmincon options:
+
+   Options used by current Algorithm ('trust-region-reflective'):
+   (Other available algorithms: 'active-set', 'interior-point', 'sqp')
+
+   Set by user:
+     No options set by user.
+
+   Default:
+           Algorithm: 'trust-region-reflective'
+     DerivativeCheck: 'off'
+         Diagnostics: 'off'
+       DiffMaxChange: Inf
+       DiffMinChange: 0
+             Display: 'final'
+      FinDiffRelStep: 1.4901e-08
+         FinDiffType: 'forward'
+         FunValCheck: 'off'
+          GradConstr: 'off'
+             GradObj: 'off'
+            HessMult: []
+         HessPattern: 'sparse(ones(numberOfVariables))'
+             Hessian: 'off'
+         MaxFunEvals: '100*numberOfVariables'
+             MaxIter: 400
+          MaxPCGIter: 'max(1,floor(numberOfVariables/2))'
+           OutputFcn: []
+            PlotFcns: []
+    PrecondBandWidth: 0
+              TolCon: 1.0000e-06
+              TolFun: 1.0000e-06
+              TolPCG: 0.1000
+                TolX: 1.0000e-06
+            TypicalX: 'ones(numberOfVariables,1)'
+         UseParallel: 'never'
+
+   Options not used by current Algorithm ('trust-region-reflective')
+   Default:
+    AlwaysHonorConstraints: 'bounds'
+                   HessFcn: []
+          InitBarrierParam: 0.1000
+     InitTrustRegionRadius: 'sqrt(numberOfVariables)'
+             MaxProjCGIter: '2*(numberOfVariables-numberOfEqualities)'
+                MaxSQPIter: [1x61 char]
+            ObjectiveLimit: -1.0000e+20
+            RelLineSrchBnd: []
+    RelLineSrchBndDuration: 1
+              ScaleProblem: 'none'
+       SubproblemAlgorithm: 'ldl-factorization'
+                 TolConSQP: 1.0000e-06
+                 TolProjCG: 0.0100
+              TolProjCGAbs: 1.0000e-10
+
+
+[Warning: The default trust-region-reflective algorithm does not solve problems
+with the constraints you have specified. FMINCON will use the active-set
+algorithm instead. For information on applicable algorithms, see Choosing the
+Algorithm in the documentation.] 
+[> In fmincon at 501
+  In RunMe_print at 27] 
+[Warning: Your current settings will produce an error in a future release.] 
+[> In fmincon at 511
+  In RunMe_print at 27] 
+
+                                Max     Line search  Directional  First-order 
+ Iter F-count        f(x)   constraint   steplength   derivative   optimality Procedure 
+    0     21      3348.64     2.22e-16                                         
+    1     43       2950.5            0          0.5    -5.04e+03     2.48e+03   
+    2     65      2705.53    3.331e-16          0.5     -4.2e+03     3.31e+03   
+    3     86      2770.75     2.22e-16            1    -1.44e+03     1.67e+03   dependent
+    4    107      3792.94    1.388e-17            1    -3.11e+03     4.34e+03   
+    5    128      3383.16    2.776e-17            1    -7.06e+03     2.55e+03   
+    6    149      3047.07     2.22e-16            1    -5.98e+03     4.16e+03   
+    7    170      4299.75    5.551e-17            1    -4.11e+03     5.38e+03   
+    8    191      3955.61    4.441e-16            1    -1.03e+04     3.44e+03   
+    9    212      3525.26     2.22e-16            1    -7.58e+03     3.45e+03   
+   10    233      3316.93     2.22e-16            1    -6.54e+03     3.46e+03   
+   11    254      2813.16            0            1    -8.36e+03     1.08e+03   dependent
+   12    275      2632.39     2.22e-16            1    -3.34e+03          170   dependent
+   13    296      2627.08            0            1         -508         30.7   dependent
+   14    317      2627.01     2.22e-16            1        -73.8         1.25   dependent
+   15    338      2627.01     2.22e-16            1        -1.98       0.0203   dependent
+
+Local minimum possible. Constraints satisfied.
+
+fmincon stopped because the predicted change in the objective function
+is less than the default value of the function tolerance and constraints 
+are satisfied to within the default value of the constraint tolerance.
+
+
+
+No active inequalities.
+Elapsed time is 3.296902 seconds.
+>> ---------------------------------------
+Begin PBS Epilogue Thu Oct 16 20:18:40 EDT 2014
+Job ID:     171512.dedicated-sched.pace.gatech.edu
+User ID:    nhpnp3
+Job name:   odfmatching_L04_fz20
+Resources:  mem=8gb,neednodes=1:ppn=1,nodes=1:ppn=1,walltime=04:00:00
+Rsrc Used:  cput=00:00:07,mem=0kb,vmem=0kb,walltime=00:00:09
+Queue:      granulous
+Nodes:     
+iw-p31-25.pace.gatech.edu
+End PBS Epilogue Thu Oct 16 20:18:40 EDT 2014
+---------------------------------------

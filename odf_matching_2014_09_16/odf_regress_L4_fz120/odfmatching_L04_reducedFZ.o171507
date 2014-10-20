@@ -1,0 +1,173 @@
+---------------------------------------
+Begin PBS Prologue Thu Oct 16 19:48:07 EDT 2014
+Job ID:     171507.dedicated-sched.pace.gatech.edu
+User ID:    nhpnp3
+Job name:   odfmatching_L04_reducedFZ
+Queue:      granulous
+End PBS Prologue Thu Oct 16 19:48:07 EDT 2014
+---------------------------------------
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2013 The MathWorks, Inc.
+                    R2013b (8.2.0.701) 64-bit (glnxa64)
+                              August 13, 2013
+
+ 
+To get started, type one of these: helpwin, helpdesk, or demo.
+For product information, visit www.mathworks.com.
+ 
+
+ans = 
+
+  fmincon options:
+
+   Options used by current Algorithm ('trust-region-reflective'):
+   (Other available algorithms: 'active-set', 'interior-point', 'sqp')
+
+   Set by user:
+     No options set by user.
+
+   Default:
+           Algorithm: 'trust-region-reflective'
+     DerivativeCheck: 'off'
+         Diagnostics: 'off'
+       DiffMaxChange: Inf
+       DiffMinChange: 0
+             Display: 'final'
+      FinDiffRelStep: 1.4901e-08
+         FinDiffType: 'forward'
+         FunValCheck: 'off'
+          GradConstr: 'off'
+             GradObj: 'off'
+            HessMult: []
+         HessPattern: 'sparse(ones(numberOfVariables))'
+             Hessian: 'off'
+         MaxFunEvals: '100*numberOfVariables'
+             MaxIter: 400
+          MaxPCGIter: 'max(1,floor(numberOfVariables/2))'
+           OutputFcn: []
+            PlotFcns: []
+    PrecondBandWidth: 0
+              TolCon: 1.0000e-06
+              TolFun: 1.0000e-06
+              TolPCG: 0.1000
+                TolX: 1.0000e-06
+            TypicalX: 'ones(numberOfVariables,1)'
+         UseParallel: 'never'
+
+   Options not used by current Algorithm ('trust-region-reflective')
+   Default:
+    AlwaysHonorConstraints: 'bounds'
+                   HessFcn: []
+          InitBarrierParam: 0.1000
+     InitTrustRegionRadius: 'sqrt(numberOfVariables)'
+             MaxProjCGIter: '2*(numberOfVariables-numberOfEqualities)'
+                MaxSQPIter: [1x61 char]
+            ObjectiveLimit: -1.0000e+20
+            RelLineSrchBnd: []
+    RelLineSrchBndDuration: 1
+              ScaleProblem: 'none'
+       SubproblemAlgorithm: 'ldl-factorization'
+                 TolConSQP: 1.0000e-06
+                 TolProjCG: 0.0100
+              TolProjCGAbs: 1.0000e-10
+
+
+[Warning: The default trust-region-reflective algorithm does not solve problems
+with the constraints you have specified. FMINCON will use the active-set
+algorithm instead. For information on applicable algorithms, see Choosing the
+Algorithm in the documentation.] 
+[> In fmincon at 501
+  In RunMe_print at 27] 
+[Warning: Your current settings will produce an error in a future release.] 
+[> In fmincon at 511
+  In RunMe_print at 27] 
+
+                                Max     Line search  Directional  First-order 
+ Iter F-count        f(x)   constraint   steplength   derivative   optimality Procedure 
+    0    121       464.37     1.11e-15                                         
+    1    243      787.918    4.441e-16          0.5    -3.72e+03     6.12e+03   
+    2    365      938.111    4.441e-16          0.5    -3.88e+03     4.98e+03   
+    3    486       3962.3    1.527e-16            1    -6.19e+03     8.18e+03   
+    4    608      1769.98     6.79e-17          0.5    -1.26e+04     5.83e+03   
+    5    729      1751.84     2.22e-16            1     -1.1e+04     1.28e+04   
+    6    851      826.317    4.441e-16          0.5    -7.01e+03     5.71e+03   
+    7    974      263.695     2.22e-16         0.25    -1.43e+04     8.61e+03   
+    8   1097      109.622     9.14e-17         0.25    -2.97e+03     1.54e+03   
+    9   1220      50.5922     1.11e-16         0.25    -1.88e+03     1.29e+03   
+   10   1344      31.5955     1.11e-16        0.125    -1.11e+03      1.1e+03   
+   11   1469       25.695    6.556e-17       0.0625         -744     1.41e+03   
+   12   1593      19.1642     1.11e-16        0.125         -770          411   
+   13   1717      15.0463     2.22e-16        0.125         -568          519   
+   14   1840      21.4862    1.895e-17         0.25         -667          834   
+   15   1965      19.5278     2.22e-16       0.0625         -232          904   
+   16   2086      1114.34    5.204e-17            1         -829     3.36e+03   
+   17   2207      756.578    2.039e-16            1    -6.25e+03     2.39e+03   
+   18   2328      722.364    6.661e-16            1    -6.52e+03     3.21e+03   
+   19   2449      2009.74     1.11e-16            1    -6.13e+03     4.17e+03   
+   20   2570      1254.38    2.943e-16            1    -1.11e+04     4.21e+03   
+   21   2691      939.405    3.331e-16            1    -7.78e+03     4.02e+03   
+   22   2812       1186.9     2.22e-16            1    -5.89e+03     3.83e+03   
+   23   2933      590.392    2.782e-16            1    -7.88e+03     3.44e+03   
+   24   3054      2635.53     2.22e-16            1    -5.04e+03     6.38e+03   
+   25   3175      882.887    4.441e-16            1    -1.12e+04     3.25e+03   
+   26   3297      190.353    3.331e-16          0.5    -7.23e+03     7.68e+03   
+   27   3420      122.841    3.331e-16         0.25    -2.85e+03      6.6e+03   
+   28   3543      65.2503    4.441e-16         0.25    -2.12e+03     1.92e+03   
+   29   3666      47.8157    1.221e-15         0.25         -901     1.18e+03   
+   30   3787      979.944     7.98e-17            1    -1.41e+03     3.34e+03   
+   31   3908      150.719    3.331e-16            1    -5.41e+03          763   
+   32   4030      161.294     1.11e-16          0.5    -1.59e+03     1.46e+03   
+   33   4152      95.4648     1.11e-15          0.5    -1.93e+03     1.79e+03   
+   34   4273        446.7    4.441e-16            1    -1.83e+03     1.85e+03   
+   35   4394       386.57     2.22e-16            1    -3.51e+03     3.44e+03   
+   36   4515      813.074    8.259e-17            1    -3.31e+03     3.93e+03   
+   37   4636       308.42     2.22e-16            1    -5.17e+03     1.64e+03   
+   38   4758      59.9316    7.772e-16          0.5    -3.38e+03     3.06e+03   
+   39   4879       208.47    1.185e-16            1    -1.05e+03     1.88e+03   
+   40   5000       180.76     2.22e-16            1    -1.61e+03     2.72e+03   
+   41   5122      105.699     3.97e-17          0.5    -2.02e+03     3.23e+03   
+   42   5245      37.9076    3.331e-16         0.25    -1.75e+03     2.52e+03   
+   43   5366      594.948    3.212e-16            1    -1.17e+03     2.85e+03   
+   44   5487      95.8056    5.898e-17            1    -3.72e+03     2.28e+03   
+   45   5609       59.815    3.331e-16          0.5    -1.29e+03     2.09e+03   
+   46   5731       22.512    1.332e-15          0.5         -933     1.69e+03   
+   47   5852      290.104     1.11e-16            1         -717     3.07e+03   
+   48   5973      113.918     1.11e-16            1    -2.26e+03     2.28e+03   
+   49   6095      54.0036    3.293e-17          0.5     -1.4e+03     1.39e+03   
+   50   6217      30.3347    2.986e-17          0.5         -686     1.32e+03   
+   51   6340      8.28324    3.331e-16         0.25         -723     1.44e+03   
+   52   6461      47.1788     2.22e-16            1         -147          881   
+   53   6584      29.3781     1.11e-16         0.25         -587          530   
+   54   6706      24.7992     1.11e-16          0.5         -670     2.02e+03   
+   55   6829      15.0985    4.681e-17         0.25         -297          469   
+   56   6951      14.1008     2.22e-16          0.5         -359     1.26e+03   
+   57   7072     0.397425    5.551e-16            1         -140          613   
+   58   7193    0.0868555     2.22e-16            1        -4.59          224   
+   59   7314   0.00139564    3.331e-16            1        -1.61          144   
+   60   7435   0.00101071     2.22e-16            1       -0.146         12.4   
+   61   7556   2.9345e-06     2.22e-16            1       -0.122         4.47   
+   62   7677  3.64294e-07     1.11e-16            1     -0.00433        0.306   
+
+Local minimum possible. Constraints satisfied.
+
+fmincon stopped because the predicted change in the objective function
+is less than the default value of the function tolerance and constraints 
+are satisfied to within the default value of the constraint tolerance.
+
+
+
+No active inequalities.
+Elapsed time is 17.751254 seconds.
+>> ---------------------------------------
+Begin PBS Epilogue Thu Oct 16 19:48:31 EDT 2014
+Job ID:     171507.dedicated-sched.pace.gatech.edu
+User ID:    nhpnp3
+Job name:   odfmatching_L04_reducedFZ
+Resources:  mem=8gb,neednodes=1:ppn=1,nodes=1:ppn=1,walltime=04:00:00
+Rsrc Used:  cput=00:00:21,mem=0kb,vmem=0kb,walltime=00:00:24
+Queue:      granulous
+Nodes:     
+iw-p31-25.pace.gatech.edu
+End PBS Epilogue Thu Oct 16 19:48:31 EDT 2014
+---------------------------------------

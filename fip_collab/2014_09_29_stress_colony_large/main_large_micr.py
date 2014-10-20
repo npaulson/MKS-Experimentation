@@ -12,6 +12,8 @@ import microstructure_function as msf
 import validation_viz
 import results
 import matplotlib.pyplot as plt
+import numpy as np
+import functions_polycrystal as rr
 
 plt.close('all')
 
@@ -19,7 +21,7 @@ el_cal = 21
 ns_cal = 200
 set_id_cal = 'cal'
 
-el_val = 39
+el_val = 75
 ns_val = 1
 set_id_val = 'val%sel' % el_val
 
@@ -38,6 +40,8 @@ for step in xrange(1,2):
     ## if tensorID == 2, we read the plastic strain tensor 
     
     tensor_ID = 0
+
+    start = time.time()
     
     if step == 1:
         
@@ -61,6 +65,12 @@ for step in xrange(1,2):
     
     comp = 0     
     validation_viz.validation_zero_pad(el_cal,el_val,ns_cal,ns_val,H,set_id_cal,set_id_val,step,wrt_file)
+    
+    end = time.time()
+    
+    timeE = np.round(end-start,3)
+    msg = 'total validation time: %s' %timeE
+    rr.WP(msg,wrt_file)
     
     results.results_all(el_val, ns_val,set_id_val,step,'sigma')
         
