@@ -1,0 +1,44 @@
+# TEM_PIXperUM          1.000000
+# x-star                0.490200
+# y-star                0.715300
+# z-star                0.662200
+# WorkingDistance       20.000000
+#
+# Phase 1
+# MaterialName  	Titanium (Alpha)
+# Formula     	Ti
+# Info 		
+# Symmetry              62
+# LatticeConstants      2.950 2.950 4.680  90.000  90.000 120.000
+# NumberFamilies        8
+# hklFamilies   	 1  0  0 1 0.000000 1
+# hklFamilies   	 0  0  2 1 0.000000 1
+# hklFamilies   	 1  0  1 1 0.000000 1
+# hklFamilies   	 1  0  2 1 0.000000 1
+# hklFamilies   	 1  1  0 1 0.000000 1
+# hklFamilies   	 1  0  3 1 0.000000 1
+# hklFamilies   	 1  1  2 1 0.000000 1
+# hklFamilies   	 2  0  1 1 0.000000 1
+# ElasticConstants 	-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 -1.000000
+# ElasticConstants 	-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 -1.000000
+# ElasticConstants 	-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 -1.000000
+# ElasticConstants 	-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 -1.000000
+# ElasticConstants 	-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 -1.000000
+# ElasticConstants 	-1.000000 -1.000000 -1.000000 -1.000000 -1.000000 -1.000000
+# Categories0 0 0 0 0 
+#
+# GRID: SqrGrid
+# XSTEP: 1.000000
+# YSTEP: 1.000000
+# NCOLS_ODD: ?
+# NCOLS_EVEN: ?
+# NROWS: 1
+#
+# INFO: 200000kv BI 20 WD 19.96
+#
+# OPERATOR: 	Noah Paulson
+#
+# SAMPLEID: 	Ti64 B anneal Z norm
+#
+# SCANID: 	
+#

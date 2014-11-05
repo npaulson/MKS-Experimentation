@@ -31,3 +31,24 @@ Y_coeff = Y_coeff(indYl,:);
 errvec = 100*(abs(X_coeff*x - Y_coeff)./abs(Y_coeff));
 % measure of the average error over all coefficients
 errmeas = mean(errvec);
+
+%% Convert Volume Fractions to MRD (Multiples of a Random Distribution)
+
+load orientations
+
+phi1max = max(ori(:,1)); 
+Phimax = max(ori(:,2));
+phi2max = max(ori(:,3));
+
+orivol = phi1max * Phimax * phi2max;
+
+phi1unique = length(unique(ori(:,1)));
+Phiunique = length(unique(ori(:,2))); 
+phi2unique = length(unique(ori(:,3)));
+
+phi1del = phi1max/(phi1unique-1);
+Phidel = Phimax/(Phiunique-1);
+phi2del = phi2max/(phi2unique-1);
+
+mrd = (orivol * x)./(phi1del*phi2del*(cos(ori(:,2) - 0.5*Phidel)-cos(ori(:,2) + 0.5*Phidel)));
+

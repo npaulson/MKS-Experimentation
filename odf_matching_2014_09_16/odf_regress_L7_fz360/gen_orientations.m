@@ -9,9 +9,17 @@
 
 % v_phi1,V_phi,v_phi2: vectors which discretize the hexagonal fundamental
 % zone into a number of orienations
-v_phi1 = linspace(0,2*pi(),15);
-v_Phi = linspace(0,pi()/2,6);
-v_phi2 = linspace(0,pi()/3,4);
+phi1max = 2*pi();
+v_phi1 = linspace(0,phi1max,15);
+v_phi1 = 0.5*(v_phi1(2) - v_phi1(1)) + v_phi1(1:end-1);
+
+Phimax = pi()/2;
+v_Phi = linspace(0,Phimax,6);
+v_Phi = 0.5*(v_Phi(2) - v_Phi(1)) + v_Phi(1:end-1);
+
+phi2max = pi()/3;
+v_phi2 = linspace(0,phi2max,4);
+v_phi2 = 0.5*(v_phi2(2) - v_phi2(1)) + v_phi2(1:end-1);
 
 [X,Y,Z] = meshgrid(v_phi1,v_Phi,v_phi2);
 
@@ -23,11 +31,13 @@ close('all')
 
 figure(1)
 scatter(ori(:,1),ori(:,2),'.')
-xlabel phi1 ; ylabel Phi; axis equal;
+xlabel /phi1 ; ylabel /Phi; axis equal;
+axis([0 phi1max 0 Phimax])
 
 figure(2)
-scatter(ori(:,2),ori(:,3),'.')
-xlabel Phi ; ylabel phi2; axis equal;
+scatter(ori(:,1),ori(:,3),'.')
+xlabel /phi1 ; ylabel /phi2; axis equal;
+axis([0 phi1max 0 phi2max])
 
 % ori_len: number of trial orientations
 N = length(ori(:,1));
@@ -49,7 +59,7 @@ lvec = A(:,1);
 
 % w: "half width of the gaussian peak located at the orientation g_i" OIM
 % software (is this the same as the Gaussian Smoothing angle?)
-w = 2.5 * (pi()/180);
+w = 5 * (pi()/180);
 
 % Y_coeff: vector of the coefficients used
 Y_coeff = A(:,4) + A(:,5)*1i;

@@ -1,0 +1,11 @@
+#PBS -N odfmatching_L07_newFZ360
+#PBS -l nodes=1:ppn=1
+#PBS -l mem=8gb
+#PBS -l walltime=08:00:00
+#PBS -q granulous
+#PBS -k oe
+
+module load matlab/r2013b
+
+cd /panfs/iw-scratch.pace.gatech.edu/v7/nhpnp3/odf_regress_L7_newfz360
+matlab -nodisplay -singleCompThread -r RunMe_print

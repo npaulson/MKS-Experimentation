@@ -27,8 +27,8 @@ def results_all(el,ns,set_id,step,typ):
     resp = np.zeros([el,el,el,10,ns])      
     
     for comp in xrange(9):
-        mks_R[:,:,:,comp,:] = np.load('mksR%s_%s%s_step%s.npy' %(comp,ns,set_id,step))
-        resp[:,:,:,comp,:] = np.load('r%s_%s%s_s%s.npy' %(comp,ns,set_id,step))
+        mks_R[:,:,:,comp,:] = np.load('r%s_%s%s_s%s.npy' %(comp,ns,set_id_old,step))
+        resp[:,:,:,comp,:] = np.load('r%s_%s%s_s%s.npy' %(comp,ns,set_id_new,step))
     
     resp[:,:,:,9,:] = np.sqrt( 0.5*( (resp[:,:,:,0,:]-resp[:,:,:,4,:])**2 +(resp[:,:,:,4,:]-resp[:,:,:,8,:])**2 + (resp[:,:,:,8,:]-resp[:,:,:,0,:])**2 + 6*(resp[:,:,:,5,:]**2 + resp[:,:,:,6,:]**2 + resp[:,:,:,1,:]**2) ) )
     mks_R[:,:,:,9,:] = np.sqrt( 0.5*( (mks_R[:,:,:,0,:]-mks_R[:,:,:,4,:])**2 +(mks_R[:,:,:,4,:]-mks_R[:,:,:,8,:])**2 + (mks_R[:,:,:,8,:]-mks_R[:,:,:,0,:])**2 + 6*(mks_R[:,:,:,5,:]**2 + mks_R[:,:,:,6,:]**2 + mks_R[:,:,:,1,:]**2) ) )
