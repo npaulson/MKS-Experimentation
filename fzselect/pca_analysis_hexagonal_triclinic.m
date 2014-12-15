@@ -1,3 +1,5 @@
+%% Written by Noah Paulson 11/21/2014
+
 % v_phi1 = linspace(0,2*pi(),12);
 % v_Phi = linspace(0,pi()/2,8);
 v_phi1 = linspace(0,2*pi(),24);

@@ -3,20 +3,19 @@ clc
 close all
 
 % number of elements per side
-el=25;
+el=21;
 % this is the number of total samples
-ns=5;
+ns=1;
 
-set_id = 'val25el';
+set_id = 'perfplast';
 
 % % load 21ws_cont50_ms.mat
 % % M=[Mcal Mval];
-% 
-% % creating microstructures
-% M=zeros(el^3,ns);
+% % % creating microstructures
+M=zeros(el^3,ns);
 % % the first and last are delta microstructes
 % M(:,end)=ones(el^3,1);
-% M(4631,1)=1;
+M(4631,1)=1;
 % M(4631,end)=0;
 % % M(:,3:na)=round(rand(el^3,na-2));
 % 
@@ -33,11 +32,11 @@ set_id = 'val25el';
 %     
 % end
 
-% 50% volume fraction validation dataset
-M = zeros(el^3,ns);
-for sn = 1 : ns
-    M(:,sn) = round(rand(el^3,1));
-end
+% % 50% volume fraction validation dataset
+% M = zeros(el^3,ns);
+% for sn = 1 : ns
+%     M(:,sn) = round(rand(el^3,1));
+% end
 
 %%
 filename = ['M_',int2str(ns),set_id,'.mat'];

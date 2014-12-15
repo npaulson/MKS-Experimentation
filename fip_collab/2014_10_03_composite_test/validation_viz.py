@@ -20,12 +20,9 @@ def validation_zero_pad(el_cal,el_val,ns_cal,ns_val,H,set_id_cal,set_id_val,wrt_
     start = time.time()
 
     ## zero-pad the influence coefficients    
-    pre_pre_specinfc = np.load('specinfc_%s%s.npy' %(ns_cal,set_id_cal)) 
-    
-    pre_specinfc= np.zeros([el_cal,el_cal,el_cal,H],dtype='complex64')
- 
-    for h in xrange(H):
-        pre_specinfc[:,:,:,h] = np.fft.ifftn(np.reshape(pre_pre_specinfc[:,h],[el_cal,el_cal,el_cal]))
+    pre_specinfc = np.load('specinfc_%s%s.npy' %(ns_cal,set_id_cal)) 
+    pre_specinfc = np.reshape(pre_specinfc,[el_cal,el_cal,el_cal,H])
+    pre_specinfc = np.fft.ifftn(pre_specinfc,[el_cal,el_cal,el_cal],[0,1,2])
     
     h_comp = 0
     plt.figure(num=1,figsize=[12,8])
@@ -86,9 +83,21 @@ def validation_zero_pad(el_cal,el_val,ns_cal,ns_val,H,set_id_cal,set_id_val,wrt_
     
     mks_R = np.zeros([el_val,el_val,el_val,ns_val])
     
+    
     for sn in xrange(ns_val):
         mks_F = np.sum(np.conjugate(specinfc) * M[:,:,:,sn,:],3)
         mks_R[:,:,:,sn] = np.fft.ifftn(mks_F).real
+    
+#    print M.shape
+#    temp = np.swapaxes(M,0,3)
+#    print temp.shape
+#    mks_R = np.sum(np.conjugate(specinfc) * temp, 4)
+#    print mks_R.shape
+#    mks_R = np.swapaxes(mks_R,0,3)
+#    print mks_R.shape     
+#    mks_R = np.fft.ifftn(mks_R,[el_val,el_val,el_val],[0,1,2]).real
+#    print mks_R.shape    
+ 
 
     
     np.save('mksR_%s%s' %(ns_val,set_id_val), mks_R)

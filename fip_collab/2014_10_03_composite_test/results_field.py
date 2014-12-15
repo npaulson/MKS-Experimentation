@@ -25,7 +25,6 @@ def results(el,ns,set_id,typ):
     slc = 11
     sn = 2
 
-
     ## Plot slices of the response
     plt.figure(num=2,figsize=[12,4])
     
@@ -47,3 +46,5 @@ def results(el,ns,set_id,typ):
     print np.std(resp)
     
  
+if __name__ == '__main__':
+    results(25,5,'val25el','sigma')

@@ -27,7 +27,6 @@ el_cal = 21
 ns_cal = 50
 set_id_cal = 'cal'
 
-
 ## Read the calibration microstructures and build the microstructure function
 msf.msf(el_cal,ns_cal,H,set_id_cal,wrt_file)
 

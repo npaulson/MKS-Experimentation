@@ -8,10 +8,9 @@ import numpy as np
 
 def GSH_Hexagonal_Triclinic(e_angles):
 
-    phi1 = e_angles[0]
-    Phi = e_angles[1]  
-    phi2 = e_angles[2]        
-    
+    phi1 = e_angles[0] % (2*np.pi)
+    Phi = e_angles[1] % (0.5*np.pi) 
+    phi2 = e_angles[2] % ((1./3.)*np.pi)           
     
     if abs(Phi) < 10e-17:
         lil_num = 1e-7
@@ -74,7 +73,10 @@ def GSH_Hexagonal_Triclinic(e_angles):
     Tsym=np.conj(Tsym)
     
     return Tsym
-    
+ 
+if __name__ == '__main__':
+    GSH_Hexagonal_Triclinic([4*np.pi,0.75*np.pi,0.5*np.pi])
+   
 
 def GSH_Cubic_Triclinic(e_angles):
     

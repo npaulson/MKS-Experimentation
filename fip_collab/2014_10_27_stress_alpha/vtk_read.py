@@ -11,7 +11,7 @@ import time
 import os
 
 
-def read_euler(ns, set_id, step, vtk_filename, newdir, wrt_file):
+def read_euler(ns, set_id, step, vtk_filename, newdir, wrt_file, funit):
 
     start = time.time()        
     
@@ -21,13 +21,26 @@ def read_euler(ns, set_id, step, vtk_filename, newdir, wrt_file):
     euler = np.zeros([el**3,ns,3])
 
     ## change to directory with the .vtk files    
-    cwd = os.getcwd()
-#    os.chdir(cwd + '\\' + newdir)
-    os.chdir(cwd + '/' + newdir) #for unix 
-    
-    for sn in xrange(ns):
-        l_sn = str(sn+1).zfill(5)  
-        euler[:,sn,:] = rr.read_vtk_vector(filename = vtk_filename %l_sn)
+#    cwd = os.getcwd()
+##    os.chdir(cwd + '\\' + newdir)
+#    os.chdir(cwd + '/' + newdir) #for unix 
+#    
+#    for sn in xrange(ns):
+#        l_sn = str(sn+1).zfill(5)  
+#        euler[:,sn,:] = rr.read_vtk_vector(filename = vtk_filename %l_sn)
+
+#    nwd = os.getcwd() + '\\' + newdir
+    nwd = os.getcwd() + '/' + newdir #for unix 
+    os.chdir(nwd)
+
+    sn = 0    
+    for filename in os.listdir(nwd):
+        if filename.endswith('%s.vtk' %step):  
+            euler[:,sn,:] = rr.read_vtk_vector(filename = filename)
+            sn += 1 
+
+    if funit == 1:
+        euler = euler * (np.pi/180.)
 
     ## return to the original directory
     os.chdir('..')
@@ -52,19 +65,34 @@ def read_meas(ns, set_id, step, comp, vtk_filename, tensor_id, newdir, wrt_file)
     r_real = np.zeros([el,el,el,ns])
     
     ## change to directory with the .vtk files
-    cwd = os.getcwd()
-#    os.chdir(cwd + '\\' + newdir)    
-    os.chdir(cwd + '/' + newdir) #for unix    
+#    cwd = os.getcwd()
+##    os.chdir(cwd + '\\' + newdir)    
+#    os.chdir(cwd + '/' + newdir) #for unix    
+#
+#    compd = {'11':0,'22':4,'33':8,'12':1,'23':5,'31':6}    
+#    compp = compd[comp]    
+#    print compp    
+#
+#    for sn in xrange(ns):
+#        l_sn = str(sn+1).zfill(5)  
+#        r_temp = rr.read_vtk_tensor(filename = vtk_filename %l_sn, tensor_id = tensor_id, comp = compp)
+#        r_real[:,:,:,sn] = np.swapaxes(np.reshape(np.flipud(r_temp), [el,el,el]),1,2)
+    
+    
+#    nwd = os.getcwd() + '\\' + newdir
+    nwd = os.getcwd() + '/' + newdir #for unix 
+    os.chdir(nwd)
 
     compd = {'11':0,'22':4,'33':8,'12':1,'23':5,'31':6}    
     compp = compd[comp]    
-    print compp    
 
-    for sn in xrange(ns):
-        l_sn = str(sn+1).zfill(5)  
-        r_temp = rr.read_vtk_tensor(filename = vtk_filename %l_sn, tensor_id = tensor_id, comp = compp)
-        r_real[:,:,:,sn] = np.swapaxes(np.reshape(np.flipud(r_temp), [el,el,el]),1,2)
-
+    sn = 0    
+    for filename in os.listdir(nwd):
+        if filename.endswith('%s.vtk' %step):  
+            r_temp = rr.read_vtk_tensor(filename = filename, tensor_id = tensor_id, comp = compp)
+            r_real[:,:,:,sn] = np.swapaxes(np.reshape(np.flipud(r_temp), [el,el,el]),1,2)
+            sn += 1             
+            
     ## return to the original directory    
     os.chdir('..')    
     

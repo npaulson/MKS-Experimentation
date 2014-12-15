@@ -18,19 +18,15 @@ def msf(el,ns,H,set_id,wrt_file):
     start = time.time()    
     
     ## import microstructures
-    pre_micr = np.zeros([el**3,ns,H], dtype = 'complex128')
+    pre_micr = np.zeros([el**3,ns,H])
     microstructure = sio.loadmat('M_%s%s.mat' %(ns,set_id))['M']
     
     for h in xrange(H):
-        pre_micr[:,:,h] = (microstructure == h).astype(int)
+        pre_micr[...,h] = (microstructure == h).astype(int)
     
     del microstructure
 
-    micr = np.zeros([el,el,el,ns,H], dtype = 'complex128')
-    for h in xrange(H):
-        for sn in range(ns):    
-            micr[:,:,:,sn,h] = np.swapaxes(np.reshape(np.flipud
-                                    (pre_micr[:,sn,h]), [el,el,el]),1,2)
+    micr = np.swapaxes(pre_micr[::-1,...].reshape([el,el,el,ns,H]),1,2)    
     
     del pre_micr    
 
@@ -44,7 +40,7 @@ def msf(el,ns,H,set_id,wrt_file):
     ## Microstructure functions in frequency space
     start = time.time()
     
-    M = np.fft.fftn(micr, axes = [0,1,2])
+    M = np.fft.fftn(micr, axes = [0,1,2])    
     del micr
     size = M.nbytes
     np.save('M_%s%s' %(ns,set_id),M)

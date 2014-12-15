@@ -40,6 +40,7 @@ def calib(k,M,r_fft,p,H,el,ns):
     for n in xrange(ns-1):
 
         mSQ = np.array(M[u,v,w,n,:])     
+
         mSQc = np.conj(mSQ)        
         
         MM += np.outer(mSQ, mSQc)
