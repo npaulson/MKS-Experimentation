@@ -10,7 +10,7 @@ the microstructure function in real and frequency space.
 
 import time
 import numpy as np
-import functions_composite as rr
+import functions as rr
 import scipy.io as sio
 
 def msf(el,ns,H,set_id,wrt_file):
@@ -18,17 +18,12 @@ def msf(el,ns,H,set_id,wrt_file):
     start = time.time()    
     
     ## import microstructures
-    pre_micr = np.zeros([el**3,ns,H])
-    microstructure = sio.loadmat('M_%s%s.mat' %(ns,set_id))['M']
-    
-    for h in xrange(H):
-        pre_micr[...,h] = (microstructure == h).astype(int)
-    
-    del microstructure
+    tmp = sio.loadmat('micr_H%s_%s.mat' %(H,set_id))['gshS']
+    tmp = np.swapaxes(np.swapaxes(tmp,0,2),0,1)
 
-    micr = np.swapaxes(pre_micr[::-1,...].reshape([el,el,el,ns,H]),1,2)    
+    micr = tmp.reshape([ns,H,el,el,el])    
     
-    del pre_micr    
+    del tmp
 
     np.save('msf_%s%s' %(ns,set_id),micr)
     
@@ -40,7 +35,7 @@ def msf(el,ns,H,set_id,wrt_file):
     ## Microstructure functions in frequency space
     start = time.time()
     
-    M = np.fft.fftn(micr, axes = [0,1,2])    
+    M = np.fft.fftn(micr, axes = [2,3,4])    
     del micr
     size = M.nbytes
     np.save('M_%s%s' %(ns,set_id),M)

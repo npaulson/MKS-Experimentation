@@ -39,12 +39,12 @@ def calib(k,M,r_fft,p,H,el,ns):
     
     for n in xrange(ns-1):
 
-        mSQ = np.array(M[u,v,w,n,:])     
+        mSQ = np.array(M[n,:,u,v,w])     
 
         mSQc = np.conj(mSQ)        
         
         MM += np.outer(mSQ, mSQc)
-        PM += np.dot(r_fft[u,v,w,n],mSQc)
+        PM += np.dot(r_fft[n,u,v,w],mSQc)
  
     if k < 2:
         p = independent_columns(MM, .001)
@@ -59,28 +59,6 @@ def calib(k,M,r_fft,p,H,el,ns):
         return specinfc_k, p
     else:
         return specinfc_k
-
-
-def eval_meas(mks_R_indv,resp_indv,el):
-    """
-    Summary: Calculates the MASE and average error
-    Inputs:
-        mks_R ([el,el,el],float): The response predicted by the MKS for
-        validation microstructures
-        resp ([el,el,el],float): the FEM responses of all microstructures
-        el (int): The number of elements per side of the 'cube'
-    Outputs:
-        avgE (float): The average strain value for the microstructure
-        MASE (float): Mean Absolute Square Error
-    """
-    avgr_mks = np.average(mks_R_indv)
-    avgr_fe= np.average(resp_indv)
-    MASE = 0
-    for k in xrange(el**3):
-        [u,v,w] = np.unravel_index(k,[el,el,el])
-        MASE += ((np.abs(resp_indv[u,v,w] - mks_R_indv[u,v,w]))/(avgr_fe * el**3))
-        
-    return avgr_fe,avgr_mks, MASE
 
 
 def independent_columns(A, tol = 1e-05):
@@ -103,7 +81,7 @@ def independent_columns(A, tol = 1e-05):
     return independent
 
 
-def res_red(filename,el,sn):
+def res_red(ori_mat,filename,el,sn):
     """
     Summary:    
         This function reads the E11 values from a .dat file and reorganizes
@@ -113,9 +91,11 @@ def res_red(filename,el,sn):
     Inputs:
         filename (string): the name of the '.dat' file containing the 
         FEM response
+        ori_mat ([3,3,el^3,ns],float): an array containing the orientation
+        matrices (g) for each spatial location of each RVE in the set      
         el (int): the number of elements per side of the microstructure cube
     Outputs:
-        r_mat ([el,el,el],float): the FEM response of the '.dat' file of
+        Emat ([el,el,el],float): the FEM response of the '.dat' file of
         interest
     """
     f = open(filename, "r")
@@ -131,26 +111,41 @@ def res_red(filename,el,sn):
     # line0 is the index of first line of the data
     line0 = ln + 5;      
 
-    r_mat = np.zeros([el**3,8])
+    E = np.zeros((21**3,8,6))
     c = -1
 
     # this series of loops generates a 9261x8 dataset of E11s (element x integration point) 
-    for k in xrange(el**3):
+    for k in xrange(21**3):
         for jj in xrange(8):
             c += 1                        
-            r_mat[k,jj] = linelist[line0 + c].split()[2]
+            E[k,jj,:] = linelist[line0 + c].split()[3:]
     
     f.close()    
     
     # here we average all 8 integration points in each element cell
-    r_mat = np.mean(r_mat, axis=1)
+    E = np.mean(E, axis=1)
     
-    # here we reshape the data from a 9261 length vector to a 21x21x21 3D matrix       
-    r_mat = np.swapaxes(np.reshape(np.flipud(r_mat), [el,el,el]),1,2)
+    Etot = np.zeros([el**3,6])
+    # here we convert the strain tensor at each location from crystal to 
+    # sample frame
+    for k in xrange(21**3):
+        # E_ten_cry is the strain tensor at the spatial location of interest
+        # in the crystal frame
+        E_ten_cry = np.array([[    E[k,0], 0.5*E[k,3], 0.5*E[k,4]],
+                              [0.5*E[k,3],     E[k,1], 0.5*E[k,5]],
+                              [0.5*E[k,4], 0.5*E[k,5],     E[k,2]]])
+        # Here we convert from crystal to sample frame
+        E_ten_samp = np.dot(ori_mat[:,:,k,sn].T ,np.dot(E_ten_cry,ori_mat[:,:,k,sn]))
+                
+#        Etot[k] = E_ten_samp[0,0]
+        Etot[k,:] = [E_ten_samp[0,0],E_ten_samp[1,1],E_ten_samp[2,2],
+                     E_ten_samp[0,1],E_ten_samp[1,2],E_ten_samp[1,2]]
+          
+    r_mat =  Etot[:,0]
 
     return r_mat
     
-
+    
 def WP(msg,filename):
     """
     Summary:

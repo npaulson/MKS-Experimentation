@@ -1,9 +1,7 @@
-%% Written by Noah Paulson 11/21/2014
-
-% v_phi1 = linspace(0,2*pi(),12);
-% v_Phi = linspace(0,pi()/2,8);
-v_phi1 = linspace(0,2*pi(),24);
-v_Phi = linspace(0,pi()/2,16);
+v_phi1 = linspace(0,2*pi(),12);
+v_Phi = linspace(0,pi()/2,8);
+% v_phi1 = linspace(0,2*pi(),24);
+% v_Phi = linspace(0,pi()/2,16);
 
 [X,Y] = meshgrid(v_phi1,v_Phi);
 
@@ -51,7 +49,7 @@ kaledpca = kaledgsh * coeff;
 extepca = extegsh * coeff;
 centpca = centgsh * coeff; 
 
-pcaA = 4; pcaB = 5; pcaC = 6;
+pcaA = 1; pcaB = 2; pcaC = 3;
 
 
 figure(2)

@@ -39,12 +39,12 @@ def calib(k,M,r_fft,p,H,el,ns):
     
     for n in xrange(ns-1):
 
-        mSQ = np.array(M[u,v,w,n,:])     
+        mSQ = np.array(M[n,:,u,v,w])     
 
         mSQc = np.conj(mSQ)        
         
         MM += np.outer(mSQ, mSQc)
-        PM += np.dot(r_fft[u,v,w,n],mSQc)
+        PM += np.dot(r_fft[n,u,v,w],mSQc)
  
     if k < 2:
         p = independent_columns(MM, .001)
@@ -144,9 +144,6 @@ def res_red(filename,el,sn):
     
     # here we average all 8 integration points in each element cell
     r_mat = np.mean(r_mat, axis=1)
-    
-    # here we reshape the data from a 9261 length vector to a 21x21x21 3D matrix       
-    r_mat = np.swapaxes(np.reshape(np.flipud(r_mat), [el,el,el]),1,2)
 
     return r_mat
     

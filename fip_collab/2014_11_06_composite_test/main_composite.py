@@ -5,7 +5,6 @@ Created on Wed Sep 17 16:46:35 2014
 @author: nhpnp3
 """
 
-
 import time
 import fegrab 
 import microstructure_function as msf
@@ -49,9 +48,9 @@ msf.msf(el_val,ns_val,H,set_id_val,wrt_file)
 ## Read the responses from the FE .dat files and perform the fftn for the validation
 fegrab.fegrab(el_val,ns_val,set_id_val,wrt_file)
 
-# Perform the validation  
+## Perform the validation  
 validation_viz.validation_zero_pad(el_cal,el_val,ns_cal,ns_val,H,set_id_cal,set_id_val,wrt_file)
 
-# Calculate the results of the validation
+## Calculate the results of the validation
 results_field.results(el_val,ns_val,set_id_val,'epsilon')
         
