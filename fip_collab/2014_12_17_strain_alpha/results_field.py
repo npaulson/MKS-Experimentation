@@ -27,8 +27,8 @@ def results(el,ns,set_id,step,comp,typ):
     ### VISUALIZATION OF MKS VS. FEM ###
 
     ## pick a slice perpendicular to the x-direction
-    slc = 0
-    sn = 4
+    slc = 10
+    sn = 13
 
     plt.close(1)
 
@@ -71,4 +71,4 @@ def results(el,ns,set_id,step,comp,typ):
     
     
 if __name__ == '__main__':
-    results(21,5,'val',1,'22','epsilon')
+    results(21,100,'val',1,'11','epsilon')

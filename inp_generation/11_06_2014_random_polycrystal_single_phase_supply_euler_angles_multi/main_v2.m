@@ -2,12 +2,12 @@
 
 clear; clc; close('all'); rng('shuffle')
 
-set_id_gen = 'phi2is0edgeV4';
-set_id_d = 'phi2is0edgeV4';
+set_id_gen = 'cal';
+set_id_d = 'cal';
 % set_id_y = 'phi2is0faceY';
 el = 21;
 H = 15;
-ns = 150;
+ns = 100;
 
 
 %% angles for phi2 = 0 zero faces
