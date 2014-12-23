@@ -23,8 +23,8 @@ wrt_file = 'log_%s.txt' %(time.strftime("%Y-%m-%d_h%Hm%M"))
 ### TOTAL CALIBRATION PROCEDURE ###
 
 el_cal = 21
-ns_cal = 100
-set_id_cal = 'cal'
+ns_cal = 199
+set_id_cal = 'cal_Priddy'
 
 ## Read the calibration microstructures and build the microstructure function
 msf.msf(el_cal,ns_cal,H,set_id_cal,wrt_file)
@@ -39,8 +39,8 @@ calibration.calibration_procedure(el_cal,ns_cal,H,set_id_cal,wrt_file)
 ### TOTAL VALIDATION PROCEDURE ###
 
 el_val = 21
-ns_val = 25
-set_id_val = 'val_equiaxed'
+ns_val = 100
+set_id_val = 'val_Priddy'
 
 ## Read the validation microstructures and build the microstructure function
 msf.msf(el_val,ns_val,H,set_id_val,wrt_file)

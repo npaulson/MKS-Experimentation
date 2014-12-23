@@ -10,19 +10,19 @@ import GSH_func as gsh
 import functions as rr
 import time
 
-def euler_to_gsh(ns,set_id,step,wrt_file):
+def euler_to_gsh(el,H,ns,set_id,step,wrt_file):
 
     start = time.time()
-
-    el = 21
-    H = 15    
     
     euler = np.load('euler_%s%s_s%s.npy' %(ns,set_id,step))
-    
-    euler_GSH = np.zeros([el**3,ns,H], dtype= 'complex128')
+    print 'euler shape:'
+    print euler.shape        
+        
+    euler_GSH = np.zeros([ns,H,el**3], dtype= 'complex128')
     
     for sn in range(ns):
-        euler_GSH[:,sn,:] = gsh.GSH_Hexagonal_Triclinic(euler[:,sn,:])        
+        
+        euler_GSH[sn,:,:] = gsh.GSH_Hexagonal_Triclinic(euler[sn,:,:])        
     
     np.save('euler_GSH_%s%s_s%s.npy' %(ns,set_id,step),euler_GSH)
     

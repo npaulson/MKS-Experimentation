@@ -11,23 +11,11 @@ import time
 import os
 
 
-def read_euler(ns, set_id, step, vtk_filename, newdir, wrt_file, funit):
+def read_euler(el,ns, set_id, step, newdir, wrt_file, funit):
 
-    start = time.time()        
+    start = time.time()           
     
-    ## el is the # of elements per side of the cube 
-    el = 21 
-    
-    euler = np.zeros([el**3,ns,3])
-
-    ## change to directory with the .vtk files    
-#    cwd = os.getcwd()
-##    os.chdir(cwd + '\\' + newdir)
-#    os.chdir(cwd + '/' + newdir) #for unix 
-#    
-#    for sn in xrange(ns):
-#        l_sn = str(sn+1).zfill(5)  
-#        euler[:,sn,:] = rr.read_vtk_vector(filename = vtk_filename %l_sn)
+    euler = np.zeros([ns,3,el**3])
 
     nwd = os.getcwd() + '\\' + newdir
 #    nwd = os.getcwd() + '/' + newdir #for unix 
@@ -36,7 +24,7 @@ def read_euler(ns, set_id, step, vtk_filename, newdir, wrt_file, funit):
     sn = 0    
     for filename in os.listdir(nwd):
         if filename.endswith('%s.vtk' %step):  
-            euler[:,sn,:] = rr.read_vtk_vector(filename = filename)
+            euler[sn,:,:] = rr.read_vtk_vector(filename = filename)
             sn += 1 
 
     if funit == 1:
@@ -55,30 +43,10 @@ def read_euler(ns, set_id, step, vtk_filename, newdir, wrt_file, funit):
     rr.WP(msg,wrt_file)
 
     
-def read_meas(ns, set_id, step, comp, vtk_filename, tensor_id, newdir, wrt_file):
+def read_meas(el,ns, set_id, step, comp, tensor_id, newdir, wrt_file):
 
     start = time.time() 
-
-    ## el is the # of elements per side of the cube 
-    el = 21 
-    
-    r_real = np.zeros([el,el,el,ns])
-    
-    ## change to directory with the .vtk files
-#    cwd = os.getcwd()
-##    os.chdir(cwd + '\\' + newdir)    
-#    os.chdir(cwd + '/' + newdir) #for unix    
-#
-#    compd = {'11':0,'22':4,'33':8,'12':1,'23':5,'31':6}    
-#    compp = compd[comp]    
-#    print compp    
-#
-#    for sn in xrange(ns):
-#        l_sn = str(sn+1).zfill(5)  
-#        r_temp = rr.read_vtk_tensor(filename = vtk_filename %l_sn, tensor_id = tensor_id, comp = compp)
-#        r_real[:,:,:,sn] = np.swapaxes(np.reshape(np.flipud(r_temp), [el,el,el]),1,2)
-    
-    
+     
     nwd = os.getcwd() + '\\' + newdir
 #    nwd = os.getcwd() + '/' + newdir #for unix 
     os.chdir(nwd)
@@ -86,11 +54,14 @@ def read_meas(ns, set_id, step, comp, vtk_filename, tensor_id, newdir, wrt_file)
     compd = {'11':0,'22':4,'33':8,'12':1,'23':5,'31':6}    
     compp = compd[comp]    
 
+
+    r_real = np.zeros([ns,el,el,el])
+    
     sn = 0    
     for filename in os.listdir(nwd):
         if filename.endswith('%s.vtk' %step):  
             r_temp = rr.read_vtk_tensor(filename = filename, tensor_id = tensor_id, comp = compp)
-            r_real[:,:,:,sn] = np.swapaxes(np.reshape(np.flipud(r_temp), [el,el,el]),1,2)
+            r_real[sn,...] = r_temp.reshape([el,el,el])
             sn += 1             
             
     ## return to the original directory    
@@ -99,7 +70,7 @@ def read_meas(ns, set_id, step, comp, vtk_filename, tensor_id, newdir, wrt_file)
     np.save('r%s_%s%s_s%s' %(comp,ns,set_id,step), r_real)
 
     ## fftn of response fields    
-    r_fft = np.fft.fftn(r_real, axes = [0,1,2]) 
+    r_fft = np.fft.fftn(r_real, axes = [1,2,3]) 
     del r_real
     np.save('r%s_fft_%s%s_s%s' %(comp,ns,set_id,step),r_fft)  
     

@@ -8,6 +8,7 @@ Noah Paulson, 5/28/2014
 """
 
 import numpy as np
+import vtk
 
 
 def calib(k,M,r_fft,p,H,el,ns):
@@ -80,71 +81,88 @@ def independent_columns(A, tol = 1e-05):
     return independent
 
 
-def res_red(ori_mat,filename,el,sn):
+def read_vtk_tensor(filename, tensor_id, comp):
     """
-    Summary:    
-        This function reads the E11 values from a .dat file and reorganizes
-        the data into a el x el x el array with the correct organization
-        It will also plot a certain x-slice in the dataset if called within
-        this script.
+    Summary:
+        Much of this code was taken from Matthew Priddy's example
+        file.
     Inputs:
-        filename (string): the name of the '.dat' file containing the 
-        FEM response
-        ori_mat ([3,3,el^3,ns],float): an array containing the orientation
-        matrices (g) for each spatial location of each RVE in the set      
-        el (int): the number of elements per side of the microstructure cube
     Outputs:
-        Emat ([el,el,el],float): the FEM response of the '.dat' file of
-        interest
     """
-    f = open(filename, "r")
-
-    linelist = f.readlines()
-
-    # finds a location several lines above the start of the data
-    # linelist[n] reads the entire line at location n
-    for ln in xrange(1000):
-        if 'THE FOLLOWING TABLE' in linelist[ln]:
-            break
-
-    # line0 is the index of first line of the data
-    line0 = ln + 5;      
-
-    E = np.zeros((21**3,8,6))
-    c = -1
-
-    # this series of loops generates a 9261x8 dataset of E11s (element x integration point) 
-    for k in xrange(21**3):
-        for jj in xrange(8):
-            c += 1                        
-            E[k,jj,:] = linelist[line0 + c].split()[3:]
     
-    f.close()    
+    # Initialize the reading of the VTK microstructure created by Dream3D
+    reader = vtk.vtkDataSetReader()
+    reader.SetFileName(filename)
+    reader.ReadAllTensorsOn()
+    reader.ReadAllVectorsOn()
+    reader.ReadAllScalarsOn()
+    reader.Update()
+    data = reader.GetOutput()
+    dim = data.GetDimensions()
+    vec = list(dim)
+    vec = [i-1 for i in dim]
     
-    # here we average all 8 integration points in each element cell
-    E = np.mean(E, axis=1)
-    
-    Etot = np.zeros([el**3,6])
-    # here we convert the strain tensor at each location from crystal to 
-    # sample frame
-    for k in xrange(21**3):
-        # E_ten_cry is the strain tensor at the spatial location of interest
-        # in the crystal frame
-        E_ten_cry = np.array([[    E[k,0], 0.5*E[k,3], 0.5*E[k,4]],
-                              [0.5*E[k,3],     E[k,1], 0.5*E[k,5]],
-                              [0.5*E[k,4], 0.5*E[k,5],     E[k,2]]])
-        # Here we convert from crystal to sample frame
-        E_ten_samp = np.dot(ori_mat[:,:,k,sn].T ,np.dot(E_ten_cry,ori_mat[:,:,k,sn]))
-                
-#        Etot[k] = E_ten_samp[0,0]
-        Etot[k,:] = [E_ten_samp[0,0],E_ten_samp[1,1],E_ten_samp[2,2],
-                     E_ten_samp[0,1],E_ten_samp[1,2],E_ten_samp[1,2]]
-          
-    r_mat =  Etot[:,0]
+    el = vec[0]
+    	
+    # Calculate the total number of elements
+    el_total = el**3
 
-    return r_mat
+    if tensor_id == 0:
+        # if meas == 0, we read the stress tensor        
+        meas  = data.GetCellData().GetArray(reader.GetTensorsNameInFile(0))
+    elif tensor_id == 1:
+        # if meas == 1, we read the strain tensor        
+        meas  = data.GetCellData().GetArray(reader.GetTensorsNameInFile(1))        
+    elif tensor_id == 2:
+        # if meas == 2, we read the plastic strain tensor        
+        meas  = data.GetCellData().GetArray(reader.GetTensorsNameInFile(2))        
+      
+    meas_py = np.zeros([el_total])        
     
+    for ii in xrange(el_total):
+        meas_py[ii] = meas.GetValue(ii*9 + comp)
     
+    return meas_py
+
+
+def read_vtk_vector(filename):
+    """
+    Summary:
+        Much of this code was taken from Matthew Priddy's example
+        file.
+    Inputs:
+    Outputs:
+    """
+    
+    # Initialize the reading of the VTK microstructure created by Dream3D
+    reader = vtk.vtkDataSetReader()
+    reader.SetFileName(filename)
+    reader.ReadAllTensorsOn()
+    reader.ReadAllVectorsOn()
+    reader.ReadAllScalarsOn()
+    reader.Update()
+    data = reader.GetOutput()
+    dim = data.GetDimensions()
+    vec = list(dim)
+    vec = [i-1 for i in dim]
+    
+    el = vec[0]
+    	
+    # Calculate the total number of elements
+    el_total = el**3
+
+    Euler = data.GetCellData().GetArray(reader.GetVectorsNameInFile(0))      
+    
+    euler_py = np.zeros([3,el_total])       
+    
+    for ii in xrange(el_total):
+        euler_py[0,ii] = Euler.GetValue(ii*3 + 0)
+        euler_py[1,ii] = Euler.GetValue(ii*3 + 1)
+        euler_py[2,ii] = Euler.GetValue(ii*3 + 2)
+    
+    return euler_py
+
+
 def WP(msg,filename):
     """
     Summary:
@@ -161,7 +179,3 @@ def WP(msg,filename):
     fil.write(msg)
     fil.write('\n')
     fil.close()
-
-
-
-

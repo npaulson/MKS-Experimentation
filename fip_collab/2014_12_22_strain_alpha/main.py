@@ -20,14 +20,15 @@ set_id_cal = 'cal'
 ns_val = 5
 set_id_val = 'val'
 
+H = 15
+el = 21
+
 compl = ['11','22','33','12','23','31']
 
 for step in xrange(1,2):
 
     wrt_file = 'log_step%s_%s.txt' %(step,time.strftime("%Y-%m-%d_h%Hm%M"))    
-    
-    vtk_filename = 'Results_Ti64_RandomMicroFZfinal_21x21x21_AbqInp_PowerLaw_%s_data_v2_0%s.vtk' %('%s',step)
-    
+        
     ## The tensorID determines the type of tensor data read from the .vtk file
     ## if tensorID == 0, we read the stress tensor        
     ## if tensorID == 1, we read the strain tensor        
@@ -40,50 +41,50 @@ for step in xrange(1,2):
     
     dir_cal = 'cal'
     
-    vtk.read_euler(ns_cal,set_id_cal,step,vtk_filename,dir_cal, wrt_file, 0)
+    vtk.read_euler(el,ns_cal,set_id_cal,step,dir_cal, wrt_file, 0)
     
     for comp in compl:
-        vtk.read_meas(ns_cal,set_id_cal,step,comp,vtk_filename,tensor_ID,dir_cal,wrt_file)
+        vtk.read_meas(el,ns_cal,set_id_cal,step,comp,tensor_ID,dir_cal,wrt_file)
     
     
     ## Gather data from validation vtk files 
     
     dir_val = 'val'
     
-    vtk.read_euler(ns_val,set_id_val,step,vtk_filename, dir_val, wrt_file, 0)
+    vtk.read_euler(el,ns_val,set_id_val,step, dir_val, wrt_file, 0)
     
     for comp in compl:
-        vtk.read_meas(ns_val,set_id_val,step,comp,vtk_filename,tensor_ID,dir_val,wrt_file)
+        vtk.read_meas(el,ns_val,set_id_val,step,comp,tensor_ID,dir_val,wrt_file)
         
         
     ## Convert the orientations from the calibration datasets from bunge euler angles
     ## to GSH coefficients
-    gsh.euler_to_gsh(ns_cal,set_id_cal,step,wrt_file)
+    gsh.euler_to_gsh(el,H,ns_cal,set_id_cal,step,wrt_file)
     
     
     ## Convert the orientations from the validation datasets from bunge euler angles
     ## to GSH coefficients
-    gsh.euler_to_gsh(ns_val,set_id_val,step,wrt_file)
+    gsh.euler_to_gsh(el,H,ns_val,set_id_val,step,wrt_file)
     
     
     ## Generate the fftn of the calibration microstructure function
-    msf.micr_func(ns_cal,set_id_cal,step,wrt_file)
+    msf.micr_func(el,H,ns_cal,set_id_cal,step,wrt_file)
        
        
     ## Generate the fftn of the validation microstructure function
-    msf.micr_func(ns_val,set_id_val,step,wrt_file)
+    msf.micr_func(el,H,ns_val,set_id_val,step,wrt_file)
        
        
     ## Perform the calibration
     for comp in compl:
-        calibration.calibration_procedure(ns_cal,set_id_cal,step,comp,wrt_file)
+        calibration.calibration_procedure(el,H,ns_cal,set_id_cal,step,comp,wrt_file)
        
        
     ## Perform the validation
     for comp in compl:
-        validation.validation_procedure(ns_cal,ns_val,set_id_cal,set_id_val,step,comp,wrt_file)
+        validation.validation(el,H,ns_cal,ns_val,set_id_cal,set_id_val,step,comp,wrt_file)
         
     comp_app = 0;
     
-    results.results_all(ns_val,set_id_val,step,'epsilon',compl, comp_app)
+    results.results_all(el,ns_val,set_id_val,step,'epsilon',compl, comp_app)
 

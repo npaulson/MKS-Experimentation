@@ -46,3 +46,9 @@ results_100cal_25val_equiaxed_nonorm.txt
 * in this iteration the normalization ([1,5,5,5,5,5,9,9,9,9,9,9,9,9,9]) was removed from the GSH coefficients
 * calibration with 100 datasets, from phi2=0 face, 101 orientations, only one orientation for phi=0 edge at [0,0,0] (phi1,Phi,phi2). Each voxel is randomly assigned an orientation.
 * validation with 25 datasets, 4,800 orientations from [0 <= phi1 <= 2*pi, 0 <= Phi <= pi/2, 0 <= phi2 <= pi/3]. Each grain is randomly assigned an orientation.
+
+results_200cal_Priddy_100val_Priddy.txt
+
+* in this iteration euler angles and simulation parameters/constants were taken from Matthew Priddy's CPFEM simulations
+* calibration with 200 datasets, from phi2=0 face, Each voxel is randomly assigned an orientation.
+* validation with 100 datasets,  [0 <= phi1 <= 2*pi, 0 <= Phi <= pi, 0 <= phi2 <= 2*pi]. Each grain is randomly assigned an orientation from a realistic ODF selected by Matthew Priddy.
