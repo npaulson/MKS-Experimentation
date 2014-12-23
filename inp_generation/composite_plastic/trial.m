@@ -43,23 +43,17 @@ filename = ['M_',int2str(ns),set_id,'.mat'];
 save(filename,'M')
 
 nodesets(el);
-loadings(el);
-fprintf('Data set loaded\n')
+% loadings(el);
+% fprintf('Data set loaded\n')
 
 first50=fopen('50top.inp','r');
 bcs_material_inp = fopen('bcs_material.inp','r');
-loading_inp = fopen('loading.inp','r');
-output_inp = fopen('output.inp','r');
 
 A = fread(first50,inf);
 B = fread(bcs_material_inp,inf);
-C = fread(loading_inp,inf);
-D = fread(output_inp,inf);
 
 fclose(first50);
 fclose(bcs_material_inp);
-fclose(loading_inp);
-fclose(output_inp);
 
 nodesetspbc=fopen('nodesets.inp','r');
 nodesetspbcx=fread(nodesetspbc,inf);
@@ -77,8 +71,6 @@ for ii=1:ns
     fwrite(combined,materset);
     fprintf(combined,'\n');
     fwrite(combined,B);
-    fwrite(combined,C);
-    fwrite(combined,D);
     fclose(matsets);
     fclose(combined);
     materialsets=['matset' int2str(ii) '.inp'];

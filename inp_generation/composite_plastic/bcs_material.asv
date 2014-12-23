@@ -1,0 +1,148 @@
+**-----------------------------------------------------------------
+*equation
+3
+n1plus, 1, 1, n1minus, 1, -1, 1, 1, -1
+2
+n1plus, 2, 1, n1minus, 2, -1
+2
+n1plus, 3, 1, n1minus, 3, -1
+**
+2
+n2plus, 1, 1, n2minus, 1, -1
+3
+n2plus, 2, 1, n2minus, 2, -1, 1, 1, 0.5
+2
+n2plus, 3, 1, n2minus, 3, -1
+**
+2
+n3plus, 1, 1, n3minus, 1, -1
+2
+n3plus, 2, 1, n3minus, 2, -1
+3
+n3plus, 3, 1, n3minus, 3, -1, 1, 1, 0.5
+**
+**
+3
+n1plus_n2plus, 1, 1, n1minus_n2plus, 1, -1, 1, 1, -1
+3
+n1plus_n2minus, 1, 1, n1minus_n2minus, 1, -1, 1, 1, -1
+2
+n1minus_n2plus, 1, 1, n1minus_n2minus, 1, -1
+**
+2
+n1plus_n2plus, 2, 1, n1minus_n2plus, 2, -1
+2
+n1plus_n2minus, 2, 1, n1minus_n2minus, 2, -1
+3
+n1minus_n2plus, 2, 1, n1minus_n2minus, 2, -1 , 1, 2, 0.5
+**
+2
+n1plus_n2plus, 3, 1, n1minus_n2plus, 3, -1
+2
+n1plus_n2minus, 3, 1, n1minus_n2minus, 3, -1
+2
+n1minus_n2plus, 3, 1, n1minus_n2minus, 3, -1 
+**
+**
+3
+n3plus_n1plus, 1, 1, n3plus_n1minus, 1, -1, 1, 1, -1
+3
+n3minus_n1plus, 1, 1, n3minus_n1minus, 1, -1, 1, 1, -1
+2
+n3plus_n1minus, 1, 1, n3minus_n1minus, 1, -1
+**
+2
+n3plus_n1plus, 2, 1, n3plus_n1minus, 2, -1
+2
+n3minus_n1plus, 2, 1, n3minus_n1minus, 2, -1
+2
+n3plus_n1minus, 2, 1, n3minus_n1minus, 2, -1
+**
+2
+n3plus_n1plus, 3, 1, n3plus_n1minus, 3, -1
+2
+n3minus_n1plus, 3, 1, n3minus_n1minus, 3, -1
+3
+n3plus_n1minus, 3, 1, n3minus_n1minus, 3, -1, 1, 3, 0.5
+**
+**
+2
+n2plus_n3plus, 1, 1, n2minus_n3plus, 1, -1
+2
+n2plus_n3minus, 1, 1, n2minus_n3minus, 1, -1
+2
+n2minus_n3plus, 1, 1, n2minus_n3minus, 1, -1
+**
+3
+n2plus_n3plus, 2, 1, n2minus_n3plus, 2, -1, 1, 2, 0.5
+3
+n2plus_n3minus, 2, 1, n2minus_n3minus, 2, -1, 1, 2, 0.5
+2
+n2minus_n3plus, 2, 1, n2minus_n3minus, 2, -1
+**
+2
+n2plus_n3plus, 3, 1, n2minus_n3plus, 3, -1
+2
+n2plus_n3minus, 3, 1, n2minus_n3minus, 3, -1
+3
+n2minus_n3plus, 3, 1, n2minus_n3minus, 3, -1, 1, 3, 0.5
+**** ----------------------------------------------------------------- 
+** MATERIALS
+**
+*Solid Section, elset=elset1, material=material-1
+1.,
+*Material, name=material-1
+*Elastic,type=isotropic
+150, 0.3
+*Plastic
+0.350, 0.0
+** Solid (element 2 = elset2)
+**
+*Solid Section, elset=elset2, material=material-2
+1.,
+**
+*Material, name=material-2
+*Elastic,type=isotropic
+100, 0.3
+*Plastic
+0.250, 0.0
+** ----------------------------------------------------------------
+** VELOCITY PARAMETERS
+*Parameter																				
+strain      = 0.02																	
+strain_rate = 0.002																	
+size        = 20																		
+deflection  = strain * size															
+time        = abs(strain / strain_rate)																											
+velocity    = deflection / time														
+** 
+** 
+** STEP: Step-1
+*Step, inc=1000, nlgeom, unsymm=yes, amplitude=step									
+*Static																				
+0.05, <time>, 2E-5, 1.0														
+*Boundary, type=velocity
+**
+10648,1,3,0
+10186,1,3,0
+10627,1,3,0
+10165,1,3,0
+484,1,1,<velocity>
+22,1,1,<velocity>
+463,1,1,<velocity>
+1,1,1,<velocity>
+484,2,3,0
+22,2,3,0
+463,2,3,0
+1,2,3,0
+** 
+** OUTPUT REQUESTS
+**
+*output, variable=preselect, field, frequency=0
+**
+*output, variable=preselect, history, frequency=0
+** 
+*el print, summary=no, totals=yes, frequency = 99999
+ER11
+**
+*End Step
