@@ -11,20 +11,32 @@ the microstructure function in real and frequency space.
 import time
 import numpy as np
 import functions as rr
+import scipy.io as sio
 
-
-def micr_func(el,H,ns,set_id,step,wrt_file):
+def msf(el,ns,H,set_id,wrt_file):
     
     start = time.time()    
     
-    tmp = np.load('euler_GSH_%s%s_s%s.npy' %(ns,set_id,step)) 
-    
-#    tmp = np.swapaxes(np.swapaxes(tmp,0,2),0,1)   
-    micr = tmp.reshape([ns,H,el,el,el])
+    ## import microstructures
+    tmp = sio.loadmat('micr_H%s_%s.mat' %(H,set_id))['gshS']
 
-    del tmp    
+#    #### 12/18/2014 CHANGE BACK
+#        
+#    tmp = np.swapaxes(tmp,0,2)
+#    
+#    tmp = tmp/np.array([[[1,5,5,5,5,5,9,9,9,9,9,9,9,9,9]]]).T #remove normalization
+#
+#    tmp = np.swapaxes(tmp,0,1)
+#
+#    ####
+
+    tmp = np.swapaxes(np.swapaxes(tmp,0,2),0,1)
+
+    micr = tmp.reshape([ns,H,el,el,el])    
     
-    
+    del tmp
+
+    np.save('msf_%s%s' %(ns,set_id),micr)
     
     end = time.time()
     timeE = np.round((end - start),3)
@@ -34,15 +46,15 @@ def micr_func(el,H,ns,set_id,step,wrt_file):
     ## Microstructure functions in frequency space
     start = time.time()
     
-    M = np.fft.fftn(micr, axes = [2,3,4])
+    M = np.fft.fftn(micr, axes = [2,3,4])    
     del micr
     size = M.nbytes
-    np.save('M_%s%s_s%s' %(ns,set_id,step),M)
+    np.save('M_%s%s' %(ns,set_id),M)
     
     end = time.time()
     timeE = np.round((end - start),3)
     
-    msg = "FFT3 conversion of micr to M_%s%s_s%s: %s seconds" %(ns,set_id,step,timeE)
+    msg = "FFT3 conversion of micr to M_%s%s: %s seconds" %(ns,set_id,timeE)
     rr.WP(msg,wrt_file)
-    msg = 'Size of M_%s%s_s%s: %s bytes' %(ns,set_id,step,size)
+    msg = 'Size of M_%s%s: %s bytes' %(ns,set_id,size)
     rr.WP(msg,wrt_file)

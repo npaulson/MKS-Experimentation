@@ -2,8 +2,8 @@
 
 clear; clc; close('all'); rng('shuffle')
 
-load euler_val.mat
-set_id = 'val_Priddy';
+load euler_cal.mat
+set_id = 'cal_Priddy';
 el = 21;
 H = 15;
 ns = 100;

@@ -38,7 +38,7 @@ results_100caldelta_25val_equiaxed.txt
 
 results_200cal_rand_del_25val_equiaxed.txt
 
-* calibration with 200 datasets, from phi2=0 face, 101 orientations, only one orientation for phi=0 edge at [0,0,0] (phi1,Phi,phi2). For 100 each voxel is randomly assigned an orientation. For the other 100 the center cell and surroundings are each randomly assigned an orientation 
+* calibration with 200 datasets, from phi2=0 face, 101 orientations, only one orientation for phi=0 edge at [0,0,0] (phi1,Phi,phi2). For 100 each voxel is randomly assigned an orientation.p For the other 100 the center cell and surroundings are each randomly assigned an orientation 
 * validation with 25 datasets, 4,800 orientations from [0 <= phi1 <= 2*pi, 0 <= Phi <= pi/2, 0 <= phi2 <= pi/3]. Each grain is randomly assigned an orientation
 
 results_100cal_25val_equiaxed_nonorm.txt

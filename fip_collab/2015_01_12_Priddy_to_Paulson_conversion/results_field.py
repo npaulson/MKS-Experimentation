@@ -124,5 +124,5 @@ def results(el,ns,set_id_cal,set_id,ccur,typ):
        
     
 if __name__ == '__main__':
-    results(21,100,'cal_Priddy','val_Priddy','11','sigma')
+    results(21,47,'cal_Priddy','val_Priddy','11','sigma')
  
