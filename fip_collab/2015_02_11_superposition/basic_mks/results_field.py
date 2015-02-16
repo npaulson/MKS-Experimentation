@@ -32,12 +32,15 @@ def results(el,ns,set_id,step,comp,typ):
 
     maxindx = np.unravel_index(np.argmax(np.abs(resp - mks_R)),resp.shape)
     maxresp = resp[maxindx]
-    maxerr = (np.abs(resp - mks_R)[maxindx]/np.mean(resp))*100
+    maxMKS = mks_R[maxindx]
+    maxerr = (np.abs(resp - mks_R)[maxindx]/0.00498753590078)*100
    
     print 'indices of max error'
     print maxindx    
     print 'reference response at max error'    
     print maxresp
+    print 'MKS response at max error'
+    print maxMKS
     print 'maximum error'    
     print maxerr
 
@@ -92,4 +95,4 @@ def results(el,ns,set_id,step,comp,typ):
     
     
 if __name__ == '__main__':
-    results(21,10,'val_test',1,'12','epsilon')
+    results(21,97,'val_basal',1,'12','epsilon')

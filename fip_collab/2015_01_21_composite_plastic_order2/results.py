@@ -17,13 +17,13 @@ def results(el,ns,set_id,typ,wrt_file):
     
     mks_R = np.load('mksR_%s%s.npy' %(ns,set_id))
     resp = np.load('r_%s%s.npy' %(ns,set_id)).reshape([ns,el,el,el])
-    micr = np.load('msf_%s%s.npy' %(ns,set_id))
+    micr = np.load('pre_msf_%s%s.npy' %(ns,set_id))
 
     ### VISUALIZATION OF MKS VS. FEM ###
     
     ## pick a slice perpendicular to the x-direction
     slc = 10
-    sn = 0
+    sn = 49
 
     ## Plot slices of the response
     plt.figure(num=2,figsize=[12,8])

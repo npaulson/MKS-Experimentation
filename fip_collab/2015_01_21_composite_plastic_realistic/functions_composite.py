@@ -8,6 +8,7 @@ Noah Paulson, 5/28/2014
 """
 
 import numpy as np
+import itertools as it
 
 
 def calib(k,M,r_fft,p,H,el,ns):
@@ -40,6 +41,7 @@ def calib(k,M,r_fft,p,H,el,ns):
     for n in xrange(ns-1):
 
         mSQ = np.array(M[n,:,u,v,w])     
+
         mSQc = np.conj(mSQ)        
         
         MM += np.outer(mSQ, mSQc)
@@ -58,6 +60,28 @@ def calib(k,M,r_fft,p,H,el,ns):
         return specinfc_k, p
     else:
         return specinfc_k
+
+
+def eval_meas(mks_R_indv,resp_indv,el):
+    """
+    Summary: Calculates the MASE and average error
+    Inputs:
+        mks_R ([el,el,el],float): The response predicted by the MKS for
+        validation microstructures
+        resp ([el,el,el],float): the FEM responses of all microstructures
+        el (int): The number of elements per side of the 'cube'
+    Outputs:
+        avgE (float): The average strain value for the microstructure
+        MASE (float): Mean Absolute Square Error
+    """
+    avgr_mks = np.average(mks_R_indv)
+    avgr_fe= np.average(resp_indv)
+    MASE = 0
+    for k in xrange(el**3):
+        [u,v,w] = np.unravel_index(k,[el,el,el])
+        MASE += ((np.abs(resp_indv[u,v,w] - mks_R_indv[u,v,w]))/(avgr_fe * el**3))
+        
+    return avgr_fe,avgr_mks, MASE
 
 
 def independent_columns(A, tol = 1e-05):
@@ -80,7 +104,88 @@ def independent_columns(A, tol = 1e-05):
     return independent
 
 
-def res_red(ori_mat,filename,el,sn):
+def mf(micr,el,ns,Hi,H,order):
+   
+#    ## microstructure functions
+#    pm = np.zeros([ns,Hi,el,el,el])   
+#    pm[:,0,...] = (micr == 0)
+#    pm[:,1,...] = (micr == 1)
+#    pm = pm.astype(int)
+#
+#    if order == 1:
+#        m = pm        
+#        
+#    if order == 2:
+#        
+#        hs = np.array([[1,1],[0,0],[1,0],[0,1]])
+#        vec = np.array([[1,0],[1,1],[1,2]])
+#        
+#        k = 0
+#        m = np.zeros([ns,H,el,el,el])
+#        for hh in xrange(hs.shape[0]):
+#            for t in xrange(vec.shape[0]):
+#                a1 = pm[:,hs[hh,0],...]
+#                a2 = np.roll(pm[:,hs[hh,1],...],vec[t,0],vec[t,1])
+#                m[:,k,...] = a1 * a2
+#                k = k + 1
+#        
+#    if order ==7:            
+#        
+#        hs = np.array(list(it.product([0,1],repeat=7)))
+#        vec = np.array([[1,0],[1,1],[1,2],[-1,0],[-1,1],[-1,2]])
+#        
+#        vlen = vec.shape[0]
+#        m = np.zeros([ns,H,el,el,el])
+#        
+#        for hh in xrange(H):  
+#            a1 = pm[:,hs[hh,0],...]    
+#            pre_m = a1  
+#            for t in xrange(vlen):      
+#                a_n = np.roll(pm[:,hs[hh,t+1],...],vec[t,0],vec[t,1])
+#                pre_m = pre_m * a_n  
+#            m[:,hh,...] = pre_m
+            
+
+    if order == 1:
+        m = micr        
+        
+    if order == 2:
+        
+        hs = np.array([[1,1],[0,0],[1,0],[0,1]])
+        vec = np.array([[1,0],[1,1],[1,2]])
+        
+        k = 0
+        m = np.zeros([ns,H,el,el,el])
+        for hh in xrange(hs.shape[0]):
+            for t in xrange(vec.shape[0]):
+                a1 = micr[:,hs[hh,0],...]
+                a2 = np.roll(micr[:,hs[hh,1],...],vec[t,0],vec[t,1])
+                m[:,k,...] = a1 * a2
+                k = k + 1
+        
+    if order ==7:            
+        
+        hs = np.array(list(it.product([0,1],repeat=7)))
+        vec = np.array([[1,0],[1,1],[1,2],[-1,0],[-1,1],[-1,2]])
+        
+        vlen = vec.shape[0]
+        m = np.zeros([ns,H,el,el,el])
+        
+        for hh in xrange(H):  
+            a1 = micr[:,hs[hh,0],...]    
+            pre_m = a1  
+            for t in xrange(vlen):      
+                a_n = np.roll(micr[:,hs[hh,t+1],...],vec[t,0],vec[t,1])
+                pre_m = pre_m * a_n  
+            m[:,hh,...] = pre_m                 
+                 
+                 
+    m = m.astype(int)
+
+    return m
+
+
+def res_red(filename,el,sn):
     """
     Summary:    
         This function reads the E11 values from a .dat file and reorganizes
@@ -90,11 +195,9 @@ def res_red(ori_mat,filename,el,sn):
     Inputs:
         filename (string): the name of the '.dat' file containing the 
         FEM response
-        ori_mat ([3,3,el^3,ns],float): an array containing the orientation
-        matrices (g) for each spatial location of each RVE in the set      
         el (int): the number of elements per side of the microstructure cube
     Outputs:
-        Emat ([el,el,el],float): the FEM response of the '.dat' file of
+        r_mat ([el,el,el],float): the FEM response of the '.dat' file of
         interest
     """
     f = open(filename, "r")
@@ -110,42 +213,23 @@ def res_red(ori_mat,filename,el,sn):
     # line0 is the index of first line of the data
     line0 = ln + 5;      
 
-    E = np.zeros((21**3,8,6))
+    r_mat = np.zeros([el**3,8])
     c = -1
 
     # this series of loops generates a 9261x8 dataset of E11s (element x integration point) 
-    for k in xrange(21**3):
+    for k in xrange(el**3):
         for jj in xrange(8):
             c += 1                        
-            E[k,jj,:] = linelist[line0 + c].split()[3:]
+            r_mat[k,jj] = linelist[line0 + c].split()[2]
     
     f.close()    
     
     # here we average all 8 integration points in each element cell
-    E = np.mean(E, axis=1)
-    
-    Etot = np.zeros([el**3,6])
-    # here we convert the strain tensor at each location from crystal to 
-    # sample frame
-    for k in xrange(21**3):
-        # E_ten_cry is the strain tensor at the spatial location of interest
-        # in the crystal frame
-        E_ten_cry = np.array([[    E[k,0], 0.5*E[k,3], 0.5*E[k,4]],
-                              [0.5*E[k,3],     E[k,1], 0.5*E[k,5]],
-                              [0.5*E[k,4], 0.5*E[k,5],     E[k,2]]])
-        # Here we convert from crystal to sample frame
-        E_ten_samp = np.dot(ori_mat[:,:,k,sn].T ,np.dot(E_ten_cry,ori_mat[:,:,k,sn]))
-                
-#        Etot[k] = E_ten_samp[0,0]
-        Etot[k,:] = [E_ten_samp[0,0],E_ten_samp[1,1],E_ten_samp[2,2],
-                     E_ten_samp[0,1],E_ten_samp[1,2],E_ten_samp[1,2]]
-          
-#    r_mat =  Etot[:,1]
-    r_mat =  Etot
+    r_mat = np.mean(r_mat, axis=1)
 
     return r_mat
     
-    
+
 def WP(msg,filename):
     """
     Summary:

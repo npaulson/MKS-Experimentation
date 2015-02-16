@@ -32,12 +32,15 @@ def results(el,ns,set_id,step,comp,typ):
 
     maxindx = np.unravel_index(np.argmax(np.abs(resp - mks_R)),resp.shape)
     maxresp = resp[maxindx]
-    maxerr = (np.abs(resp - mks_R)[maxindx]/np.mean(resp))*100
+    maxMKS = mks_R[maxindx]
+    maxerr = (np.abs(resp - mks_R)[maxindx]/0.00498753590078)*100
    
     print 'indices of max error'
     print maxindx    
     print 'reference response at max error'    
     print maxresp
+    print 'MKS response at max error'
+    print maxMKS
     print 'maximum error'    
     print maxerr
 
@@ -48,19 +51,32 @@ def results(el,ns,set_id,step,comp,typ):
     ## pick a slice perpendicular to the x-direction
     sn = maxindx[0]
     slc = maxindx[1]
-#    sn = 4
-#    slc = 0
+#    sn = 36
+#    slc = 14
 
     plt.close(1)
 
     ## Plot slices of the response
-    plt.figure(num=1,figsize=[18,4])
+    plt.figure(num=1,figsize=[12,2.7])
  
     plt.subplot(131)
     ax = plt.imshow(euler[sn,0,slc,:,:], origin='lower', interpolation='none',
         cmap='jet')
     plt.colorbar(ax)
-    plt.title('Microstructure, slice %s' % slc)
+    plt.title('Slice %s, $\phi_1$' % slc)
+    
+    plt.subplot(132)
+    ax = plt.imshow(euler[sn,1,slc,:,:], origin='lower', interpolation='none',
+        cmap='jet')
+    plt.colorbar(ax)
+    plt.title('$\Phi$')
+
+    plt.subplot(133)
+    ax = plt.imshow(euler[sn,2,slc,:,:], origin='lower', interpolation='none',
+        cmap='jet')
+    plt.colorbar(ax)
+    plt.title('$\phi_2$')    
+    
 
 #    plt.subplot(132)
 #    ax = plt.imshow(mks_R[sn,slc,:,:], origin='lower', interpolation='none',
@@ -74,22 +90,26 @@ def results(el,ns,set_id,step,comp,typ):
 #    plt.colorbar(ax)
 #    plt.title('CPFEM $\%s_{%s}$ response, slice %s' %(typ,comp,slc))
 
+    plt.close(2)
+
+    ## Plot slices of the response
+    plt.figure(num=2,figsize=[8,2.7])
+
 
     dmin = np.min([mks_R[sn,slc,:,:],resp[sn,slc,:,:]])
     dmax = np.max([mks_R[sn,slc,:,:],resp[sn,slc,:,:]])
     
-    plt.subplot(132)
+    plt.subplot(121)
     ax = plt.imshow(mks_R[sn,slc,:,:], origin='lower', interpolation='none',
         cmap='jet', vmin=dmin, vmax=dmax)
-    plt.colorbar(ax)
-    plt.title('MKS $\%s_{%s}$ response, slice %s' %(typ,comp,slc))
+    plt.title('$\%s_{%s}$, MKS, slice %s' %(typ,comp,slc))
     
-    plt.subplot(133)
+    plt.subplot(122)
     ax = plt.imshow(resp[sn,slc,:,:], origin='lower', interpolation='none',
         cmap='jet', vmin=dmin, vmax=dmax)
     plt.colorbar(ax)
-    plt.title('CPFEM $\%s_{%s}$ response, slice %s' %(typ,comp,slc))
+    plt.title('$\%s_{%s}$, CPFEM, slice %s' %(typ,comp,slc))
     
     
 if __name__ == '__main__':
-    results(21,10,'val_test',1,'12','epsilon')
+    results(21,97,'val_basal',1,'33','epsilon')

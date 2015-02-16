@@ -102,6 +102,51 @@ def independent_columns(A, tol = 1e-05):
     independent = np.where(np.abs(R.diagonal()) > tol)[0]
     return independent
 
+def mf(micr_sn, el=21, H, order):
+   
+    ## microstructure functions
+    pm = np.zeros([el,el,el,2])
+    pm[:,:,:,0] = (micr_sn == 0)
+    pm[:,:,:,1] = (micr_sn == 1)
+    pm = pm.astype(int)
+
+    if order == 1:
+        m_sn = pm          
+        
+    if order == 2:
+        
+        hs = np.array([[1,1],[0,0],[1,0],[0,1]])
+        vec = np.array([[1,0],[1,1],[1,2]])
+        
+        k = 0
+        m_sn = np.zeros([el,el,el,H])
+        for hh in xrange(len(hs[:,0])):
+            for t in xrange(len(vec[:,0])):
+                a1 = pm[:,:,:,hs[hh,0]]
+                a2 = np.roll(pm[:,:,:,hs[hh,1]],vec[t,0],vec[t,1])
+                m_sn[:,:,:,k] = a1 * a2
+                k = k + 1
+        
+    if order == 7:            
+        
+        hs = np.array(list(it.product([0,1],repeat=7)))
+        vec = np.array([[1,0],[1,1],[1,2],[-1,0],[-1,1],[-1,2]])
+        
+        vlen = len(vec[:,0])
+        m_sn = np.zeros([el,el,el,H])
+        
+        for hh in xrange(H):  
+            a1 = pm[:,:,:,hs[hh,0]]    
+            pre_m = a1  
+            for t in xrange(vlen):      
+                a_n = np.roll(pm[:,:,:,hs[hh,t+1]],vec[t,0],vec[t,1])
+                pre_m = pre_m * a_n  
+            m_sn[:,:,:,hh] = pre_m
+            
+    m_sn = m_sn.astype(int)
+   
+    return m_sn
+
 
 def res_red(filename,el,sn):
     """
