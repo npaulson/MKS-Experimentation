@@ -12,14 +12,14 @@ ns = 50
 set_id = 'val'
 typ = 'sigma'
 
-## el is the # of elements per side of the cube 
-el = 21 
+## el is the # of elements per side of the cube
+el = 21
 
-## vector of the indicial forms of the tensor components 
-real_comp_desig = ['11','12','13','21','22','23','31','32','33','vm']    
+## vector of the indicial forms of the tensor components
+real_comp_desig = ['11','12','13','21','22','23','31','32','33','vm']
 
 mks_R = np.zeros([el,el,el,10,ns])
-resp = np.zeros([el,el,el,10,ns])      
+resp = np.zeros([el,el,el,10,ns])
 
 for comp in xrange(9):
     mks_R[:,:,:,comp,:] = np.load('mksR%s_%s%s.npy' %(comp,ns,set_id))
@@ -34,8 +34,8 @@ plt.close('all')
 
 
 comp = 9
-    
-real_comp = real_comp_desig[comp]        
+
+real_comp = real_comp_desig[comp]
 
 ### DIFFERENCE MEASURE ###
 error = (100*(resp[:,:,:,comp,:]-mks_R[:,:,:,comp,:]))/mean_resp_vm
@@ -47,15 +47,15 @@ resp_lin = np.reshape(resp[:,:,:,comp,:],ns*(el**3))
 
 # Plot a histogram representing the frequency of strain levels with separate
 # channels for each phase of each type of response.
-plt.figure(num=1,figsize=[12,5])        
-       
+plt.figure(num=1,figsize=[12,5])
+
 # select the desired number of bins in the histogram
 bn = 15
 
 # find the bin locations for the CPFEM response of interest
 n, bins, patches = plt.hist(resp_lin, bins = bn, histtype = 'step', hold = True,
                             color = 'white')
-                            
+
 print "values per bin: "
 print n
 
@@ -64,34 +64,34 @@ bincenters_l = list(np.round(bincenters).astype(int).astype(str))
 
 min_error = np.zeros(bn)
 perc02_error = np.zeros(bn)
-quart1_error = np.zeros(bn)        
-mean_error = np.zeros(bn)      
-median_error = np.zeros(bn)    
+quart1_error = np.zeros(bn)
+mean_error = np.zeros(bn)
+median_error = np.zeros(bn)
 quart3_error = np.zeros(bn)
-perc99_error = np.zeros(bn)        
-max_error = np.zeros(bn)      
+perc99_error = np.zeros(bn)
+max_error = np.zeros(bn)
 
-error_in_bin_list = []     
+error_in_bin_list = []
 bin_labels = []
 
 for ii in xrange(bn):
     in_bin = (resp_lin >= bins[ii]) * (resp_lin < bins[ii + 1])
-    error_in_bin = error * in_bin  
-    error_in_bin = error_in_bin[(error_in_bin != 0)]       
-    error_in_bin_list.append(error_in_bin)            
-    
+    error_in_bin = error * in_bin
+    error_in_bin = error_in_bin[(error_in_bin != 0)]
+    error_in_bin_list.append(error_in_bin)
+
     min_error[ii] = np.min(error_in_bin)
-    perc02_error[ii] = np.percentile(error_in_bin,2)    
+    perc02_error[ii] = np.percentile(error_in_bin,2)
     quart1_error[ii] = np.percentile(error_in_bin,25)
     median_error[ii] = np.median(error_in_bin)
-    quart3_error[ii] = np.percentile(error_in_bin,75)            
-    perc99_error[ii] = np.percentile(error_in_bin,98)    
+    quart3_error[ii] = np.percentile(error_in_bin,75)
+    perc99_error[ii] = np.percentile(error_in_bin,98)
     max_error[ii] = np.max(error_in_bin)
-    
+
     label_cur = str(int(round(bins[ii]))) + ' - ' + str(int(round(bins[ii + 1])) - 1) + ' MPa\n ' + str(int(n[ii])) + ' points'
     bin_labels.append(label_cur)
 
-plt.figure(num=2,figsize=[12,5])        
+plt.figure(num=2,figsize=[12,5])
 
 plt.boxplot(x = error_in_bin_list, labels = bin_labels)
 
@@ -142,7 +142,7 @@ bincenters = 0.5*(bins[1:]+bins[:-1])
 plt.plot(bincenters,n)
 plt.axis([401,607,0,70000])
 
-x = np.arange(1,bn + 1) 
+x = np.arange(1,bn + 1)
 
 fig, ax = plt.subplots(1, figsize=(12,7))
 
@@ -155,3 +155,5 @@ plt.ylabel("%% error (normalized by mean $\%s_{vm}$)" %typ)
 plt.title("Error Histogram, $\%s_{%s}$" %(typ,real_comp))
 plt.grid(True)
 plt.tight_layout(pad = 0.1)
+
+plt.show()

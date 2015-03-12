@@ -8,13 +8,12 @@ Created on Wed Oct 01 13:52:33 2014
 import numpy as np
 import matplotlib.pyplot as plt
 
-def results(el,ns,set_id,step,comp,typ):
 
-    
-    mks_R = np.load('mksR%s_%s%s_s%s.npy' %(comp,ns,set_id,step))
-    resp = np.load('r%s_%s%s_s%s.npy' %(comp,ns,set_id,step))
-    
-    
+def results(el, ns, set_id, step, comp, typ):
+
+    mks_R = np.load('mksR%s_%s%s_s%s.npy' % (comp, ns, set_id, step))
+    resp = np.load('r%s_%s%s_s%s.npy' % (comp, ns, set_id, step))
+
 #    pre_euler = np.load('euler_%s%s_s%s.npy' %(ns,set_id,step))
 #
 #    euler = np.zeros([ns,3,el,el,el])
@@ -23,28 +22,29 @@ def results(el,ns,set_id,step,comp,typ):
 #            euler[sn,h,...] = np.swapaxes(np.reshape(np.flipud
 #                                    (pre_euler[sn,h,:]), [el,el,el]),1,2)
 
-    
-    tmp = np.load('euler_%s%s_s%s.npy' %(ns,set_id,step))
-    euler = tmp.reshape([ns,3,el,el,el])
+    tmp = np.load('euler_%s%s_s%s.npy' % (ns, set_id, step))
+    euler = tmp.reshape([ns, 3, el, el, el])
 
-    del tmp    
-    
+    del tmp
 
-    maxindx = np.unravel_index(np.argmax(np.abs(resp - mks_R)),resp.shape)
+    maxindx = np.unravel_index(np.argmax(np.abs(resp - mks_R)), resp.shape)
     maxresp = resp[maxindx]
     maxMKS = mks_R[maxindx]
     maxerr = (np.abs(resp - mks_R)[maxindx]/0.00498753590078)*100
-   
+
     print 'indices of max error'
-    print maxindx    
-    print 'reference response at max error'    
+    print maxindx
+    print 'reference response at max error'
     print maxresp
     print 'MKS response at max error'
     print maxMKS
-    print 'maximum error'    
+    print 'maximum error'
     print maxerr
 
-    print euler[maxindx[0],:,maxindx[1],maxindx[2],maxindx[3]]
+    print euler[maxindx[0], :, maxindx[1], maxindx[2], maxindx[3]]
+
+    print 'mean error'
+    print np.mean(np.abs(resp - mks_R)/0.00498753590078)*100
 
     ### VISUALIZATION OF MKS VS. FEM ###
 
@@ -57,33 +57,32 @@ def results(el,ns,set_id,step,comp,typ):
     plt.close(1)
 
     ## Plot slices of the response
-    plt.figure(num=1,figsize=[12,2.7])
- 
+    plt.figure(num=1, figsize=[12, 2.7])
+
     plt.subplot(131)
-    ax = plt.imshow(euler[sn,0,slc,:,:], origin='lower', interpolation='none',
-        cmap='jet')
+    ax = plt.imshow(euler[sn, 0, slc, :, :], origin='lower',
+                    interpolation='none', cmap='jet')
     plt.colorbar(ax)
     plt.title('Slice %s, $\phi_1$' % slc)
-    
+
     plt.subplot(132)
-    ax = plt.imshow(euler[sn,1,slc,:,:], origin='lower', interpolation='none',
-        cmap='jet')
+    ax = plt.imshow(euler[sn, 1, slc, :, :], origin='lower',
+                    interpolation='none', cmap='jet')
     plt.colorbar(ax)
     plt.title('$\Phi$')
 
     plt.subplot(133)
-    ax = plt.imshow(euler[sn,2,slc,:,:], origin='lower', interpolation='none',
-        cmap='jet')
+    ax = plt.imshow(euler[sn, 2, slc, :, :], origin='lower',
+                    interpolation='none', cmap='jet')
     plt.colorbar(ax)
-    plt.title('$\phi_2$')    
-    
+    plt.title('$\phi_2$')
 
 #    plt.subplot(132)
 #    ax = plt.imshow(mks_R[sn,slc,:,:], origin='lower', interpolation='none',
 #        cmap='jet')
 #    plt.colorbar(ax)
 #    plt.title('MKS $\%s_{%s}$ response, slice %s' %(typ,comp,slc))
-#    
+#
 #    plt.subplot(133)
 #    ax = plt.imshow(resp[sn,slc,:,:], origin='lower', interpolation='none',
 #        cmap='jet')
@@ -93,23 +92,23 @@ def results(el,ns,set_id,step,comp,typ):
     plt.close(2)
 
     ## Plot slices of the response
-    plt.figure(num=2,figsize=[8,2.7])
+    plt.figure(num=2, figsize=[8, 2.7])
 
+    dmin = np.min([mks_R[sn, slc, :, :], resp[sn, slc, :, :]])
+    dmax = np.max([mks_R[sn, slc, :, :], resp[sn, slc, :, :]])
 
-    dmin = np.min([mks_R[sn,slc,:,:],resp[sn,slc,:,:]])
-    dmax = np.max([mks_R[sn,slc,:,:],resp[sn,slc,:,:]])
-    
     plt.subplot(121)
-    ax = plt.imshow(mks_R[sn,slc,:,:], origin='lower', interpolation='none',
-        cmap='jet', vmin=dmin, vmax=dmax)
-    plt.title('$\%s_{%s}$, MKS, slice %s' %(typ,comp,slc))
-    
+    ax = plt.imshow(mks_R[sn, slc, :, :], origin='lower', interpolation='none',
+                    cmap='jet', vmin=dmin, vmax=dmax)
+    plt.title('$\%s_{%s}$, MKS, slice %s' % (typ, comp, slc))
+
     plt.subplot(122)
-    ax = plt.imshow(resp[sn,slc,:,:], origin='lower', interpolation='none',
-        cmap='jet', vmin=dmin, vmax=dmax)
+    ax = plt.imshow(resp[sn, slc, :, :], origin='lower', interpolation='none',
+                    cmap='jet', vmin=dmin, vmax=dmax)
     plt.colorbar(ax)
-    plt.title('$\%s_{%s}$, CPFEM, slice %s' %(typ,comp,slc))
-    
-    
+    plt.title('$\%s_{%s}$, FEM, slice %s' % (typ, comp, slc))
+
+    plt.show()
+
 if __name__ == '__main__':
-    results(21,97,'val_basal',1,'33','epsilon')
+    results(21, 97, 'val_basal', 1, '33', 'epsilon')
