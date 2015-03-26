@@ -38,13 +38,14 @@ wrt_file = 'log_order%s_%s%s_%s%s_%s.txt' % \
 # TOTAL CALIBRATION PROCEDURE
 
 # Read the calibration microstructures and build the microstructure function
-H = msf.msf(el_cal, ns_cal, Hi, order, set_id_cal, wrt_file)
+# H = msf.msf(el_cal, ns_cal, Hi, order, set_id_cal, wrt_file)
 
 # Read the responses from the FE .dat files and perform the fftn for the
 # calibration
-fegrab.fegrab(el_cal, ns_cal, set_id_cal, dir_cal, wrt_file)
+# fegrab.fegrab(el_cal, ns_cal, set_id_cal, dir_cal, wrt_file)
 
 # Perform the calibration
+H = 12
 calibration.calibration_main(el_cal, ns_cal, H, set_id_cal, wrt_file)
 
 # # TOTAL VALIDATION PROCEDURE

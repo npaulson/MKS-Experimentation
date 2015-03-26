@@ -61,7 +61,9 @@ def strain2stress(el, ns, set_id, step, wrt_file):
 
     del tmp
 
-    g = rr.bungemtrx(euler, 0)
+    # g = rr.bungemtrx(euler, 0)
+    g = rr.bungemtrx(euler, 1)
+
 
     strain_c = np.einsum('...ik,...jl,...kl', g, g, strain_s)
     del strain_s

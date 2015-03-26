@@ -16,7 +16,7 @@ import tables as tb
 
 
 def validation_zero_pad(el_cal, el_val, ns_cal, ns_val, H, set_id_cal,
-                        set_id_val, setsz, wrt_file):
+                        set_id_val, wrt_file):
 
     start = time.time()
 

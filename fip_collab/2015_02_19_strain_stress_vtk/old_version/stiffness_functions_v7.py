@@ -2,7 +2,7 @@
 """
 Created on Thu Feb 05 15:06:31 2015
 
-@author: nhpnp3
+@author: Noah Paulson
 """
 
 import numpy as np
@@ -138,21 +138,21 @@ Cij[5, 5] = C66
 
 Cijkl = np.zeros([3, 3, 3, 3])
 
-Cijkl[0, 0, 0, 0] = C11
-Cijkl[1, 1, 1, 1] = C11
-Cijkl[0, 0, 1, 1] = C12
-Cijkl[1, 1, 0, 0] = C12
-Cijkl[0, 0, 2, 2] = C13
-Cijkl[2, 2, 0, 0] = C13
-Cijkl[1, 1, 2, 2] = C13
-Cijkl[2, 2, 1, 1] = C13
-Cijkl[2, 2, 2, 2] = C33
-Cijkl[1, 2, 1, 2] = C44
-Cijkl[2, 1, 2, 1] = C44
-Cijkl[0, 2, 0, 2] = C44
-Cijkl[2, 0, 2, 0] = C44
-Cijkl[0, 1, 0, 1] = C66
-Cijkl[1, 0, 1, 0] = C66
+# Cijkl[0, 0, 0, 0] = C11
+# Cijkl[1, 1, 1, 1] = C11
+# Cijkl[0, 0, 1, 1] = C12
+# Cijkl[1, 1, 0, 0] = C12
+# Cijkl[0, 0, 2, 2] = C13
+# Cijkl[2, 2, 0, 0] = C13
+# Cijkl[1, 1, 2, 2] = C13
+# Cijkl[2, 2, 1, 1] = C13
+# Cijkl[2, 2, 2, 2] = C33
+# Cijkl[1, 2, 1, 2] = C44
+# Cijkl[2, 1, 2, 1] = C44
+# Cijkl[0, 2, 0, 2] = C44
+# Cijkl[2, 0, 2, 0] = C44
+# Cijkl[0, 1, 0, 1] = C66
+# Cijkl[1, 0, 1, 0] = C66
 
 sigval = Bmatrix(8.545240E2, 4.153528E2, 4.502432E2, 2.739572E0, 5.980331E0,
                  -4.844964E0)

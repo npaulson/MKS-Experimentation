@@ -38,15 +38,17 @@ def calibration_main(el, ns, H, set_id, wrt_file):
 
         Mk = M_all_real[:, :, k] + 1j*M_all_imag[:, :, k]
 
-        if k == 1:
-            msg = Mk.nbytes
-            rr.WP(msg, wrt_file)
-
         for sn in xrange(ns):
 
             r_fft_k = r_fft[sn, k]
 
             mSQ = Mk[sn, :]
+
+            if k == 1 & sn == 0:
+                msg = str(Mk.nbytes)
+                rr.WP(msg, wrt_file)
+                msg = str(mSQ)
+                rr.WP(msg, wrt_file)
 
             mSQc = np.conj(mSQ)
 
