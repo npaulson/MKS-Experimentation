@@ -40,6 +40,8 @@ def results_all(el, ns, set_id, step, typ, compl, comp_app):
     # close HDF5 file
     base.close()
 
+    app_resp = np.mean(r_fem[:, comp_app, ...])
+
     for comp in xrange(6):
 
         ccur = compl[comp]
@@ -53,10 +55,47 @@ def results_all(el, ns, set_id, step, typ, compl, comp_app):
         msg = ''
         rr.WP(msg, wrt_file)
 
-        # STANDARD STATISTICS
-        msg = 'Average, %s%s, CPFEM: %s' % (typ, ccur, np.mean(r_fem))
+        # MEAN ABSOLUTE STRAIN ERROR (MASE)
+        avgr_fe_tot = 0
+        avgr_mks_tot = 0
+        max_diff_all = np.zeros(ns)
+
+        for sn in xrange(ns):
+            avgr_fe_indv = np.average(r_fem[sn, comp, ...])
+            avgr_mks_indv = np.average(r_fem[sn, comp, ...])
+
+            avgr_fe_tot += avgr_fe_indv
+            avgr_mks_tot += avgr_mks_indv
+            max_diff_all[sn] = np.amax(abs(r_fem[sn, comp, ...] -
+                                       r_mks[sn, comp, ...]))
+
+        avgr_fe = avgr_fe_tot/ns
+        avgr_mks = avgr_mks_tot/ns
+
+        # DIFFERENCE MEASURES
+        mean_diff_meas = np.mean(abs(r_fem[:, comp, ...] -
+                                 r_mks[:, comp, ...]))/app_resp
+        mean_max_diff_meas = np.mean(max_diff_all)/app_resp
+        max_diff_meas_all = np.amax(abs(r_fem[:, comp, ...] -
+                                    r_mks[:, comp, ...]))/app_resp
+
+        msg = 'Mean voxel difference over all microstructures' + \
+              '(divided by mean von-Mises meas), %s%s: %s%%' % \
+              (typ, ccur, mean_diff_meas*100)
         rr.WP(msg, wrt_file)
-        msg = 'Average, %s%s, MKS: %s' % (typ, ccur, np.mean(r_mks))
+        msg = 'Average Maximum voxel difference per microstructure' + \
+              '(divided by mean von-Mises meas), %s%s: %s%%' % \
+              (typ, ccur, mean_max_diff_meas*100)
+        rr.WP(msg, wrt_file)
+        msg = 'Maximum voxel difference in all microstructures' + \
+              '(divided by mean von-Mises meas), %s%s: %s%%' % \
+              (typ, ccur, max_diff_meas_all*100)
+        rr.WP(msg, wrt_file)
+
+        # STANDARD STATISTICS
+        msg = 'Average, %s%s, CPFEM: %s' % (typ, ccur, avgr_fe)
+        rr.WP(msg, wrt_file)
+        msg = 'Average, %s%s, MKS: %s' % (typ, ccur, avgr_mks)
         rr.WP(msg, wrt_file)
         msg = 'Standard deviation, %s%s, CPFEM: %s' % \
             (typ, ccur, np.std(r_fem[:, comp, ...]))
@@ -82,41 +121,6 @@ def results_all(el, ns, set_id, step, typ, compl, comp_app):
         msg = 'Mean maximum, %s%s, CPFEM: %s' % (typ, ccur, r_fem_max)
         rr.WP(msg, wrt_file)
         msg = 'Mean maximum, %s%s, MKS: %s' % (typ, ccur, r_mks_max)
-        rr.WP(msg, wrt_file)
-
-        # MEAN ABSOLUTE STRAIN ERROR (MASE)
-        avgr_fe_tot = 0
-        avgr_mks_tot = 0
-        max_diff_all = np.zeros(ns)
-        nfac = 0.00118302858318
-
-        for sn in xrange(ns):
-            avgr_fe_indv = np.average(r_fem[sn, comp, ...])
-            avgr_mks_indv = np.average(r_fem[sn, comp, ...])
-
-            avgr_fe_tot += avgr_fe_indv
-            avgr_mks_tot += avgr_mks_indv
-            max_diff_all[sn] = np.amax(abs(r_fem[sn, comp, ...] -
-                                       r_mks[sn, comp, ...]))
-
-        # DIFFERENCE MEASURES
-        mean_diff_meas = np.mean(abs(r_fem[:, comp, ...] -
-                                 r_mks[:, comp, ...]))/nfac
-        mean_max_diff_meas = np.mean(max_diff_all)/nfac
-        max_diff_meas_all = np.amax(abs(r_fem[:, comp, ...] -
-                                    r_mks[:, comp, ...]))/nfac
-
-        msg = 'Mean voxel difference over all microstructures' + \
-              '(divided by mean von-Mises meas), %s%s: %s%%' % \
-              (typ, ccur, mean_diff_meas*100)
-        rr.WP(msg, wrt_file)
-        msg = 'Average Maximum voxel difference per microstructure' + \
-              '(divided by mean von-Mises meas), %s%s: %s%%' % \
-              (typ, ccur, mean_max_diff_meas*100)
-        rr.WP(msg, wrt_file)
-        msg = 'Maximum voxel difference in all microstructures' + \
-              '(divided by mean von-Mises meas), %s%s: %s%%' % \
-              (typ, ccur, max_diff_meas_all*100)
         rr.WP(msg, wrt_file)
 
 

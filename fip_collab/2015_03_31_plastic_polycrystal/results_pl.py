@@ -34,8 +34,11 @@ def results_all(el, ns, set_id, step, typ, compl, comp_app):
 
         r = base.get_node('/%s' % typ, 'r%s' % ccur)
 
-        r_mks[:, comp, ...] = r.r_mks[...]
-        r_fem[:, comp, ...] = r.r_fem[...]
+        r_mks[:, comp, ...] = r.r_mks_b[...]
+        r_fem[:, comp, ...] = r.r_fem_b[...]
+
+        # r_mks[:, comp, ...] = r.r_mks[...]
+        # r_fem[:, comp, ...] = r.r_fem[...]
 
     # close HDF5 file
     base.close()
@@ -88,7 +91,7 @@ def results_all(el, ns, set_id, step, typ, compl, comp_app):
         avgr_fe_tot = 0
         avgr_mks_tot = 0
         max_diff_all = np.zeros(ns)
-        nfac = 0.00118302858318
+        nfac = 0.000747035947544
 
         for sn in xrange(ns):
             avgr_fe_indv = np.average(r_fem[sn, comp, ...])
@@ -191,4 +194,5 @@ def results_all(el, ns, set_id, step, typ, compl, comp_app):
 #        plt.savefig('hist_step%s_comp%s_%s%s.png' %(step,comp,ns,set_id))
 
 if __name__ == '__main__':
-    results_all(50, 'val', 'sigma')
+    compl = ['11', '22', '33', '12', '13', '23']
+    results_all(21, 100, 'val', 1, 'epsilon_p', compl, 0)

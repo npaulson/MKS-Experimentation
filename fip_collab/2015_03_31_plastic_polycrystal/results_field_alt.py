@@ -18,8 +18,8 @@ def results(el, ns, set_id, step, comp, typ):
 
     euler = base.root.msf.euler[...].reshape(ns, 3, el, el, el)
     response = base.get_node('/epsilon_p', 'r%s' % comp)
-    r_fem = response.r_fem[...]
-    r_mks = response.r_mks[...]
+    r_fem = response.r_fem_b[...]
+    r_mks = response.r_mks_b[...]
 
     # close HDF5 file
     base.close()
@@ -173,8 +173,8 @@ def results(el, ns, set_id, step, comp, typ):
 
     # find the min and max of both datasets (in full)
 
-    r_fem_max = np.max(r_fem.reshape(ns, el**3), 1)*100
-    r_mks_max = np.max(r_mks.reshape(ns, el**3), 1)*100
+    r_fem_max = np.max(np.abs(r_fem.reshape(ns, el**3)), 1)*100
+    r_mks_max = np.max(np.abs(r_mks.reshape(ns, el**3)), 1)*100
 
     dmin = np.amin([r_fem_max, r_mks_max])
     dmax = np.amax([r_fem_max, r_mks_max])
@@ -183,26 +183,94 @@ def results(el, ns, set_id, step, comp, typ):
     bn = 10
 
     # FEM histogram
-    n, bins, patches = plt.hist(r_fem_max, bins=bn, histtype='step', hold=True,
-                                range=(dmin, dmax), color='white')
-    bincenters = 0.5*(bins[1:]+bins[:-1])
-    fep, = plt.plot(bincenters, n, 'b', linestyle='-', lw=1.0)
+    n1, bins, patches = plt.hist(r_fem_max,
+                                 bins=bn,
+                                 histtype='step',
+                                 hold=True,
+                                 range=(dmin, dmax),
+                                 color='white')
+    bcnt1 = 0.5*(bins[1:]+bins[:-1])  # bcnt stands for "bin centers"
+    fep, = plt.plot(bcnt1, n1/ns, 'b', linestyle='-', lw=1.0)
 
     # MKS histogram
-    n, bins, patches = plt.hist(r_mks_max, bins=bn, histtype='step', hold=True,
-                                range=(dmin, dmax), color='white')
-    mksp, = plt.plot(bincenters, n, 'r', linestyle='-', lw=1.0)
+    n2, bins, patches = plt.hist(r_mks_max,
+                                 bins=bn,
+                                 histtype='step',
+                                 hold=True,
+                                 range=(dmin, dmax),
+                                 color='white')
+    bcnt2 = 0.5*(bins[1:]+bins[:-1])  # keep if you want each distribution to have it's own bins
+    mksp, = plt.plot(bcnt2, n2/ns, 'r', linestyle='-', lw=1.0)
 
     plt.grid(True)
 
     plt.legend([fep, mksp], ["CPFEM", "MKS"])
 
-    plt.ylim([0, 35])
+    plt.ylim([0, 1.2*np.max([n1/ns, n2/ns])])
     plt.xlabel("$\%s_{%s}^p$ %%" % (typ, comp))
-    plt.ylabel("Frequency")
+    plt.ylabel("PDF")
     plt.title("Maximum $\%s_{%s}^p$ per MVE, FE vs. MKS,"
               % (typ, comp))
 
+    # SHIFTED MAX ERROR DISTRIBUTIONS
+    """
+    The following generates histograms for the top smeared plastic strain
+    value in each MVE for both the MKS and FEM strain fields. The histograms
+    are normalized by the minimum and maximum strain values in the set of
+    extreme values. This normalization is performed to superimpose the FEM and
+    MKS extreme value distributions. This will make it clear if the
+    distributions have the same shape, even if the actual values are different.
+    """
+
+    plt.close(5)
+
+    plt.figure(num=5, figsize=[10, 6])
+
+    r_fem_max = np.max(np.abs(r_fem.reshape(ns, el**3)), 1)*100
+    r_mks_max = np.max(np.abs(r_mks.reshape(ns, el**3)), 1)*100
+
+    # FEM histogram
+    n1, bins, patches = plt.hist(r_fem_max,
+                                 bins=bn,
+                                 histtype='step',
+                                 hold=True,
+                                 color='white')
+    bcnt1 = 0.5*(bins[1:]+bins[:-1])  # bcnt stands for "bin centers"
+
+    # MKS histogram
+    n2, bins, patches = plt.hist(r_mks_max,
+                                 bins=bn,
+                                 histtype='step',
+                                 hold=True,
+                                 color='white')
+    bcnt2 = 0.5*(bins[1:]+bins[:-1])
+
+    # normbin1 = bincenters1/np.max(r_fem_max)
+    normbin1 = (bcnt1-np.min(r_fem_max))/(np.max(r_fem_max)-np.min(r_fem_max))
+    fep, = plt.plot(normbin1,
+                    n1/ns,
+                    'b',
+                    linestyle='-',
+                    lw=1.0)
+
+    # normbin2 = bincenters2/np.max(r_mks_max)
+    normbin2 = (bcnt2-np.min(r_mks_max))/(np.max(r_mks_max)-np.min(r_mks_max))
+    mksp, = plt.plot(normbin2,
+                     n2/ns,
+                     'r',
+                     linestyle='-',
+                     lw=1.0)
+
+    plt.grid(True)
+
+    plt.legend([fep, mksp], ["CPFEM", "MKS"])
+
+    plt.xlim([0, 1])
+    plt.ylim([0, 1.2*np.max([n1/ns, n2/ns])])
+    plt.xlabel("Normalized $\%s_{%s}^p$" % (typ, comp))
+    plt.ylabel("PDF")
+    plt.title("Maximum $\%s_{%s}^p$ per MVE, FE vs. MKS,"
+              % (typ, comp))
     plt.show()
 
 if __name__ == '__main__':
