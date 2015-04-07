@@ -17,7 +17,8 @@ def fegrab(el, ns, set_id, direc, wrt_file):
     # FINITE ELEMENT RESPONSES
     st = time.time()
 
-    resp = np.zeros([ns, el**3])
+    r_fem_t = np.zeros([ns, el**3])
+    r_fem_p = np.zeros([ns, el**3])
 
     nwd = os.getcwd() + '/' + direc  # for unix
     # nwd = os.getcwd() + '\\' + direc
@@ -25,21 +26,32 @@ def fegrab(el, ns, set_id, direc, wrt_file):
 
     for sn in xrange(ns):
         filename = "sq%s_%s%s_%s.dat" % (el, ns, set_id, sn+1)
-        resp[sn, ...] = res_red(filename, el, sn)
+        r_fem_t[sn, ...], r_fem_p[sn, ...] = res_red(filename, el, sn)
 
-    resp = resp.reshape(ns, el, el, el)
+    r_fem_t = r_fem_t.reshape(ns, el, el, el)
+    r_fem_p = r_fem_p.reshape(ns, el, el, el)
 
     os.chdir('..')
 
     # open HDF5 file
     base = tb.open_file("ref_%s%s.h5" % (ns, set_id), mode="a")
-    # create a group one level below root called response
-    group = base.create_group("/", 'response', 'response field')
+    # create a group one level below root called epsilon
+    group = base.create_group("/", 'epsilon', 'total strain field')
     # initialize  array
     base.create_array(group,
-                      'resp',
-                      resp,
-                      'reference response fields')
+                      'r_fem',
+                      r_fem_t,
+                      'fem response fields')
+    # create a group one level below root called epsilon
+    group = base.create_group("/", 'epsilon_p', 'plastic strain field')
+    # initialize  array
+    base.create_array(group,
+                      'r_fem',
+                      r_fem_p,
+                      'fem response fields')
+
+    del r_fem_p
+
     # close HDF5 file
     base.close()
 
@@ -51,14 +63,14 @@ def fegrab(el, ns, set_id, direc, wrt_file):
     st = time.time()
 
     # resp_fft = np.fft.fftn(resp.reshape([ns, el, el, el]), axes=[1, 2, 3])
-    resp_fft = np.fft.fftn(resp, axes=[1, 2, 3])
+    resp_fft = np.fft.fftn(r_fem_t, axes=[1, 2, 3])
 
-    del resp
+    del r_fem_t
 
     # open HDF5 file
     base = tb.open_file("D_%s%s.h5" % (ns, set_id), mode="a")
     # create a group one level below root called response
-    group = base.create_group("/", 'response', 'response field')
+    group = base.create_group("/", 'epsilon', 'DFT of total strain field')
     # initialize  array
     base.create_array(group,
                       'resp_fft',
@@ -100,7 +112,8 @@ def res_red(filename, el, sn):
     # line0 is the index of first line of the data
     line0 = ln + 5
 
-    r_mat = np.zeros([el**3, 8])
+    r_mat1 = np.zeros([el**3, 8])
+    r_mat2 = np.zeros([el**3, 8])
     c = -1
 
     # this series of loops generates a 9261x8 dataset of E11s
@@ -108,11 +121,13 @@ def res_red(filename, el, sn):
     for k in xrange(el**3):
         for jj in xrange(8):
             c += 1
-            r_mat[k, jj] = linelist[line0 + c].split()[2]
+            r_mat1[k, jj] = linelist[line0 + c].split()[2]
+            r_mat2[k, jj] = linelist[line0 + c].split()[3]
 
     f.close()
 
     # here we average all 8 integration points in each element cell
-    r_mat = np.mean(r_mat, axis=1)
+    r_mat1 = np.mean(r_mat1, axis=1)
+    r_mat2 = np.mean(r_mat2, axis=1)
 
-    return r_mat
+    return r_mat1, r_mat2

@@ -5,11 +5,11 @@ close all
 % number of elements per side
 el=21;
 % this is the number of total samples
-ns=401;
+ns=399;
 
 set_id = 'cal008';
 
-M=zeros(el^3,ns);
+% M=zeros(el^3,ns);
 
 % Deltas microstructures
 % M(4631,1)=1;
@@ -21,11 +21,11 @@ M=zeros(el^3,ns);
 %     M(:,sn) = rand(el^3,1) > .5;
 % end
 
-% Range of VF microstructures
-percentile = linspace(.01,.99,ns);
-for sn = 1:ns
-    M(:,sn) = rand(el^3,1) > percentile(sn);
-end
+% % Range of VF microstructures
+% percentile = linspace(.01,.99,ns);
+% for sn = 1:ns
+%     M(:,sn) = rand(el^3,1) > percentile(sn);
+% end
 
 % % Voronoi microstructures
 % N = round(linspace(250,10000,32));
@@ -64,11 +64,10 @@ end
 
 %%
 filename = ['M_',int2str(ns),'cal','.mat'];
-save(filename,'M')
+% save(filename,'M')
 
-% % Import M
-% M = load(filename);
-% M = M.M;
+M = load(filename);
+M = M.M;
 
 first50=fopen('50top.inp','r');
 bcs_material_inp = fopen('bcs_material.inp','r');
@@ -87,7 +86,7 @@ for ii=1:ns
     twopstatset(ii,M);
     matsets=fopen(['matset' int2str(ii) '.inp'],'r');
     materset=fread(matsets,inf);
-    combined=fopen(['sq' int2str(el) '_' int2str(ns) set_id '_' int2str(ii+399) '.inp'],'w+');
+    combined=fopen(['sq' int2str(el) '_' int2str(ns) set_id '_' int2str(ii) '.inp'],'w+');
     fwrite(combined,A);
     fprintf(combined,'\n');
     fwrite(combined,nodesetspbcx);

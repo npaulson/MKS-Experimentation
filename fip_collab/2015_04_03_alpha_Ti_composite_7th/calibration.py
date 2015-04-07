@@ -24,7 +24,7 @@ def calibration_main(el, ns, H, set_id, wrt_file):
     # define an object for the microstructure function array
     M_all = base.root.msf.M_all
     # load the frequency space response into memory
-    r_fft = base.root.response.resp_fft[...].reshape(ns, el**3)
+    r_fft = base.root.epsilon.resp_fft[...].reshape(ns, el**3)
 
     for indx in xrange(el):
         sk = indx*el**2

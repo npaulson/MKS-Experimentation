@@ -66,13 +66,13 @@ def results(el, ns, set_id, typ, wrt_file):
     ax = plt.imshow(r_mks[sn, slc, :, :], origin='lower',
                     interpolation='none', cmap='jet', vmin=dmin, vmax=dmax)
     plt.colorbar(ax)
-    plt.title('MKS $\%s_{%s}$ response, slice %s' % (typ, real_comp, slc))
+    plt.title('MKS $\%s_{%s}^p$ response, slice %s' % ('epsilon', real_comp, slc))
 
     plt.subplot(233)
     ax = plt.imshow(r_fem[sn, slc, :, :], origin='lower',
                     interpolation='none', cmap='jet', vmin=dmin, vmax=dmax)
     plt.colorbar(ax)
-    plt.title('FEM $\%s_{%s}$ response, slice %s' % (typ, real_comp, slc))
+    plt.title('FEM $\%s_{%s}^p$ response, slice %s' % ('epsilon', real_comp, slc))
 
     # Plot a histogram representing the frequency of strain levels with
     # separate channels for each phase of each type of response.
@@ -176,9 +176,9 @@ def results(el, ns, set_id, typ, wrt_file):
     ax.set_xticks(x)
     ax.set_xticklabels(bin_labels, rotation='vertical')
 
-    plt.xlabel("bin centers, $\%s_{%s}$" % (typ, real_comp))
+    plt.xlabel("bin centers, $\%s_{%s}^p$" % ('epsilon', real_comp))
     plt.ylabel("% error")
-    plt.title("Error Histogram, $\%s_{%s}$" % (typ, real_comp))
+    plt.title("Error Histogram, $\%s_{%s}^p$" % ('epsilon', real_comp))
     plt.grid(True)
     # plt.tight_layout(pad=0.1)
     plt.ylim([1.25*np.min(err_sort), 1.25*np.max(err_sort)])
@@ -213,10 +213,10 @@ def results(el, ns, set_id, typ, wrt_file):
 
     plt.legend([fep, mksp], ["FE", "MKS"])
 
-    plt.xlabel("$\%s_{%s}$ %%" % ('epsilon', '11'))
+    plt.xlabel("$\%s_{%s}^p$ %%" % ('epsilon', real_comp))
     plt.ylabel("Frequency")
-    plt.title("Maximum $\%s_{%s}$ per MVE, FE vs. MKS,"
-              % ('epsilon', '11'))
+    plt.title("Maximum $\%s_{%s}^p$ per MVE, FE vs. MKS,"
+              % ('epsilon', real_comp))
 
     # SHIFTED MAX ERROR DISTRIBUTIONS
     """
@@ -274,10 +274,10 @@ def results(el, ns, set_id, typ, wrt_file):
 
     plt.xlim([0, 1])
     plt.ylim([0, 1.2*np.max([n1/ns, n2/ns])])
-    plt.xlabel("normalized $\%s_{%s}$" % ('epsilon', '11'))
+    plt.xlabel("normalized $\%s_{%s}^p$" % ('epsilon', real_comp))
     plt.ylabel("Frequency")
-    plt.title("Maximum $\%s_{%s}$ per MVE, FE vs. MKS,"
-              % ('epsilon', '11'))
+    plt.title("Maximum $\%s_{%s}^p$ per MVE, FE vs. MKS,"
+              % ('epsilon', real_comp))
 
     # # MEAN ABSOLUTE STRAIN ERROR (MASE)
     # avgr_fe_tot = 0
@@ -298,7 +298,7 @@ def results(el, ns, set_id, typ, wrt_file):
     # if typ == "epsilon":
     #     nfac = avgr_fe
     # else:
-    #     nfac = 0.00533  # user should define this constant as desired
+    #     nfac = 0.00317  # user should define this constant as desired
 
     # # DIFFERENCE MEASURES
     # mean_diff_meas = np.mean(abs(r_fem-r_mks))/nfac
@@ -349,4 +349,4 @@ def results(el, ns, set_id, typ, wrt_file):
 
 
 if __name__ == '__main__':
-    results(21, 400, 'val008', 'epsilon', 'test.txt')
+    results(21, 400, 'val008', 'epsilon_p', 'test.txt')

@@ -93,7 +93,7 @@ def validation_zero_pad(el_cal, el_val, ns_cal, ns_val, H, set_id_cal,
     # define an object for the array
     M_all = base_D.root.msf.M_all
 
-    mks_R = np.zeros([ns_val, el_val, el_val, el_val])
+    r_mks = np.zeros([ns_val, el_val, el_val, el_val])
 
     for sn in xrange(ns_val):
 
@@ -106,7 +106,7 @@ def validation_zero_pad(el_cal, el_val, ns_cal, ns_val, H, set_id_cal,
 
         del M
 
-        mks_R[sn, ...] = np.fft.ifftn(tmp, [el_val, el_val, el_val],
+        r_mks[sn, ...] = np.fft.ifftn(tmp, [el_val, el_val, el_val],
                                       [0, 1, 2]).real
 
         del tmp
@@ -117,12 +117,30 @@ def validation_zero_pad(el_cal, el_val, ns_cal, ns_val, H, set_id_cal,
     # open reference HDF5 file
     base_ref = tb.open_file("ref_%s%s.h5" % (ns_val, set_id_val), mode="a")
     # make reference to the desired node
-    group = base_ref.root.response
-    # initialize array
+    group = base_ref.root.epsilon
+    # save the MKS total strain prediction
     base_ref.create_array(group,
-                          'mks_R',
-                          mks_R,
+                          'r_mks',
+                          r_mks,
                           'repsonse field as predicted by the MKS')
+
+    # now we want to calculate the MKS predicted plastic strain by
+    # subtracting the FEM elastic strain from the MKS predicted total strain
+
+    # first we have to retrieve the FEM total strain fields
+    r_fem_t = group.r_fem[...]
+    # now we find the group for the FEM plastic strain
+    group = base_ref.root.epsilon_p
+    # next we retrieve the FEM plastic strain
+    r_fem_p = group.r_fem[...]
+    # now we calculate the MKS plastic strain field
+    r_mks_p = r_mks - (r_fem_t - r_fem_p)
+    # now we save the MKS plastic strain field
+    base_ref.create_array(group,
+                          'r_mks',
+                          r_mks_p,
+                          'repsonse field as predicted by the MKS')
+
     # close HDF5 file
     base_ref.close()
 
@@ -131,14 +149,3 @@ def validation_zero_pad(el_cal, el_val, ns_cal, ns_val, H, set_id_cal,
 
     msg = 'validation performed: %s seconds' % timeE
     rr.WP(msg, wrt_file)
-
-# write to vtk file
-#
-#    from pyevtk.hl import gridToVTK
-#
-#    maxx = maxy = maxz = el_val + 1
-#    x = np.arange(0, maxx, 1, dtype='float64')
-#    y = np.arange(0, maxy, 1, dtype='float64')
-#    z = np.arange(0, maxz, 1, dtype='float64')
-#
-#    gridToVTK("testvtk", x, y, z, cellData = {"specinfc_real" : specinfc_pad[:,:,:,0].real, "specinfc_imaginary" : specinfc_pad[:,:,:,0].imag})

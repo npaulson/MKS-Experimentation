@@ -66,13 +66,13 @@ def results(el, ns, set_id, typ, wrt_file):
     ax = plt.imshow(r_mks[sn, slc, :, :], origin='lower',
                     interpolation='none', cmap='jet', vmin=dmin, vmax=dmax)
     plt.colorbar(ax)
-    plt.title('MKS $\%s_{%s}$ response, slice %s' % (typ, real_comp, slc))
+    plt.title('MKS $\%s_{%s}$ response, slice %s' % ('epsilon', real_comp, slc))
 
     plt.subplot(233)
     ax = plt.imshow(r_fem[sn, slc, :, :], origin='lower',
                     interpolation='none', cmap='jet', vmin=dmin, vmax=dmax)
     plt.colorbar(ax)
-    plt.title('FEM $\%s_{%s}$ response, slice %s' % (typ, real_comp, slc))
+    plt.title('FEM $\%s_{%s}$ response, slice %s' % ('epsilon', real_comp, slc))
 
     # Plot a histogram representing the frequency of strain levels with
     # separate channels for each phase of each type of response.
@@ -176,9 +176,9 @@ def results(el, ns, set_id, typ, wrt_file):
     ax.set_xticks(x)
     ax.set_xticklabels(bin_labels, rotation='vertical')
 
-    plt.xlabel("bin centers, $\%s_{%s}$" % (typ, real_comp))
+    plt.xlabel("bin centers, $\%s_{%s}$" % ('epsilon', real_comp))
     plt.ylabel("% error")
-    plt.title("Error Histogram, $\%s_{%s}$" % (typ, real_comp))
+    plt.title("Error Histogram, $\%s_{%s}$" % ('epsilon', real_comp))
     plt.grid(True)
     # plt.tight_layout(pad=0.1)
     plt.ylim([1.25*np.min(err_sort), 1.25*np.max(err_sort)])
@@ -228,56 +228,82 @@ def results(el, ns, set_id, typ, wrt_file):
     distributions have the same shape, even if the actual values are different.
     """
 
-    plt.figure(num=5, figsize=[10, 7])
+    hist_extreme_val(el, ns, r_fem, r_mks, 'epsilon', '11', '^p', 5)
 
-    # find the min and max of both datasets (in full)
+    # # plt.figure(num=5, figsize=[10, 7])
 
-    fe = np.max(np.abs(r_fem.reshape(ns, el**3)), 1)*100
-    mks = np.max(np.abs(r_mks.reshape(ns, el**3)), 1)*100
+    # fig, ax1 = plt.subplots(num=5, figsize=[10, 7])
 
-    # select the desired number of bins in the histogram
+    # ax2 = ax1.twiny()
+
+    # # find the min and max of both datasets (in full)
+
+    # fem = np.max(np.abs(r_fem.reshape(ns, el**3)), 1)*100
+    # mks = np.max(np.abs(r_mks.reshape(ns, el**3)), 1)*100
+
+    # print fem.size
+
+    # # select the desired number of bins in the histogram
     # bn = 15
-    bn = 15
 
-    # FEM histogram
-    n1, bins, patches = plt.hist(fe,
-                                 bins=bn,
-                                 histtype='step',
-                                 hold=True,
-                                 color='white')
-    bcnt1 = 0.5*(bins[1:]+bins[:-1])
+    # # FEM histogram
+    # n1, bins, patches = ax1.hist(fem,
+    #                              bins=bn,
+    #                              histtype='step',
+    #                              color='white')
+    # bcnt1 = 0.5*(bins[1:]+bins[:-1])
+    # bhgt1 = n1/ns
 
-    # MKS histogram
-    n2, bins, patches = plt.hist(mks,
-                                 bins=bn,
-                                 histtype='step',
-                                 hold=True,
-                                 color='white')
-    bcnt2 = 0.5*(bins[1:]+bins[:-1])
+    # # MKS histogram
+    # n2, bins, patches = ax1.hist(mks,
+    #                              bins=bn,
+    #                              histtype='step',
+    #                              color='white')
+    # bcnt2 = 0.5*(bins[1:]+bins[:-1])
+    # bhgt2 = n2/ns
 
-    norm_bcnt1 = (bcnt1-np.min(fe))/(np.max(fe)-np.min(fe))
-    fep, = plt.plot(norm_bcnt1,
-                    n1/ns,
-                    'b',
-                    linestyle='-',
-                    lw=1.0)
+    # femp, = ax1.plot(bcnt1,
+    #                  bhgt1,
+    #                  'b',
+    #                  linestyle='-',
+    #                  lw=1.0)
 
-    norm_bcnt2 = (bcnt2-np.min(mks))/(np.max(mks)-np.min(mks))
-    mksp, = plt.plot(norm_bcnt2,
-                     n2/ns,
-                     'r',
-                     linestyle='-',
-                     lw=1.0)
+    # mksp, = ax2.plot(bcnt2,
+    #                  bhgt2,
+    #                  'r',
+    #                  linestyle='-',
+    #                  lw=1.0)
 
-    plt.grid(True)
-    plt.legend([fep, mksp], ["FE", "MKS"])
+    # plt.grid(True)
+    # plt.legend([femp, mksp], ["FEM", "MKS"])
 
-    plt.xlim([0, 1])
-    plt.ylim([0, 1.2*np.max([n1/ns, n2/ns])])
-    plt.xlabel("normalized $\%s_{%s}$" % ('epsilon', '11'))
-    plt.ylabel("Frequency")
-    plt.title("Maximum $\%s_{%s}$ per MVE, FE vs. MKS,"
-              % ('epsilon', '11'))
+    # for tl in ax1.get_xticklabels():
+    #     tl.set_color('b')
+
+    # for tl in ax2.get_xticklabels():
+    #     tl.set_color('r')
+
+    # # set and determine x-limits for first set of axes:
+    # # max_loc = bcnt1[np.argmax(bhgt1)]
+    # max_loc = np.mean(fem)
+    # half_range = np.max(np.abs([max_loc-bcnt1[0], bcnt1[-1]-max_loc]))
+    # ax_min = max_loc-1.1*half_range
+    # ax_max = max_loc+1.1*half_range
+    # ax1.set_xlim(ax_min, ax_max)
+
+    # # max_loc = bcnt2[np.argmax(bhgt2)]
+    # max_loc = np.mean(mks)
+    # half_range = np.max(np.abs([max_loc-bcnt2[0], bcnt2[-1]-max_loc]))
+    # ax_min = max_loc-1.1*half_range
+    # ax_max = max_loc+1.1*half_range
+    # ax2.set_xlim(ax_min, ax_max)
+
+    # ax1.set_ylim(0, 1.2*np.max([bhgt1, bhgt2]))
+    # ax1.set_xlabel("%%$\%s_{%s}$ FEM" % ('epsilon', real_comp))
+    # ax2.set_xlabel("%%$\%s_{%s}$ MKS" % ('epsilon', real_comp))
+    # ax1.set_ylabel("Frequency")
+    # plt.title("Maximum $\%s_{%s}$ per MVE, FE vs. MKS"
+    #           % ('epsilon', '11'), y=1.08)
 
     # # MEAN ABSOLUTE STRAIN ERROR (MASE)
     # avgr_fe_tot = 0
@@ -348,5 +374,87 @@ def results(el, ns, set_id, typ, wrt_file):
     plt.show()
 
 
+def hist_extreme_val(el, ns, r_fem, r_mks, typ, comp, exp, plotnum):
+    """
+    The following generates histograms for the top strain
+    value in each MVE for both the MKS and FEM strain fields. The histograms
+    are normalized by the minimum and maximum strain values in the set of
+    extreme values. This normalization is performed to superimpose the FEM and
+    MKS extreme value distributions. This will make it clear if the
+    distributions have the same shape, even if the actual values are different.
+    """
+
+    fig, ax1 = plt.subplots(num=plotnum, figsize=[10, 7])
+
+    # define a second x-axis
+    ax2 = ax1.twiny()
+
+    # find the min and max of both datasets (in full)
+    fem = np.max(np.abs(r_fem.reshape(ns, el**3)), 1)*100
+    mks = np.max(np.abs(r_mks.reshape(ns, el**3)), 1)*100
+
+    # select the desired number of bins in the histogram
+    bn = 15
+
+    # FEM histogram
+    n1, bins, patches = ax1.hist(fem,
+                                 bins=bn,
+                                 histtype='step',
+                                 color='white')
+    bcnt1 = 0.5*(bins[1:]+bins[:-1])  # bin centers
+    bhgt1 = n1/ns  # normalized bin heights
+
+    # MKS histogram
+    n2, bins, patches = ax1.hist(mks,
+                                 bins=bn,
+                                 histtype='step',
+                                 color='white')
+    bcnt2 = 0.5*(bins[1:]+bins[:-1])  # bin centers
+    bhgt2 = n2/ns  # normalized bin heights
+
+    femp, = ax1.plot(bcnt1,
+                     bhgt1,
+                     'b',
+                     linestyle='-',
+                     lw=1.0)
+
+    mksp, = ax2.plot(bcnt2,
+                     bhgt2,
+                     'r',
+                     linestyle='-',
+                     lw=1.0)
+
+    plt.grid(True)
+    plt.legend([femp, mksp], ["FEM", "MKS"])
+
+    # color the labels for the first set of axes blue
+    for tl in ax1.get_xticklabels():
+        tl.set_color('b')
+    # color the labels for the second set of axes red
+    for tl in ax2.get_xticklabels():
+        tl.set_color('r')
+
+    # set and determine x-limits for first set of axes:
+    max_loc = np.mean(fem)
+    half_range = np.max(np.abs([max_loc-bcnt1[0], bcnt1[-1]-max_loc]))
+    ax_min = max_loc-1.1*half_range
+    ax_max = max_loc+1.1*half_range
+    ax1.set_xlim(ax_min, ax_max)
+
+    # set and determine x-limits for second set of axes:
+    max_loc = np.mean(mks)
+    half_range = np.max(np.abs([max_loc-bcnt2[0], bcnt2[-1]-max_loc]))
+    ax_min = max_loc-1.1*half_range
+    ax_max = max_loc+1.1*half_range
+    ax2.set_xlim(ax_min, ax_max)
+
+    ax1.set_ylim(0, 1.2*np.max([bhgt1, bhgt2]))
+    ax1.set_xlabel("%%$\%s_{%s}%s$ FEM" % (typ, comp, exp))
+    ax2.set_xlabel("%%$\%s_{%s}%s$ MKS" % (typ, comp, exp))
+    ax1.set_ylabel("Frequency")
+    plt.title("Maximum $\%s_{%s}%s$ per MVE, FE vs. MKS"
+              % (typ, comp, exp), y=1.08)
+
+
 if __name__ == '__main__':
-    results(21, 400, 'val008', 'epsilon', 'test.txt')
+    results(21, 400, 'val008', 'epsilon_p', 'test.txt')

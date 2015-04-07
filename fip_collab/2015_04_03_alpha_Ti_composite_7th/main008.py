@@ -19,12 +19,12 @@ order = 1  # choose 1, 2 or 7 local neighbors in MKS procedure
 el_cal = 21  # number of elements per side of cube for calibration dataset
 ns_cal = 399  # total number of samples in calibration dataset
 set_id_cal = 'cal008'  # set ID for calibration dataset
-dir_cal = 'cal008'  # directory name for .dat files
+dir_cal = 'cal'  # directory name for .dat files
 
 el_val = 21  # number of elements per side of cube for validation dataset
 ns_val = 400  # total number of samples in validation dataset
 set_id_val = 'val008'  # set ID for validation dataset
-dir_val = 'val008'  # directory name for .dat files
+dir_val = 'val'  # directory name for .dat files
 
 doplt = 0  # if plotting of results desired set doplt = 1
 
@@ -61,4 +61,7 @@ validation_viz.validation_zero_pad(el_cal, el_val, ns_cal, ns_val, H,
                                    set_id_cal, set_id_val, wrt_file)
 
 # Calculate the results of the validation
-results.results(el_val, ns_val, set_id_val, 'epsilon', doplt, wrt_file)
+results.results(el_val, ns_val, set_id_val, 'epsilon', wrt_file)
+
+# Calculate the results of the validation
+results.results(el_val, ns_val, set_id_val, 'epsilon_p', wrt_file)
