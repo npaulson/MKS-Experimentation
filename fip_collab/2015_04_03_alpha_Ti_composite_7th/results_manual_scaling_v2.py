@@ -17,6 +17,9 @@ def results(el, ns, set_id, typ, comp, spr, wrt_file):
     if spr == 'p':
         spr_ = "_p"
         sprup = "^p"
+    else:
+        spr_ = spr
+        sprup = ""
 
     # open reference HDF5 file
     base = tb.open_file("ref_%s%s.h5" % (ns, set_id), mode="r")
@@ -27,11 +30,6 @@ def results(el, ns, set_id, typ, comp, spr, wrt_file):
     micr = base.root.msf.pre_micr[...]
     # close the HDF5 file
     base.close()
-
-    if typ == '':
-        nfac = np.mean(r_fem)
-    else:
-        nfac = 0.00533  # user should define this constant as desired
 
     maxindx = np.unravel_index(np.argmax(np.abs(r_fem - r_mks)), r_fem.shape)
     maxresp = r_fem[maxindx]
@@ -64,7 +62,7 @@ def results(el, ns, set_id, typ, comp, spr, wrt_file):
     # hist_std(el, ns, r_fem, r_mks, micr, typ, comp, sprup, 2)
     # violin_extreme_val(el, ns, r_fem_lin, r_mks_lin, typ, comp, sprup,
     #                    0.99, nfac, 3)
-    # hist_extreme_val(el, ns, r_fem, r_mks, typ, comp, sprup, 4)
+    hist_extreme_val(el, ns, r_fem, r_mks, typ, comp, sprup, 4)
     # hist_extreme_val_2axis(el, ns, r_fem, r_mks, typ, comp, sprup, 5)
     hist_extreme_val_2axis_alt(el, ns, r_fem, r_mks, typ, comp, sprup, 6)
     # error_calc(el, ns, r_fem, r_mks, typ, comp, spr, nfac, wrt_file)
@@ -152,51 +150,6 @@ def field_std(el, ns, r_fem, r_mks, micr, typ, comp, spr, sn, slc, plotnum):
     plt.title('FEM $\%s_{%s}%s$, slice %s' % (typ, comp, spr, slc))
 
 
-def hist_extreme_val(el, ns, r_fem, r_mks, typ, comp, spr, plotnum):
-
-    plt.figure(num=plotnum, figsize=[10, 7])
-
-    # find the min and max of both datasets (in full)
-    fem = np.max(r_fem.reshape(ns, el**3), 1)*100
-    mks = np.max(r_mks.reshape(ns, el**3), 1)*100
-
-    dmin = np.amin([fem, mks])
-    dmax = np.amax([fem, mks])
-
-    # select the desired number of bins in the histogram
-    bn = 15
-
-    # FEM histogram
-    n, bins, patches = plt.hist(fem,
-                                bins=bn,
-                                histtype='step',
-                                hold=True,
-                                range=(dmin, dmax),
-                                color='white')
-
-    bincenters = 0.5*(bins[1:]+bins[:-1])
-    femp, = plt.plot(bincenters, n, 'b', linestyle='-', lw=1.0)
-
-    # MKS histogram
-    n, bins, patches = plt.hist(mks,
-                                bins=bn,
-                                histtype='step',
-                                hold=True,
-                                range=(dmin, dmax),
-                                color='white')
-
-    mksp, = plt.plot(bincenters, n, 'r', linestyle='-', lw=1.0)
-
-    plt.grid(True)
-
-    plt.legend([femp, mksp], ["FEM", "MKS"])
-
-    plt.xlabel("%%$\%s_{%s}%s$" % (typ, comp, spr))
-    plt.ylabel("Frequency")
-    plt.title("Maximum $\%s_{%s}%s$ per MVE, FE vs. MKS,"
-              % (typ, comp, spr))
-
-
 def hist_extreme_val_2axis(el, ns, r_fem, r_mks, typ, comp, spr, plotnum):
     """
     The following generates histograms for the top strain
@@ -279,6 +232,65 @@ def hist_extreme_val_2axis(el, ns, r_fem, r_mks, typ, comp, spr, plotnum):
               % (typ, comp, spr), y=1.08)
 
 
+def hist_extreme_val(el, ns, r_fem, r_mks, typ, comp, spr, plotnum):
+    """
+    The following generates histograms for the top strain
+    value in each MVE for both the MKS and FEM strain fields. The histograms
+    are normalized by the minimum and maximum strain values in the set of
+    extreme values. This normalization is performed to superimpose the FEM and
+    MKS extreme value distributions. This will make it clear if the
+    distributions have the same shape, even if the actual values are different.
+    """
+
+    fig, ax = plt.subplots(num=plotnum, figsize=[10, 7])
+
+    # find the min and max of both datasets (in full)
+    fem = np.max(np.abs(r_fem.reshape(ns, el**3)), 1)*100
+    mks = np.max(np.abs(r_mks.reshape(ns, el**3)), 1)*100
+
+    # select the desired number of bins in the histogram
+    bn = 15
+
+    # FEM histogram
+    n1, bins, patches = ax.hist(fem,
+                                bins=bn,
+                                normed=True,
+                                histtype='step',
+                                color='black')
+
+    # MKS histogram
+    n2, bins, patches = ax.hist(mks,
+                                bins=bn,
+                                normed=True,
+                                histtype='step',
+                                color='blue')
+
+    smin = np.min([fem, mks])
+    smax = np.max([fem, mks])
+    X_plot = np.linspace(smin, smax, 1000)[:, np.newaxis]
+
+    kde = KernelDensity(kernel='gaussian',
+                        bandwidth=0.025).fit(fem[:, np.newaxis])
+    log_dens = kde.score_samples(X_plot)
+    fem_dens = np.exp(log_dens)
+    femp, = ax.plot(X_plot[:, 0], fem_dens, '-r')
+
+    kde = KernelDensity(kernel='gaussian',
+                        bandwidth=0.015).fit(mks[:, np.newaxis])
+    log_dens = kde.score_samples(X_plot)
+    mks_dens = np.exp(log_dens)
+    mksp, = ax.plot(X_plot[:, 0], mks_dens, '-g')
+
+    plt.grid(True)
+    plt.legend([femp, mksp], ["FEM", "MKS"])
+
+    ax.set_ylim(0, 1.25*np.max([fem_dens, mks_dens]))
+    ax.set_xlabel("%%$\%s_{%s}%s$" % (typ, comp, spr))
+    ax.set_ylabel("Relative Density")
+    plt.title("Maximum $\%s_{%s}%s$ per MVE, FE vs. MKS"
+              % (typ, comp, spr))
+
+
 def hist_extreme_val_2axis_alt(el, ns, r_fem, r_mks, typ, comp, spr, plotnum):
     """
     The following generates histograms for the top strain
@@ -299,37 +311,39 @@ def hist_extreme_val_2axis_alt(el, ns, r_fem, r_mks, typ, comp, spr, plotnum):
     mks = np.max(np.abs(r_mks.reshape(ns, el**3)), 1)*100
 
     # select the desired number of bins in the histogram
-    bn = 15
+    # bn = 15
 
-    # FEM histogram
-    n1, bins, patches = ax1.hist(fem,
-                                 bins=bn,
-                                 normed=True,
-                                 histtype='step',
-                                 color='black')
+    # # FEM histogram
+    # n1, bins, patches = ax1.hist(fem,
+    #                              bins=bn,
+    #                              normed=True,
+    #                              histtype='step',
+    #                              color='black')
 
-    # MKS histogram
-    n2, bins, patches = ax1.hist(mks,
-                                 bins=bn,
-                                 normed=True,
-                                 histtype='step',
-                                 color='blue')
+    # # MKS histogram
+    # n2, bins, patches = ax1.hist(mks,
+    #                              bins=bn,
+    #                              normed=True,
+    #                              histtype='step',
+    #                              color='blue')
 
-    smin = np.min([fem, mks])
-    smax = np.max([fem, mks])
-    X_plot = np.linspace(smin, smax, 1000)[:, np.newaxis]
+    X_plot = np.linspace(np.min(fem), np.max(fem), 1000)[:, np.newaxis]
 
     kde = KernelDensity(kernel='gaussian',
                         bandwidth=0.025).fit(fem[:, np.newaxis])
     log_dens = kde.score_samples(X_plot)
     fem_dens = np.exp(log_dens)
-    femp, = ax1.plot(X_plot[:, 0], fem_dens, '-r')
+    fem_dens_rel = fem_dens/np.max(fem_dens)
+    femp, = ax1.plot(X_plot[:, 0], fem_dens_rel, '-r')
+
+    X_plot = np.linspace(np.min(mks), np.max(mks), 1000)[:, np.newaxis]
 
     kde = KernelDensity(kernel='gaussian',
                         bandwidth=0.015).fit(mks[:, np.newaxis])
     log_dens = kde.score_samples(X_plot)
     mks_dens = np.exp(log_dens)
-    mksp, = ax2.plot(X_plot[:, 0], mks_dens, '-g')
+    mks_dens_rel = mks_dens/np.max(mks_dens)
+    mksp, = ax2.plot(X_plot[:, 0], mks_dens_rel, '-g')
 
     plt.grid(True)
     plt.legend([femp, mksp], ["FEM", "MKS"])
@@ -341,24 +355,24 @@ def hist_extreme_val_2axis_alt(el, ns, r_fem, r_mks, typ, comp, spr, plotnum):
     for tl in ax2.get_xticklabels():
         tl.set_color('g')
 
-    # # set and determine x-limits for first set of axes:
-    # max_loc = np.mean(fem)
-    # half_range = np.max(np.abs([max_loc-bcnt1[0], bcnt1[-1]-max_loc]))
-    # ax_min = max_loc-1.1*half_range
-    # ax_max = max_loc+1.1*half_range
-    # ax1.set_xlim(ax_min, ax_max)
+    # set and determine x-limits for first set of axes:
+    max_loc = np.mean(fem)
+    half_range = np.max(np.abs([max_loc-np.min(fem), np.max(fem)-max_loc]))
+    ax_min = max_loc-1.1*half_range
+    ax_max = max_loc+1.1*half_range
+    ax1.set_xlim(ax_min, ax_max)
 
-    # # set and determine x-limits for second set of axes:
-    # max_loc = np.mean(mks)
-    # half_range = np.max(np.abs([max_loc-bcnt2[0], bcnt2[-1]-max_loc]))
-    # ax_min = max_loc-1.1*half_range
-    # ax_max = max_loc+1.1*half_range
-    # ax2.set_xlim(ax_min, ax_max)
+    # set and determine x-limits for second set of axes:
+    max_loc = np.mean(mks)
+    half_range = np.max(np.abs([max_loc-np.min(mks), np.max(mks)-max_loc]))
+    ax_min = max_loc-1.1*half_range
+    ax_max = max_loc+1.1*half_range
+    ax2.set_xlim(ax_min, ax_max)
 
-    ax1.set_ylim(0, 1.25*np.max([fem_dens, mks_dens]))
+    ax1.set_ylim(0, 1.2)
     ax1.set_xlabel("%%$\%s_{%s}%s$ FEM" % (typ, comp, spr))
     ax2.set_xlabel("%%$\%s_{%s}%s$ MKS" % (typ, comp, spr))
-    ax1.set_ylabel("Frequency")
+    ax1.set_ylabel("density relative to maximum")
     plt.title("Maximum $\%s_{%s}%s$ per MVE, FE vs. MKS"
               % (typ, comp, spr), y=1.08)
 
@@ -476,4 +490,4 @@ def violin_extreme_val(el, ns, r_fem_lin, r_mks_lin, typ, comp, spr,
 
 
 if __name__ == '__main__':
-    results(21, 400, 'val008', 'epsilon', '11', 'p', 'test.txt')
+    results(21, 400, 'val008', 'epsilon', '11', '', 'test.txt')

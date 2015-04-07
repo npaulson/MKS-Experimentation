@@ -1,0 +1,13 @@
+#PBS -N xdir
+#PBS -l nodes=1:ppn=1
+#PBS -l mem=16gb
+#PBS -l walltime=02:00:00
+#PBS -q granulous
+#PBS -k oe
+
+module load python/2.7.7
+module load vtk/5.10.1
+module load matlab/r2014b
+
+cd /panfs/iw-scratch.pace.gatech.edu/v7/nhpnp3/xdir_4_7
+python main.py

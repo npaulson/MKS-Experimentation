@@ -9,29 +9,30 @@ import numpy as np
 import matplotlib.pyplot as plt
 import functions as rr
 import tables as tb
-from sklearn.neighbors import KernelDensity
 
 
-def results(el, ns, set_id, typ, comp, spr, wrt_file):
+def results(el, ns, set_id, step, typ, comp, spr, wrt_file):
 
     if spr == 'p':
-        spr_ = "_p"
-        sprup = "^p"
+        spr_ = '_p'
+        sprup = '^p'
+    else:
+        spr_ = ''
 
     # open reference HDF5 file
-    base = tb.open_file("ref_%s%s.h5" % (ns, set_id), mode="r")
-    # assign data to array
-    group = base.get_node('/%s%s' % (typ, spr_))
-    r_mks = group.r_mks[...]
-    r_fem = group.r_fem[...]
-    micr = base.root.msf.pre_micr[...]
+    base = tb.open_file("ref_%s%s_s%s.h5" % (ns, set_id, step),
+                        mode="r")
+    euler = base.root.msf.euler[...].reshape(ns, 3, el, el, el)
+    response = base.get_node('/%s%s' % (typ, spr_), 'r%s' % comp)
+    r_fem = response.r_fem[...]
+    r_mks = response.r_mks[...]
     # close the HDF5 file
     base.close()
 
-    if typ == '':
+    if spr == '':
         nfac = np.mean(r_fem)
     else:
-        nfac = 0.00533  # user should define this constant as desired
+        nfac = 0.001278  # user should define this constant as desired
 
     maxindx = np.unravel_index(np.argmax(np.abs(r_fem - r_mks)), r_fem.shape)
     maxresp = r_fem[maxindx]
@@ -46,7 +47,7 @@ def results(el, ns, set_id, typ, comp, spr, wrt_file):
     print maxMKS
     print '\nmaximum difference in response:'
     print maxdiff
-    print micr[maxindx[0], :, maxindx[1], maxindx[2], maxindx[3]]
+    print euler[maxindx[0], :, maxindx[1], maxindx[2], maxindx[3]]
 
     # VISUALIZATION OF MKS VS. FEM
 
@@ -55,19 +56,19 @@ def results(el, ns, set_id, typ, comp, spr, wrt_file):
     # sn = maxindx[0]
 
     slc = 0
-    sn = 200
+    sn = 0
 
     r_fem_lin = r_fem.reshape(ns*el*el*el)
     r_mks_lin = r_mks.reshape(ns*el*el*el)
 
-    # field_std(el, ns, r_fem, r_mks, micr, typ, comp, sprup, sn, slc, 1)
-    # hist_std(el, ns, r_fem, r_mks, micr, typ, comp, sprup, 2)
-    # violin_extreme_val(el, ns, r_fem_lin, r_mks_lin, typ, comp, sprup,
-    #                    0.99, nfac, 3)
-    # hist_extreme_val(el, ns, r_fem, r_mks, typ, comp, sprup, 4)
-    # hist_extreme_val_2axis(el, ns, r_fem, r_mks, typ, comp, sprup, 5)
-    hist_extreme_val_2axis_alt(el, ns, r_fem, r_mks, typ, comp, sprup, 6)
-    # error_calc(el, ns, r_fem, r_mks, typ, comp, spr, nfac, wrt_file)
+    field_std(el, ns, r_fem, r_mks, euler, typ, comp, sprup, sn, slc, 1)
+    hist_std(el, ns, r_fem, r_mks, typ, comp, sprup, 2)
+    violin_extreme_val(el, ns, r_fem_lin, r_mks_lin, typ, comp, sprup,
+                       0.99, nfac, 3)
+    hist_extreme_val(el, ns, r_fem, r_mks, typ, comp, sprup, 4)
+    hist_extreme_val_2axis(el, ns, r_fem, r_mks, typ, comp, sprup, 5)
+    plot_euler(el, ns, euler, sn, slc, 6)
+    error_calc(el, ns, r_fem, r_mks, typ, comp, spr, nfac, wrt_file)
 
     plt.show()
 
@@ -128,24 +129,18 @@ def error_calc(el, ns, r_fem, r_mks, typ, comp, spr, nfac, wrt_file):
 def field_std(el, ns, r_fem, r_mks, micr, typ, comp, spr, sn, slc, plotnum):
 
     # Plot slices of the response
-    plt.figure(num=plotnum, figsize=[13, 2.7])
+    plt.figure(num=plotnum, figsize=[8, 2.7])
 
     dmin = np.min([r_mks[sn, slc, :, :], r_fem[sn, slc, :, :]])
     dmax = np.max([r_mks[sn, slc, :, :], r_fem[sn, slc, :, :]])
 
-    plt.subplot(131)
-    ax = plt.imshow(micr[sn, 0, slc, :, :], origin='lower',
-                    interpolation='none', cmap='jet')
-    plt.colorbar(ax)
-    plt.title('phase map, slice %s' % (slc))
-
-    plt.subplot(132)
+    plt.subplot(121)
     ax = plt.imshow(r_mks[sn, slc, :, :], origin='lower',
                     interpolation='none', cmap='jet', vmin=dmin, vmax=dmax)
     plt.colorbar(ax)
     plt.title('MKS $\%s_{%s}%s$, slice %s' % (typ, comp, spr, slc))
 
-    plt.subplot(133)
+    plt.subplot(122)
     ax = plt.imshow(r_fem[sn, slc, :, :], origin='lower',
                     interpolation='none', cmap='jet', vmin=dmin, vmax=dmax)
     plt.colorbar(ax)
@@ -279,91 +274,7 @@ def hist_extreme_val_2axis(el, ns, r_fem, r_mks, typ, comp, spr, plotnum):
               % (typ, comp, spr), y=1.08)
 
 
-def hist_extreme_val_2axis_alt(el, ns, r_fem, r_mks, typ, comp, spr, plotnum):
-    """
-    The following generates histograms for the top strain
-    value in each MVE for both the MKS and FEM strain fields. The histograms
-    are normalized by the minimum and maximum strain values in the set of
-    extreme values. This normalization is performed to superimpose the FEM and
-    MKS extreme value distributions. This will make it clear if the
-    distributions have the same shape, even if the actual values are different.
-    """
-
-    fig, ax1 = plt.subplots(num=plotnum, figsize=[10, 7])
-
-    # define a second x-axis
-    ax2 = ax1.twiny()
-
-    # find the min and max of both datasets (in full)
-    fem = np.max(np.abs(r_fem.reshape(ns, el**3)), 1)*100
-    mks = np.max(np.abs(r_mks.reshape(ns, el**3)), 1)*100
-
-    # select the desired number of bins in the histogram
-    bn = 15
-
-    # FEM histogram
-    n1, bins, patches = ax1.hist(fem,
-                                 bins=bn,
-                                 normed=True,
-                                 histtype='step',
-                                 color='black')
-
-    # MKS histogram
-    n2, bins, patches = ax1.hist(mks,
-                                 bins=bn,
-                                 normed=True,
-                                 histtype='step',
-                                 color='blue')
-
-    smin = np.min([fem, mks])
-    smax = np.max([fem, mks])
-    X_plot = np.linspace(smin, smax, 1000)[:, np.newaxis]
-
-    kde = KernelDensity(kernel='gaussian',
-                        bandwidth=0.025).fit(fem[:, np.newaxis])
-    log_dens = kde.score_samples(X_plot)
-    fem_dens = np.exp(log_dens)
-    femp, = ax1.plot(X_plot[:, 0], fem_dens, '-r')
-
-    kde = KernelDensity(kernel='gaussian',
-                        bandwidth=0.015).fit(mks[:, np.newaxis])
-    log_dens = kde.score_samples(X_plot)
-    mks_dens = np.exp(log_dens)
-    mksp, = ax2.plot(X_plot[:, 0], mks_dens, '-g')
-
-    plt.grid(True)
-    plt.legend([femp, mksp], ["FEM", "MKS"])
-
-    # color the labels for the first set of axes blue
-    for tl in ax1.get_xticklabels():
-        tl.set_color('r')
-    # color the labels for the second set of axes red
-    for tl in ax2.get_xticklabels():
-        tl.set_color('g')
-
-    # # set and determine x-limits for first set of axes:
-    # max_loc = np.mean(fem)
-    # half_range = np.max(np.abs([max_loc-bcnt1[0], bcnt1[-1]-max_loc]))
-    # ax_min = max_loc-1.1*half_range
-    # ax_max = max_loc+1.1*half_range
-    # ax1.set_xlim(ax_min, ax_max)
-
-    # # set and determine x-limits for second set of axes:
-    # max_loc = np.mean(mks)
-    # half_range = np.max(np.abs([max_loc-bcnt2[0], bcnt2[-1]-max_loc]))
-    # ax_min = max_loc-1.1*half_range
-    # ax_max = max_loc+1.1*half_range
-    # ax2.set_xlim(ax_min, ax_max)
-
-    ax1.set_ylim(0, 1.25*np.max([fem_dens, mks_dens]))
-    ax1.set_xlabel("%%$\%s_{%s}%s$ FEM" % (typ, comp, spr))
-    ax2.set_xlabel("%%$\%s_{%s}%s$ MKS" % (typ, comp, spr))
-    ax1.set_ylabel("Frequency")
-    plt.title("Maximum $\%s_{%s}%s$ per MVE, FE vs. MKS"
-              % (typ, comp, spr), y=1.08)
-
-
-def hist_std(el, ns, r_fem, r_mks, micr, typ, comp, spr, plotnum):
+def hist_std(el, ns, r_fem, r_mks, typ, comp, spr, plotnum):
 
     plt.figure(num=plotnum, figsize=[10, 7])
 
@@ -371,51 +282,59 @@ def hist_std(el, ns, r_fem, r_mks, micr, typ, comp, spr, plotnum):
     dmin = np.amin([r_fem, r_mks])
     dmax = np.amax([r_fem, r_mks])
 
-    micr0 = micr[:, 0, :, :, :].reshape(ns*el*el*el).astype(int)
-
-    r_fem_lin = r_fem.reshape(ns*el*el*el)
-    r_mks_lin = r_mks.reshape(ns*el*el*el)
-
-    tmp = np.nonzero(micr0)
-    femb = r_fem_lin[tmp]
-    mksb = r_mks_lin[tmp]
-
-    tmp = np.nonzero(micr0 == 0)
-    femw = r_fem_lin[tmp]
-    mksw = r_mks_lin[tmp]
+    fem = r_fem.reshape(ns*el*el*el)
+    mks = r_mks.reshape(ns*el*el*el)
 
     # select the desired number of bins in the histogram
     bn = 40
 
     # FEM histogram
-    n, bins, patches = plt.hist(femb, bins=bn, histtype='step', hold=True,
+    n, bins, patches = plt.hist(fem, bins=bn, histtype='step', hold=True,
                                 range=(dmin, dmax), color='white')
     bincenters = 0.5*(bins[1:]+bins[:-1])
-    fembp, = plt.plot(bincenters, n, 'k', linestyle='--', lw=1.5)
-
-    n, bins, patches = plt.hist(femw, bins=bn, histtype='step', hold=True,
-                                range=(dmin, dmax), color='white')
-    femwp, = plt.plot(bincenters, n, 'k')
+    femp, = plt.plot(bincenters, n, 'k', linestyle='--', lw=1.5)
 
     # MKS histogram
-    n, bins, patches = plt.hist(mksb, bins=bn, histtype='step', hold=True,
+    n, bins, patches = plt.hist(mks, bins=bn, histtype='step', hold=True,
                                 range=(dmin, dmax), color='white')
-    mksbp, = plt.plot(bincenters, n, 'b', linestyle='--', lw=1.5)
-
-    n, bins, patches = plt.hist(mksw, bins=bn, histtype='step', hold=True,
-                                range=(dmin, dmax), color='white')
-    mkswp, = plt.plot(bincenters, n, 'b')
+    mksp, = plt.plot(bincenters, n, 'b', linestyle='--', lw=1.5)
 
     plt.grid(True)
 
-    plt.legend([fembp, femwp, mksbp, mkswp], ['FEM - stiff phase',
-                                              'FEM - compliant phase',
-                                              'MKS - stiff phase',
-                                              'MKS - compliant phase'])
+    plt.legend([femp, mksp], ['FEM', 'MKS'])
 
     plt.xlabel('$\%s_{%s}%s$' % (typ, comp, spr))
     plt.ylabel('Frequency')
     plt.title('Frequency comparison MKS with FE results')
+
+
+def plot_euler(el, ns, euler, sn, slc, plotnum):
+
+    plt.figure(num=plotnum, figsize=[12, 2.7])
+
+    plt.subplot(131)
+    ax = plt.imshow(euler[sn, 0, slc, :, :],
+                    origin='lower',
+                    interpolation='none',
+                    cmap='jet')
+    plt.colorbar(ax)
+    plt.title('Slice %s, $\phi_1$' % slc)
+
+    plt.subplot(132)
+    ax = plt.imshow(euler[sn, 1, slc, :, :],
+                    origin='lower',
+                    interpolation='none',
+                    cmap='jet')
+    plt.colorbar(ax)
+    plt.title('$\Phi$')
+
+    plt.subplot(133)
+    ax = plt.imshow(euler[sn, 2, slc, :, :],
+                    origin='lower',
+                    interpolation='none',
+                    cmap='jet')
+    plt.colorbar(ax)
+    plt.title('$\phi_2$')
 
 
 def violin_extreme_val(el, ns, r_fem_lin, r_mks_lin, typ, comp, spr,
@@ -476,4 +395,4 @@ def violin_extreme_val(el, ns, r_fem_lin, r_mks_lin, typ, comp, spr,
 
 
 if __name__ == '__main__':
-    results(21, 400, 'val008', 'epsilon', '11', 'p', 'test.txt')
+    results(21, 100, 'val', 1, 'epsilon', '11', 'p', 'test.txt')
