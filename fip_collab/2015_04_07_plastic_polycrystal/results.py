@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import functions as rr
 import tables as tb
+from sklearn.neighbors import KernelDensity
 
 
 def results(el, ns, set_id, step, L, typ, comp, spri):
@@ -44,42 +45,42 @@ def results(el, ns, set_id, step, L, typ, comp, spri):
 
     error_calc(el, ns, r_fem, r_mks, typ, comp, spri, nfac, wrt_file)
 
-    # maxindx = np.unravel_index(np.argmax(np.abs(r_fem - r_mks)), r_fem.shape)
-    # maxresp = r_fem[maxindx]
-    # maxMKS = r_mks[maxindx]
-    # maxdiff = (np.abs(r_fem - r_mks)[maxindx])
+    maxindx = np.unravel_index(np.argmax(np.abs(r_fem - r_mks)), r_fem.shape)
+    maxresp = r_fem[maxindx]
+    maxMKS = r_mks[maxindx]
+    maxdiff = (np.abs(r_fem - r_mks)[maxindx])
 
-    # print '\nindices of max error:'
-    # print maxindx
-    # print '\nreference response at max error:'
-    # print maxresp
-    # print '\nMKS response at max error:'
-    # print maxMKS
-    # print '\nmaximum difference in response:'
-    # print maxdiff
-    # print euler[maxindx[0], :, maxindx[1], maxindx[2], maxindx[3]]
+    print '\nindices of max error:'
+    print maxindx
+    print '\nreference response at max error:'
+    print maxresp
+    print '\nMKS response at max error:'
+    print maxMKS
+    print '\nmaximum difference in response:'
+    print maxdiff
+    print euler[maxindx[0], :, maxindx[1], maxindx[2], maxindx[3]]
 
-    # # VISUALIZATION OF MKS VS. FEM
+    # VISUALIZATION OF MKS VS. FEM
 
-    # # pick a slice perpendicular to the x-direction
-    # # slc = maxindx[1]
-    # # sn = maxindx[0]
+    # pick a slice perpendicular to the x-direction
+    slc = maxindx[1]
+    sn = maxindx[0]
 
     # slc = 0
-    # sn = 0
+    # sn = 200
 
-    # r_fem_lin = r_fem.reshape(ns*el*el*el)
-    # r_mks_lin = r_mks.reshape(ns*el*el*el)
+    r_fem_lin = r_fem.reshape(ns*el*el*el)
+    r_mks_lin = r_mks.reshape(ns*el*el*el)
 
-    # field_std(el, ns, r_fem, r_mks, euler, typ, comp, spr, sn, slc, 1)
-    # hist_std(el, ns, r_fem, r_mks, typ, comp, spr, 2)
-    # violin_extreme_val(el, ns, r_fem_lin, r_mks_lin, typ, comp, spr,
-    #                    0.99, nfac, 3)
-    # hist_extreme_val(el, ns, r_fem, r_mks, typ, comp, spr, 4)
-    # hist_extreme_val_2axis(el, ns, r_fem, r_mks, typ, comp, spr, 5)
-    # plot_euler(el, ns, euler, sn, slc, 6)
+    field_std(el, ns, r_fem, r_mks, euler, typ, comp, spr, sn, slc, 1)
+    hist_std(el, ns, r_fem, r_mks, typ, comp, spr, 2)
+    violin_extreme_val(el, ns, r_fem_lin, r_mks_lin, typ, comp, spr,
+                       0.99, nfac, 3)
+    hist_extreme_val(el, ns, r_fem, r_mks, typ, comp, spr, 4)
+    hist_extreme_val_2axis(el, ns, r_fem, r_mks, typ, comp, spr, 5)
+    plot_euler(el, ns, euler, sn, slc, 6)
 
-    # plt.show()
+    plt.show()
 
 
 def error_calc(el, ns, r_fem, r_mks, typ, comp, spr, nfac, wrt_file):
@@ -91,19 +92,24 @@ def error_calc(el, ns, r_fem, r_mks, typ, comp, spr, nfac, wrt_file):
 
     # DIFFERENCE MEASURES
     mean_diff_meas = np.mean(abs(r_fem-r_mks))/nfac
+    std_diff_meas = np.std(abs(r_fem-r_mks))/nfac
     mean_max_diff_meas = np.mean(max_diff_all)/nfac
     max_diff_meas_all = np.amax(abs(r_fem-r_mks))/nfac
 
     msg = 'Mean voxel difference over all microstructures'\
-        ' (divided by mean von-Mises meas), %s_%s%s: %s%%' \
+        ' (divided by applied strain), %s_%s%s: %s%%' \
         % (typ, spr, comp, mean_diff_meas*100)
     rr.WP(msg, wrt_file)
+    msg = 'standard deviation of difference over all microstructures'\
+        ' (divided by applied strain), %s_%s%s: %s%%' \
+        % (typ, spr, comp, std_diff_meas*100)
+    rr.WP(msg, wrt_file)
     msg = 'Average Maximum voxel difference per microstructure'\
-        ' (divided by mean von-Mises meas), %s_%s%s: %s%%' \
+        ' (divided by applied strain), %s_%s%s: %s%%' \
         % (typ, spr, comp, mean_max_diff_meas*100)
     rr.WP(msg, wrt_file)
     msg = 'Maximum voxel difference in all microstructures '\
-        '(divided by mean von-Mises meas), %s_%s%s: %s%%' \
+        '(divided by applied strain), %s_%s%s: %s%%' \
         % (typ, spr, comp, max_diff_meas_all*100)
     rr.WP(msg, wrt_file)
 
@@ -138,7 +144,7 @@ def error_calc(el, ns, r_fem, r_mks, typ, comp, spr, nfac, wrt_file):
 def field_std(el, ns, r_fem, r_mks, micr, typ, comp, spr, sn, slc, plotnum):
 
     # Plot slices of the response
-    plt.figure(num=plotnum, figsize=[8, 2.7])
+    plt.figure(num=plotnum, figsize=[9, 2.7])
 
     dmin = np.min([r_mks[sn, slc, :, :], r_fem[sn, slc, :, :]])
     dmax = np.max([r_mks[sn, slc, :, :], r_fem[sn, slc, :, :]])
@@ -157,47 +163,79 @@ def field_std(el, ns, r_fem, r_mks, micr, typ, comp, spr, sn, slc, plotnum):
 
 
 def hist_extreme_val(el, ns, r_fem, r_mks, typ, comp, spr, plotnum):
+    """
+    The following generates histograms for the top strain
+    value in each MVE for both the MKS and FEM strain fields. The histograms
+    are normalized by the minimum and maximum strain values in the set of
+    extreme values. This normalization is performed to superimpose the FEM and
+    MKS extreme value distributions. This will make it clear if the
+    distributions have the same shape, even if the actual values are different.
+    """
 
-    plt.figure(num=plotnum, figsize=[10, 7])
+    fig, ax = plt.subplots(num=plotnum, figsize=[10, 7])
 
     # find the min and max of both datasets (in full)
-    fem = np.max(r_fem.reshape(ns, el**3), 1)*100
-    mks = np.max(r_mks.reshape(ns, el**3), 1)*100
-
-    dmin = np.amin([fem, mks])
-    dmax = np.amax([fem, mks])
+    fem = np.max(np.abs(r_fem.reshape(ns, el**3)), 1)*100
+    mks = np.max(np.abs(r_mks.reshape(ns, el**3)), 1)*100
 
     # select the desired number of bins in the histogram
     bn = 15
 
     # FEM histogram
-    n, bins, patches = plt.hist(fem,
+    n1, bins, patches = ax.hist(fem,
                                 bins=bn,
-                                histtype='step',
-                                hold=True,
-                                range=(dmin, dmax),
-                                color='white')
-
-    bincenters = 0.5*(bins[1:]+bins[:-1])
-    femp, = plt.plot(bincenters, n, 'b', linestyle='-', lw=1.0)
+                                normed=True,
+                                histtype='stepfilled',
+                                fc=[0, 0, .5],
+                                alpha=0.2)
 
     # MKS histogram
-    n, bins, patches = plt.hist(mks,
+    n2, bins, patches = ax.hist(mks,
                                 bins=bn,
-                                histtype='step',
-                                hold=True,
-                                range=(dmin, dmax),
-                                color='white')
+                                normed=True,
+                                histtype='stepfilled',
+                                fc=[.5, 0, 0],
+                                alpha=0.2)
 
-    mksp, = plt.plot(bincenters, n, 'r', linestyle='-', lw=1.0)
+    smin = np.min(fem)
+    smax = np.max(fem)
+    X_plot = np.linspace(smin, smax, 1000)[:, np.newaxis]
+
+    bw_silverman = ((4*np.std(fem)**5)/(3*ns))**(1./5.)
+    kde = KernelDensity(kernel='gaussian',
+                        bandwidth=bw_silverman).fit(fem[:, np.newaxis])
+
+    fem_dens = np.exp(kde.score_samples(X_plot))
+
+    femp, = ax.plot(X_plot[:, 0],
+                    fem_dens,
+                    linewidth=2,
+                    alpha=0.5,
+                    color=[0., 0., 1.])
+
+    smin = np.min(mks)
+    smax = np.max(mks)
+    X_plot = np.linspace(smin, smax, 1000)[:, np.newaxis]
+
+    bw_silverman = ((4*np.std(mks)**5)/(3*ns))**(1./5.)
+    kde = KernelDensity(kernel='gaussian',
+                        bandwidth=bw_silverman).fit(mks[:, np.newaxis])
+
+    mks_dens = np.exp(kde.score_samples(X_plot))
+
+    mksp, = ax.plot(X_plot[:, 0],
+                    mks_dens,
+                    linewidth=2,
+                    alpha=0.5,
+                    color=[1., 0., 0.])
 
     plt.grid(True)
-
     plt.legend([femp, mksp], ["FEM", "MKS"])
 
-    plt.xlabel("%%$\%s_{%s}^%s$" % (typ, comp, spr))
-    plt.ylabel("Frequency")
-    plt.title("Maximum $\%s_{%s}^%s$ per MVE, FE vs. MKS,"
+    ax.set_ylim(0, 1.5*np.max([fem_dens, mks_dens]))
+    ax.set_xlabel("%%$\%s_{%s}%s$" % (typ, comp, spr))
+    ax.set_ylabel("Relative Density")
+    plt.title("Maximum $\%s_{%s}%s$ per MVE, FE vs. MKS"
               % (typ, comp, spr))
 
 
@@ -220,36 +258,39 @@ def hist_extreme_val_2axis(el, ns, r_fem, r_mks, typ, comp, spr, plotnum):
     fem = np.max(np.abs(r_fem.reshape(ns, el**3)), 1)*100
     mks = np.max(np.abs(r_mks.reshape(ns, el**3)), 1)*100
 
-    # select the desired number of bins in the histogram
-    bn = 15
+    smin = np.min(fem)
+    smax = np.max(fem)
+    X_plot = np.linspace(smin, smax, 1000)[:, np.newaxis]
 
-    # FEM histogram
-    n1, bins, patches = ax1.hist(fem,
-                                 bins=bn,
-                                 histtype='step',
-                                 color='white')
-    bcnt1 = 0.5*(bins[1:]+bins[:-1])  # bin centers
-    bhgt1 = n1/ns  # normalized bin heights
+    bw_silverman = ((4*np.std(fem)**5)/(3*ns))**(1./5.)
+    kde = KernelDensity(kernel='gaussian',
+                        bandwidth=bw_silverman).fit(fem[:, np.newaxis])
 
-    # MKS histogram
-    n2, bins, patches = ax1.hist(mks,
-                                 bins=bn,
-                                 histtype='step',
-                                 color='white')
-    bcnt2 = 0.5*(bins[1:]+bins[:-1])  # bin centers
-    bhgt2 = n2/ns  # normalized bin heights
+    fem_dens = np.exp(kde.score_samples(X_plot))
+    fem_dens_rel = fem_dens/np.max(fem_dens)
 
-    femp, = ax1.plot(bcnt1,
-                     bhgt1,
-                     'b',
-                     linestyle='-',
-                     lw=1.0)
+    femp, = ax1.plot(X_plot[:, 0],
+                     fem_dens_rel,
+                     linewidth=2,
+                     alpha=0.5,
+                     color=[0., 0., 1.])
 
-    mksp, = ax2.plot(bcnt2,
-                     bhgt2,
-                     'r',
-                     linestyle='-',
-                     lw=1.0)
+    smin = np.min(mks)
+    smax = np.max(mks)
+    X_plot = np.linspace(smin, smax, 1000)[:, np.newaxis]
+
+    bw_silverman = ((4*np.std(mks)**5)/(3*ns))**(1./5.)
+    kde = KernelDensity(kernel='gaussian',
+                        bandwidth=bw_silverman).fit(mks[:, np.newaxis])
+
+    mks_dens = np.exp(kde.score_samples(X_plot))
+    mks_dens_rel = mks_dens/np.max(mks_dens)
+
+    mksp, = ax2.plot(X_plot[:, 0],
+                     mks_dens_rel,
+                     linewidth=2,
+                     alpha=0.5,
+                     color=[1., 0., 0.])
 
     plt.grid(True)
     plt.legend([femp, mksp], ["FEM", "MKS"])
@@ -262,51 +303,66 @@ def hist_extreme_val_2axis(el, ns, r_fem, r_mks, typ, comp, spr, plotnum):
         tl.set_color('r')
 
     # set and determine x-limits for first set of axes:
-    max_loc = np.mean(fem)
-    half_range = np.max(np.abs([max_loc-bcnt1[0], bcnt1[-1]-max_loc]))
-    ax_min = max_loc-1.1*half_range
-    ax_max = max_loc+1.1*half_range
+    mean = np.mean(fem)
+    sdev = np.std(fem)
+    ax_min = mean-4*sdev
+    ax_max = mean+4*sdev
     ax1.set_xlim(ax_min, ax_max)
 
     # set and determine x-limits for second set of axes:
-    max_loc = np.mean(mks)
-    half_range = np.max(np.abs([max_loc-bcnt2[0], bcnt2[-1]-max_loc]))
-    ax_min = max_loc-1.1*half_range
-    ax_max = max_loc+1.1*half_range
+    mean = np.mean(mks)
+    sdev = np.std(mks)
+    ax_min = mean-4*sdev
+    ax_max = mean+4*sdev
     ax2.set_xlim(ax_min, ax_max)
 
-    ax1.set_ylim(0, 1.2*np.max([bhgt1, bhgt2]))
-    ax1.set_xlabel("%%$\%s_{%s}^%s$ FEM" % (typ, comp, spr))
-    ax2.set_xlabel("%%$\%s_{%s}^%s$ MKS" % (typ, comp, spr))
-    ax1.set_ylabel("Frequency")
-    plt.title("Maximum $\%s_{%s}^%s$ per MVE, FE vs. MKS"
+    ax1.set_ylim(0, 1.2)
+    ax1.set_xlabel("%%$\%s_{%s}%s$ FEM" % (typ, comp, spr))
+    ax2.set_xlabel("%%$\%s_{%s}%s$ MKS" % (typ, comp, spr))
+    ax1.set_ylabel("density relative to maximum")
+    plt.title("Maximum $\%s_{%s}%s$ per MVE, FE vs. MKS"
               % (typ, comp, spr), y=1.08)
 
 
 def hist_std(el, ns, r_fem, r_mks, typ, comp, spr, plotnum):
 
-    plt.figure(num=plotnum, figsize=[10, 7])
+    fig, ax = plt.subplots(num=plotnum, figsize=[10, 7])
 
-    # find the min and max of both datasets (in full)
-    dmin = np.amin([r_fem, r_mks])
-    dmax = np.amax([r_fem, r_mks])
+    fem = r_fem.reshape(ns*el*el*el)[0:-1:400]
+    print fem.size
+    mks = r_mks.reshape(ns*el*el*el)[0:-1:400]
 
-    fem = r_fem.reshape(ns*el*el*el)
-    mks = r_mks.reshape(ns*el*el*el)
+    smin = np.min(fem)
+    smax = np.max(fem)
+    X_plot = np.linspace(smin, smax, 1000)[:, np.newaxis]
 
-    # select the desired number of bins in the histogram
-    bn = 40
+    bw_silverman = ((4*np.std(fem)**5)/(3*fem.size))**(1./5.)
+    kde = KernelDensity(kernel='gaussian',
+                        bandwidth=bw_silverman).fit(fem[:, np.newaxis])
 
-    # FEM histogram
-    n, bins, patches = plt.hist(fem, bins=bn, histtype='step', hold=True,
-                                range=(dmin, dmax), color='white')
-    bincenters = 0.5*(bins[1:]+bins[:-1])
-    femp, = plt.plot(bincenters, n, 'k', linestyle='--', lw=1.5)
+    fem_dens = np.exp(kde.score_samples(X_plot))
 
-    # MKS histogram
-    n, bins, patches = plt.hist(mks, bins=bn, histtype='step', hold=True,
-                                range=(dmin, dmax), color='white')
-    mksp, = plt.plot(bincenters, n, 'b', linestyle='--', lw=1.5)
+    femp, = ax.plot(X_plot[:, 0],
+                    fem_dens,
+                    linewidth=2,
+                    alpha=0.5,
+                    color=[0., 0., 1.])
+
+    smin = np.min(mks)
+    smax = np.max(mks)
+    X_plot = np.linspace(smin, smax, 1000)[:, np.newaxis]
+
+    bw_silverman = ((4*np.std(mks)**5)/(3*fem.size))**(1./5.)
+    kde = KernelDensity(kernel='gaussian',
+                        bandwidth=bw_silverman).fit(mks[:, np.newaxis])
+
+    mks_dens = np.exp(kde.score_samples(X_plot))
+
+    mksp, = ax.plot(X_plot[:, 0],
+                    mks_dens,
+                    linewidth=2,
+                    alpha=0.5,
+                    color=[1., 0., 0.])
 
     plt.grid(True)
 
@@ -404,4 +460,4 @@ def violin_extreme_val(el, ns, r_fem_lin, r_mks_lin, typ, comp, spr,
 
 
 if __name__ == '__main__':
-    results(21, 100, 'val', 1, 'epsilon', '11', 'p', 'test.txt')
+    results(21, 398, 'val', 5, 4, 'epsilon', '23', 't')
