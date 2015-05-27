@@ -7,9 +7,15 @@ phi = phi + (1e-7)*zvec.*(randvec - randvecopp);
 
 out_tvalues = zeros(5, length(phi1));
 
-out_tvalues(1, :) = -exp((-2*i) * phi1) * sqrt(0.6e1) * (0.1e1 - cos(phi)) * (0.1e1 + cos(phi)) / 4;
-out_tvalues(2, :) = (-0.1e1 / 0.24e2*i) * exp((-1*i) * phi1) * sqrt(0.6e1) * ((0.1e1 - cos(phi)) ^ (-0.1e1 / 0.2e1)) * sqrt(0.1e1 + cos(phi)) * (0.6e1 * (0.1e1 - cos(phi)) * (0.1e1 + cos(phi)) - 0.6e1 * (0.1e1 - cos(phi)) ^ 2);
-out_tvalues(3, :) = (0.1e1 + cos(phi)) ^ 2 / 0.4e1 - (0.1e1 - cos(phi)) * (0.1e1 + cos(phi)) + (0.1e1 - cos(phi)) ^ 2 / 0.4e1;
-out_tvalues(4, :) = (0.1e1 / 0.24e2*i) * exp((i) * phi1) * sqrt(0.6e1) * sqrt(0.1e1 - cos(phi)) * ((0.1e1 + cos(phi)) ^ (-0.1e1 / 0.2e1)) * (-0.6e1 * (0.1e1 + cos(phi)) ^ 2 + 0.6e1 * (0.1e1 - cos(phi)) * (0.1e1 + cos(phi)));
-out_tvalues(5, :) = -exp((2*i) * phi1) * sqrt(0.6e1) * (0.1e1 - cos(phi)) * (0.1e1 + cos(phi)) / 4;
+t4 = sin(phi);
+t6 = sqrt(0.6e1);
+t8 = -t4 ^ 2 * t6 / 0.4e1;
+t5 = cos(phi);
+t7 = (-0.1e1 / 0.2e1*i) * sqrt(0.1e1 + t5) * sqrt(0.1e1 - t5) * t5 * t6;
+
+out_tvalues(1, :) = exp((-2*i) * phi1) * t8;
+out_tvalues(2, :) = exp((-1*i) * phi1) * t7;
+out_tvalues(3, :) = 0.3e1 / 0.2e1 * t5 ^ 2 - 0.1e1 / 0.2e1;
+out_tvalues(4, :) = exp((i) * phi1) * t7;
+out_tvalues(5, :) = exp((2*i) * phi1) * t8;
 

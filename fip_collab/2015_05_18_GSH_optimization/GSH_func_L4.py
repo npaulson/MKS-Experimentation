@@ -64,22 +64,23 @@ def gsh(e_angles):
     t112 = t52 * t111
     t117 = np.exp((4j) * phi1)
 
-    out_tvalues = np.zeros([14,e_angles.shape[1]], dtype = 'complex128')
+    out_tvalues = np.zeros([15,e_angles.shape[1]], dtype = 'complex128')
 
-    out_tvalues[0,:] = -(t2 * t3 * t8 / 4)
-    out_tvalues[1,:] = (((-0.1e1 / 0.4e1)*1j) * t12 * t3 * t18 * (t8 - t19))
-    out_tvalues[2,:] = (t23 / 0.4e1 - t8 + t19 / 0.4e1)
-    out_tvalues[3,:] = (((0.1e1 / 0.4e1)*1j) * t27 * t3 * t31 * (-t23 + t8))
-    out_tvalues[4,:] = -(t36 * t3 * t8 / 4)
-    out_tvalues[5,:] = (t41 * t42 * t44 / 16)
-    out_tvalues[6,:] = (((0.1e1 / 0.8e1)*1j) * t48 * t50 * t55 * (t57 - t58))
-    out_tvalues[7,:] = -(t2 * t62 * t65 * (t66 - 0.960e3 * t57 + 0.360e3 * t58) / 1920)
-    out_tvalues[8,:] = (((-0.1e1 / 0.960e3)*1j) * t12 * t74 * t18 * (0.120e3 * t77 - t79 + 0.720e3 * t57 - 0.120e3 * t58))
-    out_tvalues[9,:] = (t85 / 0.16e2 - t77 + 0.9e1 / 0.4e1 * t44 - t57 + t58 / 0.16e2)
-    out_tvalues[10,:] = (((0.1e1 / 0.960e3)*1j) * t27 * t74 * t31 * (-0.120e3 * t85 + 0.720e3 * t77 - t79 + 0.120e3 * t57))
-    out_tvalues[11,:] = -(t36 * t62 * t100 * (0.360e3 * t85 - 0.960e3 * t77 + t66) / 1920)
-    out_tvalues[12,:] = (((-0.1e1 / 0.8e1)*1j) * t108 * t50 * t112 * (-t85 + t77))
-    out_tvalues[13,:] = (t117 * t42 * t44 / 16)
+    out_tvalues[0,:] = 1
+    out_tvalues[1,:] = -(t2 * t3 * t8 / 4)
+    out_tvalues[2,:] = (((-0.1e1 / 0.4e1)*1j) * t12 * t3 * t18 * (t8 - t19))
+    out_tvalues[3,:] = (t23 / 0.4e1 - t8 + t19 / 0.4e1)
+    out_tvalues[4,:] = (((0.1e1 / 0.4e1)*1j) * t27 * t3 * t31 * (-t23 + t8))
+    out_tvalues[5,:] = -(t36 * t3 * t8 / 4)
+    out_tvalues[6,:] = (t41 * t42 * t44 / 16)
+    out_tvalues[7,:] = (((0.1e1 / 0.8e1)*1j) * t48 * t50 * t55 * (t57 - t58))
+    out_tvalues[8,:] = -(t2 * t62 * t65 * (t66 - 0.960e3 * t57 + 0.360e3 * t58) / 1920)
+    out_tvalues[9,:] = (((-0.1e1 / 0.960e3)*1j) * t12 * t74 * t18 * (0.120e3 * t77 - t79 + 0.720e3 * t57 - 0.120e3 * t58))
+    out_tvalues[10,:] = (t85 / 0.16e2 - t77 + 0.9e1 / 0.4e1 * t44 - t57 + t58 / 0.16e2)
+    out_tvalues[11,:] = (((0.1e1 / 0.960e3)*1j) * t27 * t74 * t31 * (-0.120e3 * t85 + 0.720e3 * t77 - t79 + 0.120e3 * t57))
+    out_tvalues[12,:] = -(t36 * t62 * t100 * (0.360e3 * t85 - 0.960e3 * t77 + t66) / 1920)
+    out_tvalues[13,:] = (((-0.1e1 / 0.8e1)*1j) * t108 * t50 * t112 * (-t85 + t77))
+    out_tvalues[14,:] = (t117 * t42 * t44 / 16)
 
     return out_tvalues
 

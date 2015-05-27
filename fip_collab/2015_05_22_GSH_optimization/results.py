@@ -10,7 +10,7 @@ import functions as rr
 import tables as tb
 
 
-def results(el, ns, set_id, step, typ, comp, spri, wrt_file):
+def results(el, ns, set_id, step, typ, comp, spri, ii, wrt_file, wrt_file2):
 
     # open reference HDF5 file
     base = tb.open_file("ref_%s%s_s%s.h5" % (ns, set_id, step),
@@ -32,10 +32,10 @@ def results(el, ns, set_id, step, typ, comp, spri, wrt_file):
 
     nfac = 0.00747
 
-    error_calc(el, ns, r_fem, r_mks, typ, comp, spri, nfac, wrt_file)
+    error_calc(el, ns, r_fem, r_mks, typ, comp, spri, nfac, ii, wrt_file, wrt_file2)
 
 
-def error_calc(el, ns, r_fem, r_mks, typ, comp, spr, nfac, wrt_file):
+def error_calc(el, ns, r_fem, r_mks, typ, comp, spr, nfac, ii, wrt_file, wrt_file2):
 
     # MEAN ABSOLUTE STRAIN ERROR (MASE)
     max_diff_all = np.zeros(ns)
@@ -43,27 +43,31 @@ def error_calc(el, ns, r_fem, r_mks, typ, comp, spr, nfac, wrt_file):
         max_diff_all[sn] = np.amax(abs(r_fem[sn, ...]-r_mks[sn, ...]))
 
     # DIFFERENCE MEASURES
-    mean_diff_meas = np.mean(abs(r_fem-r_mks))/nfac
-    std_diff_meas = np.std(abs(r_fem-r_mks))/nfac
-    mean_max_diff_meas = np.mean(max_diff_all)/nfac
-    max_diff_meas_all = np.amax(abs(r_fem-r_mks))/nfac
+    mean_diff_meas = (np.mean(abs(r_fem-r_mks))/nfac)*100
+    std_diff_meas = (np.std(abs(r_fem-r_mks))/nfac)*100
+    mean_max_diff_meas = (np.mean(max_diff_all)/nfac)*100
+    max_diff_meas_all = (np.amax(abs(r_fem-r_mks))/nfac)*100
 
     msg = 'Mean voxel difference over all microstructures'\
         ' (divided by applied strain), %s_%s%s: %s%%' \
-        % (typ, spr, comp, mean_diff_meas*100)
+        % (typ, spr, comp, mean_diff_meas)
     rr.WP(msg, wrt_file)
     msg = 'standard deviation of difference over all microstructures'\
         ' (divided by applied strain), %s_%s%s: %s%%' \
-        % (typ, spr, comp, std_diff_meas*100)
+        % (typ, spr, comp, std_diff_meas)
     rr.WP(msg, wrt_file)
     msg = 'Average Maximum voxel difference per microstructure'\
         ' (divided by applied strain), %s_%s%s: %s%%' \
-        % (typ, spr, comp, mean_max_diff_meas*100)
+        % (typ, spr, comp, mean_max_diff_meas)
     rr.WP(msg, wrt_file)
     msg = 'Maximum voxel difference in all microstructures '\
         '(divided by applied strain), %s_%s%s: %s%%' \
-        % (typ, spr, comp, max_diff_meas_all*100)
+        % (typ, spr, comp, max_diff_meas_all)
     rr.WP(msg, wrt_file)
+
+    msg = '%s    %s    %s    %s' % (ii, mean_diff_meas, mean_max_diff_meas,
+                                    max_diff_meas_all)
+    rr.WP(msg, wrt_file2)
 
     # STANDARD STATISTICS
     msg = 'Average, %s_%s%s, FEM: %s' % (typ, spr, comp, np.mean(r_fem))

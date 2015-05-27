@@ -27,7 +27,7 @@ dir_val = 'val'
 H = 41
 el = 21
 
-comp = '13'
+comp = '11'
 
 step = 5
 
@@ -77,7 +77,12 @@ vtk.read_meas(el, ns_val, set_id_val, step, comp, tensor_ID, dir_val, wrt_file)
 
 res_file = 'results_step%s_%s.txt' % (step, time.strftime("%Y-%m-%d_h%Hm%M"))
 
-for ii in xrange(0, 3):
+
+Hset = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                 12, 13, 14, 15, 19, 21,
+                 27, 31, 33, 34, 39, 40])
+
+for ii in xrange(Hset.size):
 
     # create HDF5 file
     base = tb.open_file("gsh_try_%s%s_s%s.h5" % (ns_cal, set_id_cal, step),
@@ -101,31 +106,31 @@ for ii in xrange(0, 3):
     # close the HDF5 file
     base.close()
 
-    if ii == 0:
-        Hset = np.array(range(H))
+    if Hset[ii] == 0:
+        Hset_ = Hset
         msg = "full set of coefficients used"
         rr.WP(msg, wrt_file)
         rr.WP(msg, res_file)
     else:
-        Hset = np.int8(np.hstack([np.array(range(0, ii)), np.array(range(ii+1, H))]))
-        msg = 'GSH component removed: %s' % ii
+        Hset_ = np.int8(np.hstack([Hset[:ii], Hset[(ii+1):]]))
+        msg = 'GSH component removed: %s' % Hset[ii]
         rr.WP(msg, wrt_file)
         rr.WP(msg, res_file)
 
     # Convert the orientations from the calibration datasets from bunge euler
     # angles to GSH coefficients
-    gsh.euler_to_gsh(el, Hset, ns_cal, set_id_cal, step, wrt_file)
+    gsh.euler_to_gsh(el, Hset_, ns_cal, set_id_cal, step, wrt_file)
 
     # Convert the orientations from the validation datasets from bunge euler
     # angles to GSH coefficients
-    gsh.euler_to_gsh(el, Hset, ns_val, set_id_val, step, wrt_file)
+    gsh.euler_to_gsh(el, Hset_, ns_val, set_id_val, step, wrt_file)
 
     # Perform the calibration
-    calibration.calibration_procedure(el, Hset.size, ns_cal, set_id_cal, step,
+    calibration.calibration_procedure(el, Hset_.size, ns_cal, set_id_cal, step,
                                       comp, 'epsilon_t', wrt_file)
 
     # Perform the validation
-    validation.validation(el, Hset.size, ns_cal, ns_val, set_id_cal,
+    validation.validation(el, Hset_.size, ns_cal, ns_val, set_id_cal,
                           set_id_val, step, comp, 'epsilon_t', wrt_file)
 
     results.results(el, ns_val, set_id_val, step, 'epsilon', comp, 't',

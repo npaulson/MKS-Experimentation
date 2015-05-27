@@ -32,9 +32,6 @@ def results(el, ns, set_id, step, typ, comp, spri, wrt_file):
 
     nfac = 0.00747
 
-    msg = 'GSH component removed: %s' % ii
-    rr.WP(msg, wrt_file)
-
     error_calc(el, ns, r_fem, r_mks, typ, comp, spri, nfac, wrt_file)
 
 

@@ -6,7 +6,7 @@ Created on Tue Jul 15 11:45:46 2014
 """
 
 import numpy as np
-import GSH_func_L6 as gsh
+import gsh_hex_tri_L0_8 as gsh
 import functions as rr
 import time
 import tables as tb
@@ -22,21 +22,30 @@ def euler_to_gsh(el, Hset, ns, set_id, step, wrt_file):
     # close the HDF5 file
     base.close()
 
-    # euler_GSH = np.zeros([ns, H, el**3], dtype='complex128')
+    # euler_GSH = np.zeros([ns, Hset.size, el**3], dtype='complex128')
     euler_GSH = np.zeros([ns, Hset.size, el**3], dtype='float64')
 
     for sn in xrange(ns):
         tmp = gsh.gsh(euler[sn, :, :])
 
-        tmp2 = np.zeros([41, el**3], dtype='float64')
+        # euler_GSH[sn, ...] = tmp[Hset, :]
+
+        tmp2 = np.zeros([90, el**3], dtype='float64')
+        # L = 0 - 2
         tmp2[0:4, :] = np.real(tmp[0:4, :])
         tmp2[4:6, :] = np.imag(tmp[4:6, :])
+        # L = 4
         tmp2[6:11, :] = np.real(tmp[6:11, :])
         tmp2[11:15, :] = np.imag(tmp[11:15, :])
-        tmp2[15:22, :] = np.real(tmp[15:22, :])
-        tmp2[22:28, :] = np.imag(tmp[22:28, :])
-        tmp2[28:35, :] = np.real(tmp[28:35, :])
-        tmp2[35:41, :] = np.imag(tmp[35:41, :])
+        # L = 6
+        tmp2[15:29, :] = np.real(tmp[15:29, :])
+        tmp2[29:41, :] = np.imag(tmp[29:41, :])
+        # L = 7
+        tmp2[41:49, :] = np.real(tmp[41:49, :])
+        tmp2[49:56, :] = np.imag(tmp[49:56, :])
+        # L = 8
+        tmp2[56:74, :] = np.real(tmp[56:74, :])
+        tmp2[74:90, :] = np.imag(tmp[74:90, :])
 
         # if sn == 0:
         #     print(tmp[:, 0])
@@ -44,12 +53,6 @@ def euler_to_gsh(el, Hset, ns, set_id, step, wrt_file):
 
         del tmp
         euler_GSH[sn, ...] = tmp2[Hset, :]
-
-        # if ii == 0:
-        #     euler_GSH[sn, ...] = tmp2
-        # else:
-        #     euler_GSH[sn, :ii, :] = tmp2[:ii, :]
-        #     euler_GSH[sn, ii:, :] = tmp2[ii+1:, :]
 
         # if sn == 0:
         #     print(euler_GSH[sn, :, 0])

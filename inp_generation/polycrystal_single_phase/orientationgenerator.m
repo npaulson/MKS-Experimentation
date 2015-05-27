@@ -9,7 +9,7 @@ function [euler]=orientationgenerator(sn)
 rng('shuffle');
 
 % Number of data sets
-na=2;
+na=1;
 
 % Number of elements on an edge
 el=21;

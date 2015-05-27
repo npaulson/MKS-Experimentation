@@ -175,5 +175,5 @@ def gsh(e_angles):
     return out_tvalues
 
 if __name__ == '__main__':
-    tvals = gsh_hcp_tri_L_6(np.array([[.1], [.2], [.3]]))
+    tvals = gsh(np.array([[.1], [.2], [.3]]))
     print tvals

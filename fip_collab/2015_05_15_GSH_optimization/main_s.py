@@ -22,8 +22,9 @@ dir_cal = 'cal'
 
 ns_val = 398
 set_id_val = 'val'
-dir_val = 'val'
+dir_val = 'val_alt'
 
+H = 41
 el = 21
 
 comp = '11'
@@ -98,7 +99,12 @@ base.create_group("/", 'epsilon_t', 'FFT of total strain')
 # close the HDF5 file
 base.close()
 
-Hset = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14])
+
+# Hset = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+#                  13, 14, 15, 19, 31])
+Hset = np.array(range(H))
+# Hset = np.hstack([np.array(range(0, ii-1)), np.array(range(ii, H))])
+
 
 # Convert the orientations from the calibration datasets from bunge euler
 # angles to GSH coefficients
@@ -108,15 +114,13 @@ gsh.euler_to_gsh(el, Hset, ns_cal, set_id_cal, step, wrt_file)
 # angles to GSH coefficients
 gsh.euler_to_gsh(el, Hset, ns_val, set_id_val, step, wrt_file)
 
-H = Hset.size
-
 # Perform the calibration
-calibration.calibration_procedure(el, H, ns_cal, set_id_cal, step, comp,
-                                  'epsilon_t', wrt_file)
+calibration.calibration_procedure(el, Hset.size, ns_cal, set_id_cal, step,
+                                  comp, 'epsilon_t', wrt_file)
 
 # Perform the validation
-validation.validation(el, H, ns_cal, ns_val, set_id_cal, set_id_val,
-                      step, comp, 'epsilon_t', wrt_file)
+validation.validation(el, Hset.size, ns_cal, ns_val, set_id_cal,
+                      set_id_val, step, comp, 'epsilon_t', wrt_file)
 
 results.results(el, ns_val, set_id_val, step, 'epsilon', comp, 't',
                 res_file)
