@@ -14,5 +14,9 @@ et_p(1,1,:) = sqrt(2/3)*cos(theta-(pi/3));
 et_p(2,2,:) = sqrt(2/3)*cos(theta+(pi/3));
 et_p(3,3,:) = -sqrt(2/3)*cos(theta);
 
-disp(et_p)
+et_v = zeros(length(theta),3);
+et_v(:,1) = sqrt(2/3)*cos(theta-(pi/3));
+et_v(:,2) = sqrt(2/3)*cos(theta+(pi/3));
+et_v(:,3) = -sqrt(2/3)*cos(theta);
 
+disp(et_p)

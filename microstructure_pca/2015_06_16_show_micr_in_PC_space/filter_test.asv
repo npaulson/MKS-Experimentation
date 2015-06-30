@@ -1,0 +1,22 @@
+clear; clc; close all;
+
+el = 21;
+
+% M = int8(rand(1,el^3) > .5);
+M = rand(1,el^3);
+
+
+figure(1)
+plot_micr(M,el)
+
+% h = fspecial('disk', 10);
+% M_alt = imfilter(M,h,'replicate');
+
+M_alt = imgaussfilt3(M,2,'FilterSize',[3,3,3]);
+% M_alt = imgaussfilt3(M,.5);
+
+figure(2)
+plot_micr(M_alt,el)
+
+figure(3)
+plot_micr(M_alt>.5,el)
