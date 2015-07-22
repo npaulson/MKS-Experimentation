@@ -1,4 +1,4 @@
-    # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 @author: nhpnp3
 """
@@ -13,7 +13,7 @@ ns = 101
 
 r_fem = np.zeros([6, ns, el**3])
 
-compl = ['11', '22', '33', '12', '13', '23']
+compl = ['11', '22', '33', ' 12', '13', '23']
 compd = {'11': 0, '22': 4, '33': 8, '12': 1, '13': 6, '23': 5}
 
 for comp in xrange(6):
@@ -37,10 +37,14 @@ for comp in xrange(6):
 
 print r_fem.nbytes
 
-r_norm = np.sqrt(r_fem[0,...]**2 + r_fem[1,...]**2 + r_fem[2,...]**2 + \
-                 2*(r_fem[3,...]**2) + 2*(r_fem[4,...]**2) + 2*(r_fem[5,...]**2))
+r_norm = np.sqrt(r_fem[0, ...]**2 +
+                 r_fem[1, ...]**2 +
+                 r_fem[2, ...]**2 +
+                 2*(r_fem[3, ...]**2) +
+                 2*(r_fem[4, ...]**2) +
+                 2*(r_fem[5, ...]**2))
 
 print np.mean(r_norm)
 print np.min(r_norm)
 print np.std(r_norm)
-print np.max(r_norm) 
+print np.max(r_norm)
