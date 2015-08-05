@@ -12,7 +12,7 @@ I1 = np.load('I1.npy')
 I2 = np.load('I2.npy')
 I3 = np.load('I3.npy')
 
-yvar = ep[:, 2]
+yvar = ep[:, 0]
 # yvar = I2
 
 sample_indx = np.arange(0, 100, 1)

@@ -63,6 +63,7 @@ scatter3(Xggg(:),Yggg(:),imag(f_d_fft(:)))
 % point to interpolate:
 pt = [1.1,2.2];
 
+tic
 
 Yk = zeros(Nd-1,1);
 for ii = 1:Nd-1
@@ -71,6 +72,8 @@ end
 
 f_eval = f(pt(1),pt(2))
 f_intp = trig_interpol(pt(2),Yk,L)
+
+toc
 
 % % plot the interpolated values
 % 
