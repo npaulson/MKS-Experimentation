@@ -33,6 +33,46 @@ def triginterp(ar_fft, xi, L):
     return P/(N**3)
 
 
+def triginterp2(ar_fft, xi, L):
+    # calculate the trigonometric interpolation at the locations in lvec
+    P = ar_fft[0, 0, 0]
+
+    N = ar_fft.shape[0]
+
+    # kmax = int((N-1)/2.0)
+    kmax = int(np.floor(N/2.))
+
+    print kmax
+
+    for l in xrange(1, kmax+1):
+        for m in xrange(1, kmax+1):
+            for n in xrange(1, kmax+1):
+
+                freqval = ar_fft[np.abs(l), np.abs(m), np.abs(n)]
+
+                freqval2 = freqval
+
+                if l < 0:
+                    freqval2 = np.conj(freqval)
+                if m < 0:
+                    freqval2 = np.conj(freqval)
+                if n < 0:
+                    freqval2 = np.conj(freqval)
+
+                tmp1 = np.exp((2*np.pi*1j*l*xi[0])/L) * \
+                    np.exp((2*np.pi*1j*m*xi[1])/L) * \
+                    np.exp((2*np.pi*1j*n*xi[2])/L)
+
+                tmp2 = np.exp((2*np.pi*1j*(N-l)*xi[0])/L) * \
+                    np.exp((2*np.pi*1j*(N-m)*xi[1])/L) * \
+                    np.exp((2*np.pi*1j*(N-n)*xi[2])/L)
+
+                P += freqval*tmp1+np.conj(freqval)*tmp2
+                # P += 2*np.real(freqval)*tmp
+
+    return P/(N**3)
+
+
 def f(x1, x2, x3):
 
     val = -0.85*np.sin(x1+0.542) + \
@@ -63,6 +103,6 @@ pt = np.array([0.8, 6.1, 2.2])
 # evaluate the function
 f_eval = f(pt[0], pt[1], pt[2])
 
-f_trig = triginterp(f_d_fft, pt, L)
+f_trig = triginterp2(f_d_fft, pt, L)
 
 print f_eval, f_trig
