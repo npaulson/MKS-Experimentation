@@ -40,13 +40,18 @@ Pvec = f_list[:, -1] * \
 
 Numel = 24*72*72*72
 
-results = np.real(np.sum(Pvec, 0)/Numel)
+db_res = np.real(np.sum(Pvec, 0)/Numel)
 
 print "time to interpolate: %ss" % (time.time()-st)
 
-print results
+print db_res
 
 pre_fft = np.load("pre_fft.npy")
 
 print pre_fft.shape
-print pre_fft[21, 31, 41, 51, -1]
+
+act_res = pre_fft[21, 31, 41, 51, -1]
+
+err = ((act_res - db_res) / act_res) * 100
+
+print "error: %s%%" % err
