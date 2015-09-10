@@ -1,7 +1,7 @@
 import numpy as np
 import numpy.polynomial.legendre as leg
 from scipy import interpolate
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 
 def get_nodes(xsamp, ysamp, a, b, N):
@@ -85,16 +85,16 @@ if __name__ == "__main__":
     print np.mean(error)
     print np.max(error)
 
-    plt.figure(num=1, figsize=[10, 6])
+    # plt.figure(num=1, figsize=[10, 6])
 
-    plt.plot(et_norm, ep11, 'bx')
+    # plt.plot(et_norm, ep11, 'bx')
 
-    # calculate locations of the legendre nodes scaled into the range [a,b]
-    # nodes_usc = 0.5*(nodes + 1.0)*(b-a)+a
-    # plt.plot(nodes_usc, rootsamp, 'bo')
+    # # calculate locations of the legendre nodes scaled into the range [a,b]
+    # # nodes_usc = 0.5*(nodes + 1.0)*(b-a)+a
+    # # plt.plot(nodes_usc, rootsamp, 'bo')
 
-    xplt = np.linspace(a, b, 150)
-    yplt = get_interp(xplt, coeff_set, a, b)
-    plt.plot(xplt, yplt, 'r')
+    # xplt = np.linspace(a, b, 150)
+    # yplt = get_interp(xplt, coeff_set, a, b)
+    # plt.plot(xplt, yplt, 'r')
 
-    plt.show()
+    # plt.show()
