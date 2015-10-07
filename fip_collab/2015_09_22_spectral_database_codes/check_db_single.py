@@ -6,6 +6,11 @@ import sys
 
 fnum = sys.argv
 
+inc = 3  # degree increment for angular variables
+
+n_th_max = 120/inc  # number of theta samples in FOS
+n_max = 360/inc  # number of phi1, Phi and phi2 samples in FOS
+
 # open the spectral coefficients file
 f_db = h5py.File("final_db.hdf5", 'r')
 
@@ -84,14 +89,14 @@ divide by 'Numel' and take only the real part of each number
 f_res = h5py.File('results_%s.hdf5' % str(fnum[1]).zfill(2), 'w')
 res_set = f_res.create_dataset("results", (sz, 11))
 
+# the total number positions in the first 4 dimensions of the database
+Numel = n_th_max*n_max**3
+
 err_old = 0.
 
 for jj in xrange(sz):
 
     xi = xi_set[jj, np.newaxis, :]
-
-    # the total number positions in the first 4 dimensions of the database
-    Numel = 24*72*72*72
 
     for ii in xrange(4):
 

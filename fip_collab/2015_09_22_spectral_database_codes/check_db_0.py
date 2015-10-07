@@ -18,7 +18,7 @@ Lset = np.array([120., 360., 360., 360.])*(np.pi/180.)
 
 st = time.time()
 
-xi = np.array([21., 31., 41., 51.])*5*(np.pi/180)
+xi = np.array([5., 5., 5., 5.])*3*(np.pi/180)
 
 Pvec = f_list[:, -1] * \
              np.exp((2*np.pi*1j*s_list[:, 0]*xi[0])/Lset[0]) * \
@@ -26,7 +26,7 @@ Pvec = f_list[:, -1] * \
              np.exp((2*np.pi*1j*s_list[:, 2]*xi[2])/Lset[2]) * \
              np.exp((2*np.pi*1j*s_list[:, 3]*xi[3])/Lset[3])
 
-Numel = 24*72*72*72
+Numel = 40*120*120*120
 
 db_res = np.real(np.sum(Pvec, 0)/Numel)
 
@@ -38,8 +38,8 @@ pre_fft = np.load("pre_fft.npy")
 
 print pre_fft.shape
 
-act_res = pre_fft[21, 31, 41, 51, -1]
+act_res = pre_fft[5, 5, 5, 5, -1]
 
-err = ((act_res - db_res) / act_res) * 100
+err = ((act_res - db_res) / 0.0096) * 100
 
 print "error: %s%%" % err

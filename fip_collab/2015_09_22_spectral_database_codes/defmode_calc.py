@@ -3,11 +3,11 @@ import numpy as np
 
 def et_ii(th):
 
-	et_ii_vec = np.array([np.sqrt(2/3)*np.cos(th-(np.pi/3)),
+    et_ii_vec = np.array([np.sqrt(2/3)*np.cos(th-(np.pi/3)),
                           np.sqrt(2/3)*np.cos(th+(np.pi/3)),
                           -np.sqrt(2/3)*np.cos(th)])
 
-	return et_ii_vec
+    return et_ii_vec
 
 
 def rotmat2euler(g):
@@ -42,8 +42,8 @@ def calc(et):
     # normalize the deviatoric total strain tensor
     et_n = et_ / en
 
-    # find the principal strains 
-    w,v = np.linalg.eig(et_n)
+    # find the principal strains
+    w, v = np.linalg.eig(et_n)
 
     print w
     print v
@@ -66,7 +66,7 @@ def calc(et):
 
     print et_ii(theta2)
 
-    # demonstrate the transformation from et_n to the principal frame using 
+    # demonstrate the transformation from et_n to the principal frame using
     # eigenvectors
     print V.T*et_n*V
 
@@ -79,10 +79,11 @@ def calc(et):
 
 if __name__ == "__main__":
 
-	F = 2*(np.random.rand(3, 3)-0.5)
-	et = 0.5*(F.T*F-np.eye(3))
+    F = 2*(np.random.rand(3, 3)-0.5)
 
-	theta, euler_P_C = calc(et)
+    et = 0.5*(F.T*F-np.eye(3))
 
-	print theta
-	print euler_P_C
+    theta, euler_P_C = calc(et)
+
+    print theta
+    print euler_P_C
