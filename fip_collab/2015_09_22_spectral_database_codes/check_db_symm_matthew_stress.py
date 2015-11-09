@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import h5py
 
 
 """
@@ -21,12 +22,15 @@ n_p2 = 60/inc  # number of phi2 samples for FZ
 
 db = np.load("pre_fft_5deg_stress.npy")
 
-db_mean = np.mean(db)
+db_mean = np.mean(np.abs(db))
 
 c = 0
 d = 0
 
-error = np.zeros(n_th*n_p1*n_P*n_p2)
+error = np.zeros([n_th*n_p1*n_P*n_p2])
+
+f = h5py.File('symm_check_matthew_stress.hdf5', 'w')
+data = f.create_dataset("data", (n_th*n_p1*n_P*n_p2, 10))
 
 for th in xrange(n_th):
     for p1 in xrange(n_p1):
@@ -45,15 +49,21 @@ for th in xrange(n_th):
                 orig_loc = np.array([th, p1, P, p2])*inc
                 fin_loc = np.array([th_sym, p1_sym, P_sym, p2_sym])*inc
 
+                data[c, 0:4] = orig_loc
+                data[c, 4:8] = fin_loc
+
                 db_orig = db[th, p1, P, p2]
                 db_sym = db[th_sym, p1_sym, P_sym, p2_sym]
+
+                data[c, 8] = db_orig
+                data[c, 9] = db_sym
 
                 error[c] = (np.abs(db_orig-db_sym)/db_mean)*100
 
                 c += 1
 
-                if np.isclose(db_orig, db_sym, rtol=1E-2) == 0:
-
+                # if np.isclose(db_orig, db_sym, rtol=1E-2) == 0:
+                if np.random.rand() < 0.0001:
                     d += 1
 
                     print c
@@ -62,9 +72,11 @@ for th in xrange(n_th):
                     print db_orig
                     print db_sym
 
+f.close()
+
 print c
 print d
-print "mean database value: %s" % np.mean(db)
+print "mean database value: %s" % db_mean
 print "mean error: %s%%" % np.mean(error)
 print "maximum error: %s%%" % np.max(error)
 print "standard deviation of error: %s%%" % np.std(error)
