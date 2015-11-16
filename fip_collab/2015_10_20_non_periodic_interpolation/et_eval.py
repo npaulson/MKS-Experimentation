@@ -6,7 +6,7 @@ Created on 11/9/2015 by Noah Paulson
 import numpy as np
 import vtk_read as vtk_r
 
-ns_cal = 50
+ns_cal = 1
 set_id_cal = 'cal'
 dir_cal = 'cal'
 
@@ -35,12 +35,12 @@ for comp in compl:
     vtk_r.read_meas(el, ns_cal, set_id_cal, step, comp, tensor_ID, dir_cal,
                     wrt_file)
 
-et11 = np.load('epsilon11_fem_50cal_s1.npy')
-et22 = np.load('epsilon22_fem_50cal_s1.npy')
-et33 = np.load('epsilon33_fem_50cal_s1.npy')
-et12 = np.load('epsilon12_fem_50cal_s1.npy')
-et23 = np.load('epsilon23_fem_50cal_s1.npy')
-et13 = np.load('epsilon13_fem_50cal_s1.npy')
+et11 = np.load('epsilon11_fem_%scal_s1.npy' % ns_cal)
+et22 = np.load('epsilon22_fem_%scal_s1.npy' % ns_cal)
+et33 = np.load('epsilon33_fem_%scal_s1.npy' % ns_cal)
+et12 = np.load('epsilon12_fem_%scal_s1.npy' % ns_cal)
+et23 = np.load('epsilon23_fem_%scal_s1.npy' % ns_cal)
+et13 = np.load('epsilon13_fem_%scal_s1.npy' % ns_cal)
 
 et11 = et11.reshape(et11.size)
 et22 = et22.reshape(et22.size)
