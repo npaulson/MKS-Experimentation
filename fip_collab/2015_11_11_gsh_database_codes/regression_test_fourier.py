@@ -21,7 +21,7 @@ X = np.zeros((N, P+1))
 
 for p in xrange(P+1):
 
-    X[:, p] = np.exp((1j*2*np.pi*p*xsamp)/L)
+    X[:, p] = np.real(np.exp((1j*2*np.pi*p*xsamp)/L))
 
 Xc = X.conj().transpose()
 

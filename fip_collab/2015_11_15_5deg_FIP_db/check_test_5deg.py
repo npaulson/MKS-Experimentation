@@ -8,7 +8,7 @@ def check(s_list, f_list):
 
     st = time.time()
 
-    xi = np.array([3., 3., 3., 3.])*5*(np.pi/180)
+    xi = np.array([6., 9., 12., 18.])*5*(np.pi/180)
 
     Pvec = f_list[:, -1] * \
         np.exp((2*np.pi*1j*s_list[:, 0]*xi[0])/Lset[0]) * \

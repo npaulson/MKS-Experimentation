@@ -1,6 +1,7 @@
-import numpy as np
+import h5py
 import sys
 import time
+import numpy as np
 import check_test_5deg as cdb
 
 """
@@ -15,8 +16,6 @@ FOS: full euler orientation space (0-360 degree in each angle)
 
 # initialize important variables
 
-tnum = sys.argv[1]
-
 # define the number of increments for angular variables:
 
 inc = 5  # degree increment for angular variables
@@ -30,9 +29,6 @@ n_p1 = 360/inc  # number of phi1 samples for FZ
 n_P = (90/inc)+1  # number of Phi samples for FZ
 n_p2 = 60/inc  # number of phi2 samples for FZ
 
-a = .0064  # start of range for legendre interpolation
-b = .0096  # end of range for legendre interpolation
-
 # number of samples for the fourier representation of the lagrange polynomial
 N = 10
 
@@ -40,7 +36,7 @@ N = 10
 
 st = time.time()
 
-chunk = np.zeros([n_th, n_p1, n_P, n_p2, N])
+chunk = np.zeros([n_th, n_max, n_max, n_max, N])
 
 for tt in xrange(n_th):
 
@@ -55,7 +51,7 @@ for tt in xrange(n_th):
 
 # collect into final form before fft
 
-pre_fft = np.zeros([24, n_phi1, n_Phi, n_phi2, N])
+pre_fft = np.zeros([24, n_max, n_max, n_max, N])
 
 # insert chunk into pre_fft with correct symmetric arrangement so that the
 # first dimension has angles ranging from 0:115 degrees and the remaining
@@ -76,7 +72,7 @@ st = time.time()
 
 # perform the fft on the first 4 dimensions of pre_fft
 db_fft = np.fft.fftn(pre_fft, axes=(0, 1, 2, 3))
-act_res = pre_fft[3, 3, 3, 3, -1]
+act_res = pre_fft[6, 9, 12, 18, -1]
 
 del pre_fft
 
@@ -121,10 +117,11 @@ for pct in ret_list:
 
     print "frequency threshold: %s%%" % (pct*100)
     print "percentage of frequencies retained from fft: %s%%" % ratio
+    print "actual value: %s" % act_res
     print "guess value: %s" % db_res
     print "interpolation time: %ss" % interp_time
 
-    err = ((act_res - db_res) / 0.0096) * 100
+    err = np.abs(act_res - db_res) * 1E6
 
-    print "interpolation error: %s%%" % err
+    print "interpolation error: %s (in ppm)" % err
     print "number of frequencies retained: %s" % f_list.shape[0]

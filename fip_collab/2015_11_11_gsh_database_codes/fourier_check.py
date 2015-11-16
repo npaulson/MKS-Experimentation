@@ -1,6 +1,6 @@
 import numpy as np
 import numpy.polynomial.legendre as leg
-import gsh_hex_tri_L0_8 as gsh
+import gsh_hex_tri_L0_4 as gsh
 import h5py
 import time
 
@@ -12,12 +12,10 @@ crystal plasticity solutions
 
 # define the number of increments for angular variables:
 
-n_p1 = 11  # number of phi1 samples
-n_P = 11  # number of Phi samples
-n_p2 = 11  # number of phi2 samples
-n_en = 100  # number of en samples
-
-n_par = n_p1*n_P*n_p2*n_en
+# n_p1 = 11  # number of phi1 samples
+# n_P = 11  # number of Phi samples
+# n_p2 = 11  # number of phi2 samples
+# n_en = 100  # number of en samples
 
 f_test = h5py.File('test_fourier.hdf5', 'r')
 ep_set = f_test.get("ep_set")
@@ -39,14 +37,14 @@ interp_vec = np.zeros(ep_set.shape[0])
 st = time.time()
 
 for ii in xrange(coeff_vec.shape[0]):
-	L, p, q = coeff_vec[ii, :3]
+    L, p, q = coeff_vec[ii, :3]
 
     p_vec = np.zeros(p+1)
     p_vec[p] = 1
 
-    vec = gsh.gsh(e_angles, c) * \
-          leg.legval(et_norm, p_vec) * \
-          np.exp((1j*2*np.pi*q*theta)/L)
+    vec = gsh.gsh(e_angles, L) * \
+        leg.legval(et_norm, p_vec) * \
+        np.real(np.exp((1j*2*np.pi*q*theta)/L))
 
     interp_vec += vec
 

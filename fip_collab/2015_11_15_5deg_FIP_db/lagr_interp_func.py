@@ -41,20 +41,20 @@ if __name__ == "__main__":
     a = .0060  # start of range for legendre interpolation
     b = .0100  # end of range for legendre interpolation
 
-    N = 20
+    N = 10
 
-    st_e = 0.0001
+    en_inc = 0.0001
 
     # the following vector closely matches that of et_norm
-    etvec = np.arange(a, b + st_e, st_e)
+    etvec = np.arange(a, b + en_inc, en_inc)
 
-    ai = np.int8(np.round(a/st_e))-1
-    bi = np.int8(np.round(b/st_e))-1
+    ai = np.int8(np.round(a/en_inc))-1
+    bi = np.int8(np.round(b/en_inc))-1
 
     xvar = et_norm[ai:bi+1]
     yvar = ep[ai:bi+1, 0]
 
-    sample_indx = chebyshev_nodes(a, b, ai, et_e, N)
+    sample_indx = chebyshev_nodes(a, b, ai, en_inc, N)
     xnode = etvec[sample_indx]
     ynode = yvar[sample_indx]
 
