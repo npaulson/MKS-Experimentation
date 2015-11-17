@@ -14,7 +14,7 @@ def gsh(e_angles, L):
     phi += (1e-7)*zvec*(randvec - randvecopp)
 
     if L == 0:
-        out_tvalues = 1
+        out_tvalues = np.ones(phi1.shape)
 
     if L == 1:
         t652 = np.sin(phi)

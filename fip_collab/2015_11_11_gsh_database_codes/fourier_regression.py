@@ -24,7 +24,11 @@ e_angles = ep_set[:, 1:4]
 et_norm = ep_set[:, 4]
 Y = ep_set[:, 5]
 
-L = (2.*np.pi)/3.
+f.close
+
+f = h5py.File('pre_fourier_vec.hdf5', 'w')
+
+L_th = (2.*np.pi)/3.
 N_L = 15
 N_p = 8
 N_q = 8
@@ -41,12 +45,12 @@ for c in xrange(cmax):
     p_vec = np.zeros(N_p)
     p_vec[p] = 1
 
-    vec = gsh.gsh(e_angles, L) * \
-        leg.legval(et_norm, p_vec) * \
-        np.real(np.exp((1j*2*np.pi*q*theta)/L))
+    vec, cmat = gsh.gsh(np.transpose(e_angles), L)
+    vec *= leg.legval(et_norm, p_vec)
+    vec *= np.real(np.exp((1j*2.*np.pi*np.float(q)*theta)/L_th))
 
     set_id = 'set_%s_%s_%s' % (L, p, q)
-    ep_set = f.create_dataset(set_id, data=vec)
+    f.create_dataset(set_id, data=vec)
 
     tmp = np.array([L, p, q])
     print tmp
@@ -86,9 +90,9 @@ for ii in xrange(cmax):
 
     XtY[ii] = np.dot(ep_set_ii, Y)
 
-print "XtX and XtY prepared: %ss" % np.round(time.time()-st, 3)
-
 f.close()
+
+print "XtX and XtY prepared: %ss" % np.round(time.time()-st, 3)
 
 coeff = np.linalg.solve(XtX, XtY)
 
@@ -98,5 +102,6 @@ coeff_vec = np.zeros([cmax, 4])
 coeff_vec[:, :3] = cvec
 coeff_vec[:, 3] = coeff
 
-f = h5py.File('fourier_coeff.hdf5', 'r+')
+f = h5py.File('fourier_coeff.hdf5', 'w')
 f.create_dataset('coeff_vec', data=coeff_vec)
+f.close()
