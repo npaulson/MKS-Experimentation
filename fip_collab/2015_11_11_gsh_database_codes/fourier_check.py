@@ -21,9 +21,13 @@ f_test = h5py.File('test_fourier.hdf5', 'r')
 ep_set = f_test.get("ep_set")
 
 theta = ep_set[:, 0]
-e_angles = ep_set[:, 1:4]
+phi1 = np.float64(ep_set[:, 1])
+phi = np.float64(ep_set[:, 2])
+phi2 = np.float64(ep_set[:, 3])
 et_norm = ep_set[:, 4]
 Y = ep_set[:, 5]
+
+L_th = (2.*np.pi)/3.
 
 f_coeff = h5py.File('fourier_coeff.hdf5', 'r')
 coeff_vec = f_coeff.get('coeff_vec')
@@ -42,9 +46,9 @@ for ii in xrange(coeff_vec.shape[0]):
     p_vec = np.zeros(p+1)
     p_vec[p] = 1
 
-    vec = gsh.gsh(e_angles, L) * \
+    vec = gsh.gsh(phi1, phi, phi2, L) * \
         leg.legval(et_norm, p_vec) * \
-        np.real(np.exp((1j*2*np.pi*q*theta)/L))
+        np.real(np.exp((1j*2*np.pi*q*theta)/L_th))
 
     interp_vec += vec
 
