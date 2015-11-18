@@ -10,57 +10,77 @@ cmax = N_L*N_p*N_q
 cvec = np.unravel_index(np.arange(cmax), [N_L, N_p, N_q])
 cvec = np.array(cvec).transpose()
 
-cmax = cvec.shape[0]
-
-XtX = np.zeros((cmax, cmax))
+XtX = np.zeros((cmax, cmax), dtype='complex128')
 
 st = time.time()
 
 for ii in xrange(cmax):
+
+    L, p, q = cvec[ii, :]
+
+    set_id_ii = 'set_%s_%s_%s' % (L, p, q)
+
+    f = h5py.File('pre_fourier_p%s_q%s.hdf5' % (p, q), 'r')
+    ep_set_ii = f.get(set_id_ii)[:]
+    f.close()
+
     for jj in xrange(ii, cmax):
 
-            L, p, q = cvec[ii, :]
+        print np.array([ii, jj])
 
-            set_id_ii = 'set_%s_%s_%s' % (L, p, q)
+        st = time.time()
 
-            f = h5py.File('pre_fourier_p%s_q%s.hdf5' % (p, q), 'r')
-            ep_set_ii = f.get(set_id_ii)
-            f.close()
+        L, p, q = cvec[jj, :]
 
-            L, p, q = cvec[jj, :]
+        set_id_jj = 'set_%s_%s_%s' % (L, p, q)
 
-            set_id_jj = 'set_%s_%s_%s' % (L, p, q)
+        f = h5py.File('pre_fourier_p%s_q%s.hdf5' % (p, q), 'r')
+        ep_set_jj = f.get(set_id_jj)[:]
+        f.close()
 
-            f = h5py.File('pre_fourier_p%s_q%s.hdf5' % (p, q), 'r')
-            ep_set_jj = f.get(set_id_jj)
-            f.close()
+        print "load time: %ss" % np.round(time.time()-st, 3)
 
-            tmp = np.dot(ep_set_ii, ep_set_jj)
+        st = time.time()
 
-            if ii == jj:
-                XtX[ii, ii] = tmp
-            else:
-                XtX[ii, jj] = tmp
-                XtX[jj, ii] = tmp
+        # tmp = np.sum(ep_set_ii[:]*ep_set_jj[:])
+        tmp = np.dot(ep_set_ii.conjugate(), ep_set_jj)
+
+        del ep_set_jj
+
+        print "dot product time: %ss" % np.round(time.time()-st, 3)
+
+        st = time.time()          
+
+        if ii == jj:
+            XtX[ii, ii] = tmp
+        else:
+            XtX[ii, jj] = tmp
+            XtX[jj, ii] = tmp
+
+        del tmp
+        print "save time: %ss" % np.round(time.time()-st, 3)
+
+    del ep_set_ii
 
 f1 = h5py.File('pre_fourier.hdf5', 'r')
-ep_set = f.get('ep_set')
+ep_set = f1.get('ep_set')
 Y = ep_set[:, 5]
 f1.close
 
-XtY = np.zeros(cmax)
+XtY = np.zeros(cmax, dtype='complex128')
 
 for ii in xrange(cmax):
+
+    print ii
+
     L, p, q = cvec[ii, :]
     set_id_ii = 'set_%s_%s_%s' % (L, p, q)
 
     f = h5py.File('pre_fourier_p%s_q%s.hdf5' % (p, q), 'r')
-    ep_set_ii = f.get(set_id_ii)
+    ep_set_ii = f.get(set_id_ii)[:]
     f.close()
 
     XtY[ii] = np.dot(ep_set_ii, Y)
-
-f.close()
 
 print "XtX and XtY prepared: %ss" % np.round(time.time()-st, 3)
 
