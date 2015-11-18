@@ -20,15 +20,15 @@ n_th_max = 120/inc  # number of theta samples in FOS
 n_max = 360/inc  # number of phi1, Phi and phi2 samples in FOS
 n_hlf = 180/inc  # half n_max
 
-n_th = (60/inc)+1  # number of theta samples for FZ
-n_p1 = 360/inc  # number of phi1 samples for FZ
-n_P = (90/inc)+1  # number of Phi samples for FZ
-n_p2 = 60/inc  # number of phi2 samples for FZ
+n_th = 11  # number of theta samples for FZ
+n_p1 = 11  # number of phi1 samples for FZ
+n_P = 11  # number of Phi samples for FZ
+n_p2 = 11  # number of phi2 samples for FZ
 
-n_tot = n_max**3  # total number of orientations
+n_tot = n_p1*n_P*n_p2  # total number of orientations
 
 # create file for pre-database outputs
-f_nhp = h5py.File('fip_extract_%s.hdf5' % str(tnum).zfill(2), 'w')
+f_nhp = h5py.File('check_extract_%s.hdf5' % str(tnum).zfill(2), 'w')
 a = 0.0050  # start for en range
 b = 0.0085  # end for en range
 N = 10  # number of nodes
@@ -40,7 +40,7 @@ sample_indx = lagr.chebyshev_nodes(a, b, ai, en_inc, N)
 xnode = envec[sample_indx]  # en values for nodes of lagrange interpolation
 print xnode
 
-fip_set = f_nhp.create_dataset("fip_set", (n_max, n_max, n_max, N))
+fip_set = f_nhp.create_dataset("fip_set", (n_p1, n_P, n_p2, N))
 
 # Read Simulation info from "sim" file
 filename = 'sim_Ti64_tensor_%s.txt' % str(tnum).zfill(2)
@@ -90,7 +90,7 @@ for ii in xrange(0, n_tot):
 
     fip = dset[sample_indx, 19]
 
-    eindx = np.int16(np.round((180./(inc*np.pi))*euler[ii, :]))
+    eindx = np.int16(np.round((180./(1.*np.pi))*euler[ii, :])) - np.array([70, 130, 10])
     fip_set[eindx[0], eindx[1], eindx[2]] = np.log(fip)
 
 f_mwp.close()

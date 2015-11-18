@@ -72,7 +72,7 @@ st = time.time()
 
 # perform the fft on the first 4 dimensions of pre_fft
 db_fft = np.fft.fftn(pre_fft, axes=(0, 1, 2, 3))
-act_res = pre_fft[6, 9, 12, 18, -1]
+act_res = pre_fft[3, 3, 3, 3, -1]
 
 del pre_fft
 
