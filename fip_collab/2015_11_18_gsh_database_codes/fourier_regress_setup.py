@@ -10,13 +10,13 @@ p = np.int8(sys.argv[1])
 q = np.int8(sys.argv[2])
 
 f = h5py.File('pre_fourier.hdf5', 'r')
-ep_set = f.get('ep_set')
+var_set = f.get('var_set')
 
-theta = ep_set[:, 0]
-phi1 = np.float64(ep_set[:, 1])
-phi = np.float64(ep_set[:, 2])
-phi2 = np.float64(ep_set[:, 3])
-et_norm = ep_set[:, 4]
+theta = var_set[:, 0]
+phi1 = np.float64(var_set[:, 1])
+phi = np.float64(var_set[:, 2])
+phi2 = np.float64(var_set[:, 3])
+et_norm = var_set[:, 4]
 
 f.close
 

@@ -9,6 +9,7 @@ def chebyshev_nodes(a, b, ai, en_inc, N):
     xk = np.round(tmp, 4)
     sample_indx = np.unique(np.int8(xk/en_inc) - 1 - ai)
 
+
     return sample_indx
 
 

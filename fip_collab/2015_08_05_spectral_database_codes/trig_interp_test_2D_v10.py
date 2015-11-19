@@ -37,7 +37,7 @@ def get_fft(xst, xfn):
 
 
 # sample times for the function
-N = 5
+N = 6
 
 xst = 0
 xfn = 2*np.pi
@@ -59,6 +59,8 @@ kmax = np.expand_dims(kmax, 1)
 INDX = np.unravel_index(np.arange(sz), sh)
 # array containing indices associated with the fft
 INDX = np.transpose(np.array(INDX) - kmax)
+
+print INDX
 
 maxf = np.max(np.abs(f_d_fft))  # amplitude of frequency with max amplitude
 

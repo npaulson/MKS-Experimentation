@@ -26,7 +26,7 @@ ImatL = Imat.shape[0]
 print ImatL
 
 # pick range of indxmat to calculate
-n_jobs = 200.  # number of jobs submitted to PACE
+n_jobs = 100.  # number of jobs submitted to PACE
 n_I = np.int64(np.ceil(np.float(ImatL)/n_jobs))  # number dot products per job
 print n_I
 
@@ -57,7 +57,7 @@ for ii in Imat[I_stt:I_end, 0]:
 
     for jj in Imat[I_stt:I_end, 1]:
 
-        print np.array([ii, jj])
+        # print np.array([ii, jj])
 
         st = time.time()
 
@@ -69,7 +69,7 @@ for ii in Imat[I_stt:I_end, 0]:
         ep_set_jj = f.get(set_id_jj)[:]
         f.close()
 
-        print "load time: %ss" % np.round(time.time()-st, 3)
+        # print "load time: %ss" % np.round(time.time()-st, 3)
 
         st = time.time()
 
@@ -77,7 +77,7 @@ for ii in Imat[I_stt:I_end, 0]:
 
         del ep_set_jj
 
-        print "dot product time: %ss" % np.round(time.time()-st, 3)
+        # print "dot product time: %ss" % np.round(time.time()-st, 3)
 
         if ii == jj:
             XtX[ii, ii] = tmp
