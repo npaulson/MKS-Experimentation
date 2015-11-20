@@ -125,3 +125,9 @@ for pct in ret_list:
 
     print "interpolation error: %s (in ppm)" % err
     print "number of frequencies retained: %s" % f_list.shape[0]
+
+    if pct == .001*.01:
+        f_db = h5py.File('final_db.hdf5', 'w')
+        f_db.create_dataset("s_list", data=s_list)
+        f_db.create_dataset("f_list", data=f_list)
+        f_db.close()

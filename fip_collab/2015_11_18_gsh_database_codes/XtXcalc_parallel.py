@@ -61,19 +61,17 @@ WP(msg, filename)
 msg = "I_end = %s" % I_end
 WP(msg, filename)
 
-# XtX is the matrix (X^T * X) in the normal equation for multiple
-# linear regression
-XtX = np.zeros((cmax, cmax), dtype='complex128')
+dotvec = np.zeros((I_end-I_stt, 3), dtype='complex128')
 
-
+c = 0
 for I in xrange(I_stt, I_end):
 
     msg = str(I)
     WP(msg, filename)
 
     ii, jj = Imat[I, :]
-    msg = str(np.array([ii, jj]))
-    WP(msg, filename)
+    iijj = np.array([ii, jj])
+    WP(str(iijj), filename)
 
     st = time.time()
 
@@ -94,19 +92,16 @@ for I in xrange(I_stt, I_end):
 
     st = time.time()
 
-    tmp = np.dot(ep_set_ii.conjugate(), ep_set_jj)
+    dotvec[c, 0:2] = iijj
+    dotvec[c, 2] = np.dot(ep_set_ii.conjugate(), ep_set_jj)
 
     del ep_set_ii, ep_set_jj
 
     msg = "dot product time: %ss" % np.round(time.time()-st, 3)
     WP(msg, filename)
 
-    if ii == jj:
-        XtX[ii, ii] = tmp
-    else:
-        XtX[ii, jj] = tmp
-        XtX[jj, ii] = tmp
+    c += 1
 
 f = h5py.File('XtX%s.hdf5' % tnum, 'w')
-f.create_dataset('XtX', data=XtX)
+f.create_dataset('dotvec', data=dotvec)
 f.close()

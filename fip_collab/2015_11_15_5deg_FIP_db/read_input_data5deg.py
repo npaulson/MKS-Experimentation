@@ -33,10 +33,10 @@ a = 0.0050  # start for en range
 b = 0.0085  # end for en range
 N = 10  # number of nodes
 en_inc = 0.0001  # en increment
-envec = np.arange(a, b + en_inc, en_inc)
+envec = np.arange(0.0001, 0.0100, en_inc)
 ai = np.int8(np.round(a/en_inc))-1  # index for start of en range
 bi = np.int8(np.round(b/en_inc))-1  # index for end of en range
-sample_indx = lagr.chebyshev_nodes(a, b, ai, en_inc, N)
+sample_indx = lagr.chebyshev_nodes(a, b, ai, en_inc, N)+ai
 xnode = envec[sample_indx]  # en values for nodes of lagrange interpolation
 print xnode
 
@@ -90,8 +90,12 @@ for ii in xrange(0, n_tot):
 
     fip = dset[sample_indx, 19]
 
+    if np.any(fip <= 0.0) == True:
+        print test_id
+        print "zero fip @ %s" % test_id
+
     eindx = np.int16(np.round((180./(inc*np.pi))*euler[ii, :]))
-    fip_set[eindx[0], eindx[1], eindx[2]] = np.log(fip)
+    fip_set[eindx[0], eindx[1], eindx[2]] = fip
 
 f_mwp.close()
 f_nhp.close()
