@@ -30,10 +30,12 @@ for sym in xrange(12):
 
     # print g_sym.shape
 
-    tmp = np.array(ef.g2bunge(g_sym)).transpose()  # convert back to euler angles
+    # convert back to euler angles
+    tmp = np.array(ef.g2bunge(g_sym)).transpose()
+
     # print tmp.shape
 
-    FZ_euler_sym[sym, ...] = tmp  
+    FZ_euler_sym[sym, ...] = tmp
 
 for ii in xrange(3):
     ltz = FZ_euler_sym[..., ii] < 0.0

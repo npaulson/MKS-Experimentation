@@ -3,21 +3,23 @@ import numpy as np
 
 def g2bunge(g):
 
-    LTT = np.abs(g[..., 2, 2] - 1) < .0001
+    LTT = np.abs(g[..., 2, 2] - 1) < 1E-8
 
-    print "number of orientations with Phi close to zero: %s" % np.sum(LTT)
+    # print "number of orientations with Phi close to zero: %s" % np.sum(LTT)
 
     phi1_LTT = 0.5*np.arctan2(g[..., 0, 1], g[..., 0, 0])
     phi2_LTT = phi1_LTT
     # Phi = np.zeros(phi1_LTT.shape)
 
-    Phi = (LTT == 0)*np.arccos(g[..., 2, 2])
+    Phi = (LTT == 0)*np.arccos(g[..., 2, 2])+LTT
 
     phi1 = np.arctan2(g[..., 2, 0]/np.sin(Phi), -g[..., 2, 1]/np.sin(Phi))
     phi1 = (LTT == 0)*phi1 + LTT*phi1_LTT
 
     phi2 = np.arctan2(g[..., 0, 2]/np.sin(Phi), g[..., 1, 2]/np.sin(Phi))
     phi2 = (LTT == 0)*phi2 + LTT*phi2_LTT
+
+    Phi = Phi - LTT
 
     # if np.abs(g[..., 2, 2] - 1) < .0001:
     #     Phi = 0

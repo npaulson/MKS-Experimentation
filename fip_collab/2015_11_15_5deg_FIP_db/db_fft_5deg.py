@@ -1,5 +1,4 @@
 import h5py
-import sys
 import time
 import numpy as np
 import check_test_5deg as cdb
@@ -41,11 +40,11 @@ chunk = np.zeros([n_th, n_max, n_max, n_max, N])
 for tt in xrange(n_th):
 
     # create file for pre-database outputs
-    f = h5py.File('fip_extract_%s.hdf5' % str(tt+1).zfill(2), 'r')
+    f = h5py.File('var_extract_%s.hdf5' % str(tt+1).zfill(2), 'r')
 
-    fip_tmp = f.get("fip_set")
+    var_tmp = f.get("var_set")
 
-    chunk[tt, ...] = fip_tmp
+    chunk[tt, ...] = var_tmp
 
     f.close()
 

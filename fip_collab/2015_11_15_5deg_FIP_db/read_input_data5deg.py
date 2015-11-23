@@ -28,7 +28,7 @@ n_p2 = 60/inc  # number of phi2 samples for FZ
 n_tot = n_max**3  # total number of orientations
 
 # create file for pre-database outputs
-f_nhp = h5py.File('fip_extract_%s.hdf5' % str(tnum).zfill(2), 'w')
+f_nhp = h5py.File('var_extract_%s.hdf5' % str(tnum).zfill(2), 'w')
 a = 0.0050  # start for en range
 b = 0.0085  # end for en range
 N = 10  # number of nodes
@@ -40,7 +40,7 @@ sample_indx = lagr.chebyshev_nodes(a, b, ai, en_inc, N)+ai
 xnode = envec[sample_indx]  # en values for nodes of lagrange interpolation
 print xnode
 
-fip_set = f_nhp.create_dataset("fip_set", (n_max, n_max, n_max, N))
+var_set = f_nhp.create_dataset("var_set", (n_max, n_max, n_max, N))
 
 # Read Simulation info from "sim" file
 filename = 'sim_Ti64_tensor_%s.txt' % str(tnum).zfill(2)
@@ -88,14 +88,14 @@ for ii in xrange(0, n_tot):
     fip
     """
 
-    fip = dset[sample_indx, 19]
+    var = dset[sample_indx, 19]  # FIP value
 
-    if np.any(fip <= 0.0) == True:
+    if np.any(var <= 0.0) == True:
         print test_id
-        print "zero fip @ %s" % test_id
+        print "zero var @ %s" % test_id
 
     eindx = np.int16(np.round((180./(inc*np.pi))*euler[ii, :]))
-    fip_set[eindx[0], eindx[1], eindx[2]] = fip
+    var_set[eindx[0], eindx[1], eindx[2]] = np.log(var)
 
 f_mwp.close()
 f_nhp.close()

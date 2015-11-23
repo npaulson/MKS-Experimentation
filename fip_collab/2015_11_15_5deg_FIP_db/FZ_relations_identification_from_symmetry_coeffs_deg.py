@@ -41,7 +41,7 @@ for jj in xrange(4):
     randloc = np.array([2*np.pi*np.random.rand(),
                         0.5*np.pi*np.random.rand(),
                         (1./3.)*np.pi*np.random.rand()])
-    
+
     randloc = randloc[:, np.newaxis]
 
     g = ef.bunge2g(randloc[0], randloc[1], randloc[2])
@@ -50,7 +50,7 @@ for jj in xrange(4):
 
     for ii in xrange(12):
         g_sym = np.dot(symhex[:, :, ii], g[0, ...])
-        g_sym = g_sym[np.newaxis, ...]       
+        g_sym = g_sym[np.newaxis, ...]
         tmp[ii, :] = ef.g2bunge(g_sym)
 
     euler = np.zeros([12, 3])
@@ -70,8 +70,10 @@ for jj in xrange(4):
     eulerdeg = euler * (180./np.pi)
 
     plt.figure(1)
-    plt.plot(eulerdeg[:, 0], eulerdeg[:, 1], c=color[jj], marker='o', linestyle='none')
+    plt.plot(eulerdeg[:, 0], eulerdeg[:, 1],
+             c=color[jj], marker='o', linestyle='none')
     plt.figure(2)
-    plt.plot(eulerdeg[:, 1], eulerdeg[:, 2], c=color[jj], marker='o', linestyle='none')
+    plt.plot(eulerdeg[:, 1], eulerdeg[:, 2],
+             c=color[jj], marker='o', linestyle='none')
 
 plt.show()
