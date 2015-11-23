@@ -1,5 +1,5 @@
 import numpy as np
-import euler_func_old as ef
+import euler_func as ef
 import matplotlib.pyplot as plt
 
 symhex = ef.symhex()
@@ -49,7 +49,7 @@ for jj in xrange(4):
     tmp = np.zeros([12, 3])
 
     for ii in xrange(12):
-        g_sym = np.dot(symhex[:, :, ii], g[0, ...])
+        g_sym = np.dot(symhex[ii, :, :], g[0, ...])
         g_sym = g_sym[np.newaxis, ...]       
         tmp[ii, :] = ef.g2bunge(g_sym)
 
