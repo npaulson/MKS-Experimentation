@@ -15,20 +15,8 @@ the angular variable
 
 tnum = sys.argv[1]
 
-# define the number of increments for angular variables:
-
-# these indices are defined for the original db inputs
-inc_o = 3  # degree increment for angular variables
-
-n_p1_o = 360/inc_o  # number of phi1 samples for FZ
-n_P_o = (90/inc_o)+1  # number of Phi samples for FZ
-n_p2_o = 60/inc_o  # number of phi2 samples for FZ
-
-# n_eul_o is the number of orientations in the original db input set
-n_eul_o = n_p1_o * n_P_o * n_p2_o
-
 # these indices are defined for the sampled db inputs
-inc = 6  # degree increment for angular variables
+inc = 5  # degree increment for angular variables
 
 n_th = (60/inc)+1  # number of theta samples for FZ
 n_p1 = 360/inc  # number of phi1 samples for FZ
@@ -54,7 +42,7 @@ xnode = envec[sample_indx]  # en values for nodes of lagrange interpolation
 print xnode
 
 nvec = np.array([n_th, n_p1, n_P, n_p2, n_en])
-print nvec
+print "nvec: %s" % str(nvec)
 
 # create file for pre-database outputs
 f_nhp = h5py.File('var_extract_%s.hdf5' % str(tnum).zfill(2), 'w')
@@ -70,10 +58,10 @@ linelist = f.readlines()
 
 stmax = linelist[1].split()[4:7]
 
-test_no = np.zeros([n_eul_o], dtype='int8')
-euler = np.zeros([n_eul_o, 3])
+test_no = np.zeros([n_eul], dtype='int8')
+euler = np.zeros([n_eul, 3])
 
-for k in xrange(n_eul_o):
+for k in xrange(n_eul):
     temp_line = linelist[k+1]
     euler[k, :] = temp_line.split()[1:4]
 
@@ -90,10 +78,7 @@ f_mwp = h5py.File(filename, 'r')
 max_err = 0
 c = 0
 
-print n_eul_o
-print n_eul
-
-for ii in xrange(0, n_eul_o):
+for ii in xrange(0, n_eul):
 
     euldeg = euler[ii, :]*(180./np.pi)
     eulint = np.int64(np.round(euldeg))

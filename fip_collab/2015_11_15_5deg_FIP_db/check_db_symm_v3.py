@@ -1,5 +1,5 @@
 import numpy as np
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import euler_func as ef
 import h5py
 
@@ -15,12 +15,12 @@ for each deformation mode sample (theta), check if the value of
 interest is the same for all symmetric orientations
 """
 
-np.random.seed() # generate seed for random
+inc = 5  # degree increment for angular variables
+np.random.seed()  # generate seed for random
 symhex = ef.symhex()
 r2d = 180./np.pi
 d2r = np.pi/180.
-
-inc = 5  # degree increment for angular variables
+r2s = r2d/inc
 
 n_th_max = 120/inc  # number of theta samples in FOS
 n_max = 360/inc  # number of phi1, Phi and phi2 samples in FOS
@@ -37,17 +37,18 @@ print "angle space shape: %s" % str(np.array([n_th, n_p1, n_P, n_p2]))
 db = np.load("pre_fft.npy")[:n_th, ..., -1]
 print "db shape: %s" % str(db.shape)
 
-
 # n_FZ: total number of sampled orientations in FZ
 n_FZ = n_p1*n_P*n_p2
+
 # FZ_indx: vector of linear indices for sampled orientations in FZ
 FZ_indx = np.arange(n_FZ)
 print "FZ_indx shape: %s" % str(FZ_indx.shape)
+
 # FZ_subs: array of subscripts of sampled orientations in FZ
 FZ_subs = np.unravel_index(FZ_indx, (n_p1, n_P, n_p2))
 FZ_subs = np.array(FZ_subs).transpose()
-
 print "FZ_subs shape: %s" % str(FZ_subs.shape)
+
 # FZ_euler: array of euler angles of sampled orientations in FZ
 FZ_euler = np.float64(FZ_subs*inc*d2r)
 
@@ -81,11 +82,15 @@ for sym in xrange(12):
     FZ_euler_sym[sym, ...] = tmp
     del tmp
 
-# make sure all of the euler angles within the appropriate
-# ranges (eg. not negative)
+# convert euler angles to subscripts
+FZ_subs_sym = np.int64(np.round(FZ_euler_sym*r2s))
+
+# # make sure all of the euler angles within the appropriate
+# # ranges (eg. not negative)
 for ii in xrange(3):
-    ltz = FZ_euler_sym[..., ii] < 0.0
-    FZ_euler_sym[..., ii] += 2*np.pi*ltz
+    lt = FZ_subs_sym[..., ii] < 0.0
+    FZ_subs_sym[..., ii] += n_max*lt
+print np.sum(FZ_subs_sym < 0)
 
 # determine the deviation from symmetry by finding the value of
 # the function for symmetric locations and comparing these values
@@ -95,30 +100,16 @@ error = f.create_dataset("error", (n_th, 12, n_FZ, 5))
 
 for th in xrange(n_th):
     for sym in xrange(12):
-        error[th, sym, :, 0:3] = FZ_euler_sym[sym, ...]
+        error[th, sym, :, 0:3] = FZ_subs_sym[sym, ...]*inc
 
-        mm = r2d/inc
-
-        p1tmp = np.int64(np.round(FZ_euler_sym[0, :, 0]*mm))
-        Ptmp = np.int64(np.round(FZ_euler_sym[0, :, 1]*mm))
-        p2tmp = np.int64(np.round(FZ_euler_sym[0, :, 2]*mm))
-
-        print np.min(p1tmp)
-        print np.max(p1tmp)
-
-        print np.min(Ptmp)
-        print np.max(Ptmp)
-
-        print np.min(p2tmp)
-        print np.max(p2tmp)
-
-        origFZ = db[th, p1tmp, Ptmp, p2tmp]
-
-        p1tmp = np.int64(np.round(FZ_euler_sym[sym, :, 0]*mm))
-        Ptmp = np.int64(np.round(FZ_euler_sym[sym, :, 1]*mm))
-        p2tmp = np.int64(np.round(FZ_euler_sym[sym, :, 2]*mm))
-
-        symFZ = dg[th, p1tmp, Ptmp, p2tmp]
+        origFZ = db[th,
+                    FZ_subs_sym[0, :, 0],
+                    FZ_subs_sym[0, :, 1],
+                    FZ_subs_sym[0, :, 2]]
+        symFZ = db[th,
+                   FZ_subs_sym[sym, :, 0],
+                   FZ_subs_sym[sym, :, 1],
+                   FZ_subs_sym[sym, :, 2]]
 
         if th == 0 and sym == 0:
             print "origFZ shape: %s" % str(origFZ.shape)
@@ -146,8 +137,10 @@ f.close()
 # perform error analysis
 
 # generate random deformation mode and euler angle
-th_rand = np.int64(np.round(n_th*np.random.rand()-1))
-g_rand = np.int64(np.round(n_FZ*np.random.rand()-1))
+# th_rand = np.int64(np.round((n_th-1)*np.random.rand()))
+# g_rand = np.int64(np.round((n_FZ-1)*np.random.rand()))
+th_rand = 0
+g_rand = 8274
 
 print "\nexample comparison:"
 
@@ -155,8 +148,8 @@ print "deformation mode: %s degrees" % str(np.float(th_rand*inc))
 
 for sym in xrange(12):
     print "operator number: %s" % sym
-    eul_rand = error_sec[th_rand, sym, g_rand, 0:3]*r2d
-    print "euler angles: %s (degrees)" % str(np.round(eul_rand))
+    eul_rand = error_sec[th_rand, sym, g_rand, 0:3]
+    print "euler angles: %s (degrees)" % str(eul_rand)
     val_rand = error_sec[th_rand, sym, g_rand, 3]
     print "value of interest: %s" % str(val_rand)
 
@@ -166,7 +159,48 @@ print "mean error: %s" % np.mean(error_sec[..., 4])
 print "maximum error: %s" % np.max(error_sec[..., 4])
 print "standard deviation of error: %s\n" % np.std(error_sec[..., 4])
 
-# plt.figure(num=1, figsize=[10, 6])
-# plt.hist(error_sec.reshape(error_sec.size), 100)
-# # plt.savefig('test.png')
-# plt.show()
+plt.figure(num=1, figsize=[10, 6])
+error_hist = error_sec[..., 4]
+plt.hist(error_hist.reshape(error_hist.size), 100)
+
+# plot the symmetric orientations in euler space
+plt.figure(2)
+
+plt.plot(np.array([0, 360, 360, 0, 0]), np.array([0, 0, 180, 180, 0]), 'k-')
+plt.plot(np.array([0, 360]), np.array([90, 90]), 'k-')
+
+plt.xlabel('$\phi_1$')
+plt.ylabel('$\Phi$')
+
+sc = 1.05
+
+plt.axis([-(sc-1)*360, sc*360, -(sc-1)*180, sc*180])
+
+plt.figure(3)
+
+plt.plot(np.array([0, 180, 180, 0, 0]), np.array([0, 0, 360, 360, 0]), 'k-')
+plt.plot(np.array([90, 90]), np.array([0, 360]), 'k-')
+plt.plot(np.array([0, 180]), np.array([60, 60]), 'k-')
+plt.plot(np.array([0, 180]), np.array([120, 120]), 'k-')
+plt.plot(np.array([0, 180]), np.array([180, 180]), 'k-')
+plt.plot(np.array([0, 180]), np.array([240, 240]), 'k-')
+plt.plot(np.array([0, 180]), np.array([300, 300]), 'k-')
+
+
+plt.xlabel('$\Phi$')
+plt.ylabel('$\phi2$')
+
+sc = 1.05
+
+plt.axis([-(sc-1)*180, sc*180, -(sc-1)*360, sc*360])
+
+eul_plt = error_sec[th_rand, :, g_rand, 0:3]
+
+plt.figure(2)
+plt.plot(eul_plt[:, 0], eul_plt[:, 1],
+         c='b', marker='o', linestyle='none')
+plt.figure(3)
+plt.plot(eul_plt[:, 1], eul_plt[:, 2],
+         c='b', marker='o', linestyle='none')
+
+plt.show()

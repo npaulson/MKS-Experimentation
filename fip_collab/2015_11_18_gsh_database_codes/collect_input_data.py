@@ -7,7 +7,7 @@ import numpy as np
 
 # define the number of increments for angular variables:
 
-inc = 6  # degree increment for angular variables
+inc = 5  # degree increment for angular variables
 
 n_th = (60/inc)+1  # number of theta samples for FZ
 n_p1 = 360/inc  # number of phi1 samples for FZ

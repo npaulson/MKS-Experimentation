@@ -52,9 +52,8 @@ for ii in xrange(cmax):
 
     XtY[ii] = np.dot(ep_set_ii.conjugate(), Y)
 
-WP("XtX and XtY prepared: %ss" % np.round(time.time()-st, 3), filename)
+WP("XtY prepared: %ss" % (np.round(time.time()-st, 3), filename))
 
 f = h5py.File('XtYtotal.hdf5', 'w')
-ep_set = f.get('ep_set')
-Y = ep_set[:, 5]
+f.create_dataset('XtY', data=XtY)
 f.close()
