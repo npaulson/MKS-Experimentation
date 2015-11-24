@@ -16,8 +16,9 @@ interest is the same for all symmetric orientations
 """
 
 np.random.seed() # generate seed for random
-
 symhex = ef.symhex()
+r2d = 180./np.pi
+d2r = np.pi/180.
 
 inc = 5  # degree increment for angular variables
 
@@ -48,7 +49,7 @@ FZ_subs = np.array(FZ_subs).transpose()
 
 print "FZ_subs shape: %s" % str(FZ_subs.shape)
 # FZ_euler: array of euler angles of sampled orientations in FZ
-FZ_euler = np.float64(FZ_subs*inc)
+FZ_euler = np.float64(FZ_subs*inc*d2r)
 
 # g: array of orientation matrices (sample to crystal frame rotation
 # matrices) for orientations in fundamental zone
@@ -80,6 +81,12 @@ for sym in xrange(12):
     FZ_euler_sym[sym, ...] = tmp
     del tmp
 
+# make sure all of the euler angles within the appropriate
+# ranges (eg. not negative)
+for ii in xrange(3):
+    ltz = FZ_euler_sym[..., ii] < 0.0
+    FZ_euler_sym[..., ii] += 2*np.pi*ltz
+
 # determine the deviation from symmetry by finding the value of
 # the function for symmetric locations and comparing these values
 
@@ -90,15 +97,28 @@ for th in xrange(n_th):
     for sym in xrange(12):
         error[th, sym, :, 0:3] = FZ_euler_sym[sym, ...]
 
-        origFZ = db[th,
-                    np.int64(FZ_euler_sym[0, :, 0]/inc),
-                    np.int64(FZ_euler_sym[0, :, 1]/inc),
-                    np.int64(FZ_euler_sym[0, :, 2]/inc)]
+        mm = r2d/inc
 
-        symFZ = db[th,
-                   np.int64(FZ_euler_sym[sym, :, 0]/inc),
-                   np.int64(FZ_euler_sym[sym, :, 1]/inc),
-                   np.int64(FZ_euler_sym[sym, :, 2]/inc)]
+        p1tmp = np.int64(np.round(FZ_euler_sym[0, :, 0]*mm))
+        Ptmp = np.int64(np.round(FZ_euler_sym[0, :, 1]*mm))
+        p2tmp = np.int64(np.round(FZ_euler_sym[0, :, 2]*mm))
+
+        print np.min(p1tmp)
+        print np.max(p1tmp)
+
+        print np.min(Ptmp)
+        print np.max(Ptmp)
+
+        print np.min(p2tmp)
+        print np.max(p2tmp)
+
+        origFZ = db[th, p1tmp, Ptmp, p2tmp]
+
+        p1tmp = np.int64(np.round(FZ_euler_sym[sym, :, 0]*mm))
+        Ptmp = np.int64(np.round(FZ_euler_sym[sym, :, 1]*mm))
+        p2tmp = np.int64(np.round(FZ_euler_sym[sym, :, 2]*mm))
+
+        symFZ = dg[th, p1tmp, Ptmp, p2tmp]
 
         if th == 0 and sym == 0:
             print "origFZ shape: %s" % str(origFZ.shape)
@@ -135,8 +155,8 @@ print "deformation mode: %s degrees" % str(np.float(th_rand*inc))
 
 for sym in xrange(12):
     print "operator number: %s" % sym
-    eul_rand = error_sec[th_rand, sym, g_rand, 0:3]*(180./np.pi)
-    print "euler angles: %s (degrees)" % str(eul_rand)
+    eul_rand = error_sec[th_rand, sym, g_rand, 0:3]*r2d
+    print "euler angles: %s (degrees)" % str(np.round(eul_rand))
     val_rand = error_sec[th_rand, sym, g_rand, 3]
     print "value of interest: %s" % str(val_rand)
 
