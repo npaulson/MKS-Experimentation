@@ -88,7 +88,7 @@ for ii in xrange(0, n_tot):
     fip
     """
 
-    var = dset[sample_indx, 19]  # FIP value
+    var = dset[sample_indx, 13]  # plastic strain value
 
     if np.any(var <= 0.0) == True:
         print test_id
