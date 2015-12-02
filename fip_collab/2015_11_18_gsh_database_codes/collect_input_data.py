@@ -7,7 +7,7 @@ import numpy as np
 
 # define the number of increments for angular variables:
 
-inc = 5  # degree increment for angular variables
+inc = 6  # degree increment for angular variables
 
 n_th = (60/inc)+1  # number of theta samples for FZ
 n_p1 = 360/inc  # number of phi1 samples for FZ
@@ -22,7 +22,7 @@ alldata = f1.create_dataset("var_set", (n_par*n_th, 6))
 
 c = 0
 
-for tt in xrange(0, 21, 2):
+for tt in xrange(0, 11):
 
     print tt
 

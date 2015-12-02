@@ -1,4 +1,4 @@
-cd /panfs/iw-scratch.pace.gatech.edu/v7/nhpnp3/dir_11_12
+cd /panfs/iw-scratch.pace.gatech.edu/v7/nhpnp3/gsh_6deg_12_2
 
 for p in {0..7}
 do

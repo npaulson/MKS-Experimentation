@@ -137,10 +137,14 @@ f.close()
 # perform error analysis
 
 # generate random deformation mode and euler angle
-th_rand = np.int64(np.round((n_th-1)*np.random.rand()))
-g_rand = np.int64(np.round((n_FZ-1)*np.random.rand()))
-# th_rand = 0
-# g_rand = 8274
+# th_rand = np.int64(np.round((n_th-1)*np.random.rand()))
+# g_rand = np.int64(np.round((n_FZ-1)*np.random.rand()))
+
+badloc = np.argmax(error_sec[..., 4])
+badloc = np.unravel_index(badloc, error_sec[..., 3].shape)
+
+th_rand = badloc[0]
+g_rand = badloc[2]
 
 print "\nexample comparison:"
 

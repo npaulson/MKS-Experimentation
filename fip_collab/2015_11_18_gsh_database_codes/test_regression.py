@@ -5,6 +5,25 @@ import h5py
 import time
 
 
+def WP(msg, filename):
+    """
+    Summary:
+        This function takes an input message and a filename, and appends that
+        message to the file. This function also prints the message
+    Inputs:
+        msg (string): the message to write and print.
+        filename (string): the full name of the file to append to.
+    Outputs:
+        both prints the message and writes the message to the specified file
+    """
+    fil = open(filename, 'a')
+    print msg
+    fil.write(msg)
+    fil.write('\n')
+    fil.close()
+
+filename = 'log_test_regression'
+
 f = h5py.File('reg_coeff.hdf5', 'r')
 coeff = f.get('coeff')[...]
 f.close()
@@ -27,8 +46,8 @@ N_p = 8
 N_q = 8
 cmax = N_L*N_p*N_q
 
-print theta.size
-print cmax
+WP(str(theta.size), filename)
+WP(str(cmax), filename)
 
 cmat = np.unravel_index(np.arange(cmax), [N_L, N_p, N_q])
 cmat = np.array(cmat).transpose()
@@ -41,7 +60,7 @@ for ii in xrange(cmax):
 # for ii in xrange(10):
 
     if np.mod(ii, 100) == 0:
-        print ii
+        WP(str(ii), filename)
 
     L, p, q = cmat[ii, :]
 
@@ -58,16 +77,22 @@ for ii in xrange(cmax):
     vec[:] += tmp
 
 Ttime = np.round(time.time()-st, 3)
-print "total interpolation time: %ss" % Ttime
-print "interpolation time per point: %s" % (Ttime/theta.size)
+msg = "total interpolation time: %ss" % Ttime
+WP(msg, filename)
+msg = "interpolation time per point: %s" % (Ttime/theta.size)
+WP(msg, filename)
 
-print vec.shape
+msg = str(vec.shape)
+WP(msg, filename)
 
 error = np.abs(vec - Y)
 
-print "mean error: %s" % np.mean(error)
-print "std of error: %s" % np.std(error)
-print "min error: %s" % np.min(error)
+msg = "mean error: %s" % np.mean(error)
+WP(msg, filename)
+msg = "std of error: %s" % np.std(error)
+WP(msg, filename)
+msg = "min error: %s" % np.min(error)
+WP(msg, filename)
 
 f = h5py.File('regression_results.hdf5', 'w')
 # results = f.create_dataset("results", (Y.size, 8))

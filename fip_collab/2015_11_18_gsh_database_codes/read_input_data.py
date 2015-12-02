@@ -16,7 +16,7 @@ the angular variable
 tnum = sys.argv[1]
 
 # these indices are defined for the sampled db inputs
-inc = 5  # degree increment for angular variables
+inc = 6  # degree increment for angular variables
 
 n_th = (60/inc)+1  # number of theta samples for FZ
 n_p1 = 360/inc  # number of phi1 samples for FZ
@@ -33,8 +33,8 @@ a = 0.0050  # start for en range
 b = 0.0085  # end for en range
 en_inc = 0.0001  # en increment
 envec = np.arange(a, b + en_inc, en_inc)
-ai = np.int8(np.round(a/en_inc))-1  # index for start of en range
-bi = np.int8(np.round(b/en_inc))-1  # index for end of en range
+ai = np.int64(np.round(a/en_inc))-1  # index for start of en range
+bi = np.int64(np.round(b/en_inc))-1  # index for end of en range
 sample_indx = lagr.chebyshev_nodes(a, b, ai, en_inc, n_en_guess)
 n_en = sample_indx.size
 
@@ -80,58 +80,46 @@ c = 0
 
 for ii in xrange(0, n_eul):
 
-    euldeg = euler[ii, :]*(180./np.pi)
-    eulint = np.int64(np.round(euldeg))
-    eulmod = np.mod(eulint, inc)
-    # print ii
-    # print euler[ii, :]
-    # print euldeg
-    # print eulint
-    # print eulmod
-    # print np.all(eulmod == 0)
-
     test_id = 'sim%s' % str(ii+1).zfill(7)
 
     if ii % 10000 == 0:
         print test_id
 
-    if np.all(eulmod == 0) == True:
+    dset = f_mwp.get(test_id)
 
-        dset = f_mwp.get(test_id)
+    """
+    Column order in each dataset:
+    time,...
+    sig11,sig22,sig33,sig12,sig13,sig23...
+    e11,e22,e33,e12,e13,e23
+    ep11,ep22,ep33,ep12,ep13,ep23,
+    fip,gamdot,signorm
 
-        """
-        Column order in each dataset:
-        time,...
-        sig11,sig22,sig33,sig12,sig13,sig23...
-        e11,e22,e33,e12,e13,e23
-        ep11,ep22,ep33,ep12,ep13,ep23,
-        fip,gamdot,signorm
+    """
 
-        """
+    et = dset[:, 7:13]
 
-        et = dset[:, 7:13]
+    # calculate the norm of et
+    et_norm = np.sqrt(np.sum(et[:, 0:3]**2, 1) +
+                      2*np.sum(et[:, 3:6]**2, 1))
 
-        # calculate the norm of et
-        et_norm = np.sqrt(np.sum(et[:, 0:3]**2, 1) +
-                          2*np.sum(et[:, 3:6]**2, 1))
+    err = np.max(np.abs(et_norm-et_vec))
+    if err > max_err:
+        print err
+        max_err = err
 
-        err = np.max(np.abs(et_norm-et_vec))
-        if err > max_err:
-            print err
-            max_err = err
+    et_norm_red = et_norm[sample_indx+ai]
+    var = np.log(dset[sample_indx+ai, 20])
 
-        et_norm_red = et_norm[sample_indx+ai]
-        var = dset[sample_indx+ai, 13]
+    for jj in xrange(n_en):
 
-        for jj in xrange(n_en):
+        tmp = np.hstack([(np.int64(tnum)-1)*inc,
+                         euler[ii, :],
+                         et_norm_red[jj],
+                         var[jj]])
 
-            tmp = np.hstack([(np.int8(tnum)-1)*inc,
-                             euler[ii, :],
-                             et_norm_red[jj],
-                             var[jj]])
-
-            var_set[c, :] = tmp
-            c += 1
+        var_set[c, :] = tmp
+        c += 1
 
 # print np.prod(nvec[1:])
 # print c
