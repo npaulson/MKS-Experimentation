@@ -137,10 +137,10 @@ f.close()
 # perform error analysis
 
 # generate random deformation mode and euler angle
-# th_rand = np.int64(np.round((n_th-1)*np.random.rand()))
-# g_rand = np.int64(np.round((n_FZ-1)*np.random.rand()))
-th_rand = 0
-g_rand = 8274
+th_rand = np.int64(np.round((n_th-1)*np.random.rand()))
+g_rand = np.int64(np.round((n_FZ-1)*np.random.rand()))
+# th_rand = 0
+# g_rand = 8274
 
 print "\nexample comparison:"
 
@@ -153,12 +153,38 @@ for sym in xrange(12):
     val_rand = error_sec[th_rand, sym, g_rand, 3]
     print "value of interest: %s" % str(val_rand)
 
+errvec = error_sec[..., 4].reshape(error_sec[..., 4].size)
+
 print "\noverall error metrics:"
 print "mean database value: %s" % np.mean(db)
-print "mean error: %s" % np.mean(error_sec[..., 4])
-print "maximum error: %s" % np.max(error_sec[..., 4])
-print "standard deviation of error: %s\n" % np.std(error_sec[..., 4])
+print "mean error: %s" % np.mean(errvec)
+print "maximum error: %s" % np.max(errvec)
+print "standard deviation of error: %s" % np.std(errvec)
+print "total number of locations checked: %s" % (errvec.size)
+err_count = np.sum(errvec != 0.0)
 
+# plot the error histograms
+
+error_indx = errvec != 0.0
+print error_indx.shape
+loc_hist = errvec[error_indx]
+print loc_hist.shape
+err_count = np.sum(loc_hist != 0.0)
+print "number of locations with nonzero error: %s" % err_count
+
+errvec_p1 = error_sec[..., 0].reshape(error_sec[..., 0].size)[error_indx]
+plt.figure(num=4, figsize=[10, 6])
+plt.hist(errvec_p1, 361)
+
+errvec_P = error_sec[..., 1].reshape(error_sec[..., 1].size)[error_indx]
+plt.figure(num=5, figsize=[10, 6])
+plt.hist(errvec_P, 361)
+
+errvec_p2 = error_sec[..., 0].reshape(error_sec[..., 0].size)[error_indx]
+plt.figure(num=6, figsize=[10, 6])
+plt.hist(errvec_p2, 361)
+
+# plot the error histograms
 plt.figure(num=1, figsize=[10, 6])
 error_hist = error_sec[..., 4]
 plt.hist(error_hist.reshape(error_hist.size), 100)
