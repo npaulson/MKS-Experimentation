@@ -7,7 +7,7 @@ def chebyshev_nodes(a, b, ai, en_inc, N):
     kk = np.arange(1, N+1)
     tmp = 0.5*(a+b)+0.5*(b-a)*np.cos(((2*kk - 1)*np.pi)/(2*N))
     xk = np.round(tmp, 4)
-    sample_indx = np.unique(np.int8(xk/en_inc) - 1 - ai)
+    sample_indx = np.unique(np.int64(xk/en_inc) - 1 - ai)
 
 
     return sample_indx

@@ -24,7 +24,7 @@ n_P = (90/inc)+1  # number of Phi samples for FZ
 n_p2 = 60/inc  # number of phi2 samples for FZ
 n_en_guess = 16  # desired number of en samples
 
-# n_eul_o is the number of orientations in the sampled db input set
+# n_eul is the number of orientations in the sampled db input set
 n_eul = n_p1 * n_P * n_p2
 
 # here we determine the sampling for en based on the roots of the
