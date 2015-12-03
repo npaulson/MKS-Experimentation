@@ -32,13 +32,14 @@ n_eul = n_p1 * n_P * n_p2
 a = 0.0050  # start for en range
 b = 0.0085  # end for en range
 en_inc = 0.0001  # en increment
-envec = np.arange(a, b + en_inc, en_inc)
+et_norm = np.linspace(.0001, .0100, 100)
 ai = np.int64(np.round(a/en_inc))-1  # index for start of en range
 bi = np.int64(np.round(b/en_inc))-1  # index for end of en range
 sample_indx = lagr.chebyshev_nodes(a, b, ai, en_inc, n_en_guess)
 n_en = sample_indx.size
 
-xnode = envec[sample_indx]  # en values for nodes of lagrange interpolation
+# xnode: en values for nodes of lagrange interpolation
+xnode = et_norm[sample_indx+ai]
 print xnode
 
 nvec = np.array([n_th, n_p1, n_P, n_p2, n_en])
@@ -58,7 +59,6 @@ linelist = f.readlines()
 
 stmax = linelist[1].split()[4:7]
 
-test_no = np.zeros([n_eul], dtype='int8')
 euler = np.zeros([n_eul, 3])
 
 for k in xrange(n_eul):
@@ -67,15 +67,12 @@ for k in xrange(n_eul):
 
 f.close()
 
-et_vec = np.linspace(.0001, .0100, 100)
-
 # Get data for all simulations
 
 # open file containing Matthew's data
 filename = 'Results_tensor_%s.hdf5' % str(tnum).zfill(2)
 f_mwp = h5py.File(filename, 'r')
 
-max_err = 0
 c = 0
 
 for ii in xrange(0, n_eul):
@@ -97,32 +94,20 @@ for ii in xrange(0, n_eul):
 
     """
 
-    et = dset[:, 7:13]
-
-    # calculate the norm of et
-    et_norm = np.sqrt(np.sum(et[:, 0:3]**2, 1) +
-                      2*np.sum(et[:, 3:6]**2, 1))
-
-    err = np.max(np.abs(et_norm-et_vec))
-    if err > max_err:
-        print err
-        max_err = err
-
-    et_norm_red = et_norm[sample_indx+ai]
     var = np.log(dset[sample_indx+ai, 20])
 
     for jj in xrange(n_en):
 
         tmp = np.hstack([(np.int64(tnum)-1)*inc,
                          euler[ii, :],
-                         et_norm_red[jj],
+                         xnode[jj],
                          var[jj]])
 
         var_set[c, :] = tmp
         c += 1
 
-# print np.prod(nvec[1:])
-# print c
+print np.prod(nvec[1:])
+print c
 
 f_mwp.close()
 f_nhp.close()

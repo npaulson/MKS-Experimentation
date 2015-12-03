@@ -6,8 +6,8 @@ import time
 import sys
 
 
-p = np.int8(sys.argv[1])
-q = np.int8(sys.argv[2])
+p = np.int64(sys.argv[1])
+q = np.int64(sys.argv[2])
 
 f = h5py.File('pre_fourier.hdf5', 'r')
 var_set = f.get('var_set')
@@ -33,7 +33,7 @@ for L in xrange(N_L):
 
     vec, cmat = gsh.gsh(phi1, phi, phi2, L)
     vec *= leg.legval(et_norm, p_vec)
-    vec *= np.real(np.exp((1j*2.*np.pi*np.float(q)*theta)/L_th))
+    vec *= np.real(np.exp((1j*2.*np.pi*np.float64(q)*theta)/L_th))
 
     set_id = 'set_%s_%s_%s' % (L, p, q)
     f.create_dataset(set_id, data=vec)

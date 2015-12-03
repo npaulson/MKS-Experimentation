@@ -30,25 +30,25 @@ N_L = 15  # number of GSH basis functions
 N_p = 8  # number of complex exponential basis functions
 N_q = 8  # number of Legendre basis functions
 cmax = N_L*N_p*N_q  # total number of permutations of basis functions
-print cmax
+WP(cmax, filename)
 
 # iivec is vector of indices for all permutations of basis function indices
 Ivec = np.arange(cmax)
 
 # cmat is the matrix containing all permutations of basis function indices
 cmat = np.unravel_index(np.arange(cmax), [N_L, N_p, N_q])
-cmat = np.array(cmat).transpose()
+cmat = np.array(cmat).T
 
 # indxmat is the matrix containing all unique combinations of elements of iivec
 tmp = it.combinations_with_replacement(Ivec, 2)
 Imat = np.array(list(tmp))
 ImatL = Imat.shape[0]
-print ImatL
+WP(ImatL, filename)
 
 # pick range of indxmat to calculate
 n_jobs = 50.  # number of jobs submitted to PACE
 n_I = np.int64(np.ceil(np.float(ImatL)/n_jobs))  # number dot products per job
-print n_I
+WP(n_I, filename)
 
 I_stt = tnum*n_I  # start index
 if (tnum+1)*n_I > ImatL:
@@ -78,13 +78,13 @@ for I in xrange(I_stt, I_end):
     L, p, q = cmat[ii, :]
     set_id_ii = 'set_%s_%s_%s' % (L, p, q)
     f = h5py.File('pre_fourier_p%s_q%s.hdf5' % (p, q), 'r')
-    ep_set_ii = f.get(set_id_ii)[:]
+    ep_set_ii = f.get(set_id_ii)[...]
     f.close()
 
     L, p, q = cmat[jj, :]
     set_id_jj = 'set_%s_%s_%s' % (L, p, q)
     f = h5py.File('pre_fourier_p%s_q%s.hdf5' % (p, q), 'r')
-    ep_set_jj = f.get(set_id_jj)[:]
+    ep_set_jj = f.get(set_id_jj)[...]
     f.close()
 
     msg = "load time: %ss" % np.round(time.time()-st, 3)
@@ -93,7 +93,7 @@ for I in xrange(I_stt, I_end):
     st = time.time()
 
     dotvec[c, 0:2] = iijj
-    dotvec[c, 2] = np.dot(ep_set_ii.conjugate(), ep_set_jj)
+    dotvec[c, 2] = np.dot(ep_set_ii.conj(), ep_set_jj)
 
     del ep_set_ii, ep_set_jj
 

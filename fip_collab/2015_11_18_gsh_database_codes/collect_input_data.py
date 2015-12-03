@@ -1,5 +1,4 @@
 import h5py
-import numpy as np
 
 """
 
@@ -24,7 +23,7 @@ c = 0
 
 for tt in xrange(0, 11):
 
-    print tt
+    print "Deformation Mode: %s deg" % (tt*inc)
 
     # create file for pre-database outputs
     f2 = h5py.File('var_extract_%s.hdf5' % str(tt+1).zfill(2), 'r')
@@ -32,10 +31,10 @@ for tt in xrange(0, 11):
     ep_tmp = f2.get("var_set")
 
     stt = (c)*n_par
-    print stt
+    print "start index: %s" % stt
 
     end = (c+1)*n_par
-    print end
+    print "end index: %s" % end
 
     alldata[stt:end, :] = ep_tmp
 

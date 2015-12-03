@@ -27,7 +27,7 @@ N_p = 8
 N_q = 8
 cmax = N_L*N_p*N_q
 cvec = np.unravel_index(np.arange(cmax), [N_L, N_p, N_q])
-cvec = np.array(cvec).transpose()
+cvec = np.array(cvec).T
 
 st = time.time()
 
@@ -45,10 +45,10 @@ for ii in xrange(cmax):
     L, p, q = cvec[ii, :]
     set_id_ii = 'set_%s_%s_%s' % (L, p, q)
     f = h5py.File('pre_fourier_p%s_q%s.hdf5' % (p, q), 'r')
-    ep_set_ii = f.get(set_id_ii)[:]
+    ep_set_ii = f.get(set_id_ii)[...]
     f.close()
 
-    XtY[ii] = np.dot(ep_set_ii.conjugate(), Y)
+    XtY[ii] = np.dot(ep_set_ii.conj(), Y)
 
 f = h5py.File('XtYtotal.hdf5', 'w')
 f.create_dataset('XtY', data=XtY)

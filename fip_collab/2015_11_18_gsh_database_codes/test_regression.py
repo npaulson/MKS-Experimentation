@@ -22,7 +22,7 @@ def WP(msg, filename):
     fil.write('\n')
     fil.close()
 
-filename = 'log_test_regression'
+filename = 'log_test_regression.txt'
 
 f = h5py.File('reg_coeff.hdf5', 'r')
 coeff = f.get('coeff')[...]
@@ -50,7 +50,7 @@ WP(str(theta.size), filename)
 WP(str(cmax), filename)
 
 cmat = np.unravel_index(np.arange(cmax), [N_L, N_p, N_q])
-cmat = np.array(cmat).transpose()
+cmat = np.array(cmat).T
 
 st = time.time()
 
@@ -71,7 +71,7 @@ for ii in xrange(cmax):
 
     tmp[:], null = gsh.gsh(phi1, phi, phi2, L)
     tmp[:] *= leg.legval(et_norm, p_vec)
-    tmp[:] *= np.real(np.exp((1j*2.*np.pi*np.float(q)*theta)/L_th))
+    tmp[:] *= np.real(np.exp((1j*2.*np.pi*np.float64(q)*theta)/L_th))
     tmp[:] *= coeff[ii]
 
     vec[:] += tmp
@@ -85,7 +85,7 @@ WP(msg, filename)
 msg = str(vec.shape)
 WP(msg, filename)
 
-error = np.abs(vec - Y)
+error = np.abs(np.real(vec) - Y)
 
 msg = "mean error: %s" % np.mean(error)
 WP(msg, filename)
