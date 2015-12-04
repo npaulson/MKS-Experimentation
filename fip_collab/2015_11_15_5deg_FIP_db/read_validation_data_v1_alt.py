@@ -39,7 +39,7 @@ f_nhp = h5py.File('var_val.hdf5', 'w')
 var_set = f_nhp.create_dataset("var_set", (n_tot, 4+sample_indx.size))
 
 # Read Simulation info from "sim" file
-filename = 'sim_Ti64_tensor_%s.txt' % str(1).zfill(2)
+filename = 'sim_Ti64_tensor_%s.txt' % str(2).zfill(2)
 
 f = open(filename, "r")
 linelist = f.readlines()
@@ -47,7 +47,7 @@ linelist = f.readlines()
 angle = np.zeros([n_tot, 4])
 for k in xrange(n_tot):
     temp_line = linelist[k+1]
-    angle[k, 0] = 0
+    angle[k, 0] = 6.*(np.pi/180.)
     angle[k, 1:] = temp_line.split()[1:4]
 
 f.close()
@@ -55,7 +55,7 @@ f.close()
 # Get data for all simulations
 
 # open file containing Matthew's data
-filename = 'Results_tensor_%s.hdf5' % str(1).zfill(2)
+filename = 'Results_tensor_%s.hdf5' % str(2).zfill(2)
 f_mwp = h5py.File(filename, 'r')
 
 for ii in xrange(0, n_tot):
@@ -63,7 +63,7 @@ for ii in xrange(0, n_tot):
     test_id = 'sim%s' % str(ii+1).zfill(7)
 
     if ii % 10000 == 0:
-        print 0
+        print 1
         print test_id
 
     dset = f_mwp.get(test_id)
