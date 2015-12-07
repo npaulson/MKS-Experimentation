@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 
 pre_fft = np.load("pre_fft.npy")
-
+print pre_fft.shape
 
 # plot one of the variables while all other variables are held constant
 plt.figure(num=1, figsize=[10, 6])

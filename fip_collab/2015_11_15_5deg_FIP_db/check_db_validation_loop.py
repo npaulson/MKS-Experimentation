@@ -1,11 +1,29 @@
 import numpy as np
 import h5py
 import time
-import sys
 
-fname = sys.argv
 
-# initialize the variables of interest
+def WP(msg, filename):
+    """
+    Summary:
+        This function takes an input message and a filename, and appends that
+        message to the file. This function also prints the message
+    Inputs:
+        msg (string): the message to write and print.
+        filename (string): the full name of the file to append to.
+    Outputs:
+        both prints the message and writes the message to the specified file
+    """
+    fil = open(filename, 'a')
+    print msg
+    fil.write(msg)
+    fil.write('\n')
+    fil.close()
+
+
+fname = "log_check_db_loop.txt"
+
+""" initialize the variables of interest """
 
 inc = 5  # degree increment for angular variables
 
@@ -18,10 +36,13 @@ n_p1 = 360/inc  # number of phi1 samples for FZ
 n_P = (90/inc)+1  # number of Phi samples for FZ
 n_p2 = 60/inc  # number of phi2 samples for FZ
 
+# the total number positions in the first 4 dimensions of the database
+Numel = n_th_max*n_max**3
+
 # vector of the ranges of the first 4 dimensions in radians
 Lset = np.array([(1./3.), 2., 2., 2.])*np.pi
 
-# get data from the spectral coefficients file
+""" get data from the spectral coefficients file """
 
 # open the spectral coefficients file
 f_db = h5py.File("final_db.hdf5", 'r')
@@ -34,10 +55,10 @@ f_list = tmp[...]
 # close the spectral coefficients file
 f_db.close()
 
-# get data from the validation data file
+""" get data from the validation data file """
 
 # open the error checking file
-f_err = h5py.File(fname[1], 'r')
+f_err = h5py.File('var_val.hdf5', 'r')
 # retrieve the array of plastic strain values for various combination of input
 # parameters
 var_set = f_err.get("var_set")[...]
@@ -46,59 +67,43 @@ f_err.close()
 
 # the columns of xi contain the position in degrees for each of the first four
 # angular dimensions of interest
-xi = var_set[5000:5001, :4]
+xi = var_set[:, :4]
+n_S = xi.shape[0]  # number of samples
 
-# start timing the interpolation
-st = time.time()
+""" perform the interpolation """
 
-# perform the trigonometric interpolation
-"""
-* the slices of 's_list' and 'xi' have the shapes [c] and [n] for each
-iteration of the loop below, where 'c' is the number of frequencies in the
-database and 'n' is the number of interpolation points.
---> 'tmp' will start with the shape [n, c] (through broadcasting)
-* 'tmp' is then transposed and an extra dimension is appended to the end.
---> 'tmp' has the shape [c, n, 1]
-* in each loop 'tmp' is multiplied into 'TMP'
-* after the loop we take 'f_list' with shape [c, p] and add an extra dimension
-in the middle, where 'p' is the number of plastic strain values saved for each
-combination of angular variables
---> 'f_list' has the shape [c, 1, p]
-* Pvec is 'f_list' * 'TMP' (element-wise with broadcasting)
---> Pvec has the shape [c, n, p]
-* to get the interpolation results sum 'Pvec' along the first dimension,
-divide by 'Numel' and take only the real part of each number
---> 'results' has the shape [n, p]
-"""
+err = np.zeros([n_S, 8])
+err[:, :4] = var_set[:, :4]
+err[:, 4] = var_set[:, -1]
 
-for ii in xrange(4):
+# for ii in xrange(n_S):
+for ii in xrange(0, 100):
 
-    tmp = np.exp((2*np.pi*1j*s_list[:, ii]*xi[:, ii:ii+1])/Lset[ii])
-    tmp = np.expand_dims(tmp.T, axis=2)
+    # start timing the interpolation
+    st = time.time()
 
-    if ii == 0:
-        TMP = np.ones(tmp.shape, dtype='complex64')
+    Pvec = f_list[:, -1] * \
+        np.exp((2*np.pi*1j*s_list[:, 0]*xi[ii, 0])/Lset[0]) * \
+        np.exp((2*np.pi*1j*s_list[:, 1]*xi[ii, 1])/Lset[1]) * \
+        np.exp((2*np.pi*1j*s_list[:, 2]*xi[ii, 2])/Lset[2]) * \
+        np.exp((2*np.pi*1j*s_list[:, 3]*xi[ii, 3])/Lset[3])
 
-    TMP *= tmp
+    result = np.real(np.sum(Pvec, 0)/Numel)
+    err[ii, 5] = result
 
-Pvec = np.expand_dims(f_list, axis=1)*TMP
+    err[ii, 6] = np.abs(result-var_set[ii, -1])
 
-print Pvec.shape
-print Pvec.nbytes/(1E9)
+    # end timing
+    timeE = np.round(time.time() - st, 5)
+    err[ii, 7] = timeE
 
-# the total number positions in the first 4 dimensions of the database
-Numel = n_th_max*n_max**3
+    msg = "true value: %s, predicted value: %s, time: %ss" % \
+          (var_set[ii, -1], result, timeE)
 
-results = np.real(np.sum(Pvec, 0)/Numel)
+    WP(msg, fname)
 
-# display the time required for interpolation
-print "time to interpolate: %ss" % (time.time()-st)
-
-# calculate the error for every location in 'results'
-err = np.abs(results - var_set[5000:5001, 4:])
+""" analyze the results """
 
 print "mean db value: %s" % np.mean(var_set[:, -1])
 print "minimum db value: %s" % np.min(var_set[:, -1])
 print "maximum db value: %s" % np.max(var_set[:, -1])
-print "mean error: %s" % np.mean(err)
-print "max error: %s" % np.max(err)

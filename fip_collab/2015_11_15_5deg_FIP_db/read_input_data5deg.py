@@ -94,7 +94,7 @@ for ii in xrange(0, n_tot):
         print test_id
         print "zero var @ %s" % test_id
 
-    eindx = np.int16(np.round((180./(inc*np.pi))*euler[ii, :]))
+    eindx = np.int64(np.round((180./(inc*np.pi))*euler[ii, :]))
     var_set[eindx[0], eindx[1], eindx[2]] = np.log(var)
 
 f_mwp.close()
