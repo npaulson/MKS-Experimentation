@@ -1,23 +1,7 @@
 import numpy as np
+import db_functions as fn
 import h5py
 
-
-def WP(msg, filename):
-    """
-    Summary:
-        This function takes an input message and a filename, and appends that
-        message to the file. This function also prints the message
-    Inputs:
-        msg (string): the message to write and print.
-        filename (string): the full name of the file to append to.
-    Outputs:
-        both prints the message and writes the message to the specified file
-    """
-    fil = open(filename, 'a')
-    print msg
-    fil.write(msg)
-    fil.write('\n')
-    fil.close()
 
 filename = 'log_XtXcombine.txt'
 
@@ -36,7 +20,7 @@ n_jobs = 50  # number of jobs submitted to PACE
 
 for tnum in xrange(n_jobs):
 
-    WP(str(tnum), filename)
+    fn.WP(str(tnum), filename)
 
     # load partially filled XtX arrays from each file
     f = h5py.File('XtX%s.hdf5' % tnum, 'r')
@@ -46,7 +30,7 @@ for tnum in xrange(n_jobs):
         ii, jj = np.real(dotvec[c, 0:2])
 
         if XtX[ii, jj] != 0 and XtX[jj, ii] != 0:
-            WP("overlap in parallel calculations!!!", filename)
+            fn.WP("overlap in parallel calculations!!!", filename)
 
         if ii == jj:
             XtX[ii, ii] = dotvec[c, 2]
@@ -55,7 +39,7 @@ for tnum in xrange(n_jobs):
             XtX[jj, ii] = dotvec[c, 2]
 
 msg = "rank(XtX): %s" % np.linalg.matrix_rank(XtX)
-WP(msg, filename)
+fn.WP(msg, filename)
 
 f = h5py.File('XtXtotal.hdf5', 'w')
 f.create_dataset('XtX', data=XtX)

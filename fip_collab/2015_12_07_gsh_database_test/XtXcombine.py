@@ -23,7 +23,7 @@ filename = 'log_XtXcombine.txt'
 
 N_p = 8  # number of Legendre basis functions
 cmax = N_p  # total number of permutations of basis functions
-print cmax
+WP("cmax: %s" % str(cmax), filename)
 
 # XtX is the matrix (X^T * X) in the normal equation for multiple
 # linear regression
@@ -34,7 +34,7 @@ n_jobs = 2  # number of jobs submitted to PACE
 
 for tnum in xrange(n_jobs):
 
-    WP(str(tnum), filename)
+    WP("tnum: %s" % tnum, filename)
 
     # load partially filled XtX arrays from each file
     f = h5py.File('XtX%s.hdf5' % tnum, 'r')
@@ -51,6 +51,9 @@ for tnum in xrange(n_jobs):
         else:
             XtX[ii, jj] = dotvec[c, 2]
             XtX[jj, ii] = dotvec[c, 2]
+
+msg = "rank(XtX): %s" % np.linalg.matrix_rank(XtX)
+WP(msg, filename)
 
 f = h5py.File('XtXtotal.hdf5', 'w')
 f.create_dataset('XtX', data=XtX)

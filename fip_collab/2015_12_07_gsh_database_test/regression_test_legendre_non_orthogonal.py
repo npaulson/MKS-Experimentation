@@ -26,7 +26,6 @@ print comm2real(0.5, a, b)
 N = 20  # number of samples
 xsamp = np.linspace(0, L, N)  # x samples
 ysamp = testfunc(xsamp)  # function value
-xsamp = real2comm(xsamp, a, b)
 
 Y = ysamp
 
@@ -76,7 +75,7 @@ ytest = np.zeros(xtest.shape, dtype=np.complex64)
 for p in xrange(P+1):
     p_vec = np.zeros(p+1)
     p_vec[p] = 1
-    ytest += coeff[p]*leg.legval(real2comm(xtest, a, b), p_vec)
+    ytest += coeff[p]*leg.legval(xtest, p_vec)
 
 plt.plot(xtest, np.real(ytest), 'bx')
 

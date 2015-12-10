@@ -39,7 +39,7 @@ for ii in xrange(cmax):
 
     WP(str(ii), filename)
 
-    p = cvec[ii, :]
+    p = cvec[ii]
     set_id_ii = 'set_%s' % p
     f = h5py.File('pre_fourier_p%s.hdf5' % p, 'r')
     ep_set_ii = f.get(set_id_ii)[...]

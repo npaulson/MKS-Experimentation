@@ -1,8 +1,7 @@
 import numpy as np
 import numpy.polynomial.legendre as leg
-import gsh_hex_tri_L0_4 as gsh
+import matplotlib.pyplot as plt
 import h5py
-import time
 
 
 def WP(msg, filename):
@@ -31,56 +30,37 @@ f.close()
 f = h5py.File('pre_fourier.hdf5', 'r')
 var_set = f.get('var_set')
 
-theta = var_set[:, 0]
-phi1 = np.float64(var_set[:, 1])
-phi = np.float64(var_set[:, 2])
-phi2 = np.float64(var_set[:, 3])
-et_norm = var_set[:, 4]
-Y = var_set[:, 5]
+et_norm = var_set[:, 0]
+Y = var_set[:, 1]
 
 f.close()
 
-L_th = (2.*np.pi)/3.
-N_L = 15
 N_p = 8
-N_q = 8
-cmax = N_L*N_p*N_q
+cmax = N_p
 
-WP(str(theta.size), filename)
+WP(str(et_norm.size), filename)
 WP(str(cmax), filename)
 
-cmat = np.unravel_index(np.arange(cmax), [N_L, N_p, N_q])
-cmat = np.array(cmat).T
+cmat = np.arange(cmax)
 
-st = time.time()
-
-vec = np.zeros(theta.size, dtype='complex128')
+vec = np.zeros(et_norm.size, dtype='complex128')
 
 for ii in xrange(cmax):
-# for ii in xrange(10):
 
-    if np.mod(ii, 100) == 0:
+    if np.mod(ii, 10) == 0:
         WP(str(ii), filename)
 
-    L, p, q = cmat[ii, :]
+    p = cmat[ii]
 
     p_vec = np.zeros(p+1)
     p_vec[p] = 1
 
-    tmp = np.zeros(theta.size, dtype='complex128')
+    tmp = np.zeros(et_norm.size, dtype='complex128')
 
-    tmp[:], null = gsh.gsh(phi1, phi, phi2, L)
-    tmp[:] *= leg.legval(et_norm, p_vec)
-    tmp[:] *= np.real(np.exp((1j*2.*np.pi*np.float64(q)*theta)/L_th))
+    tmp[:] = leg.legval(et_norm, p_vec)
     tmp[:] *= coeff[ii]
 
     vec[:] += tmp
-
-Ttime = np.round(time.time()-st, 3)
-msg = "total interpolation time: %ss" % Ttime
-WP(msg, filename)
-msg = "interpolation time per point: %s" % (Ttime/theta.size)
-WP(msg, filename)
 
 msg = str(vec.shape)
 WP(msg, filename)
@@ -94,17 +74,7 @@ WP(msg, filename)
 msg = "min error: %s" % np.min(error)
 WP(msg, filename)
 
-f = h5py.File('regression_results.hdf5', 'w')
-# results = f.create_dataset("results", (Y.size, 8))
-
-results = np.zeros((Y.size, 8), dtype='complex128')
-results[:, 0] = theta
-results[:, 1] = phi1
-results[:, 2] = phi
-results[:, 3] = phi2
-results[:, 4] = et_norm
-results[:, 5] = Y
-results[:, 6] = vec
-results[:, 7] = error
-f.create_dataset('results', data=results)
-f.close()
+plt.figure(1)
+plt.plot(et_norm, vec, 'r-')
+plt.plot(et_norm, Y, 'b-')
+plt.show()
