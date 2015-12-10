@@ -15,7 +15,7 @@ for each deformation mode sample (theta), check if the value of
 interest is the same for all symmetric orientations
 """
 
-inc = 5  # degree increment for angular variables
+inc = 6  # degree increment for angular variables
 np.random.seed()  # generate seed for random
 symhex = ef.symhex()
 r2d = 180./np.pi
@@ -137,14 +137,14 @@ f.close()
 # perform error analysis
 
 # generate random deformation mode and euler angle
-# th_rand = np.int64(np.round((n_th-1)*np.random.rand()))
-# g_rand = np.int64(np.round((n_FZ-1)*np.random.rand()))
+th_rand = np.int64(np.round((n_th-1)*np.random.rand()))
+g_rand = np.int64(np.round((n_FZ-1)*np.random.rand()))
 
-badloc = np.argmax(error_sec[..., 4])
-badloc = np.unravel_index(badloc, error_sec[..., 3].shape)
+# badloc = np.argmax(error_sec[..., 4])
+# badloc = np.unravel_index(badloc, error_sec[..., 3].shape)
 
-th_rand = badloc[0]
-g_rand = badloc[2]
+# th_rand = badloc[0]
+# g_rand = badloc[2]
 
 print "\nexample comparison:"
 
@@ -176,22 +176,22 @@ print loc_hist.shape
 err_count = np.sum(loc_hist != 0.0)
 print "number of locations with nonzero error: %s" % err_count
 
-errvec_p1 = error_sec[..., 0].reshape(error_sec[..., 0].size)[error_indx]
-plt.figure(num=4, figsize=[10, 6])
-plt.hist(errvec_p1, 361)
+# errvec_p1 = error_sec[..., 0].reshape(error_sec[..., 0].size)[error_indx]
+# plt.figure(num=4, figsize=[10, 6])
+# plt.hist(errvec_p1, 361)
 
-errvec_P = error_sec[..., 1].reshape(error_sec[..., 1].size)[error_indx]
-plt.figure(num=5, figsize=[10, 6])
-plt.hist(errvec_P, 361)
+# errvec_P = error_sec[..., 1].reshape(error_sec[..., 1].size)[error_indx]
+# plt.figure(num=5, figsize=[10, 6])
+# plt.hist(errvec_P, 361)
 
-errvec_p2 = error_sec[..., 0].reshape(error_sec[..., 0].size)[error_indx]
-plt.figure(num=6, figsize=[10, 6])
-plt.hist(errvec_p2, 361)
+# errvec_p2 = error_sec[..., 0].reshape(error_sec[..., 0].size)[error_indx]
+# plt.figure(num=6, figsize=[10, 6])
+# plt.hist(errvec_p2, 361)
 
-# plot the error histograms
-plt.figure(num=1, figsize=[10, 6])
-error_hist = error_sec[..., 4]
-plt.hist(error_hist.reshape(error_hist.size), 100)
+# # plot the error histograms
+# plt.figure(num=1, figsize=[10, 6])
+# error_hist = error_sec[..., 4]
+# plt.hist(error_hist.reshape(error_hist.size), 100)
 
 # plot the symmetric orientations in euler space
 plt.figure(2)
