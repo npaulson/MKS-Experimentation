@@ -27,20 +27,23 @@ n_en_guess = 16  # desired number of en samples
 # n_eul is the number of orientations in the sampled db input set
 n_eul = n_p1 * n_P * n_p2
 
-# here we determine the sampling for en based on the roots of the
-# chebyshev polynomial
-a = 0.0050  # start for en range
-b = 0.0085  # end for en range
-en_inc = 0.0001  # en increment
-et_norm = np.linspace(.0001, .0100, 100)
-ai = np.int64(np.round(a/en_inc))-1  # index for start of en range
-bi = np.int64(np.round(b/en_inc))-1  # index for end of en range
-sample_indx = lagr.chebyshev_nodes(a, b, ai, en_inc, n_en_guess)
-n_en = sample_indx.size
+# # here we determine the sampling for en based on the roots of the
+# # chebyshev polynomial
+# a = 0.0050  # start for en range
+# b = 0.0085  # end for en range
+# en_inc = 0.0001  # en increment
+# et_norm = np.linspace(.0001, .0100, 100)
+# ai = np.int64(np.round(a/en_inc))-1  # index for start of en range
+# bi = np.int64(np.round(b/en_inc))-1  # index for end of en range
+# sample_indx = lagr.chebyshev_nodes(a, b, ai, en_inc, n_en_guess)
+# n_en = sample_indx.size
 
-# xnode: en values for nodes of lagrange interpolation
-xnode = et_norm[sample_indx+ai]
-print xnode
+# # xnode: en values for nodes of lagrange interpolation
+# xnode = et_norm[sample_indx+ai]
+# print xnode
+
+n_en = 2
+xnode = np.array([0.0084, 0.0085]) 
 
 nvec = np.array([n_th, n_p1, n_P, n_p2, n_en])
 print "nvec: %s" % str(nvec)
@@ -94,7 +97,8 @@ for ii in xrange(0, n_eul):
 
     """
 
-    var = np.log(dset[sample_indx+ai, 20])
+    # var = np.log(dset[sample_indx+ai, 20])
+    var = np.log(dset[np.array([83, 84]), 20])
 
     for jj in xrange(n_en):
 

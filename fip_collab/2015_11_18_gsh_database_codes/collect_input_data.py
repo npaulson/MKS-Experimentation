@@ -12,7 +12,7 @@ n_th = (60/inc)+1  # number of theta samples for FZ
 n_p1 = 360/inc  # number of phi1 samples for FZ
 n_P = (90/inc)+1  # number of Phi samples for FZ
 n_p2 = 60/inc  # number of phi2 samples for FZ
-n_en = 14  # number of et samples for FZ
+n_en = 2  # number of et samples for FZ
 
 n_par = n_p1*n_P*n_p2*n_en
 
