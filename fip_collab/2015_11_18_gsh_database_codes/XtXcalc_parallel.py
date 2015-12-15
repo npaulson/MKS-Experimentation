@@ -30,7 +30,7 @@ N_L = 15  # number of GSH basis functions
 N_p = 8  # number of complex exponential basis functions
 N_q = 8  # number of Legendre basis functions
 cmax = N_L*N_p*N_q  # total number of permutations of basis functions
-WP(cmax, filename)
+WP(str(cmax), filename)
 
 # iivec is vector of indices for all permutations of basis function indices
 Ivec = np.arange(cmax)
@@ -43,12 +43,12 @@ cmat = np.array(cmat).T
 tmp = it.combinations_with_replacement(Ivec, 2)
 Imat = np.array(list(tmp))
 ImatL = Imat.shape[0]
-WP(ImatL, filename)
+WP(str(ImatL), filename)
 
 # pick range of indxmat to calculate
 n_jobs = 50.  # number of jobs submitted to PACE
 n_I = np.int64(np.ceil(np.float(ImatL)/n_jobs))  # number dot products per job
-WP(n_I, filename)
+WP(str(n_I), filename)
 
 I_stt = tnum*n_I  # start index
 if (tnum+1)*n_I > ImatL:
