@@ -60,9 +60,9 @@ def calc(et):
     print V
 
     # determine the angle theta associated with the diagonal matrix of interest
-    theta1 = np.arccos(np.sqrt(3/2)*W[1])+(np.pi/3)
-    theta2 = np.arccos(np.sqrt(3/2)*W[2])-(np.pi/3)
-    theta3 = np.arccos(-np.sqrt(3/2)*W[3])
+    theta1 = np.arccos(np.sqrt(3/2)*W[0])+(np.pi/3)
+    theta2 = np.arccos(np.sqrt(3/2)*W[1])-(np.pi/3)
+    theta3 = np.arccos(-np.sqrt(3/2)*W[2])
 
     print et_ii(theta2)
 
@@ -74,7 +74,7 @@ def calc(et):
     # principal to crystal reference frames <-- ?
     euler_P_C = rotmat2euler(V)
 
-    return theta, euler_P_C
+    return theta2, euler_P_C
 
 
 if __name__ == "__main__":

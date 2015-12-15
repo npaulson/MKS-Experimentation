@@ -48,7 +48,9 @@ Z = np.squeeze(pre_fft[th_l:th_u,
 X = inc*X.T
 Y = inc*Y.T
 
-ax.plot_surface(X, Y, np.log(Z), rstride=1, cstride=1, color=(0.3, 0.4, 1.0))
+ax.plot_surface(X, Y, Z, rstride=1, cstride=1, color=(0.3, 0.4, 1.0))
+# ax.scatter(X, Y, np.log(Z))
+
 
 msg = "theta=%s-%s, phi1=%s-%s, Phi=%s-%s, phi2=%s-%s" % \
      (th_l*inc, (th_u-1)*inc,

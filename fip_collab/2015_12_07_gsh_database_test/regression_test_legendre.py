@@ -23,8 +23,9 @@ L = b-a
 print real2comm(3*(np.pi/4), a, b)
 print comm2real(0.5, a, b)
 
-N = 20  # number of samples
-xsamp = np.linspace(0, L, N)  # x samples
+N = 10000  # number of samples
+# xsamp = np.linspace(0, L, N)  # x samples
+xsamp = np.random.rand(N)*L
 ysamp = testfunc(xsamp)  # function value
 xsamp = real2comm(xsamp, a, b)
 
@@ -62,6 +63,10 @@ plt.figure(1)
 ax = plt.imshow(XtX, origin='lower',
                 interpolation='none', cmap='jet')
 plt.colorbar(ax)
+print XtX[0, 0]
+print XtX[0, :]
+print XtX[-2, 0]
+
 
 plt.figure(2)
 
