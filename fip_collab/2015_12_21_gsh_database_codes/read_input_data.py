@@ -17,6 +17,7 @@ tnum = sys.argv[1]
 
 # these indices are defined for the sampled db inputs
 inc = 6  # degree increment for angular variables
+sub2rad = inc*np.pi/180.
 
 n_th = (60/inc)+1  # number of theta samples for FZ
 n_p1 = 360/inc  # number of phi1 samples for FZ
@@ -96,7 +97,7 @@ for ii in xrange(0, n_eul):
 
     for jj in xrange(n_en):
 
-        tmp = np.hstack([(np.int64(tnum)-1)*inc*np.pi/180.,
+        tmp = np.hstack([(np.int64(tnum)-1)*sub2rad,
                          euler[ii, :],
                          xnode[jj],
                          var[jj]])

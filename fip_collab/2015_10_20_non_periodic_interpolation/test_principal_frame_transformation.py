@@ -6,7 +6,7 @@ from numpy import linalg as LA
 # represents some deformation gradient F
 F = 2*(np.random.rand(3, 3)-.5)
 print "deformation gradient, F:"
-print F
+print F.round(4)
 
 # F = np.array([[1., 0., 1.],
 #               [0., 0., 0.],
@@ -16,31 +16,34 @@ print F
 # strain. This tensor is in the sample frame
 et = 0.5*(np.dot(np.transpose(F), F) - np.eye(3))
 print "Cauchy-Green strain tensor, et:"
-print et
+print et.round(4)
 
 # calculate the magnitude of the total strain tensor
 en = np.sqrt(np.sum(et**2))
 print "magnitude of strain tensor, en:"
-print en
+print en.round(4)
 
 # find the deviatoric total strain tensor
 et_ = et - (1./3.)*np.trace(et)*np.eye(3)
 print "Deviatoric strain tensor, et_:"
-print et_
+print et_.round(4)
 
 # calculate the magnitude of the deviatoric total strain tensor
 en = np.sqrt(np.sum(et_**2))
 print "magnitude of deviatoric strain tensor, en:"
-print en
+print en.round(4)
 
 # normalize the deviatoric total strain tensor
 et_n = et_ / en
 
+print "unit deviatoric strain tensor, et_n:"
+print et_n.round(4)
+
 # find the principal strains
 eigval, eigvec = LA.eig(et_n)
 print "eigenvalues and eigenvectors of et_n"
-print eigval
-print eigvec
+print eigval.round(4)
+print eigvec.round(4)
 
 # sort the principal strains in descending order
 indx = np.argsort(eigval)
@@ -51,8 +54,8 @@ eigval = eigval[indx]
 eigvec = eigvec[:, indx]
 
 print "sorted eigenvalues and eigenvectors of et_n"
-print eigval
-print eigvec
+print eigval.round(4)
+print eigvec.round(4)
 
 # determine the angle theta associated with the diagonal matrix of interest
 theta1 = np.arccos(np.sqrt(3./2.)*eigval[0])+(np.pi/3.)
@@ -60,9 +63,9 @@ theta2 = np.arccos(np.sqrt(3./2.)*eigval[1])-(np.pi/3.)
 theta3 = np.arccos(-np.sqrt(3./2.)*eigval[2])
 
 print "deformation mode angles: theta 1, 2 and 3"
-print theta1
-print theta2
-print theta3
+print theta1.round(4)
+print theta2.round(4)
+print theta3.round(4)
 
 
 def et_back(x):
@@ -76,13 +79,12 @@ def et_back(x):
 et_ii = et_back(theta2)
 
 print "retrieved eigenvalues from deformation mode:"
-print et_ii
+print et_ii.round(4)
 
 recon = np.dot(np.dot(np.transpose(eigvec), et_n), eigvec)
-recon = np.round(recon, 4)
 print "demonstrate the transformation from et_n to the principal frame"
-print recon
+print recon.round(4)
 
-# # find the set of euler angle associated with the transformation from the
-# # principal to crystal reference frames <-- ?
-# euler = rotmat2euler(V)
+et_n_recon = np.dot(np.dot(eigvec, recon), np.transpose(eigvec))
+print "demonstrate the transformation from recon to et_n"
+print et_n_recon.round(4)

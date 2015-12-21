@@ -102,7 +102,7 @@ for ii in xrange(0, n_eul):
 
     for jj in xrange(n_en):
 
-        tmp = np.hstack([(np.int64(tnum)-1)*inc,
+        tmp = np.hstack([(np.int64(tnum)-1)*inc*np.pi/180.,
                          euler[ii, :],
                          xnode[jj],
                          var[jj]])
