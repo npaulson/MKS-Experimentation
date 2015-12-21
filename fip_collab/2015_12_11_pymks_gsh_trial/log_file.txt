@@ -1,0 +1,233 @@
+Conversion from Euler angles to GSH coefficients completed: 1.172 seconds
+Conversion from Euler angles to GSH coefficients completed: 1.188 seconds
+Conversion from Euler angles to GSH coefficients completed: 1.177 seconds
+FFT3 conversion of micr to M_40cal: 0.797 seconds
+Conversion from Euler angles to GSH coefficients completed: 1.172 seconds
+FFT3 conversion of micr to M_40cal: 0.781 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 1.681 seconds
+FFT3 conversion of micr to M_40cal: 1.029 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 1.572 seconds
+FFT3 conversion of micr to M_40cal: 0.868 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 0.339 seconds
+FFT3 conversion of micr to M_10val: 0.22 seconds
+Size of M_10val: 0.0222264 Gb
+Conversion from Euler angles to GSH coefficients completed: 1.172 seconds
+FFT3 conversion of micr to M_40cal: 0.797 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 0.297 seconds
+FFT3 conversion of micr to M_10val: 0.203 seconds
+Size of M_10val: 0.0222264 Gb
+Conversion from Euler angles to GSH coefficients completed: 1.923 seconds
+FFT3 conversion of micr to M_40cal: 1.1 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 0.346 seconds
+FFT3 conversion of micr to M_10val: 0.209 seconds
+Size of M_10val: 0.0222264 Gb
+Conversion from Euler angles to GSH coefficients completed: 1.905 seconds
+FFT3 conversion of micr to M_40cal: 0.867 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 0.336 seconds
+FFT3 conversion of micr to M_10val: 0.244 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 11.326 seconds
+Conversion from Euler angles to GSH coefficients completed: 1.172 seconds
+FFT3 conversion of micr to M_40cal: 0.797 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 0.292 seconds
+FFT3 conversion of micr to M_10val: 0.203 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 11.344 seconds
+Conversion from Euler angles to GSH coefficients completed: 1.172 seconds
+FFT3 conversion of micr to M_40cal: 0.781 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 0.297 seconds
+FFT3 conversion of micr to M_10val: 0.188 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 11.631 seconds
+Conversion from Euler angles to GSH coefficients completed: 1.267 seconds
+FFT3 conversion of micr to M_40cal: 0.765 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 0.297 seconds
+FFT3 conversion of micr to M_10val: 0.209 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 12.628 seconds
+validation performed for component 11: 0.086 seconds
+Conversion from Euler angles to GSH coefficients completed: 1.346 seconds
+FFT3 conversion of micr to M_40cal: 0.857 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 0.323 seconds
+FFT3 conversion of micr to M_10val: 0.21 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 13.55 seconds
+validation performed for component 11: 0.083 seconds
+Conversion from Euler angles to GSH coefficients completed: 1.271 seconds
+FFT3 conversion of micr to M_40cal: 0.797 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 0.341 seconds
+FFT3 conversion of micr to M_10val: 0.203 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 12.132 seconds
+validation performed for component 11: 0.079 seconds
+Conversion from Euler angles to GSH coefficients completed: 1.263 seconds
+FFT3 conversion of micr to M_40cal: 0.937 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 0.312 seconds
+FFT3 conversion of micr to M_10val: 0.198 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 11.53 seconds
+validation performed for component 11: 0.062 seconds
+Conversion from Euler angles to GSH coefficients completed: 1.136 seconds
+FFT3 conversion of micr to M_40cal: 0.894 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 0.342 seconds
+FFT3 conversion of micr to M_10val: 0.254 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 12.463 seconds
+validation performed for component 11: 0.075 seconds
+Conversion from Euler angles to GSH coefficients completed: 1.434 seconds
+FFT3 conversion of micr to M_40cal: 0.995 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 0.4 seconds
+FFT3 conversion of micr to M_10val: 0.287 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 12.085 seconds
+validation performed for component 11: 0.078 seconds
+Conversion from Euler angles to GSH coefficients completed: 1.149 seconds
+FFT3 conversion of micr to M_40cal: 0.788 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 0.296 seconds
+FFT3 conversion of micr to M_10val: 0.188 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 11.299 seconds
+validation performed for component 11: 0.078 seconds
+Conversion from Euler angles to GSH coefficients completed: 1.13 seconds
+FFT3 conversion of micr to M_40cal: 0.79 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 0.281 seconds
+FFT3 conversion of micr to M_10val: 0.202 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 11.287 seconds
+validation performed for component 11: 0.078 seconds
+Conversion from Euler angles to GSH coefficients completed: 1.191 seconds
+FFT3 conversion of micr to M_40cal: 0.792 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 0.306 seconds
+FFT3 conversion of micr to M_10val: 0.209 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 11.295 seconds
+validation performed for component 11: 0.079 seconds
+Conversion from Euler angles to GSH coefficients completed: 1.219 seconds
+FFT3 conversion of micr to M_40cal: 0.906 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 0.297 seconds
+FFT3 conversion of micr to M_10val: 0.187 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 11.628 seconds
+validation performed for component 11: 0.078 seconds
+Conversion from Euler angles to GSH coefficients completed: 15.111 seconds
+FFT3 conversion of micr to M_40cal: 0.828 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 3.917 seconds
+FFT3 conversion of micr to M_10val: 0.203 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 11.732 seconds
+validation performed for component 11: 0.078 seconds
+Conversion from Euler angles to GSH coefficients completed: 15.217 seconds
+FFT3 conversion of micr to M_40cal: 0.797 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 3.593 seconds
+FFT3 conversion of micr to M_10val: 0.203 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 11.935 seconds
+validation performed for component 11: 0.079 seconds
+Conversion from Euler angles to GSH coefficients completed: 14.419 seconds
+FFT3 conversion of micr to M_40cal: 0.812 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 3.618 seconds
+FFT3 conversion of micr to M_10val: 0.219 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 11.912 seconds
+validation performed for component 11: 0.062 seconds
+Conversion from Euler angles to GSH coefficients completed: 15.221 seconds
+FFT3 conversion of micr to M_40cal: 0.797 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 3.563 seconds
+FFT3 conversion of micr to M_10val: 0.218 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 11.953 seconds
+validation performed for component 11: 0.079 seconds
+Conversion from Euler angles to GSH coefficients completed: 14.815 seconds
+FFT3 conversion of micr to M_40cal: 0.789 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 3.612 seconds
+FFT3 conversion of micr to M_10val: 0.219 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 11.929 seconds
+validation performed for component 11: 0.078 seconds
+Conversion from Euler angles to GSH coefficients completed: 14.276 seconds
+FFT3 conversion of micr to M_40cal: 0.782 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 3.547 seconds
+FFT3 conversion of micr to M_10val: 0.203 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 11.89 seconds
+validation performed for component 11: 0.078 seconds
+Conversion from Euler angles to GSH coefficients completed: 14.203 seconds
+FFT3 conversion of micr to M_40cal: 0.797 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 4.861 seconds
+FFT3 conversion of micr to M_10val: 0.219 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 12.005 seconds
+validation performed for component 11: 0.078 seconds
+Conversion from Euler angles to GSH coefficients completed: 14.33 seconds
+FFT3 conversion of micr to M_40cal: 0.797 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 5.016 seconds
+FFT3 conversion of micr to M_10val: 0.219 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 11.941 seconds
+validation performed for component 11: 0.078 seconds
+Conversion from Euler angles to GSH coefficients completed: 14.741 seconds
+FFT3 conversion of micr to M_40cal: 0.844 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 3.621 seconds
+FFT3 conversion of micr to M_10val: 0.234 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 12.172 seconds
+validation performed for component 11: 0.078 seconds
+Conversion from Euler angles to GSH coefficients completed: 14.318 seconds
+FFT3 conversion of micr to M_40cal: 0.797 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 5.259 seconds
+FFT3 conversion of micr to M_10val: 0.218 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 11.952 seconds
+validation performed for component 11: 0.078 seconds
+Conversion from Euler angles to GSH coefficients completed: 14.57 seconds
+FFT3 conversion of micr to M_40cal: 0.774 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 3.745 seconds
+FFT3 conversion of micr to M_10val: 0.203 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 11.816 seconds
+validation performed for component 11: 0.063 seconds
+Conversion from Euler angles to GSH coefficients completed: 14.765 seconds
+FFT3 conversion of micr to M_40cal: 0.812 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 3.672 seconds
+FFT3 conversion of micr to M_10val: 0.213 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 12.05 seconds
+validation performed for component 11: 0.078 seconds
+Conversion from Euler angles to GSH coefficients completed: 16.275 seconds
+FFT3 conversion of micr to M_40cal: 0.797 seconds
+Size of M_40cal: 0.0889056 Gb
+Conversion from Euler angles to GSH coefficients completed: 4.033 seconds
+FFT3 conversion of micr to M_10val: 0.23 seconds
+Size of M_10val: 0.0222264 Gb
+Calibration, component 11: 11.71 seconds
+validation performed for component 11: 0.078 seconds

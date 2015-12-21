@@ -30,8 +30,10 @@ def gsh_eval(X, Bvec):
 
     zvec = np.abs(phi) < 1e-8
     zvec = zvec.astype(int)
-    randvec = np.round(np.random.rand(zvec.shape[0]))
-    randvecopp = np.ones(zvec.shape[0]) - randvec
+    # randvec = np.round(np.random.rand(zvec.shape[0]))
+    # randvecopp = np.ones(zvec.shape[0]) - randvec
+    randvec = np.round(np.random.rand(zvec.size)).reshape(zvec.shape)
+    randvecopp = np.ones(zvec.shape) - randvec
     phi += (1e-7)*zvec*(randvec - randvecopp)
 
     final_shape = np.hstack([phi1.shape, Bvec.size])  # shape of the output data
@@ -127,3 +129,4 @@ if __name__ == '__main__':
 
     out_tvalues = gsh_eval(X, Bvec)
     print out_tvalues
+    print out_tvalues.shape

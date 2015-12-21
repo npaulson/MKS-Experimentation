@@ -1,0 +1,252 @@
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
+Mean voxel difference over all microstructures (divided by applied strain), epsilon_t11: 0.147609634702%
+standard deviation of difference over all microstructures (divided by applied strain), epsilon_t11: 0.112667970159%
+Average Maximum voxel difference per microstructure (divided by applied strain), epsilon_t11: 0.838057112208%
+Maximum voxel difference in all microstructures (divided by applied strain), epsilon_t11: 0.962420399672%
+Average, epsilon_t11, FEM: 0.00100000000795
+Average, epsilon_t11, MKS: 0.000999999983559
+Standard deviation, epsilon_t11, FEM: 2.91166288012e-05
+Standard deviation, epsilon_t11, MKS: 2.91089070765e-05
+Mean minimum, epsilon_t11, FEM: 0.000881028137309
+Mean minimum, epsilon_t11, MKS: 0.000874210059027
+Mean maximum, epsilon_t11, FEM: 0.00108958072948
+Mean maximum, epsilon_t11, MKS: 0.00108648229994
