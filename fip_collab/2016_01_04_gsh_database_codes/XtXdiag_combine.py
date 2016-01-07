@@ -13,11 +13,12 @@ print cmax
 
 # XtX is the matrix (X^T * X) in the normal equation for multiple
 # linear regression
-XtX = np.zeros((cmax, cmax), dtype='complex128')
+XtX = np.zeros(cmax, dtype='complex128')
 
 # pick range of indxmat to calculate
 n_jobs = 50  # number of jobs submitted to PACE
 
+c = 0
 for tnum in xrange(n_jobs):
 
     fn.WP(str(tnum), filename)
@@ -26,20 +27,11 @@ for tnum in xrange(n_jobs):
     f = h5py.File('XtX%s.hdf5' % tnum, 'r')
     dotvec = f.get('dotvec')
 
-    for c in xrange(dotvec.shape[0]):
-        ii, jj = np.real(dotvec[c, 0:2])
+    for ii in xrange(dotvec.shape[0]):
 
-        if XtX[ii, jj] != 0 and XtX[jj, ii] != 0:
-            fn.WP("overlap in parallel calculations!!!", filename)
+        XtX[c] = dotvec[ii]
+        c += 1
 
-        if ii == jj:
-            XtX[ii, ii] = dotvec[c, 2]
-        else:
-            XtX[ii, jj] = dotvec[c, 2]
-            XtX[jj, ii] = dotvec[c, 2]
-
-msg = "rank(XtX): %s" % np.linalg.matrix_rank(XtX)
-fn.WP(msg, filename)
 
 f = h5py.File('XtXtotal.hdf5', 'w')
 f.create_dataset('XtX', data=XtX)

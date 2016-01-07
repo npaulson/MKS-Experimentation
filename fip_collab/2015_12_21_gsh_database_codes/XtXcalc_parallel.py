@@ -88,6 +88,8 @@ for I in xrange(I_stt, I_end):
 
     c += 1
 
+f.close()
+
 f = h5py.File('XtX%s.hdf5' % tnum, 'w')
 f.create_dataset('dotvec', data=dotvec)
 f.close()

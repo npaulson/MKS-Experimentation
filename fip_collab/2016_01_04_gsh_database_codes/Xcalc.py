@@ -39,10 +39,12 @@ st = time.time()
 
 for p in xrange(N_p):
 
-    vec = gsh.gsh(X, [p])
+    vec = gsh.gsh_eval(X, [p])
 
     set_id = 'p_%s' % p
     f.create_dataset(set_id, data=vec)
+    fn.WP(set_id, filename)
+
 
 msg = "GSH basis evaluation complete: %ss" % np.round(time.time()-st, 3)
 fn.WP(msg, filename)
@@ -57,6 +59,7 @@ for q in xrange(N_q):
 
     set_id = 'q_%s' % q
     f.create_dataset(set_id, data=vec)
+    fn.WP(set_id, filename)
 
 msg = "Cosine basis evaluation complete: %ss" % np.round(time.time()-st, 3)
 fn.WP(msg, filename)
@@ -74,6 +77,7 @@ for r in xrange(N_r):
 
     set_id = 'r_%s' % r
     f.create_dataset(set_id, data=vec)
+    fn.WP(set_id, filename)
 
 msg = "Legendre basis evaluation complete: %ss" % np.round(time.time()-st, 3)
 fn.WP(msg, filename)
