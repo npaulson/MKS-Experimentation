@@ -1,6 +1,6 @@
 clear; clc;
 
-theta = 0:5:60;
+theta = 1.5:3:58.5;
 theta = theta * (pi/180);
 
 % Inputs to the single point crystal plasticity code for calibration are

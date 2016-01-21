@@ -1,5 +1,4 @@
 import numpy as np
-import itertools as it
 import db_functions as fn
 import h5py
 import time
@@ -8,28 +7,34 @@ import sys
 
 tnum = np.int64(sys.argv[1])
 
-filename = 'log_orthog_regress_parallel_%s.txt' % str(tnum)
+filename = 'log_integrate_parallel_%s.txt' % str(tnum)
 
 """ Load Y vec """
 f = h5py.File('var_extract_total.hdf5', 'r')
 var_set = f.get('var_set')
-Y = var_set[:, 5]
+Y = var_set[:, 1]
 f.close
 
 """ Initialize important variables """
-N_p = 215  # number of GSH bases to evaluate
-N_q = 21  # number of cosine bases to evaluate
-N_r = 10  # number of legendre bases to evaluate
 
-n_jobs = 50.  # number of jobs submitted to cluster
+# these indices are defined for the sampled db inputs
+inc = 6  # degree increment for angular variables
+sub2rad = inc*np.pi/180.
+
+n_th = 60/inc  # number of theta samples for FZ
+
+N_q = 16  # number of cosine bases to evaluate
+
+L_th = np.pi/3.
+
+n_jobs = 5.  # number of jobs submitted to cluster
 
 """ Calculate basis function indices """
-cmax = N_p*N_q*N_r  # total number of permutations of basis functions
+cmax = N_q  # total number of permutations of basis functions
 fn.WP(str(cmax), filename)
 
 # cmat is the matrix containing all permutations of basis function indices
-cmat = np.unravel_index(np.arange(cmax), [N_p, N_q, N_r])
-cmat = np.array(cmat).T
+cmat = np.arange(cmax)
 
 """ Deal with the parallelization of this operation specifically pick range
 of indxmat to calculate """
@@ -51,8 +56,10 @@ fn.WP(msg, filename)
 
 coeff_prt = np.zeros(ii_end-ii_stt, dtype='complex128')
 
-f = h5py.File('X_parts.hdf5', 'r') 
+f = h5py.File('X_parts.hdf5', 'r')
 c = 0
+
+bsz_cos = L_th/n_th
 
 for ii in xrange(ii_stt, ii_end):
 
@@ -61,23 +68,25 @@ for ii in xrange(ii_stt, ii_end):
 
     st = time.time()
 
-    p, q, r = cmat[ii, :]
-    basis_p = f.get('p_%s' % p)[...]
+    q = cmat[ii]
     basis_q = f.get('q_%s' % q)[...]
-    basis_r = f.get('r_%s' % r)[...]
 
-    ep_set = np.squeeze(basis_p)*basis_q*basis_r
+    ep_set = basis_q
 
     msg = "load time: %ss" % np.round(time.time()-st, 3)
     fn.WP(msg, filename)
 
     st = time.time()
 
-    XhYtmp = np.dot(ep_set.conj(), Y)
-    XhXtmp = np.dot(ep_set.conj(), ep_set)
+    c_cos = 2./L_th
+
+    c_tot = c_cos*bsz_cos
+
+    tmp = c_tot*np.sum(Y*ep_set.conj())
+
     del ep_set
 
-    coeff_prt[c] = XhYtmp/XhXtmp
+    coeff_prt[c] = tmp
 
     msg = "regression time: %ss" % np.round(time.time()-st, 3)
     fn.WP(msg, filename)

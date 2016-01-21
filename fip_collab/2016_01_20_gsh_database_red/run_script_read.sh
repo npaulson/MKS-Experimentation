@@ -6,7 +6,7 @@
 #PBS -j oe
 #PBS -o out.$PBS_JOBID
 
-cd /nv/gpfs-gateway-pace1/project/pme/pme1/nhpnp3/1_19_6deg
+cd /nv/gpfs-gateway-pace1/project/pme/pme1/nhpnp3/1_20_3deg
 module purge
 module load anaconda2
 echo " Processing file" $number "\n"

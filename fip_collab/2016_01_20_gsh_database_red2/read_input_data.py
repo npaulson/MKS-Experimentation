@@ -12,15 +12,14 @@ the angular variable
 
 # initialize important variables
 
-tnum = sys.argv[1]
+tnum = 5
 
 # these indices are defined for the sampled db inputs
 inc = 6  # degree increment for angular variables
 sub2rad = inc*np.pi/180.
 
-n_th = (60/inc)+1  # number of theta samples for FZ
 n_p1 = 360/inc  # number of phi1 samples for FZ
-n_P = (90/inc)+1  # number of Phi samples for FZ
+n_P = 90/inc  # number of Phi samples for FZ
 n_p2 = 60/inc  # number of phi2 samples for FZ
 
 # n_eul is the number of orientations in the sampled db input set
@@ -33,8 +32,7 @@ en_inc = 0.0001  # en increment
 et_norm = np.linspace(.0001, .0100, 100)
 ai = np.int64(np.round(a/en_inc))-1  # index for start of en range
 bi = np.int64(np.round(b/en_inc))-1  # index for end of en range
-sample_indx = np.arange(ai, bi+1, 5)
-n_en = sample_indx.size
+sample_indx = bi
 
 print sample_indx
 
@@ -42,13 +40,13 @@ print sample_indx
 xnode = et_norm[sample_indx]
 print xnode
 
-nvec = np.array([n_th, n_p1, n_P, n_p2, n_en])
+nvec = np.array([n_p1, n_P, n_p2])
 print "nvec: %s" % str(nvec)
 
 # create file for pre-database outputs
-f_nhp = h5py.File('var_extract_%s.hdf5' % str(tnum).zfill(2), 'w')
+f_nhp = h5py.File('var_extract_total.hdf5', 'w')
 var_set = f_nhp.create_dataset("var_set",
-                               (n_eul*n_en, 6))
+                               (n_eul, 4))
 
 # Read Simulation info from "sim" file
 filename = 'sim_Ti64_tensor_%s.txt' % str(tnum).zfill(2)
@@ -75,6 +73,9 @@ c = 0
 
 for ii in xrange(0, n_eul):
 
+    if np.isclose(euler[ii, 1], np.pi/2):
+        continue
+
     test_id = 'sim%s' % str(ii+1).zfill(7)
 
     if ii % 10000 == 0:
@@ -94,18 +95,11 @@ for ii in xrange(0, n_eul):
 
     var = dset[sample_indx, 19]
 
-    for jj in xrange(n_en):
+    tmp = np.hstack([euler[ii, :],
+                     var])
+    var_set[c, :] = tmp
 
-        tmp = np.hstack([(np.int64(tnum)-1)*sub2rad,
-                         euler[ii, :],
-                         xnode[jj],
-                         var[jj]])
-
-        var_set[c, :] = tmp
-        c += 1
-
-print np.prod(nvec[1:])
-print c
+    c += 1
 
 f_mwp.close()
 f_nhp.close()

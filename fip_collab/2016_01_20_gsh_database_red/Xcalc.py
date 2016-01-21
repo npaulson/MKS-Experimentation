@@ -1,5 +1,4 @@
 import numpy as np
-import numpy.polynomial.legendre as leg
 import gsh_hex_tri_L0_16 as gsh
 import db_functions as fn
 import h5py
@@ -9,9 +8,7 @@ import time
 a = 0.0050
 b = 0.0085
 N_p = 215  # number of GSH bases to evaluate
-N_q = 21  # number of cosine bases to evaluate
-N_r = 10  # number of legendre bases to evaluate
-# L_th = (2.*np.pi)/3.
+N_q = 19  # number of cosine bases to evaluate
 L_th = np.pi/3.
 filename = 'Xcalc_log.txt'
 
@@ -26,8 +23,6 @@ X = np.zeros((theta.size, 3), dtype='float64')
 X[:, 0] = var_set[:, 1]  # phi1
 X[:, 1] = var_set[:, 2]  # phi
 X[:, 2] = var_set[:, 3]  # phi2
-
-et_norm = var_set[:, 4]
 
 f.close
 
@@ -64,24 +59,6 @@ for q in xrange(N_q):
     fn.WP(set_id, filename)
 
 msg = "Cosine basis evaluation complete: %ss" % np.round(time.time()-st, 3)
-fn.WP(msg, filename)
-
-""" third evalute the legendre basis functions """
-
-st = time.time()
-
-for r in xrange(N_r):
-
-    r_vec = np.zeros(r+1)
-    r_vec[r] = 1
-
-    vec = leg.legval(fn.real2comm(et_norm, a, b), r_vec)
-
-    set_id = 'r_%s' % r
-    f.create_dataset(set_id, data=vec)
-    fn.WP(set_id, filename)
-
-msg = "Legendre basis evaluation complete: %ss" % np.round(time.time()-st, 3)
 fn.WP(msg, filename)
 
 f.close()

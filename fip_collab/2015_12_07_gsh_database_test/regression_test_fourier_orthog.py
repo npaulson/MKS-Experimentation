@@ -17,7 +17,7 @@ ysamp = testfunc(xsamp)
 
 Y = ysamp
 
-P = 10
+P = 20
 
 coeff = np.zeros(P, dtype=np.complex128)
 
