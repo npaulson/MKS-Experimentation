@@ -21,7 +21,7 @@ f.close
 """ Initialize important variables """
 
 # these indices are defined for the sampled db inputs
-inc = 6  # degree increment for angular variables
+inc = 3  # degree increment for angular variables
 sub2rad = inc*np.pi/180.
 
 n_th = 60/inc  # number of theta samples for FZ
@@ -46,7 +46,7 @@ fn.WP(str(cmax), filename)
 cmat = np.unravel_index(np.arange(cmax), [N_p, N_q])
 cmat = np.array(cmat).T
 
-""" Deal with the parallelization of this operation specifically pick range
+""" Deal with the parallelization of this operation. specifically pick range
 of indxmat to calculate """
 n_ii = np.int64(np.ceil(np.float(cmax)/n_jobs))  # number dot products per job
 fn.WP(str(n_ii), filename)

@@ -20,13 +20,13 @@ def angles_grid(inc, thmax, phi1max, phimax, phi2max):
     phivec = np.arange(n_P)*inc2rad
     phi2vec = np.arange(n_p2)*inc2rad
 
-    phi1, phi, phi2, th = np.meshgrid(thvec, phi1vec, phivec, phi2vec)
+    th, phi1, phi, phi2 = np.meshgrid(thvec, phi1vec, phivec, phi2vec)
 
     angles = np.zeros([n_tot, 4], dtype='float64')
-    angles[:, 0] = th.reshape(th.size)
-    angles[:, 1] = phi1.reshape(phi1.size)
-    angles[:, 2] = phi.reshape(phi.size)
-    angles[:, 3] = phi2.reshape(phi2.size)
+    angles[:, 0] = th.reshape(n_tot)
+    angles[:, 1] = phi1.reshape(n_tot)
+    angles[:, 2] = phi.reshape(n_tot)
+    angles[:, 3] = phi2.reshape(n_tot)
 
     return angles, n_th, n_p1, n_P, n_p2
 
@@ -47,25 +47,25 @@ def angles_grid_center(inc, thmax, phi1max, phimax, phi2max):
     phivec = (np.arange(n_P)+0.5)*inc2rad
     phi2vec = (np.arange(n_p2)+0.5)*inc2rad
 
-    print thvec.min()
-    print thvec.max()
+    # print thvec.min()
+    # print thvec.max()
 
-    print phi1vec.min()
-    print phi1vec.max()
+    # print phi1vec.min()
+    # print phi1vec.max()
 
-    print phivec.min()
-    print phivec.max()
+    # print phivec.min()
+    # print phivec.max()
 
-    print phi2vec.min()
-    print phi2vec.max()
+    # print phi2vec.min()
+    # print phi2vec.max()
 
-    phi1, phi, phi2, th = np.meshgrid(thvec, phi1vec, phivec, phi2vec)
+    th, phi1, phi, phi2 = np.meshgrid(thvec, phi1vec, phivec, phi2vec)
 
     angles = np.zeros([n_tot, 4], dtype='float64')
-    angles[:, 0] = th.reshape(th.size)
-    angles[:, 1] = phi1.reshape(phi1.size)
-    angles[:, 2] = phi.reshape(phi.size)
-    angles[:, 3] = phi2.reshape(phi2.size)
+    angles[:, 0] = th.reshape(n_tot)
+    angles[:, 1] = phi1.reshape(n_tot)
+    angles[:, 2] = phi.reshape(n_tot)
+    angles[:, 3] = phi2.reshape(n_tot)
 
     return angles, n_th, n_p1, n_P, n_p2
 
@@ -85,10 +85,6 @@ def angles_rand(n_tot, thmax, phi1max, phimax, phi2max):
 
     return angles
 
-
-N_p = 15
-N_q = 8
-
 thmax = np.pi/3
 phi1max = 2*np.pi
 phimax = np.pi/2.
@@ -96,7 +92,7 @@ phi2max = np.pi/3.
 
 L_th = thmax
 
-inc = 10.
+inc = 6.
 angles, n_th, n_p1, n_P, n_p2 = angles_grid_center(inc,
                                                    thmax,
                                                    phi1max,
@@ -110,19 +106,21 @@ angles, n_th, n_p1, n_P, n_p2 = angles_grid_center(inc,
 #                                             phimax,
 #                                             phi2max)
 
+inc2rad = inc*(np.pi/180.)
 n_eul = n_p1*n_P*n_p2
 n_tot = n_eul*n_th
 
-""" Generate Y """
-
-bvec = [0,  15, 25, 60, 85, 115]
-bval = [40., 20., -10., 6., -4., 2.]
+N_p = 15
+N_q = 8
 
 cmax = N_p*N_q
 cmat = np.unravel_index(np.arange(cmax), [N_p, N_q])
 cmat = np.array(cmat).T
 
-print cmat.shape
+""" Generate Y """
+
+bvec = [0,  15, 25, 60, 85, 115]
+bval = [40., 20., -10., 6., -4., 2.]
 
 Y = np.zeros(n_tot, dtype='complex128')
 
@@ -130,8 +128,8 @@ for ii in xrange(len(bvec)):
 
     p, q = cmat[bvec[ii], :]
 
-    basis_p = gsh.gsh_eval(angles[:, 0:3], [p])
-    basis_q = np.cos(q*np.pi*angles[:, 3]/L_th)
+    basis_p = gsh.gsh_eval(angles[:, 1:4], [p])
+    basis_q = np.cos(q*np.pi*angles[:, 0]/L_th)
 
     Y += bval[ii]*np.squeeze(basis_p)*basis_q
 
@@ -146,13 +144,13 @@ bsz_gsh = ((np.pi**3)/3)/n_eul
 bsz_cos = L_th/n_th
 
 for ii in xrange(cmax):
-    # if np.mod(ii, 10) == 0:
-    #     print ii
+    if np.mod(ii, 10) == 0:
+        print ii
 
     p, q = cmat[ii, :]
 
-    basis_p = gsh.gsh_eval(angles[:, 0:3], [p])
-    basis_q = np.cos(q*np.pi*angles[:, 3]/L_th)
+    basis_p = gsh.gsh_eval(angles[:, 1:4], [p])
+    basis_q = np.cos(q*np.pi*angles[:, 0]/L_th)
 
     ep_set = np.squeeze(basis_p)*basis_q
 
@@ -166,7 +164,7 @@ for ii in xrange(cmax):
 
     c_tot = c_gsh*c_cos*bsz_gsh*bsz_cos
 
-    tmp = c_tot*np.sum(Y*ep_set.conj()*np.sin(angles[:, 1]))
+    tmp = c_tot*np.sum(Y*ep_set.conj()*np.sin(angles[:, 2]))
 
     del ep_set
 
@@ -181,13 +179,10 @@ plt.title("coefficients from integration")
 plt.grid(True)
 
 plt.xticks(np.arange(0, cmax, 5), rotation='vertical')
-plt.yticks(np.arange(np.round(Y.min()), np.round(Y.max()), 2))
+plt.yticks(np.arange(-12, 42, 2))
 
-""" To check the regression accuracy first lets generate a set of euler
-angles"""
+""" check the integration accuracy """
 
-# Y_ is the set of predictions from the regression fit for the validation
-# data points
 Y_ = np.zeros(n_tot, dtype='complex128')
 
 for ii in xrange(cmax):
@@ -196,8 +191,8 @@ for ii in xrange(cmax):
 
     p, q = cmat[ii, :]
 
-    basis_p = gsh.gsh_eval(angles[:, 0:3], [p])
-    basis_q = np.cos(q*np.pi*angles[:, 3]/L_th)
+    basis_p = gsh.gsh_eval(angles[:, 1:4], [p])
+    basis_q = np.cos(q*np.pi*angles[:, 0]/L_th)
 
     ep_set = np.squeeze(basis_p)*basis_q
 
@@ -208,6 +203,8 @@ print "mean(Y): %s" % np.mean(Y)
 print "max(Y): %s" % np.max(Y)
 print "std(Y): %s" % np.std(Y)
 print "\n"
+
+print "mean(Y_): %s" % np.mean(Y_)
 
 error = np.abs(Y_.real - Y.real)
 
@@ -220,13 +217,29 @@ print "max error: %s" % np.max(error)
 # thr = (1E3)/n_tot
 # print "selection zone: %s" % thr
 
-# ang_sel = np.abs(euler[:, 2] - np.pi/5) < thr
+# tmp1 = np.isclose(angles[:, 0], 5*inc2rad)
+# tmp2 = np.isclose(angles[:, 3], 5*inc2rad)
 
-# fig = plt.figure(num=2, figsize=[10, 6])
-# ax = fig.add_subplot(111, projection='3d')
+# print np.sum(tmp1)
+# print np.sum(tmp2)
 
-# ax.scatter(euler[ang_sel, 0], euler[ang_sel, 1], Y[ang_sel].real, c='b')
-# ax.scatter(euler[ang_sel, 0], euler[ang_sel, 1], Y_[ang_sel].real, c='r')
+# ang_sel = tmp1*tmp2
+# print np.sum(ang_sel)
+
+# del tmp1, tmp2
+
+theta_U = np.unique(angles[:, 0])
+print theta_U
+phi2_U = np.unique(angles[:, 3])
+print phi2_U
+
+ang_sel = (angles[:, 0] == theta_U[5])*(angles[:, 3] == phi2_U[5])
+
+fig = plt.figure(num=2, figsize=[10, 6])
+ax = fig.add_subplot(111, projection='3d')
+
+ax.scatter(angles[ang_sel, 1], angles[ang_sel, 2], Y[ang_sel].real, c='b')
+ax.scatter(angles[ang_sel, 1], angles[ang_sel, 2], Y_[ang_sel].real, c='r')
 
 # ang_sel = np.abs(euler[:, 1] - np.pi/2) < thr
 
@@ -236,4 +249,4 @@ print "max error: %s" % np.max(error)
 # ax.scatter(euler[ang_sel, 0], euler[ang_sel, 2], Y[ang_sel].real, c='b')
 # ax.scatter(euler[ang_sel, 0], euler[ang_sel, 2], Y_[ang_sel].real, c='r')
 
-# plt.show()
+plt.show()
