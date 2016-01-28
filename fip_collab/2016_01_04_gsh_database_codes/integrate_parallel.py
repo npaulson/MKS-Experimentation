@@ -20,15 +20,28 @@ f.close
 
 """ Initialize important variables """
 N_p = 215  # number of GSH bases to evaluate
-N_q = 21  # number of cosine bases to evaluate
+N_q = 9  # number of cosine bases to evaluate
 N_r = 10  # number of legendre bases to evaluate
 
-inc = 6
-sub2rad = inc*np.pi/180.
-L_th = np.pi/3.
-en_inc = 0.0005
-
 n_jobs = 50.  # number of jobs submitted to cluster
+
+inc = 6
+
+n_th = 60/inc  # number of theta samples for FZ
+n_p1 = 360/inc  # number of phi1 samples for FZ
+n_P = 90/inc  # number of Phi samples for FZ
+n_p2 = 60/inc  # number of phi2 samples for FZ
+n_en = 12
+
+a = 0.0050
+b = 0.0085
+
+L_th = np.pi/3.
+
+sub2rad = inc*np.pi/180.
+
+n_eul = n_p1*n_P*n_p2
+
 
 """ Calculate basis function indices """
 cmax = N_p*N_q*N_r  # total number of permutations of basis functions
@@ -63,9 +76,9 @@ c = 0
 
 indxvec = gsh.gsh_basis_info()
 
-bsz_gsh = sub2rad**3
-bsz_cos = sub2rad
-bsz_leg = en_inc
+bsz_gsh = ((np.pi**3)/3)/n_eul
+bsz_cos = L_th/n_th
+bsz_leg = (b-a)/n_en
 
 for ii in xrange(ii_stt, ii_end):
 
@@ -88,7 +101,12 @@ for ii in xrange(ii_stt, ii_end):
 
     l = indxvec[p, 0]
     c_gsh = (1./(2.*l+1.))*(3./(2.*np.pi**2))
-    c_cos = 2./L_th
+
+    if q == 0:
+        c_cos = 1./L_th
+    else:
+        c_cos = 2./L_th
+
     c_leg = 2*r+1
 
     c_tot = c_gsh*c_cos*c_leg*bsz_gsh*bsz_cos*bsz_leg

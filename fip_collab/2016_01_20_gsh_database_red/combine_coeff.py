@@ -10,7 +10,7 @@ filename = 'log_combine_coeff.txt'
 n_jobs = 10  # number of jobs submitted to PACE
 
 N_p = 215  # number of GSH bases to evaluate
-N_q = 19  # number of cosine bases to evaluate
+N_q = 9  # number of cosine bases to evaluate
 cmax = N_p*N_q  # total number of permutations of basis functions
 print cmax
 

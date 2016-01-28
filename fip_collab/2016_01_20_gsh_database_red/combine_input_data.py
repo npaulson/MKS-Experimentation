@@ -8,20 +8,19 @@ import h5py
 
 inc = 6  # degree increment for angular variables
 
-n_th = (60/inc)+1  # number of theta samples for FZ
+n_th = 60/inc  # number of theta samples for FZ
 n_p1 = 360/inc  # number of phi1 samples for FZ
-n_P = (90/inc)+1  # number of Phi samples for FZ
+n_P = 90/inc  # number of Phi samples for FZ
 n_p2 = 60/inc  # number of phi2 samples for FZ
-n_en = 8  # number of et samples for FZ
 
-n_par = n_p1*n_P*n_p2*n_en
+n_par = n_p1*n_P*n_p2
 
 f1 = h5py.File('var_extract_total.hdf5', 'w')
-alldata = f1.create_dataset("var_set", (n_par*n_th, 6))
+alldata = f1.create_dataset("var_set", (n_par*n_th, 5))
 
 c = 0
 
-for tt in xrange(0, 11):
+for tt in xrange(0, n_th):
 
     print "Deformation Mode: %s deg" % (tt*inc)
 

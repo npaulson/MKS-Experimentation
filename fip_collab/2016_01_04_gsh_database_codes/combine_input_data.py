@@ -6,17 +6,18 @@ import h5py
 
 # define the number of increments for angular variables:
 
-inc = 3  # degree increment for angular variables
+inc = 6  # degree increment for angular variables
 
 n_th = 60/inc  # number of theta samples for FZ
 n_p1 = 360/inc  # number of phi1 samples for FZ
 n_P = 90/inc  # number of Phi samples for FZ
 n_p2 = 60/inc  # number of phi2 samples for FZ
+n_en = 12  # number of et samples for FZ
 
-n_par = n_p1*n_P*n_p2
+n_par = n_p1*n_P*n_p2*n_en
 
 f1 = h5py.File('var_extract_total.hdf5', 'w')
-alldata = f1.create_dataset("var_set", (n_par*n_th, 5))
+alldata = f1.create_dataset("var_set", (n_par*n_th, 6))
 
 c = 0
 

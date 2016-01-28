@@ -21,7 +21,7 @@ f.close
 """ Initialize important variables """
 
 # these indices are defined for the sampled db inputs
-inc = 3  # degree increment for angular variables
+inc = 6  # degree increment for angular variables
 sub2rad = inc*np.pi/180.
 
 n_th = 60/inc  # number of theta samples for FZ
@@ -29,9 +29,8 @@ n_p1 = 360/inc  # number of phi1 samples for FZ
 n_P = 90/inc  # number of Phi samples for FZ
 n_p2 = 60/inc  # number of phi2 samples for FZ
 
-
 N_p = 215  # number of GSH bases to evaluate
-N_q = 19  # number of cosine bases to evaluate
+N_q = 9  # number of cosine bases to evaluate
 
 L_th = np.pi/3.
 n_eul = n_p1*n_P*n_p2

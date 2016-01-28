@@ -9,9 +9,9 @@ import time
 a = 0.0050
 b = 0.0085
 N_p = 215  # number of GSH bases to evaluate
-N_q = 21  # number of cosine bases to evaluate
+N_q = 19  # number of cosine bases to evaluate
 N_r = 10  # number of legendre bases to evaluate
-# L_th = (2.*np.pi)/3.
+
 L_th = np.pi/3.
 filename = 'Xcalc_log.txt'
 
@@ -56,7 +56,6 @@ st = time.time()
 
 for q in xrange(N_q):
 
-    # vec = np.cos(2.*np.pi*q*theta/L_th)
     vec = np.cos(q*np.pi*theta/L_th)
 
     set_id = 'q_%s' % q

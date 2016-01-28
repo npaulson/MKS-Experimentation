@@ -6,7 +6,7 @@
 #PBS -j oe
 #PBS -o out.$PBS_JOBID
 
-cd /panfs/iw-scratch.pace.gatech.edu/v7/nhpnp3/gsh_6deg_12_2
+cd /nv/gpfs-gateway-pace1/project/pme/pme1/nhpnp3/1_21_3deg
 module purge
 module load anaconda2
-python collect_input_data.py
+python Xcalc.py

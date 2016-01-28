@@ -29,7 +29,7 @@ f.close()
 L_th = np.pi/3.
 
 N_p = 215  # number of GSH bases to evaluate
-N_q = 19  # number of cosine bases to evaluate
+N_q = 9  # number of cosine bases to evaluate
 cmax = N_p*N_q  # total number of permutations of basis functions
 
 fn.WP(str(theta.size), filename)
@@ -79,6 +79,7 @@ msg = "max function value: %s" % Y.max()
 fn.WP(msg, filename)
 
 msg = "mean prediction value: %s" % np.real(vec).mean()
+fn.WP(msg, filename)
 
 msg = "mean error: %s" % error.mean()
 fn.WP(msg, filename)

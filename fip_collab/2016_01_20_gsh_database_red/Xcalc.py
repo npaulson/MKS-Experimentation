@@ -8,7 +8,7 @@ import time
 a = 0.0050
 b = 0.0085
 N_p = 215  # number of GSH bases to evaluate
-N_q = 19  # number of cosine bases to evaluate
+N_q = 9  # number of cosine bases to evaluate
 L_th = np.pi/3.
 filename = 'Xcalc_log.txt'
 

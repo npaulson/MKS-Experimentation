@@ -28,7 +28,7 @@ inc = 1.
 a = 0.
 b = np.pi/3.
 L = b-a
-n_l = 10
+n_l = 20
 
 n_th = (60/inc)  # number of phi2 samples for FZ
 

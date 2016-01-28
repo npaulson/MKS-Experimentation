@@ -1,4 +1,4 @@
-cd /nv/gpfs-gateway-pace1/project/pme/pme1/nhpnp3/1_20_3deg
+cd /nv/gpfs-gateway-pace1/project/pme/pme1/nhpnp3/1_21_3deg
 
 for f in {0..9}
 do

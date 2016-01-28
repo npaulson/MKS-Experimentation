@@ -18,13 +18,14 @@ tnum = sys.argv[1]
 inc = 6  # degree increment for angular variables
 sub2rad = inc*np.pi/180.
 
-n_th = (60/inc)+1  # number of theta samples for FZ
+n_th = 60/inc  # number of theta samples for FZ
 n_p1 = 360/inc  # number of phi1 samples for FZ
-n_P = (90/inc)+1  # number of Phi samples for FZ
+n_P = 90/inc  # number of Phi samples for FZ
 n_p2 = 60/inc  # number of phi2 samples for FZ
 
 # n_eul is the number of orientations in the sampled db input set
 n_eul = n_p1 * n_P * n_p2
+n_eul_old = n_p1 * (n_P+1) * n_p2
 
 # here we determine the sampling for en
 a = 0.0050  # start for en range
@@ -33,12 +34,12 @@ en_inc = 0.0001  # en increment
 et_norm = np.linspace(.0001, .0100, 100)
 ai = np.int64(np.round(a/en_inc))-1  # index for start of en range
 bi = np.int64(np.round(b/en_inc))-1  # index for end of en range
-sample_indx = np.arange(ai, bi+1, 5)
+sample_indx = np.arange(ai+1, bi, 3)
 n_en = sample_indx.size
 
 print sample_indx
 
-# xnode: en values for nodes of lagrange interpolation
+# xnode: en values for nodes
 xnode = et_norm[sample_indx]
 print xnode
 
@@ -57,9 +58,9 @@ f = open(filename, "r")
 
 linelist = f.readlines()
 
-euler = np.zeros([n_eul, 3])
+euler = np.zeros([n_eul_old, 3])
 
-for k in xrange(n_eul):
+for k in xrange(n_eul_old):
     temp_line = linelist[k+1]
     euler[k, :] = temp_line.split()[1:4]
 
@@ -72,8 +73,13 @@ filename = 'Results_tensor_%s.hdf5' % str(tnum).zfill(2)
 f_mwp = h5py.File(filename, 'r')
 
 c = 0
+d = 0
 
-for ii in xrange(0, n_eul):
+for ii in xrange(0, n_eul_old):
+
+    if np.isclose(euler[ii, 1], np.pi/2):
+        d += 1
+        continue
 
     test_id = 'sim%s' % str(ii+1).zfill(7)
 
@@ -104,8 +110,9 @@ for ii in xrange(0, n_eul):
         var_set[c, :] = tmp
         c += 1
 
-print np.prod(nvec[1:])
+print n_eul*n_en
 print c
+print d
 
 f_mwp.close()
 f_nhp.close()
