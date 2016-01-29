@@ -1,7 +1,7 @@
 clear; clc;
 
-theta = 1.5:3:58.5;
-theta = theta * (pi/180);
+theta = .75:1.5:59.25
+theta = theta * (pi/180)
 
 % Inputs to the single point crystal plasticity code for calibration are
 % the total strain tensor in the sample frame, and the set of euler angles
