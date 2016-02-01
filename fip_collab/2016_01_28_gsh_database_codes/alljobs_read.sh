@@ -1,6 +1,6 @@
-cd /nv/gpfs-gateway-pace1/project/pme/pme1/nhpnp3/1_21_3deg
+cd /nv/gpfs-gateway-scratch1/3/nhpnp3/1_31_5deg
 
-for f in {1..20}
+for f in {1..40}
 do
     echo " Submitting $f file..."
     export number=$f;

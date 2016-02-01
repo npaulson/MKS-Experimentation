@@ -21,24 +21,25 @@ f.close
 """ Initialize important variables """
 a = 0.00485  # start for en range
 b = 0.00905  # end for en range
-N_p = 215  # number of GSH bases to evaluate
-N_q = 20  # number of cosine bases to evaluate for theta
+N_p = 500  # number of GSH bases to evaluate
+N_q = 40  # number of cosine bases to evaluate for theta
 N_r = 14  # number of cosine bases to evaluate for en
 
 n_jobs = 50.  # number of jobs submitted to cluster
 
 inc = 3
 
-n_th = 60/inc  # number of theta samples for FZ
-n_p1 = 360/inc  # number of phi1 samples for FZ
-n_P = 90/inc  # number of Phi samples for FZ
-n_p2 = 60/inc  # number of phi2 samples for FZ
-n_en = 12
+inc_eul = 5.  # degree increment for angular variables
+inc_th = 1.5
+
+n_th = 60/inc_th  # number of theta samples for FZ
+n_p1 = 360/inc_eul  # number of phi1 samples for FZ
+n_P = 90/inc_eul  # number of Phi samples for FZ
+n_p2 = 60/inc_eul  # number of phi2 samples for FZ
+n_en = 14  # number of et samples for FZ
 
 L_th = np.pi/3.
 L_en = b-a
-
-sub2rad = inc*np.pi/180.
 
 n_eul = n_p1*n_P*n_p2
 

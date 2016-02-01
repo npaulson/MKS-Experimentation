@@ -30,4 +30,6 @@ ang_sel = (data[:, 0] == theta_U[13]) * \
 slice = data[ang_sel, :]
 print slice.shape
 
-np.save('slice.npy', 'slice')
+f = h5py.File('slice.hdf5', 'w')
+f.create_dataset('slice', data=slice)
+f.close()

@@ -7,8 +7,8 @@ import time
 
 a = 0.00485  # start for en range
 b = 0.00905  # end for en range
-N_p = 215  # number of GSH bases to evaluate
-N_q = 20  # number of cosine bases to evaluate for theta
+N_p = 500  # number of GSH bases to evaluate
+N_q = 40  # number of cosine bases to evaluate for theta
 N_r = 14  # number of cosine bases to evaluate for en
 
 L_th = np.pi/3.

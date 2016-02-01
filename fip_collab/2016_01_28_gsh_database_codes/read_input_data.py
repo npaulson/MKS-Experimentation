@@ -15,13 +15,16 @@ the angular variable
 tnum = sys.argv[1]
 
 # these indices are defined for the sampled db inputs
-inc = 3  # degree increment for angular variables
-sub2rad = inc*np.pi/180.
+inc_eul = 5  # degree increment for angular variables
+inc_th = 1.5
+sub2rad_eul = inc_eul*np.pi/180.
+sub2rad_th = inc_th*np.pi/180.
 
-n_th = 60/inc  # number of theta samples for FZ
-n_p1 = 360/inc  # number of phi1 samples for FZ
-n_P = 90/inc  # number of Phi samples for FZ
-n_p2 = 60/inc  # number of phi2 samples for FZ
+
+n_th = np.int64(60/inc_th)  # number of theta samples for FZ
+n_p1 = 360/inc_eul  # number of phi1 samples for FZ
+n_P = 90/inc_eul  # number of Phi samples for FZ
+n_p2 = 60/inc_eul  # number of phi2 samples for FZ
 
 # n_eul is the number of orientations in the sampled db input set
 n_eul = n_p1 * n_P * n_p2
@@ -78,6 +81,9 @@ f_mwp = h5py.File(filename, 'r')
 c = 0
 d = 0
 
+th_val = ((np.int64(tnum)-1)+0.5)*sub2rad_th
+print "th_val: %s" % str(th_val*(180/np.pi))
+
 for ii in xrange(0, n_eul_old):
 
     if np.isclose(euler[ii, 1], np.pi/2):
@@ -105,7 +111,7 @@ for ii in xrange(0, n_eul_old):
 
     for jj in xrange(n_en):
 
-        tmp = np.hstack([(np.int64(tnum)-1)*sub2rad,
+        tmp = np.hstack([th_val,
                          euler[ii, :],
                          xnode[jj],
                          var[jj]])
