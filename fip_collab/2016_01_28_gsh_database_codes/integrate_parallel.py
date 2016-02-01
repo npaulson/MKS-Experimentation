@@ -71,6 +71,7 @@ fn.WP(msg, filename)
 """ perform the orthogonal regressions """
 
 coeff_prt = np.zeros(ii_end-ii_stt, dtype='complex128')
+test_prt = np.zeros(Y.shape, dtype='complex128')
 
 f = h5py.File('X_parts.hdf5', 'r')
 c = 0
@@ -117,11 +118,12 @@ for ii in xrange(ii_stt, ii_end):
 
     tmp = c_tot*np.sum(Y*ep_set.conj()*sinphi)
 
+    test_prt += tmp*ep_set
     del ep_set
 
     coeff_prt[c] = tmp
 
-    msg = "regression time: %ss" % np.round(time.time()-st, 3)
+    msg = "integration time: %ss" % np.round(time.time()-st, 3)
     fn.WP(msg, filename)
 
     c += 1
@@ -130,4 +132,5 @@ f.close()
 
 f = h5py.File('coeff_prt_%s.hdf5' % tnum, 'w')
 f.create_dataset('coeff_prt', data=coeff_prt)
+f.create_dataset('test_prt', data=test_prt)
 f.close()
