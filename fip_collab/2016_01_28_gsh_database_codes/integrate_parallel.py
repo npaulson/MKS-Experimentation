@@ -25,9 +25,7 @@ N_p = 500  # number of GSH bases to evaluate
 N_q = 40  # number of cosine bases to evaluate for theta
 N_r = 14  # number of cosine bases to evaluate for en
 
-n_jobs = 50.  # number of jobs submitted to cluster
-
-inc = 3
+n_jobs = 200.  # number of jobs submitted to cluster
 
 inc_eul = 5.  # degree increment for angular variables
 inc_th = 1.5

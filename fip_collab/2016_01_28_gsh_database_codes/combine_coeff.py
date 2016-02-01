@@ -14,7 +14,7 @@ N_q = 40  # number of cosine bases to evaluate for theta
 N_r = 14  # number of cosine bases to evaluate for en
 
 # pick range of indxmat to calculate
-n_jobs = 50  # number of jobs submitted to PACE
+n_jobs = 200  # number of jobs submitted to PACE
 
 st = time.time()  # start timing
 
@@ -50,8 +50,8 @@ for tnum in xrange(n_jobs):
 
     # load partially filled coefficient arrays from each file
     f = h5py.File('coeff_prt_%s.hdf5' % tnum, 'r')
-    coeff_prt = f.get('coeff_prt')
-    test_prt = f.get('test_prt')
+    coeff_prt = f.get('coeff_prt')[...]
+    test_prt = f.get('test_prt')[...]
     f.close()
 
     Y_ += test_prt  # add pre-calculated portions to function prediction
