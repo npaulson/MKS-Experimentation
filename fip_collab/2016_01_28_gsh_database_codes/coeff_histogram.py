@@ -3,17 +3,19 @@ import numpy as np
 import h5py
 
 
-f = h5py.File('coeff_total.hdf5', 'r')
+f = h5py.File('coeff_total_5deg.hdf5', 'r')
 coef = np.abs(f.get('coeff')[...])
 f.close()
 
 plt.figure(num=1, figsize=[14, 8])
 
 n, bins, patches = plt.hist(coef,
-                            500,
+                            200,
                             normed=1,
                             facecolor='green',
                             alpha=0.75)
+
+# plt.hist(coef, 200, normed=1, histtype='step', cumulative=True)
 
 plt.title("histogram of coefficient magnitudes")
 plt.xlabel("coefficient magnitude")

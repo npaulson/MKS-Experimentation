@@ -34,7 +34,7 @@ print xnode
 # create file for pre-database outputs
 f_nhp = h5py.File('var_extract_check.hdf5', 'w')
 var_set = f_nhp.create_dataset("var_set",
-                               (n_eul*n_en, 6))
+                               (n_eul, 6))
 
 # Read Simulation info from "sim" file
 filename = 'sim_Ti64_tensor_check.txt'

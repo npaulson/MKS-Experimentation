@@ -66,21 +66,20 @@ fn.WP(str(cmax), filename)
 cmat = np.unravel_index(np.arange(cmax), [N_p, N_q, N_r])
 cmat = np.array(cmat).T
 
-cuttoff = thr*np.abs(coeff).max
+cuttoff = thr*np.abs(coeff).max()
 indxvec = np.arange(cmax)[np.abs(coeff) > cuttoff]
+
+N_coef = indxvec.size
+pct_coef = 100.*N_coef/cmax
+fn.WP("number of coefficients retained: %s" % N_coef, filename)
+fn.WP("percentage of coefficients retained %s%%"
+      % np.round(pct_coef, 4), filename)
 
 """Perform the prediction"""
 
 Y_ = np.zeros(theta.size, dtype='complex128')
 
-modval = np.round(cmax, 1-len(str(cmax)))/100
-fn.WP("modval: %s" % modval, filename)
-
-# for ii in xrange(10):
-for ii in xrange(cmax):
-
-    if np.mod(ii, modval) == 0:
-        fn.WP(str(ii), filename)
+for ii in indxvec:
 
     p, q, r = cmat[ii, :]
     basis_p = all_basis_p[:, p]

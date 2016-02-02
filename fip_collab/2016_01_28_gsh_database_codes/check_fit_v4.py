@@ -38,25 +38,6 @@ Y = var_set[:, 5]
 
 f.close()
 
-"""Evaluate the parts of the basis function individually"""
-
-st = time.time()
-
-all_basis_p = np.zeros([N_pts, N_p], dtype='complex128')
-for p in xrange(N_p):
-
-    all_basis_p[:, p] = np.squeeze(gsh.gsh_eval(X, [p]))
-
-all_basis_q = np.zeros([N_pts, N_q], dtype='complex128')
-for q in xrange(N_q):
-
-    all_basis_q[:, q] = np.cos(q*np.pi*theta/L_th)
-
-all_basis_r = np.zeros([N_pts, N_r], dtype='complex128')
-for r in xrange(N_r):
-
-    all_basis_r[:, r] = np.cos(r*np.pi*(et_norm-a)/L_en)
-
 """Select the desired set of coefficients"""
 
 cmax = N_p*N_q*N_r  # total number of permutations of basis functions
@@ -66,21 +47,44 @@ fn.WP(str(cmax), filename)
 cmat = np.unravel_index(np.arange(cmax), [N_p, N_q, N_r])
 cmat = np.array(cmat).T
 
-cuttoff = thr*np.abs(coeff).max
+cuttoff = thr*np.abs(coeff).max()
 indxvec = np.arange(cmax)[np.abs(coeff) > cuttoff]
+
+N_coef = indxvec.size
+pct_coef = 100.*N_coef/cmax
+fn.WP("number of coefficients retained: %s" % N_coef, filename)
+fn.WP("percentage of coefficients retained %s%%"
+      % np.round(pct_coef, 4), filename)
+
+"""Evaluate the parts of the basis function individually"""
+
+st = time.time()
+
+p_U = np.unique(cmat[indxvec, 0])
+q_U = np.unique(cmat[indxvec, 1])
+r_U = np.unique(cmat[indxvec, 2])
+
+fn.WP("number of p basis functions used: %s" % p_U.size, filename)
+fn.WP("number of q basis functions used: %s" % q_U.size, filename)
+fn.WP("number of r basis functions used: %s" % r_U.size, filename)
+
+all_basis_p = np.zeros([N_pts, N_p], dtype='complex128')
+for p in p_U:
+    all_basis_p[:, p] = np.squeeze(gsh.gsh_eval(X, [p]))
+
+all_basis_q = np.zeros([N_pts, N_q], dtype='complex128')
+for q in q_U:
+    all_basis_q[:, q] = np.cos(q*np.pi*theta/L_th)
+
+all_basis_r = np.zeros([N_pts, N_r], dtype='complex128')
+for r in r_U:
+    all_basis_r[:, r] = np.cos(r*np.pi*(et_norm-a)/L_en)
 
 """Perform the prediction"""
 
 Y_ = np.zeros(theta.size, dtype='complex128')
 
-modval = np.round(cmax, 1-len(str(cmax)))/100
-fn.WP("modval: %s" % modval, filename)
-
-# for ii in xrange(10):
-for ii in xrange(cmax):
-
-    if np.mod(ii, modval) == 0:
-        fn.WP(str(ii), filename)
+for ii in indxvec:
 
     p, q, r = cmat[ii, :]
     basis_p = all_basis_p[:, p]
