@@ -1,6 +1,5 @@
 import numpy as np
 import h5py
-import sys
 
 """
 in this version of the code the id of the tensor is an argument to
@@ -11,19 +10,7 @@ the angular variable
 """
 
 # initialize important variables
-
-# these indices are defined for the sampled db inputs
-inc = 3  # degree increment for angular variables
-sub2rad = inc*np.pi/180.
-
-n_th = 60/inc  # number of theta samples for FZ
-n_p1 = 360/inc  # number of phi1 samples for FZ
-n_P = 90/inc  # number of Phi samples for FZ
-n_p2 = 60/inc  # number of phi2 samples for FZ
-
-# n_eul is the number of orientations in the sampled db input set
-n_eul = n_p1 * n_P * n_p2
-# n_eul_old = n_p1 * (n_P+1) * n_p2
+n_eul = 21**3
 n_eul_old = n_eul
 
 # here we determine the sampling for en
@@ -35,7 +22,7 @@ en_inc = 0.0001  # en increment
 et_norm = np.linspace(.0001, .0100, 100)
 ai = np.int64(np.round(a_std/en_inc))-1  # index for start of en range
 bi = np.int64(np.round(b_std/en_inc))-1  # index for end of en range
-sample_indx = np.arange(ai, bi+5, 3)
+sample_indx = np.arange(ai, bi+1, 1)
 n_en = sample_indx.size
 
 print sample_indx
@@ -43,9 +30,6 @@ print sample_indx
 # xnode: en values for nodes
 xnode = et_norm[sample_indx]
 print xnode
-
-nvec = np.array([n_th, n_p1, n_P, n_p2, n_en])
-print "nvec: %s" % str(nvec)
 
 # create file for pre-database outputs
 f_nhp = h5py.File('var_extract_check.hdf5', 'w')
@@ -59,11 +43,12 @@ f = open(filename, "r")
 
 linelist = f.readlines()
 
-euler = np.zeros([n_eul_old, 3])
+angles = np.zeros([n_eul_old, 4])
 
 for k in xrange(n_eul_old):
     temp_line = linelist[k+1]
-    euler[k, :] = temp_line.split()[1:4]
+    angles[k, 0] = temp_line.split()[7]
+    angles[k, 1:4] = temp_line.split()[1:4]
 
 f.close()
 
@@ -73,14 +58,7 @@ f.close()
 filename = 'Results_tensor_check.hdf5'
 f_mwp = h5py.File(filename, 'r')
 
-c = 0
-d = 0
-
-for ii in xrange(0, n_eul_old):
-
-    if np.isclose(euler[ii, 1], np.pi/2):
-        d += 1
-        continue
+for ii in xrange(n_eul_old):
 
     test_id = 'sim%s' % str(ii+1).zfill(7)
 
@@ -99,21 +77,18 @@ for ii in xrange(0, n_eul_old):
 
     """
 
-    var = dset[sample_indx, 19]
+    tmp = np.int64(np.random.rand()*sample_indx.size)
+    indx_rand = sample_indx[tmp]
 
-    for jj in xrange(n_en):
+    en = et_norm[indx_rand]
+    var = dset[indx_rand, 19]
 
-        tmp = np.hstack([(np.int64(tnum)-1)*sub2rad,
-                         euler[ii, :],
-                         xnode[jj],
-                         var[jj]])
+    tmp = np.hstack([angles[ii, 0],
+                     angles[ii, 1:4],
+                     en,
+                     var])
 
-        var_set[c, :] = tmp
-        c += 1
-
-print n_eul*n_en
-print c
-print d
+    var_set[ii, :] = tmp
 
 f_mwp.close()
 f_nhp.close()
