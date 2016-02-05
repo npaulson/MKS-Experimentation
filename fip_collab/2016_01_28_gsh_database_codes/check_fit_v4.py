@@ -3,14 +3,16 @@ import db_functions as fn
 import gsh_hex_tri_L0_16 as gsh
 import h5py
 import time
+import sys
 
+
+thr = np.float64(sys.argv[1])  # threshold on coefs w/rt maximum magnitude coef
 
 a = 0.00485  # start for en range
 b = 0.00905  # end for en range
 N_p = 500  # number of GSH bases to evaluate
 N_q = 40  # number of cosine bases to evaluate for theta
 N_r = 14  # number of cosine bases to evaluate for en
-thr = 0.001 # threshold on coefs w/rt maximum magnitude coef
 
 L_th = np.pi/3.
 L_en = b-a
