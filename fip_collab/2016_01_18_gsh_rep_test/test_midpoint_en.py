@@ -79,10 +79,10 @@ b = 0.00905  # end for en range
 # b = 0.0085
 
 
-f = h5py.File('Results_tensor_01.hdf5', 'r')
-# fip = f.get('sim0000032')[:, 19]
-fip = f.get('sim0000049')[:, 19]
-f.close
+# f = h5py.File('Results_tensor_01.hdf5', 'r')
+# # fip = f.get('sim0000032')[:, 19]
+# fip = f.get('sim0000049')[:, 19]
+# f.close
 
 en_inc = 0.0001  # en increment
 et_norm = np.linspace(.0001, .0100, 100)

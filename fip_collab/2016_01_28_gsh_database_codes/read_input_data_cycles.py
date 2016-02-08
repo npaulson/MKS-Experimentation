@@ -6,7 +6,7 @@ import sys
 in this version of the code the id of the tensor is an argument to
 the script.
 
-This scipt reads files with FIP values for 10 successive loading cycles
+This scipt reads files with FIP values for 100 successive loading cycles
 
 2/3/16
 """
@@ -20,7 +20,6 @@ inc_eul = 5  # degree increment for angular variables
 inc_th = 1.5
 sub2rad_eul = inc_eul*np.pi/180.
 sub2rad_th = inc_th*np.pi/180.
-
 
 n_th = np.int64(60/inc_th)  # number of theta samples for FZ
 n_p1 = 360/inc_eul  # number of phi1 samples for FZ
