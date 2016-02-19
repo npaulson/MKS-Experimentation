@@ -46,6 +46,37 @@ def read_euler(el, ns, set_id, step, newdir, wrt_file, funit):
     rr.WP(msg, wrt_file)
 
 
+def read_fip(el, ns, set_id, step, newdir, wrt_file):
+
+    start = time.time()
+
+    fip = np.zeros([ns, el**3])
+
+#    nwd = os.getcwd() + '\\' + newdir
+    nwd = os.getcwd() + '/' + newdir  # for unix
+    os.chdir(nwd)
+
+    sn = 0
+    for filename in os.listdir(nwd):
+        if filename.endswith('%s.vtk' % step):
+            fip[sn, :] = rr.read_vtk_scalar(filename=filename)
+            sn += 1
+
+    # return to the original directory
+    os.chdir('..')
+
+    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
+    f.create_dataset('fip', data=fip)
+    f.close()
+
+    end = time.time()
+    timeE = np.round((end - start), 3)
+
+    msg = 'fip values read from .vtk file for %s: %s seconds' % (set_id,
+                                                                 timeE)
+    rr.WP(msg, wrt_file)
+
+
 def read_meas(el, ns, set_id, step, comp, tensor_id, newdir, wrt_file):
 
     start = time.time()

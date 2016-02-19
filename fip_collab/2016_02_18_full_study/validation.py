@@ -20,7 +20,7 @@ def validation(el, H, ns_cal, ns_val, set_id_cal, set_id_val, step, comp,
     start = time.time()
 
     f = h5py.File("infl_%s%s_s%s.hdf5" % (ns_cal, set_id_cal, step), 'a')
-    infl_coef = f.get('infl_coef')[...].reshape(H, el, el, el)
+    infl_coef = f.get('infl%s_%s' % (comp, typ))[...].reshape(H, el, el, el)
     f.close()
 
     f = h5py.File("D_%s%s_s%s.hdf5" % (ns_val, set_id_val, step), 'r')

@@ -6,7 +6,7 @@ Created on Tue Jul 15 11:45:46 2014
 """
 
 import numpy as np
-import gsh_hex_tri_L0_4 as gsh
+import gsh_hex_tri_L0_20 as gsh
 import functions as rr
 import time
 import h5py

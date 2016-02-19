@@ -10,7 +10,7 @@ Noah Paulson, 5/28/2014
 import numpy as np
 import vtk
 import h5py
-import gsh_hex_tri_L0_20 as gsh
+import gsh_hex_tri_L0_4 as gsh
 
 
 def eval_func(theta, X, et_norm):
@@ -24,7 +24,7 @@ def eval_func(theta, X, et_norm):
         Y ([el**3], float): vector of values calculated by function
     """
 
-    thr = 0.0001  # threshold on coefs w/rt maximum magnitude coef
+    thr = 0.00001  # threshold on coefs w/rt maximum magnitude coef
     LL_p = 20  # LL_p: gsh truncation level
 
     a = 0.00485  # start for en range
@@ -219,6 +219,44 @@ def read_vtk_tensor(filename, tensor_id, comp):
         meas_py[ii] = meas.GetValue(ii*9 + comp)
 
     return meas_py
+
+
+def read_vtk_scalar(filename):
+    """
+    Summary:
+        Much of this code was taken from Matthew Priddy's example
+        file.
+    Inputs:
+    Outputs:
+    """
+
+    # Initialize the reading of the VTK microstructure created by Dream3D
+    reader = vtk.vtkDataSetReader()
+    reader.SetFileName(filename)
+    reader.ReadAllTensorsOn()
+    reader.ReadAllVectorsOn()
+    reader.ReadAllScalarsOn()
+    reader.Update()
+    data = reader.GetOutput()
+    dim = data.GetDimensions()
+    vec = list(dim)
+    vec = [i-1 for i in dim]
+
+    el = vec[0]
+
+    # Calculate the total number of elements
+    el_total = el**3
+
+    print reader.GetScalarsNameInFile
+
+    Scalar = data.GetCellData().GetArray(reader.GetScalarsNameInFile(1))
+
+    scalar_py = np.zeros([el_total])
+
+    for ii in xrange(el_total):
+        scalar_py[ii] = Scalar.GetValue(ii)
+
+    return scalar_py
 
 
 def read_vtk_vector(filename):

@@ -58,7 +58,7 @@ for step in xrange(5, 6):
     # for comp in compl:
     #     field_blur.blur(el, ns_val, set_id_val, step, 'epsilon_t', comp)
 
-    comp_app = 0
+    vtk.read_fip(el, ns_val, set_id_val, step, dir_val, wrt_file)
 
-    for comp in compl:
-        results.results(el, ns_val, set_id_val, step, L, 'epsilon_t', comp)
+    # for comp in compl:
+    #     results.results(el, ns_val, set_id_val, step, L, 'epsilon_t', comp)

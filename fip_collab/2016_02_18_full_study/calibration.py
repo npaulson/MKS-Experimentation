@@ -38,7 +38,7 @@ def calibration_procedure(el, H, ns, set_id, step, comp, typ, wrt_file):
     specinfc[:, 2:(el**3)] = np.asarray(map(calib_red, range(2, el**3))).swapaxes(0, 1)
 
     f = h5py.File("infl_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
-    f.create_dataset('infl_coef', data=specinfc)
+    f.create_dataset('infl%s_%s' % (comp, typ), data=specinfc)
     f.close()
 
     msg = 'Calibration, component %s: %s seconds' % \

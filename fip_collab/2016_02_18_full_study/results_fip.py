@@ -7,7 +7,7 @@ Created on Wed Oct 01 13:52:33 2014
 
 import time
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import functions as rr
 import h5py
 # from sklearn.neighbors import KernelDensity
@@ -20,32 +20,27 @@ def results(el, ns, set_id, step, L, typ, comp):
                (step, ns, set_id, L, time.strftime("%Y-%m-%d_h%Hm%M"))
 
     f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'r')
-
-    print f.keys()
-
-    euler = f.get('euler')[...].reshape(ns, 3, el, el, el)
+    # euler = f.get('euler')[...].reshape(ns, 3, el, el, el)
     r_fem = f.get('r%s_%s' % (comp, typ))[...]
     r_mks = f.get('rmks%s_%s' % (comp, typ))[...]
     f.close()
 
-    nfac = 0.00747
+    error_calc(el, ns, r_fem, r_mks, typ, comp, wrt_file)
 
-    error_calc(el, ns, r_fem, r_mks, typ, comp, nfac, wrt_file)
+    # maxindx = np.unravel_index(np.argmax(np.abs(r_fem - r_mks)), r_fem.shape)
+    # maxresp = r_fem[maxindx]
+    # maxMKS = r_mks[maxindx]
+    # maxdiff = (np.abs(r_fem - r_mks)[maxindx])
 
-    maxindx = np.unravel_index(np.argmax(np.abs(r_fem - r_mks)), r_fem.shape)
-    maxresp = r_fem[maxindx]
-    maxMKS = r_mks[maxindx]
-    maxdiff = (np.abs(r_fem - r_mks)[maxindx])
-
-    print '\nindices of max error:'
-    print maxindx
-    print '\nreference response at max error:'
-    print maxresp
-    print '\nMKS response at max error:'
-    print maxMKS
-    print '\nmaximum difference in response:'
-    print maxdiff
-    print euler[maxindx[0], :, maxindx[1], maxindx[2], maxindx[3]]
+    # print '\nindices of max error:'
+    # print maxindx
+    # print '\nreference response at max error:'
+    # print maxresp
+    # print '\nMKS response at max error:'
+    # print maxMKS
+    # print '\nmaximum difference in response:'
+    # print maxdiff
+    # print euler[maxindx[0], :, maxindx[1], maxindx[2], maxindx[3]]
 
     # VISUALIZATION OF MKS VS. FEM
 
@@ -53,13 +48,13 @@ def results(el, ns, set_id, step, L, typ, comp):
     # slc = maxindx[1]
     # sn = maxindx[0]
 
-    slc = 0
-    sn = 10
+    # slc = 0
+    # sn = 200
 
     # r_fem_lin = r_fem.reshape(ns*el*el*el)
     # r_mks_lin = r_mks.reshape(ns*el*el*el)
 
-    field_std(el, ns, r_fem, r_mks, euler, typ, comp, sn, slc, 1)
+    # field_std(el, ns, r_fem, r_mks, euler, typ, comp, spr, sn, slc, 1)
     # hist_std(el, ns, r_fem, r_mks, typ, comp, spr, 2)
     # violin_extreme_val(el, ns, r_fem_lin, r_mks_lin, typ, comp, spr,
     #                    0.99, nfac, 3)
@@ -67,10 +62,10 @@ def results(el, ns, set_id, step, L, typ, comp):
     # hist_extreme_val_2axis(el, ns, r_fem, r_mks, typ, comp, spr, 5)
     # plot_euler(el, ns, euler, sn, slc, 6)
 
-    plt.show()
+    # plt.show()
 
 
-def error_calc(el, ns, r_fem, r_mks, typ, comp, nfac, wrt_file):
+def error_calc(el, ns, r_fem, r_mks, typ, comp, wrt_file):
 
     # MEAN ABSOLUTE STRAIN ERROR (MASE)
     max_diff_all = np.zeros(ns)
@@ -78,26 +73,26 @@ def error_calc(el, ns, r_fem, r_mks, typ, comp, nfac, wrt_file):
         max_diff_all[sn] = np.amax(abs(r_fem[sn, ...]-r_mks[sn, ...]))
 
     # DIFFERENCE MEASURES
-    mean_diff_meas = np.mean(abs(r_fem-r_mks))/nfac
-    std_diff_meas = np.std(abs(r_fem-r_mks))/nfac
-    mean_max_diff_meas = np.mean(max_diff_all)/nfac
-    max_diff_meas_all = np.amax(abs(r_fem-r_mks))/nfac
+    mean_diff_meas = np.mean(abs(r_fem-r_mks))
+    std_diff_meas = np.std(abs(r_fem-r_mks))
+    mean_max_diff_meas = np.mean(max_diff_all)
+    max_diff_meas_all = np.amax(abs(r_fem-r_mks))
 
     msg = 'Mean voxel difference over all microstructures'\
-        ' (divided by applied strain), %s%s: %s%%' \
-        % (typ, comp, mean_diff_meas*100)
+        ' (divided by applied strain), %s%s: %s' \
+        % (typ, comp, mean_diff_meas)
     rr.WP(msg, wrt_file)
     msg = 'standard deviation of difference over all microstructures'\
-        ' (divided by applied strain), %s%s: %s%%' \
-        % (typ, comp, std_diff_meas*100)
+        ' (divided by applied strain), %s%s: %s' \
+        % (typ, comp, std_diff_meas)
     rr.WP(msg, wrt_file)
     msg = 'Average Maximum voxel difference per microstructure'\
-        ' (divided by applied strain), %s%s: %s%%' \
-        % (typ, comp, mean_max_diff_meas*100)
+        ' (divided by applied strain), %s%s: %s' \
+        % (typ, comp, mean_max_diff_meas)
     rr.WP(msg, wrt_file)
     msg = 'Maximum voxel difference in all microstructures '\
-        '(divided by applied strain), %s%s: %s%%' \
-        % (typ, comp, max_diff_meas_all*100)
+        '(divided by applied strain), %s%s: %s' \
+        % (typ, comp, max_diff_meas_all)
     rr.WP(msg, wrt_file)
 
     # STANDARD STATISTICS
@@ -128,25 +123,25 @@ def error_calc(el, ns, r_fem, r_mks, typ, comp, nfac, wrt_file):
     rr.WP(msg, wrt_file)
 
 
-def field_std(el, ns, r_fem, r_mks, micr, typ, comp, sn, slc, plotnum):
+# def field_std(el, ns, r_fem, r_mks, micr, typ, comp, spr, sn, slc, plotnum):
 
-    # Plot slices of the response
-    plt.figure(num=plotnum, figsize=[9, 2.7])
+#     # Plot slices of the response
+#     plt.figure(num=plotnum, figsize=[9, 2.7])
 
-    dmin = np.min([r_mks[sn, slc, :, :], r_fem[sn, slc, :, :]])
-    dmax = np.max([r_mks[sn, slc, :, :], r_fem[sn, slc, :, :]])
+#     dmin = np.min([r_mks[sn, slc, :, :], r_fem[sn, slc, :, :]])
+#     dmax = np.max([r_mks[sn, slc, :, :], r_fem[sn, slc, :, :]])
 
-    plt.subplot(121)
-    ax = plt.imshow(r_mks[sn, slc, :, :], origin='lower',
-                    interpolation='none', cmap='jet', vmin=dmin, vmax=dmax)
-    plt.colorbar(ax)
-    plt.title('MKS $\{%s}_{%s}$, slice %s' % (typ, comp, slc))
+#     plt.subplot(121)
+#     ax = plt.imshow(r_mks[sn, slc, :, :], origin='lower',
+#                     interpolation='none', cmap='jet', vmin=dmin, vmax=dmax)
+#     plt.colorbar(ax)
+#     plt.title('MKS $\%s_{%s}^%s$, slice %s' % (typ, comp, spr, slc))
 
-    plt.subplot(122)
-    ax = plt.imshow(r_fem[sn, slc, :, :], origin='lower',
-                    interpolation='none', cmap='jet', vmin=dmin, vmax=dmax)
-    plt.colorbar(ax)
-    plt.title('FEM $\{%s}_{%s}$, slice %s' % (typ, comp, slc))
+#     plt.subplot(122)
+#     ax = plt.imshow(r_fem[sn, slc, :, :], origin='lower',
+#                     interpolation='none', cmap='jet', vmin=dmin, vmax=dmax)
+#     plt.colorbar(ax)
+#     plt.title('FEM $\%s_{%s}^%s$, slice %s' % (typ, comp, spr, slc))
 
 
 # def hist_extreme_val(el, ns, r_fem, r_mks, typ, comp, spr, plotnum):
@@ -447,4 +442,4 @@ def field_std(el, ns, r_fem, r_mks, micr, typ, comp, sn, slc, plotnum):
 
 
 if __name__ == '__main__':
-    results(21, 100, 'val', 5, 4, 'epsilon_t', '11')
+    results(21, 398, 'val', 5, 4, 'epsilon', '23', 't_b')
