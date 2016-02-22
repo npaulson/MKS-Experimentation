@@ -10,32 +10,29 @@ import numpy as np
 import matplotlib.pyplot as plt
 import functions as rr
 import h5py
-# from sklearn.neighbors import KernelDensity
+from sklearn.neighbors import KernelDensity
 
 
-def results(el, ns, set_id, step, L, typ, comp):
+def results(el, ns, set_id, step, typ, comp, newID, traID, nfac):
 
-    # specify the file to write messages to
-    wrt_file = 'results_step%s_%s%s_L%s_%s.txt' % \
-               (step, ns, set_id, L, time.strftime("%Y-%m-%d_h%Hm%M"))
+    """specify the file to write messages to"""
+    # wrt_file = 'results_step%s_%s%s_%s.txt' % \
+    #            (step, ns, set_id, time.strftime("%Y-%m-%d_h%Hm%M"))
 
     f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'r')
 
     print f.keys()
 
     euler = f.get('euler')[...].reshape(ns, 3, el, el, el)
-    r_fem = f.get('r%s_%s' % (comp, typ))[...]
-    r_mks = f.get('rmks%s_%s' % (comp, typ))[...]
+    traSET = f.get('%s%s_%s' % (traID, comp, typ))[...]
+    newSET = f.get('%s%s_%s' % (newID, typ))[...]
     f.close()
 
-    nfac = 0.00747
-
-    error_calc(el, ns, r_fem, r_mks, typ, comp, nfac, wrt_file)
-
-    maxindx = np.unravel_index(np.argmax(np.abs(r_fem - r_mks)), r_fem.shape)
-    maxresp = r_fem[maxindx]
-    maxMKS = r_mks[maxindx]
-    maxdiff = (np.abs(r_fem - r_mks)[maxindx])
+    maxindx = np.unravel_index(np.argmax(np.abs(traSET - newSET)),
+                               traSET.shape)
+    maxresp = traSET[maxindx]
+    maxMKS = newSET[maxindx]
+    maxdiff = (np.abs(traSET - newSET)[maxindx])
 
     print '\nindices of max error:'
     print maxindx
@@ -47,7 +44,7 @@ def results(el, ns, set_id, step, L, typ, comp):
     print maxdiff
     print euler[maxindx[0], :, maxindx[1], maxindx[2], maxindx[3]]
 
-    # VISUALIZATION OF MKS VS. FEM
+    """VISUALIZATION OF MKS VS. FEM"""
 
     # pick a slice perpendicular to the x-direction
     # slc = maxindx[1]
@@ -57,9 +54,9 @@ def results(el, ns, set_id, step, L, typ, comp):
     sn = 10
 
     # r_fem_lin = r_fem.reshape(ns*el*el*el)
-    # r_mks_lin = r_mks.reshape(ns*el*el*el)
+    # r_mks_lin = r_mks.resape(ns*el*el*el)
 
-    field_std(el, ns, r_fem, r_mks, euler, typ, comp, sn, slc, 1)
+    field_std(el, ns, traSET, newSET, euler, typ, comp, sn, slc, 1)
     # hist_std(el, ns, r_fem, r_mks, typ, comp, spr, 2)
     # violin_extreme_val(el, ns, r_fem_lin, r_mks_lin, typ, comp, spr,
     #                    0.99, nfac, 3)
@@ -70,83 +67,37 @@ def results(el, ns, set_id, step, L, typ, comp):
     plt.show()
 
 
-def error_calc(el, ns, r_fem, r_mks, typ, comp, nfac, wrt_file):
+def field_std(el, ns, traSET, newSET, micr, typ, comp, sn, slc, plotnum):
 
-    # MEAN ABSOLUTE STRAIN ERROR (MASE)
-    max_diff_all = np.zeros(ns)
-    for sn in xrange(ns):
-        max_diff_all[sn] = np.amax(abs(r_fem[sn, ...]-r_mks[sn, ...]))
+    """split the typ string for proper plot output"""
+    blankloc = typ.find('_')
 
-    # DIFFERENCE MEASURES
-    mean_diff_meas = np.mean(abs(r_fem-r_mks))/nfac
-    std_diff_meas = np.std(abs(r_fem-r_mks))/nfac
-    mean_max_diff_meas = np.mean(max_diff_all)/nfac
-    max_diff_meas_all = np.amax(abs(r_fem-r_mks))/nfac
+    if blankloc == -1:
+        base = typ
+        exp = ''
+    else:
+        base = typ[:blankloc]
+        exp = typ[blankloc+1:]
 
-    msg = 'Mean voxel difference over all microstructures'\
-        ' (divided by applied strain), %s%s: %s%%' \
-        % (typ, comp, mean_diff_meas*100)
-    rr.WP(msg, wrt_file)
-    msg = 'standard deviation of difference over all microstructures'\
-        ' (divided by applied strain), %s%s: %s%%' \
-        % (typ, comp, std_diff_meas*100)
-    rr.WP(msg, wrt_file)
-    msg = 'Average Maximum voxel difference per microstructure'\
-        ' (divided by applied strain), %s%s: %s%%' \
-        % (typ, comp, mean_max_diff_meas*100)
-    rr.WP(msg, wrt_file)
-    msg = 'Maximum voxel difference in all microstructures '\
-        '(divided by applied strain), %s%s: %s%%' \
-        % (typ, comp, max_diff_meas_all*100)
-    rr.WP(msg, wrt_file)
-
-    # STANDARD STATISTICS
-    msg = 'Average, %s%s, FEM: %s' % (typ, comp, np.mean(r_fem))
-    rr.WP(msg, wrt_file)
-    msg = 'Average, %s%s, MKS: %s' % (typ, comp, np.mean(r_mks))
-    rr.WP(msg, wrt_file)
-    msg = 'Standard deviation, %s%s, FEM: %s' \
-        % (typ, comp, np.std(r_fem))
-    rr.WP(msg, wrt_file)
-    msg = 'Standard deviation, %s%s, MKS: %s' \
-        % (typ, comp, np.std(r_mks))
-    rr.WP(msg, wrt_file)
-
-    r_fem_min = np.mean(np.amin(r_fem.reshape([el**3, ns]), axis=0))
-    r_mks_min = np.mean(np.amin(r_mks.reshape([el**3, ns]), axis=0))
-
-    r_fem_max = np.mean(np.amax(r_fem.reshape([el**3, ns]), axis=0))
-    r_mks_max = np.mean(np.amax(r_mks.reshape([el**3, ns]), axis=0))
-
-    msg = 'Mean minimum, %s%s, FEM: %s' % (typ, comp, r_fem_min)
-    rr.WP(msg, wrt_file)
-    msg = 'Mean minimum, %s%s, MKS: %s' % (typ, comp, r_mks_min)
-    rr.WP(msg, wrt_file)
-    msg = 'Mean maximum, %s%s, FEM: %s' % (typ, comp, r_fem_max)
-    rr.WP(msg, wrt_file)
-    msg = 'Mean maximum, %s%s, MKS: %s' % (typ, comp, r_mks_max)
-    rr.WP(msg, wrt_file)
-
-
-def field_std(el, ns, r_fem, r_mks, micr, typ, comp, sn, slc, plotnum):
-
-    # Plot slices of the response
+    """Plot slices of the response"""
     plt.figure(num=plotnum, figsize=[9, 2.7])
 
-    dmin = np.min([r_mks[sn, slc, :, :], r_fem[sn, slc, :, :]])
-    dmax = np.max([r_mks[sn, slc, :, :], r_fem[sn, slc, :, :]])
+    dmin = np.min([newSET[sn, slc, :, :], traSET[sn, slc, :, :]])
+    dmax = np.max([newSET[sn, slc, :, :], traSET[sn, slc, :, :]])
 
     plt.subplot(121)
-    ax = plt.imshow(r_mks[sn, slc, :, :], origin='lower',
+    ax = plt.imshow(newSET[sn, slc, :, :], origin='lower',
                     interpolation='none', cmap='jet', vmin=dmin, vmax=dmax)
     plt.colorbar(ax)
-    plt.title('MKS $\{%s}_{%s}$, slice %s' % (typ, comp, slc))
+    plt.title('New Approach $\{%s}_{%s}^{%s}$, slice %s'
+              % (base, comp, exp, slc))
 
     plt.subplot(122)
-    ax = plt.imshow(r_fem[sn, slc, :, :], origin='lower',
+    ax = plt.imshow(traSET[sn, slc, :, :], origin='lower',
                     interpolation='none', cmap='jet', vmin=dmin, vmax=dmax)
     plt.colorbar(ax)
-    plt.title('FEM $\{%s}_{%s}$, slice %s' % (typ, comp, slc))
+    plt.title('Standard Approach $\{%s}_{%s}^{%s}$, slice %s'
+              % (base, comp, exp, slc))
 
 
 # def hist_extreme_val(el, ns, r_fem, r_mks, typ, comp, spr, plotnum):
@@ -447,4 +398,23 @@ def field_std(el, ns, r_fem, r_mks, micr, typ, comp, sn, slc, plotnum):
 
 
 if __name__ == '__main__':
-    results(21, 100, 'val', 5, 4, 'epsilon_t', '11')
+    el = 21
+    ns = 100
+    set_id = 'val'
+    step = 5
+
+    # """parameters to plot strain field"""
+    # typ = 'epsilon_t'
+    # comp = '11'
+    # newID = 'rmks'
+    # traID = 'r'
+    # nfac = 0.00747
+
+    """parameters to plot fips"""
+    typ = 'fip'
+    comp = ''
+    newID = 'fip'
+    traID = 'fipmks'
+    nfac = 1.0
+
+    results(el, ns, set_id, step, typ, comp, newID, traID, nfac)

@@ -31,7 +31,7 @@ def read_euler(el, ns, set_id, step, newdir, wrt_file, funit):
     if funit == 1:
         euler = euler * (np.pi/180.)
 
-    # return to the original directory
+    """return to the original directory"""
     os.chdir('..')
 
     f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
@@ -62,7 +62,7 @@ def read_fip(el, ns, set_id, step, newdir, wrt_file):
             fip[sn, :] = rr.read_vtk_scalar(filename=filename)
             sn += 1
 
-    # return to the original directory
+    """return to the original directory"""
     os.chdir('..')
 
     f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
@@ -101,14 +101,14 @@ def read_meas(el, ns, set_id, step, comp, tensor_id, newdir, wrt_file):
             r_fem[sn, ...] = r_temp.reshape([el, el, el])
             sn += 1
 
-    # return to the original directory
+    """return to the original directory"""
     os.chdir('..')
 
     f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
     f.create_dataset('r%s_%s' % (comp, typ[tensor_id]), data=r_fem)
     f.close()
 
-    # FFT OF RESPONSE FIELD
+    """FFT OF RESPONSE FIELD"""
 
     f = h5py.File("D_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
     tmp = np.fft.fftn(r_fem, axes=[1, 2, 3])

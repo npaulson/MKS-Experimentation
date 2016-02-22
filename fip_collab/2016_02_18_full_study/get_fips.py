@@ -85,10 +85,9 @@ def fip(sn, el, ns, set_id, step, typ, compl):
     print fip.min()
     print fip.max()
 
-    
+    f.create_dataset('fipmks', data=fip)
 
     f.close()
-    
 
 
 if __name__ == '__main__':
