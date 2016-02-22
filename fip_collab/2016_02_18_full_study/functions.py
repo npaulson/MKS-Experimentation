@@ -247,7 +247,7 @@ def read_vtk_scalar(filename):
     # Calculate the total number of elements
     el_total = el**3
 
-    print reader.GetScalarsNameInFile
+    # print reader.GetScalarsNameInFile
 
     Scalar = data.GetCellData().GetArray(reader.GetScalarsNameInFile(1))
 

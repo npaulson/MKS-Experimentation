@@ -23,7 +23,7 @@ def results(el, ns, set_id, step, typ, comp, newID, traID, nfac):
 
     euler = f.get('euler')[...].reshape(ns, 3, el, el, el)
     traSET = f.get('%s%s_%s' % (traID, comp, typ))[...]
-    newSET = f.get('%s%s_%s' % (newID, typ))[...]
+    newSET = f.get('%s%s_%s' % (newID, comp, typ))[...]
     f.close()
 
     error_calc(el, ns, traSET, newSET, typ, comp, nfac, wrt_file)

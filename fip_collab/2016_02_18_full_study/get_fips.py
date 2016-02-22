@@ -19,6 +19,8 @@ def fip(sn, el, ns, set_id, step, typ, compl):
         tmp = f.get('r%s_%s' % (comp, typ))[sn, ...]
         et[:, ii] = tmp.reshape(el**3)
 
+    f.close()
+
     """ find the deviatoric strain tensor """
     et_ = et
     et_[:, 0:3] = et_[:, 0:3] - (1./3.)*np.expand_dims(np.sum(et[:, 0:3], 1), 1)
@@ -28,8 +30,9 @@ def fip(sn, el, ns, set_id, step, typ, compl):
     """ find the norm of the deviatoric strain tensor """
     en = np.sqrt(np.sum(et_[:, 0:3]**2+2*et_[:, 3:]**2, 1))
 
-    print en.min()
-    print en.max()
+    print "sn: %s" % sn
+    print "min(en): %s" % en.min()
+    print "max(en): %s" % en.max()
 
     """ normalize the deviatoric strain tensor """
     et_n = et_/np.expand_dims(en, 1)
@@ -82,12 +85,10 @@ def fip(sn, el, ns, set_id, step, typ, compl):
 
     fip = rr.eval_func(theta, X, en).real
 
-    print fip.min()
-    print fip.max()
+    print "min(FIP): %s" % fip.min()
+    print "max(FIP): %s" % fip.max()
 
-    f.create_dataset('fipmks', data=fip)
-
-    f.close()
+    return fip
 
 
 if __name__ == '__main__':

@@ -8,9 +8,11 @@ def blur(el, ns, set_id, step, parID):
 
     st = time.time()
 
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
+    f = h5py.File("fip_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
 
     parSET = f.get('%s' % parID)[...]
+    print parSET.shape
+    parSET = parSET.reshape(ns, el, el, el)
 
     parSET_b = np.zeros(parSET.shape)
 

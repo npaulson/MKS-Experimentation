@@ -96,7 +96,7 @@ for ii in xrange(0, n_eul):
 
     """
 
-    var = dset[-1, 0]
+    var = dset[2, 0]
 
     tmp = np.hstack([th_val,
                      euler[ii, :],

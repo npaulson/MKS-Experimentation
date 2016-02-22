@@ -65,7 +65,7 @@ def read_fip(el, ns, set_id, step, newdir, wrt_file):
     """return to the original directory"""
     os.chdir('..')
 
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
+    f = h5py.File("fip_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
     f.create_dataset('fip', data=fip)
     f.close()
 

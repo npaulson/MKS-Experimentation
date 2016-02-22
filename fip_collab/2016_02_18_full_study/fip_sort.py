@@ -4,7 +4,7 @@ import h5py
 
 def fip_sort(el, ns, set_id, step, parID):
 
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'r')
+    f = h5py.File("fip_%s%s_s%s.hdf5" % (ns, set_id, step), 'r')
     fip = f.get('%sb' % parID)[...]
     f.close()
 

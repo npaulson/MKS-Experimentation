@@ -10,6 +10,8 @@ import euler_to_gsh as gsh
 import results_text as rtex
 import get_fips as fip
 import fip_sort as fs
+import h5py
+import numpy as np
 
 
 ns_cal = 300
@@ -42,35 +44,41 @@ for step in xrange(5, 6):
     """
 
     """Gather data from validation vtk files"""
-    tensorID = 1
+    # tensorID = 1
 
-    vtk.read_euler(el, ns_val, set_id_val, step, dir_val, wrt_file, tensorID)
+    # vtk.read_euler(el, ns_val, set_id_val, step, dir_val, wrt_file, tensorID)
 
-    for comp in compl:
-        vtk.read_meas(el, ns_val, set_id_val, step, comp, tensorID,
-                      dir_val, wrt_file)
+    # for comp in compl:
+    #     vtk.read_meas(el, ns_val, set_id_val, step, comp, tensorID,
+    #                   dir_val, wrt_file)
 
-    vtk.read_fip(el, ns_val, set_id_val, step, dir_val, wrt_file)
+    # vtk.read_fip(el, ns_val, set_id_val, step, dir_val, wrt_file)
 
-    """Convert the orientations from the calibration datasets from bunge euler
-    angles to GSH coefficients"""
-    gsh.euler_to_gsh(el, H, ns_val, set_id_val, step, wrt_file)
+    # """Convert the orientations from the calibration datasets from bunge euler
+    # angles to GSH coefficients"""
+    # gsh.euler_to_gsh(el, H, ns_val, set_id_val, step, wrt_file)
 
-    """Perform the validation"""
-    for comp in compl:
-        validation.validation(el, H, ns_cal, ns_val, set_id_cal, set_id_val,
-                              step, comp, typ, wrt_file)
+    # """Perform the validation"""
+    # for comp in compl:
+    #     validation.validation(el, H, ns_cal, ns_val, set_id_cal, set_id_val,
+    #                           step, comp, typ, wrt_file)
 
-    """Get error metrics for each total strain component"""
-    newID = 'rmks'
-    traID = 'r'
-    for comp in compl:
-        rtex.results(el, ns_val, set_id_val, step, typ, comp,
-                     newID, traID, nfac)
+    # """Get error metrics for each total strain component"""
+    # newID = 'rmks'
+    # traID = 'r'
+    # for comp in compl:
+    #     rtex.results(el, ns_val, set_id_val, step, typ, comp,
+    #                  newID, traID, nfac)
 
-    """Calculate FIP fields"""
-    for sn in xrange(ns_val):
-        fip.fip(sn, el, ns_val, set_id_val, step, typ, compl)
+    # """Calculate FIP fields"""
+    # fipmat = np.zeros((ns_val, el**3))
+
+    # for sn in xrange(ns_val):
+    #     fipmat[sn, :] = fip.fip(sn, el, ns_val, set_id_val, step, typ, compl)
+
+    # f = h5py.File("fip_%s%s_s%s.hdf5" % (ns_val, set_id_val, step), 'a')
+    # f.create_dataset('fipmks', data=fipmat)
+    # f.close()
 
     """Perform Blurring on FIPs"""
     parID = 'fip'

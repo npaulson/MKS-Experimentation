@@ -13,7 +13,7 @@ import h5py
 from sklearn.neighbors import KernelDensity
 
 
-def results(el, ns, set_id, step, typ, comp, newID, traID, nfac):
+def results(el, ns, set_id, step, newID, traID):
 
     """specify the file to write messages to"""
     # wrt_file = 'results_step%s_%s%s_%s.txt' % \
@@ -24,21 +24,21 @@ def results(el, ns, set_id, step, typ, comp, newID, traID, nfac):
     print f.keys()
 
     # euler = f.get('euler')[...].reshape(ns, 3, el, el, el)
-    traSET = f.get('%s' % traID)[...]
-    newSET = f.get('%s' % newID)[...]
+    traSET = f.get('%s' % traID)[...].reshape(ns, el, el, el)
+    newSET = f.get('%s' % newID)[...].reshape(ns, el, el, el)
     f.close()
 
-    maxindx = np.unravel_index(np.argmax(np.abs(traSET - newSET)),
+    maxindx = np.unravel_index(np.argmax(np.abs(traSET)),
                                traSET.shape)
     maxresp = traSET[maxindx]
     maxMKS = newSET[maxindx]
     maxdiff = (np.abs(traSET - newSET)[maxindx])
 
-    print '\nindices of max error:'
+    print '\nindices of max fip:'
     print maxindx
-    print '\nreference response at max error:'
+    print '\nreference response at max fip:'
     print maxresp
-    print '\nMKS response at max error:'
+    print '\nMKS response at max fip:'
     print maxMKS
     print '\nmaximum difference in response:'
     print maxdiff
@@ -47,16 +47,16 @@ def results(el, ns, set_id, step, typ, comp, newID, traID, nfac):
     """VISUALIZATION OF MKS VS. FEM"""
 
     # pick a slice perpendicular to the x-direction
-    # slc = maxindx[1]
-    # sn = maxindx[0]
+    slc = maxindx[1]
+    sn = maxindx[0]
 
-    slc = 0
-    sn = 10
+    # slc = 5
+    # sn = 50
 
     # r_fem_lin = r_fem.reshape(ns*el*el*el)
     # r_mks_lin = r_mks.resape(ns*el*el*el)
 
-    field_std(el, ns, traSET, newSET, euler, typ, comp, sn, slc, 1)
+    field_std(el, ns, traSET, newSET, sn, slc, 1)
     # hist_std(el, ns, r_fem, r_mks, typ, comp, spr, 2)
     # violin_extreme_val(el, ns, r_fem_lin, r_mks_lin, typ, comp, spr,
     #                    0.99, nfac, 3)
@@ -67,17 +67,7 @@ def results(el, ns, set_id, step, typ, comp, newID, traID, nfac):
     plt.show()
 
 
-def field_std(el, ns, traSET, newSET, micr, typ, comp, sn, slc, plotnum):
-
-    """split the typ string for proper plot output"""
-    blankloc = typ.find('_')
-
-    if blankloc == -1:
-        base = typ
-        exp = ''
-    else:
-        base = typ[:blankloc]
-        exp = typ[blankloc+1:]
+def field_std(el, ns, traSET, newSET, sn, slc, plotnum):
 
     """Plot slices of the response"""
     plt.figure(num=plotnum, figsize=[9, 2.7])
@@ -89,15 +79,13 @@ def field_std(el, ns, traSET, newSET, micr, typ, comp, sn, slc, plotnum):
     ax = plt.imshow(newSET[sn, slc, :, :], origin='lower',
                     interpolation='none', cmap='jet', vmin=dmin, vmax=dmax)
     plt.colorbar(ax)
-    plt.title('New Approach $\{%s}_{%s}^{%s}$, slice %s'
-              % (base, comp, exp, slc))
+    plt.title('New Approach, FIP-FS, slice %s' % slc)
 
     plt.subplot(122)
     ax = plt.imshow(traSET[sn, slc, :, :], origin='lower',
                     interpolation='none', cmap='jet', vmin=dmin, vmax=dmax)
     plt.colorbar(ax)
-    plt.title('Standard Approach $\{%s}_{%s}^{%s}$, slice %s'
-              % (base, comp, exp, slc))
+    plt.title('Standard Approach, FIP-FS, slice %s' % slc)
 
 
 # def hist_extreme_val(el, ns, r_fem, r_mks, typ, comp, spr, plotnum):
@@ -402,19 +390,7 @@ if __name__ == '__main__':
     ns = 100
     set_id = 'val'
     step = 5
-
-    # """parameters to plot strain field"""
-    # typ = 'epsilon_t'
-    # comp = '11'
-    # newID = 'rmks'
-    # traID = 'r'
-    # nfac = 0.00747
-
-    """parameters to plot fips"""
-    typ = 'fip'
-    comp = ''
     newID = 'fip'
     traID = 'fipmks'
-    nfac = 1.0
 
-    results(el, ns, set_id, step, typ, comp, newID, traID, nfac)
+    results(el, ns, set_id, step, newID, traID)
