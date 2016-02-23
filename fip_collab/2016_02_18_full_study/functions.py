@@ -10,7 +10,7 @@ Noah Paulson, 5/28/2014
 import numpy as np
 import vtk
 import h5py
-import gsh_hex_tri_L0_4 as gsh
+import gsh_hex_tri_L0_20 as gsh
 
 
 def eval_func(theta, X, et_norm):

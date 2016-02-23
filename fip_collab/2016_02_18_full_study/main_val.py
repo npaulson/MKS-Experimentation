@@ -70,21 +70,21 @@ for step in xrange(5, 6):
     #     rtex.results(el, ns_val, set_id_val, step, typ, comp,
     #                  newID, traID, nfac)
 
-    # """Calculate FIP fields"""
-    # fipmat = np.zeros((ns_val, el**3))
+    """Calculate FIP fields"""
+    fipmat = np.zeros((ns_val, el**3))
 
-    # for sn in xrange(ns_val):
-    #     fipmat[sn, :] = fip.fip(sn, el, ns_val, set_id_val, step, typ, compl)
+    for sn in xrange(ns_val):
+        fipmat[sn, :] = fip.fip(sn, el, ns_val, set_id_val, step, typ, compl)
 
-    # f = h5py.File("fip_%s%s_s%s.hdf5" % (ns_val, set_id_val, step), 'a')
-    # f.create_dataset('fipmks', data=fipmat)
-    # f.close()
+    f = h5py.File("fip_%s%s_s%s.hdf5" % (ns_val, set_id_val, step), 'a')
+    f.create_dataset('fipmks', data=fipmat)
+    f.close()
 
-    """Perform Blurring on FIPs"""
-    parID = 'fip'
-    field_blur.blur(el, ns_val, set_id_val, step, parID)
-    fs.fip_sort(el, ns_val, set_id_val, step, parID)
+    # """Perform Blurring on FIPs"""
+    # parID = 'fip'
+    # field_blur.blur(el, ns_val, set_id_val, step, parID)
+    # fs.fip_sort(el, ns_val, set_id_val, step, parID)
 
-    parID = 'fipmks'
-    field_blur.blur(el, ns_val, set_id_val, step, parID)
-    fs.fip_sort(el, ns_val, set_id_val, step, parID)
+    # parID = 'fipmks'
+    # field_blur.blur(el, ns_val, set_id_val, step, parID)
+    # fs.fip_sort(el, ns_val, set_id_val, step, parID)
