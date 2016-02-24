@@ -21,8 +21,8 @@ ax.scatter(slc[:, 1], slc[:, 2], slc[:, 6].real, c='r')
 
 title_text = "theta = %s, phi2 = %s, en = %s" % (th, phi2, en)
 ax.set_title(title_text)
-ax.set_xlabel('phi1')
-ax.set_ylabel('Phi')
-ax.set_zlabel('FIP')
+ax.set_xlabel('$\phi_1$')
+ax.set_ylabel('$\Phi$')
+ax.set_zlabel('$\epsilon_{11}^{p}$')
 
 plt.show()

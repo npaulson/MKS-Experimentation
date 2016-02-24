@@ -32,17 +32,6 @@ def sorted_eig(et_n):
 
     """ find the principal strains """
     eigval, eigvec = LA.eigh(et_n)
-    # print "eigenvalues and eigenvectors of et_n"
-    # print eigval.round(4)
-    # print eigvec.round(4)
-
-    # """ sort the principal strains in descending order """
-    # indx = np.argsort(eigval)
-    # indx = indx[::-1]
-
-    # eigval = eigval[indx]
-
-    # eigvec = eigvec[:, indx]
 
     print "sorted eigenvalues and eigenvectors of et_n"
     print eigval.round(4)
@@ -65,9 +54,9 @@ def eig2theta(eigval):
     theta = np.zeros(3)
 
     # determine the angle theta associated with the diagonal matrix of interest
-    theta[0] = np.arccos(np.sqrt(3./2.)*eigval[0])+(np.pi/3.)
+    theta[0] = np.arccos(np.sqrt(3./2.)*eigval[2])+(np.pi/3.)
     theta[1] = np.arccos(np.sqrt(3./2.)*eigval[1])-(np.pi/3.)
-    theta[2] = np.arccos(-np.sqrt(3./2.)*eigval[2])
+    theta[2] = np.arccos(-np.sqrt(3./2.)*eigval[0])
 
     print "deformation mode angles versions: %s" % theta.round(4)
 
@@ -99,7 +88,7 @@ print theta2eig(theta).round(4)
 print "retrieved eigenvalues from symmetric deformation mode:"
 print theta2eig((2.*np.pi/3.)-theta).round(4)
 
-recon = np.dot(np.dot(np.transpose(eigvec), et_n), eigvec)
+recon = np.dot(np.dot(eigvec.T, et_n), eigvec)
 print "demonstrate the transformation from et_n to the principal frame:"
 print recon.round(4)
 

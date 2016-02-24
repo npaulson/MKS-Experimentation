@@ -25,6 +25,8 @@ def eval_func(theta, X, et_norm):
     """
 
     thr = 0.00001  # threshold on coefs w/rt maximum magnitude coef
+    # thr = 0.0  # threshold on coefs w/rt maximum magnitude coef
+
     LL_p = 16  # LL_p: gsh truncation level
 
     a = 0.00485  # start for en range
