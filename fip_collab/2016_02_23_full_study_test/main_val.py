@@ -52,9 +52,10 @@ for step in xrange(1, 2):
         vtk.read_meas(el, ns_val, set_id_val, step, comp, tensorID,
                       dir_val, wrt_file)
 
-    """get the 11 plastic strain component"""
-    vtk.read_meas(el, ns_val, set_id_val, step, '11', 2,
-                  dir_val, wrt_file)
+    """get the plastic strain tensor from CPFEM"""
+    for comp in compl:
+        vtk.read_meas(el, ns_val, set_id_val, step, comp, 2,
+                      dir_val, wrt_file)
 
     # """Convert the orientations from the calibration datasets from bunge euler
     # angles to GSH coefficients"""
