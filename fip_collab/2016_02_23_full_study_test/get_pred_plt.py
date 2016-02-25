@@ -98,12 +98,13 @@ def get_pred(sn, el, ns, set_id, step, typ, compl):
 
     """ find g_p2c = g_p2s*g_s2c """
 
-    g_s2c = ef.bunge2g(euler[:, 0], euler[:, 1], euler[:, 2])    
+    g_s2c = ef.bunge2g(euler[:, 0], euler[:, 1], euler[:, 2])
+    # g_s2c = g_s2c.swapaxes(1, 2)  # don't trust
 
-    # g_p2c = np.einsum('...ik,...kj', g_s2c, g_p2s)
-    g_p2c = np.dot(g_s2c, g_p2s)
+    """this application of einsum is validated vs loop with np.dot()"""
+    g_p2c = np.einsum('...ik,...kj', g_s2c, g_p2s)
 
-    # g_p2c = g_p2c.swapaxes(1, 2) # don't trust
+    # g_p2c = g_p2c.swapaxes(1, 2)  # don't trust
 
     del g_s2c, g_p2s
 
@@ -131,12 +132,14 @@ if __name__ == '__main__':
     compl = ['11', '22', '33', '12', '13', '23']
 
     f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'r')
-    print f.keys()
     pred = f.get('r%s_epsilon_p' % comp)[sn, ...].reshape(el, el, el)
     f.close()
 
     pred_ = get_pred(sn, el, ns, set_id, step, typ, compl)
     pred_ = pred_.reshape(el, el, el)
+
+    print pred.max()
+    print pred_.max()
 
     maxindx = np.unravel_index(np.argmax(np.abs(pred)),
                                pred.shape)
