@@ -18,8 +18,8 @@ def read_euler(el, ns, set_id, step, newdir, wrt_file, funit):
 
     euler = np.zeros([ns, 3, el**3])
 
-    nwd = os.getcwd() + '\\' + newdir
-    # nwd = os.getcwd() + '/' + newdir  # for unix
+#    nwd = os.getcwd() + '\\' + newdir
+    nwd = os.getcwd() + '/' + newdir  # for unix
     os.chdir(nwd)
 
     sn = 0
@@ -52,8 +52,8 @@ def read_fip(el, ns, set_id, step, newdir, wrt_file):
 
     fip = np.zeros([ns, el**3])
 
-    nwd = os.getcwd() + '\\' + newdir
-    # nwd = os.getcwd() + '/' + newdir  # for unix
+#    nwd = os.getcwd() + '\\' + newdir
+    nwd = os.getcwd() + '/' + newdir  # for unix
     os.chdir(nwd)
 
     sn = 0
@@ -83,8 +83,8 @@ def read_meas(el, ns, set_id, step, comp, tensor_id, newdir, wrt_file):
 
     typ = ['sigma', 'epsilon_t', 'epsilon_p']
 
-    nwd = os.getcwd() + '\\' + newdir
-    # nwd = os.getcwd() + '/' + newdir  # for unix
+#    nwd = os.getcwd() + '\\' + newdir
+    nwd = os.getcwd() + '/' + newdir  # for unix
     os.chdir(nwd)
 
     compd = {'11': 0, '22': 4, '33': 8, '12': 1, '13': 6, '23': 5}

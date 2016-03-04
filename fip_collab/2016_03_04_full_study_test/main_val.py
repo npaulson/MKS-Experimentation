@@ -18,7 +18,7 @@ ns_cal = 300
 set_id_cal = 'cal'
 dir_cal = 'cal'
 
-ns_val = 25
+ns_val = 100
 set_id_val = 'val'
 dir_val = 'val'
 
@@ -32,7 +32,7 @@ el = 21
 compl = ['11', '22', '33', '12', '13', '23']
 # compl = ['11']
 
-for step in xrange(6, 7):
+for step in xrange(1, 2):
 
     wrt_file = 'log_step%s_%s.txt' % (step, time.strftime("%Y-%m-%d_h%Hm%M"))
 
@@ -52,7 +52,10 @@ for step in xrange(6, 7):
         vtk.read_meas(el, ns_val, set_id_val, step, comp, tensorID,
                       dir_val, wrt_file)
 
-    vtk.read_fip(el, ns_val, set_id_val, step, dir_val, wrt_file)
+    """get the plastic strain tensor from CPFEM"""
+    for comp in compl:
+        vtk.read_meas(el, ns_val, set_id_val, step, comp, 2,
+                      dir_val, wrt_file)
 
     # """Convert the orientations from the calibration datasets from bunge euler
     # angles to GSH coefficients"""

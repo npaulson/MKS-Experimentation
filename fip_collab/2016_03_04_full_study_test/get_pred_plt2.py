@@ -27,6 +27,10 @@ def field_std(el, ns, traSET, newSET, slc, typecomp, plotnum):
     plt.title('Standard Approach, %s, slice %s' % (typecomp, slc))
 
 
+def tensnorm(tensvec):
+    return np.sqrt(np.sum(tensvec[:, 0:3]**2+2*tensvec[:, 3:]**2, 1))
+
+
 def get_pred(sn, el, ns, set_id, step, compl):
 
     """read the file for euler angle, total strain and plastic strain fields"""
@@ -55,17 +59,20 @@ def get_pred(sn, el, ns, set_id, step, compl):
 
     print np.all(np.isclose(np.sum(et[:, 0:3]), np.zeros(el**3)))
 
-    """find the norm of the deviatoric strain tensor"""
-    en = np.sqrt(np.sum(et_[:, 0:3]**2+2*et_[:, 3:]**2, 1))
+    """find the norm of the tensors"""
+    en = tensnorm(et_)
 
     print "sn: %s" % sn
     print "min(en): %s" % en.min()
     print "max(en): %s" % en.max()
 
+    epn = tensnorm(ep)
+    orig = epn
+
     """normalize the deviatoric strain tensor"""
     et_n = et_/np.expand_dims(en, 1)
 
-    print np.all(np.isclose(np.sqrt(np.sum(et_n[:, 0:3]**2+2*et_n[:, 3:]**2, 1)), np.ones(el**3)))
+    print np.all(np.isclose(tensnorm(et_n), np.ones(el**3)))
 
     """write the normalized deviatioric total strain and plastic strains
     in matrix form"""
@@ -81,30 +88,10 @@ def get_pred(sn, el, ns, set_id, step, compl):
     et_m[:, 2, 1] = et_n[:, 5]
     print et_m[0, ...]
 
-    ep_m = np.zeros((el**3, 3, 3))
-    ep_m[:, 0, 0] = ep[:, 0]
-    ep_m[:, 1, 1] = ep[:, 1]
-    ep_m[:, 2, 2] = ep[:, 2]
-    ep_m[:, 0, 1] = ep[:, 3]
-    ep_m[:, 1, 0] = ep[:, 3]
-    ep_m[:, 0, 2] = ep[:, 4]
-    ep_m[:, 2, 0] = ep[:, 4]
-    ep_m[:, 1, 2] = ep[:, 5]
-    ep_m[:, 2, 1] = ep[:, 5]
-    print ep_m[0, ...]  # plastic strain tensors in the sample frame
-    del ep
-
     """find the eigenvalues of the normalized tensor"""
     eigval, g_p2s = LA.eigh(et_m)
     del et_m
     print eigval[:5, :]
-
-    """transform the simulated plastic strain tensors to the
-    principal frame of the total strain"""
-    ep_p = np.einsum('...ji,...jk,...kl', g_p2s, ep_m, g_p2s)
-    del ep_m
-    orig = ep_p[:, 1, 1]
-    del ep_p
 
     """find the deformation mode"""
     theta = np.arccos(-np.sqrt(3./2.)*eigval[:, 0])

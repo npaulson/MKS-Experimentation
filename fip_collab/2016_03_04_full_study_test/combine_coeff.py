@@ -1,6 +1,5 @@
 import numpy as np
 import db_functions as fn
-import gsh_hex_tri_L0_16 as gsh
 import h5py
 import time
 
@@ -10,17 +9,12 @@ filename = 'log_combine_coeff.txt'
 """ Initialize important variables """
 a = 0.00485  # start for en range
 b = 0.00905  # end for en range
-
-LL_p = 16  # gsh truncation level
-indxvec = gsh.gsh_basis_info()
-# N_p: number of GSH bases to evaluate
-N_p = np.sum(indxvec[:, 0] <= LL_p)
-
+N_p = 500  # number of GSH bases to evaluate
 N_q = 40  # number of cosine bases to evaluate for theta
 N_r = 14  # number of cosine bases to evaluate for en
 
 # pick range of indxmat to calculate
-n_jobs = 400  # number of jobs submitted to PACE
+n_jobs = 200  # number of jobs submitted to PACE
 
 st = time.time()  # start timing
 

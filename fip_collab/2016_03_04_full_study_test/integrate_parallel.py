@@ -21,16 +21,11 @@ f.close
 """ Initialize important variables """
 a = 0.00485  # start for en range
 b = 0.00905  # end for en range
-
-LL_p = 16  # gsh truncation level
-indxvec = gsh.gsh_basis_info()
-
-# N_p: number of GSH bases to evaluate
-N_p = np.sum(indxvec[:, 0] <= LL_p)
+N_p = 500  # number of GSH bases to evaluate
 N_q = 40  # number of cosine bases to evaluate for theta
 N_r = 14  # number of cosine bases to evaluate for en
 
-n_jobs = 400.  # number of jobs submitted to cluster
+n_jobs = 200.  # number of jobs submitted to cluster
 
 inc_eul = 5.  # degree increment for angular variables
 inc_th = 1.5

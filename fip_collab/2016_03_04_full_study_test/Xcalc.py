@@ -7,16 +7,9 @@ import time
 
 a = 0.00485  # start for en range
 b = 0.00905  # end for en range
-
-LL_p = 16  # gsh truncation level
-indxvec = gsh.gsh_basis_info()
-
-# N_p: number of GSH bases to evaluate
-N_p = np.sum(indxvec[:, 0] <= LL_p)
+N_p = 500  # number of GSH bases to evaluate
 N_q = 40  # number of cosine bases to evaluate for theta
 N_r = 14  # number of cosine bases to evaluate for en
-
-print N_p
 
 L_th = np.pi/3.
 L_en = b-a
