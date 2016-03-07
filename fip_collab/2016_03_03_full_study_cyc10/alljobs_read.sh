@@ -1,4 +1,4 @@
-cd /gpfs/scratch1/3/nhpnp3/1_31_5deg
+cd /nv/gpfs/scratch1/3/nhpnp3/1_31_5deg
 
 for f in {1..40}
 do
