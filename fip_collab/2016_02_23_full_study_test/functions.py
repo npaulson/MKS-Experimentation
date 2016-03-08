@@ -27,14 +27,10 @@ def eval_func(theta, X, et_norm):
     thr = 0.00001  # threshold on coefs w/rt maximum magnitude coef
     # thr = 0.0  # threshold on coefs w/rt maximum magnitude coef
 
-    LL_p = 16  # LL_p: gsh truncation level
-
     a = 0.00485  # start for en range
     b = 0.00905  # end for en range
 
-    # N_p: number of GSH bases to evaluate
-    indxvec = gsh.gsh_basis_info()
-    N_p = np.sum(indxvec[:, 0] <= LL_p)
+    N_p = 500
     N_q = 40  # number of cosine bases to evaluate for theta
     N_r = 14  # number of cosine bases to evaluate for en
 

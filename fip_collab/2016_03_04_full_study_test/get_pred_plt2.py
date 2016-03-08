@@ -37,8 +37,12 @@ def get_pred(sn, el, ns, set_id, step, compl):
 
     f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'r')
 
-    euler = f.get('euler')[sn, ...].reshape(3, el**3)
+    print f.get('euler').shape
+
+    euler = f.get('euler')[sn, ...]
     euler = euler.swapaxes(0, 1)
+
+    print euler.shape
 
     et = np.zeros((el**3, 6))
     ep = np.zeros((el**3, 6))
@@ -124,13 +128,11 @@ def get_pred(sn, el, ns, set_id, step, compl):
 
 
 if __name__ == '__main__':
-    sn = 5
+    sn = 1
     el = 21
     ns = 100
     set_id = 'val'
     step = 1
-    comp = '11'
-    typ = 'epsilon_t'
     compl = ['11', '22', '33', '12', '13', '23']
 
     orig, pred = get_pred(sn, el, ns, set_id, step, compl)
@@ -141,6 +143,6 @@ if __name__ == '__main__':
                                orig.shape)
     slc = maxindx[0]
 
-    field_std(el, ns, orig, pred, slc, typ+comp, 1)
+    field_std(el, ns, orig, pred, slc, "$|\epsilon^{p}|$", 1)
 
     plt.show()
