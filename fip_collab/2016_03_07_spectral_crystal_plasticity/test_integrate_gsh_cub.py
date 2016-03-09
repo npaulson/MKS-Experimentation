@@ -80,16 +80,17 @@ indxvec = gsh.gsh_basis_info()
 
 N_L = indxvec.shape[0]
 print "N_L = %s" % N_L
+# N_L = 61
 
 phi1max = 2*np.pi
 phimax = np.pi/2.
 phi2max = np.pi/2.
 
-# n_tot = 72000
-# euler = euler_rand(n_tot, phi1max, phimax, phi2max)
+n_tot = 72000
+euler = euler_rand(n_tot, phi1max, phimax, phi2max)
 
-inc = 3.
-euler, n_tot = euler_grid_center(inc, phi1max, phimax, phi2max)
+# inc = 3.
+# euler, n_tot = euler_grid_center(inc, phi1max, phimax, phi2max)
 
 """ Calculate X """
 
@@ -104,6 +105,8 @@ print "size of X: %sgb" % np.str(X.nbytes/(1E9))
 
 bvec = [0,  10, 20, 60, 140, 280]
 bval = [40., 20., -10., 6., -4., 1.]
+# bvec = [0,  10, 20, 60]
+# bval = [40., 20., -10., 6.]
 
 Y = np.dot(bval, X[:, bvec].T)
 

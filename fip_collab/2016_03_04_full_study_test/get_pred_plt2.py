@@ -57,11 +57,18 @@ def get_pred(sn, el, ns, set_id, step, compl):
 
     f.close()
 
-    """find the deviatoric strain tensor"""
-    et_ = et
-    et_[:, 0:3] = et_[:, 0:3] - (1./3.)*np.expand_dims(np.sum(et[:, 0:3], 1), 1)
+    epn_max = np.argmax(tensnorm(ep))
 
+    """find the deviatoric strain tensor"""
     print np.all(np.isclose(np.sum(et[:, 0:3]), np.zeros(el**3)))
+
+    et_ = np.zeros(et.shape)
+    et_[:, 0:3] = et[:, 0:3] - (1./3.)*np.expand_dims(np.sum(et[:, 0:3], 1), 1)
+    et_[:, 3:] = et[:, 3:]
+
+    print et_[epn_max, :]
+
+    print np.all(np.isclose(np.sum(et_[:, 0:3]), np.zeros(el**3)))
 
     """find the norm of the tensors"""
     en = tensnorm(et_)
@@ -90,7 +97,13 @@ def get_pred(sn, el, ns, set_id, step, compl):
     et_m[:, 2, 0] = et_n[:, 4]
     et_m[:, 1, 2] = et_n[:, 5]
     et_m[:, 2, 1] = et_n[:, 5]
-    print et_m[0, ...]
+
+
+    print epn[epn_max]
+    print euler[epn_max, ...]
+    print et[epn_max, ...]
+    print et_[epn_max, ...]
+    print et_n[epn_max, ...]
 
     """find the eigenvalues of the normalized tensor"""
     eigval, g_p2s = LA.eigh(et_m)
@@ -128,7 +141,7 @@ def get_pred(sn, el, ns, set_id, step, compl):
 
 
 if __name__ == '__main__':
-    sn = 1
+    sn = 0
     el = 21
     ns = 100
     set_id = 'val'
