@@ -292,9 +292,9 @@ def gsh_basis_info():
 
 def gsh_eval(X, Bvec):
 
-    phi1 = X[..., 0]
+    phi1 = X[..., 2]
     phi = X[..., 1]
-    phi2 = X[..., 2]
+    phi2 = X[..., 0]
 
     zvec = np.abs(phi) < 1e-8
     zvec = zvec.astype(int)

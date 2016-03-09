@@ -58,7 +58,7 @@ euler, n_tot = euler_grid_center(inc, phi1max, phimax, phi2max)
 
 """Perform the symmetry check"""
 
-symop = ef.symhex()
+symop = ef.symcub()
 n_sym = symop.shape[0]
 print "number of symmetry operators: %s" % n_sym
 

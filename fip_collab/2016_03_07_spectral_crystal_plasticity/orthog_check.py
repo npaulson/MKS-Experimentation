@@ -1,6 +1,6 @@
 import time
 import numpy as np
-import gsh_hex_tri_L0_16 as gsh
+import gsh_cub_tri_L0_16 as gsh
 import matplotlib.pyplot as plt
 
 
@@ -46,7 +46,7 @@ N_L = 100
 
 phi1max = 360
 phimax = 90
-phi2max = 60
+phi2max = 90
 
 # domain_sz is the integration domain in radians
 domain_sz = phi1max*phimax*phi2max*(np.pi/180.)**3
