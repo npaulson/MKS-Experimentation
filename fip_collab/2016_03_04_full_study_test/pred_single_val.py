@@ -162,7 +162,7 @@ if __name__ == '__main__':
     """show that the matrix of eigenvectors is g_p2s"""
     print "use the backwards tensor transformation to " +\
           "get et_n_prinicipal using g_p2s\n" +\
-          "(et_n_principal =g_p2s^t * et_n * g_p2s)"
+          "(et_n_principal = g_p2s^t * et_n * g_p2s)"
     print np.round(np.dot(np.dot(g_p2s.T, et_n), g_p2s), 6)
 
     """find the deformation mode"""
