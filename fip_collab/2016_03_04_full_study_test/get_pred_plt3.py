@@ -122,11 +122,15 @@ def get_pred(sn, el, ns, set_id, step, compl):
     """this application of einsum is validated vs loop with np.dot()"""
     g_p2c = np.einsum('...ij,...jk', g_s2c, g_p2s)
 
-    del g_s2c, g_p2s
-
     phi1, phi, phi2 = ef.g2bunge(g_p2c)
 
-    X = np.vstack([phi1, phi, phi2]).T
+    # X = np.vstack([phi1, phi, phi2]).T
+    # X = np.array(ef.g2bunge(g_p2s.swapaxes(1, 2))).T
+    # X = np.array(ef.g2bunge(g_p2s)).T
+    # X = np.array(ef.g2bunge(g_s2c.swapaxes(1, 2))).T
+    # X = np.array(ef.g2bunge(g_s2c)).T
+    # X = np.array(ef.g2bunge(g_p2c.swapaxes(1, 2))).T
+    X = np.array(ef.g2bunge(g_s2c)).T
 
     del phi1, phi, phi2
 
@@ -141,7 +145,7 @@ def get_pred(sn, el, ns, set_id, step, compl):
 
 
 if __name__ == '__main__':
-    sn = 5
+    sn = 3
     el = 21
     ns = 100
     set_id = 'val'

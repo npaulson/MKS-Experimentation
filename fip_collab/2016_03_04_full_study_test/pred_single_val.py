@@ -82,6 +82,18 @@ def theta2eig(x):
     return et_ii
 
 
+def return2fz(euler):
+    g = bunge2g(euler)
+    symhex = ef.symhex()
+    for ii in xrange(symhex.shape[0]):
+        g_symm = np.dot(symhex[ii, ...], g)
+        euler_ = g2bunge(g_symm)
+        euler_ += 2*np.pi*np.array(euler_ < 0)
+        if np.all(euler_ < np.array([2*np.pi, np.pi/2, np.pi/3])):
+            break
+    return euler_
+
+
 if __name__ == '__main__':
 
     sn = 0
@@ -99,15 +111,13 @@ if __name__ == '__main__':
     print "euler angles: %s" % str(euler)
 
     """check to make sure that the Euler manipulations are functioning"""
-
     g_test = bunge2g(euler)
-    symhex = ef.symhex()
-    print "run through all symmetric g and identify same Euler angles"
-    for ii in xrange(symhex.shape[0]):
-        g_symm = np.dot(symhex[ii, ...], g_test)
-        euler_ = g2bunge(g_symm)
-        euler_ += 2*np.pi*np.array(euler_ < 0)
-        print euler_
+    euler_test = g2bunge(g_test)
+    euler_test += 2*np.pi*np.array(euler_test < 0)
+    print "result of converting from euler to g and back: %s" % str(euler_test)
+
+    # euler_ = return2fz(euler)
+    # print "convert euler to g and back (into the FZ): %s" % euler_
 
     """load the total and plastic strain tensors"""
     etv = np.zeros((6))
@@ -178,11 +188,19 @@ if __name__ == '__main__':
     # g_p2c = np.einsum('ij,jk', g_s2c, g_p2s)
     g_p2c = np.dot(g_s2c, g_p2s)
 
+    # print g_p2c
+
     phi1, phi, phi2 = g2bunge(g_p2c)
 
     euler_p2c = np.array([phi1, phi, phi2])
     euler_p2c += 2*np.pi*np.array(euler_p2c < 0)
     print "g_p2c euler angles: %s" % str(euler_p2c)
+
+    # print bunge2g(euler_p2c)
+    # print bunge2g(return2fz(np.array([phi1, phi, phi2])))
+
+    # euler_p2c = return2fz(np.array([phi1, phi, phi2]))
+    # print "g_p2c euler angles (euler_p2c): %s" % str(euler_p2c)
 
     """try to recover et_dev from theta and euler_p2c"""
     g_p2c_ = bunge2g(euler_p2c)
@@ -198,7 +216,8 @@ if __name__ == '__main__':
     print "et_dev reconstructed from theta, euler_p2c and en"
     print et_dev_
 
-    X = np.vstack([phi1, phi, phi2]).T
+    # X = np.vstack([phi1, phi, phi2]).T
+    X = euler
 
     epn_SPECTRAL = rr.eval_func(theta, X, en).real
 
@@ -222,10 +241,6 @@ if __name__ == '__main__':
     indx = np.argmin(np.abs(en_vec - en))
 
     ep_C = tens2mat(ep_C_vec[indx, :])
-
-    print ep_C
-
-    print ep_C
 
     epn_SPCP = tensnorm(ep_C)
 
