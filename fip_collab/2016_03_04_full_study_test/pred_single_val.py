@@ -142,8 +142,7 @@ if __name__ == '__main__':
     en = tensnorm(et_dev)
     print "en (norm(et_dev)): %s" % str(en)
 
-    epn = tensnorm(ep)
-    orig = epn
+    epn_CPFEM = tensnorm(ep)
 
     """normalize the deviatoric strain tensor"""
     et_n = et_dev/en
@@ -201,7 +200,33 @@ if __name__ == '__main__':
 
     X = np.vstack([phi1, phi, phi2]).T
 
-    pred = rr.eval_func(theta, X, en).real
+    epn_SPECTRAL = rr.eval_func(theta, X, en).real
 
-    print "correct plastic strain: %s" % orig
-    print "predicted plastic strain: %s" % pred[0]
+    print "CPFEM plastic strain magnitude: %s" % epn_CPFEM
+    print "predicted plastic strain magnitude: %s" % epn_SPECTRAL[0]
+
+    """check database predction with single point data:
+    tensor components are as follows: 11, 22, 33, 12, 13, 23
+    the array structure is detailed here:
+    rawdata[:, 0] = time
+    rawdata[:, 1:7] = stress tensor
+    rawdata[:, 7:13] = total strain tensor
+    rawdata[:, 13:19] = plastic strain tensor"""
+
+    rawdata = np.loadtxt("single_pt.txt")
+    et_P_vec = rawdata[:, 7:10]
+    ep_C_vec = rawdata[:, 13:19]
+
+    en_vec = np.sqrt(np.sum(et_P_vec**2, 1))
+
+    indx = np.argmin(np.abs(en_vec - en))
+
+    ep_C = tens2mat(ep_C_vec[indx, :])
+
+    print ep_C
+
+    print ep_C
+
+    epn_SPCP = tensnorm(ep_C)
+
+    print "single point CP plastic strain magnitude: %s" % epn_SPCP

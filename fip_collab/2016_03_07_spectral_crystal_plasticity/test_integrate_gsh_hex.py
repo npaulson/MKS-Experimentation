@@ -9,7 +9,7 @@ def euler_grid(inc, phi1max, phimax, phi2max):
 
     n_p1 = (360/inc)  # number of phi1 samples for FZ
     n_P = (90/inc)+1  # number of Phi samples for FZ
-    n_p2 = (120/inc)  # number of phi2 samples for FZ
+    n_p2 = (60/inc)  # number of phi2 samples for FZ
 
     n_tot = n_p1*n_P*n_p2
 
@@ -80,7 +80,7 @@ N_L = 500
 
 phi1max = 2*np.pi
 phimax = np.pi/2.
-phi2max = 2*np.pi/3.
+phi2max = np.pi/3.
 
 # n_tot = 72000
 # euler = euler_rand(n_tot, phi1max, phimax, phi2max)
@@ -112,7 +112,7 @@ coeff = np.zeros(N_L, dtype='complex128')
 
 indxvec = gsh.gsh_basis_info()
 
-fzsz = 6./(8.*np.pi**2)
+fzsz = 12./(8.*np.pi**2)
 bsz = phi1max*phimax*phi2max/n_tot
 print "esz: %s" % bsz
 print "n_tot: %s" % n_tot
@@ -139,7 +139,7 @@ angles"""
 
 del X, Y, euler, n_tot
 
-inc = 5.0
+inc = 3.0
 
 # euler is the array of euler angles for the purposes of validation
 euler, n_tot = euler_grid(inc, phi1max, phimax, phi2max)

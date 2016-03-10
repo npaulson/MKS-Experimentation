@@ -89,7 +89,7 @@ phi2max = np.pi/2.
 # n_tot = 72000
 # euler = euler_rand(n_tot, phi1max, phimax, phi2max)
 
-inc = 3.
+inc = 5.
 euler, n_tot = euler_grid_center(inc, phi1max, phimax, phi2max)
 
 """ Calculate X """
@@ -105,8 +105,6 @@ print "size of X: %sgb" % np.str(X.nbytes/(1E9))
 
 bvec = [0,  10, 20, 60, 140, 280]
 bval = [40., 20., -10., 6., -4., 1.]
-# bvec = [0,  10, 20, 60]
-# bval = [40., 20., -10., 6.]
 
 Y = np.dot(bval, X[:, bvec].T)
 
@@ -143,7 +141,7 @@ angles"""
 
 del X, Y, euler, n_tot
 
-inc = 3.0
+inc = 5.0
 
 # euler is the array of euler angles for the purposes of validation
 euler, n_tot = euler_grid(inc, phi1max, phimax, phi2max)
