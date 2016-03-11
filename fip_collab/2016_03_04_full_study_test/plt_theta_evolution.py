@@ -33,9 +33,34 @@ fig.colorbar(im, cax=cbar_ax)
 
 plt.figure(2)
 
-plt.imshow(slc_mat[-1, ...]-slc_mat[-2, ...], origin='lower',
-           interpolation='none', cmap='jet')
-plt.title("difference in theta between first and last steps")
+dmin = np.min([slc_mat[0, ...], slc_mat[-1, ...]])
+dmax = np.max([slc_mat[0, ...], slc_mat[-1, ...]])
+
+plt.subplot(131)
+
+plt.imshow(slc_mat[0, ...], origin='lower',
+           interpolation='none', cmap='plasma',
+           vmin=dmin, vmax=dmax)
+plt.title("theta field at first step")
+plt.colorbar()
+
+plt.subplot(132)
+
+plt.imshow(slc_mat[-1, ...], origin='lower',
+           interpolation='none', cmap='plasma',
+           vmin=dmin, vmax=dmax)
+plt.title("theta field at last step")
+plt.colorbar()
+
+plt.subplot(133)
+
+diff = slc_mat[-1, ...]-slc_mat[0, ...]
+
+bound = np.max(np.abs(diff))
+
+plt.imshow(slc_mat[-1, ...]-slc_mat[0, ...], origin='lower',
+           interpolation='none', cmap='seismic', vmin=-bound, vmax=bound)
+plt.title("difference in theta")
 plt.colorbar()
 
 f.close()

@@ -76,9 +76,9 @@ def tens2mat(vec):
 
 def theta2eig(x):
 
-    et_ii = np.array([-np.sqrt(2./3.)*np.cos(x),
+    et_ii = np.array([np.sqrt(2./3.)*np.cos(x-(np.pi/3.)),
                       np.sqrt(2./3.)*np.cos(x+(np.pi/3.)),
-                      np.sqrt(2./3.)*np.cos(x-(np.pi/3.))])
+                      -np.sqrt(2./3.)*np.cos(x)])
     return et_ii
 
 
@@ -103,6 +103,7 @@ if __name__ == '__main__':
     step = 1
     compl = ['11', '22', '33', '12', '13', '23']
     cellnum = np.int64(np.random.rand()*el**3)
+    # cellnum = 8
 
     """read the file for euler angle, total strain and plastic strain fields"""
     f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'r')
@@ -163,6 +164,16 @@ if __name__ == '__main__':
 
     """find the principal values of the normalized tensor"""
     eigval, g_p2s = LA.eigh(et_n)
+    esort = np.argsort(np.abs(eigval))[::-1]
+    
+    # print "\n"
+    # print eigval
+    # print g_p2s
+    eigval = eigval[esort]
+    g_p2s = g_p2s[:, esort]
+    # print eigval
+    # print g_p2s
+    # print "\n"
 
     print "principal values of et_n: %s" % str(eigval)
     # print "eigenvectors:"
@@ -175,7 +186,9 @@ if __name__ == '__main__':
     print np.round(np.dot(np.dot(g_p2s.T, et_n), g_p2s), 6)
 
     """find the deformation mode"""
-    theta = np.arccos(-np.sqrt(3./2.)*eigval[0])
+    theta = np.arctan2(-2*eigval[0]-eigval[2], np.sqrt(3)*eigval[2])
+    if theta < 0:
+        theta += np.pi
     print "theta (deformation mode): %s deg" % str(theta*180/np.pi)
 
     """recover the principal values from the deformation mode"""
@@ -204,20 +217,23 @@ if __name__ == '__main__':
 
     """try to recover et_dev from theta and euler_p2c"""
     g_p2c_ = bunge2g(euler_p2c)
+    print g_p2c
+    print g_p2c_
     princ_vals = theta2eig(theta)
+    print princ_vals
     et_n_P = np.zeros((3, 3))
     et_n_P[0, 0] = princ_vals[0]
     et_n_P[1, 1] = princ_vals[1]
     et_n_P[2, 2] = princ_vals[2]
-    et_n_C = np.dot(np.dot(g_p2c_, et_n_P), g_p2c_.T)
+    et_n_C = np.dot(np.dot(g_p2c, et_n_P), g_p2c.T)
     g_c2s = g_s2c.T
     et_n_S = np.dot(np.dot(g_c2s, et_n_C), g_c2s.T)
     et_dev_ = et_n_S * en
     print "et_dev reconstructed from theta, euler_p2c and en"
     print et_dev_
 
-    # X = np.vstack([phi1, phi, phi2]).T
-    X = euler
+    X = np.vstack([phi1, phi, phi2]).T
+    # X = euler
 
     epn_SPECTRAL = rr.eval_func(theta, X, en).real
 
