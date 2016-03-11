@@ -29,66 +29,40 @@ print "nvec: %s" % str(nvec)
 
 # create file for pre-database outputs
 f = h5py.File('var_extract_%s.hdf5' % str(tnum).zfill(2), 'w')
-var_set = f.create_dataset("var_set", (n_eul, 12))
+var_set = f.create_dataset("var_set", (n_eul, 14))
 
 th_val = ((np.int64(tnum)-1)+0.5)*sub2rad
 print "th_val: %s" % str(th_val*(180/np.pi))
 
+c = 0
+
 for ii in xrange(1, 7):
 
+    """eulerset contents (for columns)
+    phi1, Phi, phi2"""
     eulerset = np.loadtxt('euler%s.inp' % ii, skiprows=1)
-    print eulerset.shape
 
-    varset1 = np.loadtxt("crystalstresses%s_%s" % (ii, tnum), skiprows=)
-    varset2 = np.loadtxt("wstar%s_%s" % (ii, tnum), skiprows=)
-    
+    setL = eulerset.shape[0]
+
+    thetaset = th_val*np.ones((setL, 1))
+
+    """varset1 contents (for columns)
+    sigma'22, sigma'11, sigma'33, sigma'12, sigma'13, sigma'23,
+    total shear rate"""
+    varset1 = np.loadtxt("crystalstresses%s_%s.dat" % (ii, tnum), skiprows=0)
+
+    """varset2 contents (for columns)
+    w12, w13, w23"""
+    varset2 = np.loadtxt("wstar%s_%s.dat" % (ii, tnum), skiprows=0)
+
     print "set %s" % ii
+    print "thetaset.shape: %s" % str(thetaset.shape)
     print "eulerset.shape: %s" % str(eulerset.shape)
     print "varset1.shape: %s" % str(varset1.shape)
     print "varset2.shape: %s" % str(varset2.shape)
 
-    """varset1 contents (for columns)
-    sigma'22, sigma'11, sigma'33, sigma'12, sigma'13, sigma'23, total shear rate
+    var_set[c:c+setL, :] = np.hstack([thetaset, eulerset, varset1, varset2])
 
+    c += setL
 
-
-    if np.isclose(euler[ii, 1], np.pi/2):
-        d += 1
-        continue
-
-    test_id = 'sim%s' % str(ii+1).zfill(7)
-
-    if ii % 10000 == 0:
-        print test_id
-
-    dset = f_mwp.get(test_id)
-
-    """
-    Column order in each dataset:
-    time,...
-    sig11,sig22,sig33,sig12,sig13,sig23...
-    e11,e22,e33,e12,e13,e23
-    ep11,ep22,ep33,ep12,ep13,ep23,
-    fip,gamdot,signorm
-
-    """
-
-    var = dset[sample_indx, 13:19]
-    var_norm = np.sqrt(np.sum(var[:, 0:3]**2+2*var[:, 3:]**2, 1))
-
-    for jj in xrange(n_en):
-
-        tmp = np.hstack([th_val,
-                         euler[ii, :],
-                         xnode[jj],
-                         var_norm[jj]])
-
-        var_set[c, :] = tmp
-        c += 1
-
-print n_eul*n_en
-print c
-print d
-
-f_mwp.close()
-f_nhp.close()
+f.close()
