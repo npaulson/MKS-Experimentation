@@ -1,6 +1,6 @@
-cd /gpfs/scratch1/3/nhpnp3/1_31_5deg
+cd /gpfs/scratch1/3/nhpnp3/3_14_db
 
-for f in {0..400}
+for f in {0..399}
 do
     echo " Submitting $f file..."
     export number=$f;
