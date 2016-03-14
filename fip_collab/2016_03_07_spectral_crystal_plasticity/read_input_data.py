@@ -1,6 +1,7 @@
 import numpy as np
 import h5py
 import sys
+import os
 
 """
 in this version of the code the id of the tensor is an argument to
@@ -31,12 +32,17 @@ print "nvec: %s" % str(nvec)
 f = h5py.File('var_extract_%s.hdf5' % str(tnum).zfill(2), 'w')
 var_set = f.create_dataset("var_set", (n_eul, 14))
 
-th_val = ((np.int64(tnum)-1)+0.5)*sub2rad
+th_val = (np.int64(tnum)+0.5)*sub2rad
 print "th_val: %s" % str(th_val*(180/np.pi))
 
 c = 0
 
 for ii in xrange(1, 7):
+
+    os.chdir('..')
+    # nwd = os.getcwd() + '\\dir_db_input'
+    nwd = os.getcwd() + '/dir_db_input'  # for unix
+    os.chdir(nwd)
 
     """eulerset contents (for columns)
     phi1, Phi, phi2"""
@@ -54,6 +60,11 @@ for ii in xrange(1, 7):
     """varset2 contents (for columns)
     w12, w13, w23"""
     varset2 = np.loadtxt("wstar%s_%s.dat" % (ii, tnum), skiprows=0)
+
+    os.chdir('..')
+    # nwd = os.getcwd() + '\\dir_nhp'
+    nwd = os.getcwd() + '/dir_nhp'  # for unix
+    os.chdir(nwd)
 
     print "set %s" % ii
     print "thetaset.shape: %s" % str(thetaset.shape)

@@ -14,6 +14,7 @@ f = h5py.File('var_extract_total.hdf5', 'r')
 var_set = f.get('var_set')
 
 theta = var_set[:, 0]
+print theta.nbytes/(1e9)
 
 f.close
 
