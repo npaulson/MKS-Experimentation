@@ -1,4 +1,4 @@
-cd /gpfs/pace1/project/me-kalidindi/shared/dir_nhp
+cd /gpfs/scratch1/3/nhpnp3/3_14_cpdb
 
 for f in {0..59}
 do

@@ -1,10 +1,11 @@
-import h5py
 import numpy as np
 import db_functions as fn
+import constants
+import h5py
 
 
-"""initialize important variables"""
-n_jobs = 40  # number of jobs submitted
+C = constants.const()
+
 filename = 'log_Xcalc_combine.txt'
 
 f_master = h5py.File("X_parts.hdf5", 'w')
@@ -22,7 +23,7 @@ f_cos.close()
 
 """load the GSH basis evaluations"""
 
-for jobnum in xrange(n_jobs):
+for jobnum in xrange(C['n_jobs_Xcalc']):
 
     f_gsh = h5py.File("X_parts_GSH_%s.hdf5" % jobnum, 'r')
 

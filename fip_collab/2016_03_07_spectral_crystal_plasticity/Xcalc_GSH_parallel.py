@@ -11,7 +11,7 @@ filename = 'log_Xcalc_GSH_parallel_%s.txt' % str(tnum)
 
 """Initialize important variables"""
 
-n_jobs = 40  # number of jobs submitted
+n_jobs = 15  # number of jobs submitted
 n_chunks = 100  # number of chunks to split X into to reduce memory usage
 
 LL_p = 16  # gsh truncation level
@@ -69,7 +69,8 @@ for p in xrange(ii_stt, ii_end):
         if jj_end > N_par:
             jj_end = N_par
 
-        vec[ii_stt:ii_end] = gsh.gsh_eval(X[ii_stt:ii_end, :], [p])
+        tmp = gsh.gsh_eval(X[ii_stt:ii_end, :], [p])
+        vec[ii_stt:ii_end] = np.squeeze(tmp)
 
     set_id = 'p_%s' % p
     f.create_dataset(set_id, data=vec)

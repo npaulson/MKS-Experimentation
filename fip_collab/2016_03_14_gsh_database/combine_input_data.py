@@ -1,31 +1,20 @@
 import h5py
 import numpy as np
+import constants
 
-"""
 
-"""
+C = constants.const()
 
-# define the number of increments for angular variables:
-
-inc_eul = 5  # degree increment for angular variables
-inc_th = 1.5
-
-n_th = np.int64(60/inc_th)  # number of theta samples for FZ
-n_p1 = 360/inc_eul  # number of phi1 samples for FZ
-n_P = 90/inc_eul  # number of Phi samples for FZ
-n_p2 = 60/inc_eul  # number of phi2 samples for FZ
-n_en = 14  # number of et samples for FZ
-
-n_par = n_p1*n_P*n_p2*n_en
+n_par = C['n_eul']*C['n_en']
 
 f1 = h5py.File('var_extract_total.hdf5', 'w')
-alldata = f1.create_dataset("var_set", (n_par*n_th, 6))
+alldata = f1.create_dataset("var_set", (n_par*C['n_th'], 6))
 
 c = 0
 
-for tt in xrange(0, n_th):
+for tt in xrange(0, C['n_th']):
 
-    print "Deformation Mode: %s deg" % str((tt+0.5)*inc_th)
+    print "Deformation Mode: %s deg" % str((tt+0.5)*C['inc_th'])
 
     # create file for pre-database outputs
     f2 = h5py.File('var_extract_%s.hdf5' % str(tt+1).zfill(2), 'r')

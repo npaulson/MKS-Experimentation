@@ -3,7 +3,7 @@ import db_functions as fn
 import h5py
 import time
 
-N_q = 40  # number of cosine bases to evaluate for theta
+N_q = 60  # number of cosine bases to evaluate for theta
 
 L_th = np.pi/3.
 filename = 'Xcalc_cos_log.txt'

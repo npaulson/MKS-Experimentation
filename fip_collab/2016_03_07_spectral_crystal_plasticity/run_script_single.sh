@@ -6,7 +6,7 @@
 #PBS -j oe
 #PBS -o out.$PBS_JOBID
 
-cd /gpfs/pace1/project/me-kalidindi/shared/dir_nhp
+cd /gpfs/scratch1/3/nhpnp3/3_14_cpdb
 module purge
 module load anaconda2
 python Xcalc_cos.py

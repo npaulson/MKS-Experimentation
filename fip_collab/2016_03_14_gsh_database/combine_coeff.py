@@ -1,26 +1,12 @@
 import numpy as np
 import db_functions as fn
-import gsh_hex_tri_L0_16 as gsh
 import h5py
 import time
+import constants
 
 
+C = constants.const()
 filename = 'log_combine_coeff.txt'
-
-""" Initialize important variables """
-a = 0.00485  # start for en range
-b = 0.00905  # end for en range
-
-LL_p = 16  # gsh truncation level
-indxvec = gsh.gsh_basis_info()
-# N_p: number of GSH bases to evaluate
-N_p = np.sum(indxvec[:, 0] <= LL_p)
-
-N_q = 40  # number of cosine bases to evaluate for theta
-N_r = 14  # number of cosine bases to evaluate for en
-
-# pick range of indxmat to calculate
-n_jobs = 400  # number of jobs submitted to PACE
 
 st = time.time()  # start timing
 
@@ -39,7 +25,8 @@ Y = var_set[:, 5]
 
 f.close()
 
-cmax = N_p*N_q*N_r  # total number of permutations of basis functions
+# cmax: total number of permutations of basis functions
+cmax = C['N_p']*C['N_q']*C['N_r']
 print cmax
 
 """ Combine the results of the coefficient determination and
@@ -50,7 +37,7 @@ coeff = np.zeros(cmax, dtype='complex128')
 Y_ = np.zeros(Y.shape, dtype='complex128')
 
 c = 0
-for tnum in xrange(n_jobs):
+for tnum in xrange(C['n_jobs_integrate']):
 
     fn.WP(str(tnum), filename)
 

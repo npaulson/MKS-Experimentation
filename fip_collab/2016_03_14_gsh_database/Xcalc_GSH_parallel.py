@@ -4,21 +4,12 @@ import db_functions as fn
 import h5py
 import time
 import sys
+import constants
 
 
 tnum = np.int64(sys.argv[1])
+C = constants.const()
 filename = 'log_Xcalc_GSH_parallel_%s.txt' % str(tnum)
-
-"""Initialize important variables"""
-
-n_jobs = 40  # number of jobs submitted
-
-LL_p = 16  # gsh truncation level
-indxvec = gsh.gsh_basis_info()
-
-# N_p: number of GSH bases to evaluate
-N_p = np.sum(indxvec[:, 0] <= LL_p)
-print N_p
 
 """ Load info from collected simulation info file """
 
@@ -30,17 +21,16 @@ print X.nbytes/(1e9)
 
 f.close
 
-cmax = N_p
-
 """ Deal with the parallelization of this operation specifically pick range
 of indxmat to calculate """
 
-n_ii = np.int64(np.ceil(np.float(cmax)/n_jobs))  # number dot products per job
+# n_ii: number dot products per job
+n_ii = np.int64(np.ceil(np.float(C['N_p'])/C['n_jobs_Xcalc']))
 fn.WP(str(n_ii), filename)
 
 ii_stt = tnum*n_ii  # start index
-if (tnum+1)*n_ii > cmax:
-    ii_end = cmax
+if (tnum+1)*n_ii > C['N_p']:
+    ii_end = C['N_p']
 else:
     ii_end = (tnum+1)*n_ii  # end index
 

@@ -2,16 +2,11 @@ import numpy as np
 import db_functions as fn
 import h5py
 import time
+import constants
 
 
-a = 0.00485  # start for en range
-b = 0.00905  # end for en range
+C = constants.const()
 
-N_q = 40  # number of cosine bases to evaluate for theta
-N_r = 14  # number of cosine bases to evaluate for en
-
-L_th = np.pi/3.
-L_en = b-a
 filename = 'Xcalc_log_cos.txt'
 
 """ Load info from collected simulation info file """
@@ -30,9 +25,9 @@ f = h5py.File('X_parts_cos.hdf5', 'a')
 
 st = time.time()
 
-for q in xrange(N_q):
+for q in xrange(C['N_q']):
 
-    vec = np.cos(q*np.pi*theta/L_th)
+    vec = np.cos(q*np.pi*theta/C['L_th'])
 
     set_id = 'q_%s' % q
     f.create_dataset(set_id, data=vec)
@@ -46,9 +41,9 @@ fn.WP(msg, filename)
 
 st = time.time()
 
-for r in xrange(N_r):
+for r in xrange(C['N_r']):
 
-    vec = np.cos(r*np.pi*(et_norm-a)/L_en)
+    vec = np.cos(r*np.pi*(et_norm-C['a'])/C['L_en'])
 
     set_id = 'r_%s' % r
     f.create_dataset(set_id, data=vec)

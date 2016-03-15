@@ -1,4 +1,5 @@
 import numpy as np
+import constants
 import h5py
 import sys
 
@@ -14,28 +15,17 @@ the angular variable
 
 tnum = sys.argv[1]
 
+C = constants.const()
+
 # these indices are defined for the sampled db inputs
 inc_eul = 5  # degree increment for angular variables
 inc_th = 1.5
-sub2rad_eul = inc_eul*np.pi/180.
-sub2rad_th = inc_th*np.pi/180.
-
-
-n_th = np.int64(60/inc_th)  # number of theta samples for FZ
-n_p1 = 360/inc_eul  # number of phi1 samples for FZ
-n_P = 90/inc_eul  # number of Phi samples for FZ
-n_p2 = 60/inc_eul  # number of phi2 samples for FZ
-
-# n_eul is the number of orientations in the sampled db input set
-n_eul = n_p1 * n_P * n_p2
-# n_eul_old = n_p1 * (n_P+1) * n_p2
-n_eul_old = n_eul
+sub2rad_eul = C['inc_eul']*np.pi/180.
+sub2rad_th = C['inc_th']*np.pi/180.
 
 # here we determine the sampling for en
 a_std = 0.0050
 b_std = 0.0085
-a = 0.00485  # start for en range
-b = 0.00905  # end for en range
 en_inc = 0.0001  # en increment
 et_norm = np.linspace(.0001, .0100, 100)
 ai = np.int64(np.round(a_std/en_inc))-1  # index for start of en range
@@ -49,13 +39,13 @@ print sample_indx
 xnode = et_norm[sample_indx]
 print xnode
 
-nvec = np.array([n_th, n_p1, n_P, n_p2, n_en])
+nvec = np.array([C['n_th'], C['n_p1'], C['n_P'], C['n_p2'], C['n_en']])
 print "nvec: %s" % str(nvec)
 
 # create file for pre-database outputs
 f_nhp = h5py.File('var_extract_%s.hdf5' % str(tnum).zfill(2), 'w')
 var_set = f_nhp.create_dataset("var_set",
-                               (n_eul*n_en, 6))
+                               (C['n_eul']*C['n_en'], 6))
 
 # Read Simulation info from "sim" file
 filename = 'sim_Ti64_tensor_%s.txt' % str(tnum).zfill(2)
@@ -64,9 +54,9 @@ f = open(filename, "r")
 
 linelist = f.readlines()
 
-euler = np.zeros([n_eul_old, 3])
+euler = np.zeros([C['n_eul'], 3])
 
-for k in xrange(n_eul_old):
+for k in xrange(C['n_eul']):
     temp_line = linelist[k+1]
     euler[k, :] = temp_line.split()[1:4]
 
@@ -79,16 +69,11 @@ filename = 'Results_tensor_%s.hdf5' % str(tnum).zfill(2)
 f_mwp = h5py.File(filename, 'r')
 
 c = 0
-d = 0
 
 th_val = ((np.int64(tnum)-1)+0.5)*sub2rad_th
 print "th_val: %s" % str(th_val*(180/np.pi))
 
-for ii in xrange(0, n_eul_old):
-
-    if np.isclose(euler[ii, 1], np.pi/2):
-        d += 1
-        continue
+for ii in xrange(0, C['n_eul']):
 
     test_id = 'sim%s' % str(ii+1).zfill(7)
 
@@ -120,9 +105,8 @@ for ii in xrange(0, n_eul_old):
         var_set[c, :] = tmp
         c += 1
 
-print n_eul*n_en
+print C['n_eul']*C['n_en']
 print c
-print d
 
 f_mwp.close()
 f_nhp.close()

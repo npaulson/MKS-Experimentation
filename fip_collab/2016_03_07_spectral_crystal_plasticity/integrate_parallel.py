@@ -11,18 +11,6 @@ tnum = np.int64(sys.argv[1])
 
 filename = 'log_integrate_parallel_%s.txt' % str(tnum)
 
-"""Open file for raw data
-file order:
-theta, phi1, Phi, phi2,
-sigma'22, sigma'11, sigma'33, sigma'12, sigma'13, sigma'23,
-total shear rate,
-w12, w13, w23
-"""
-
-f = h5py.File('var_extract_total.hdf5', 'r')
-var_set = f.get('var_set')
-f.close
-
 """ Initialize important variables """
 a = 0.00485  # start for en range
 b = 0.00905  # end for en range
@@ -32,8 +20,7 @@ indxvec = gsh.gsh_basis_info()
 
 # N_p: number of GSH bases to evaluate
 N_p = np.sum(indxvec[:, 0] <= LL_p)
-N_q = 40  # number of cosine bases to evaluate for theta
-N_r = 14  # number of cosine bases to evaluate for en
+N_q = 60  # number of cosine bases to evaluate for theta
 
 n_jobs = 400.  # number of jobs submitted to cluster
 
@@ -55,7 +42,7 @@ L_th = np.pi/3.
 n_eul = n_p1*n_P*n_p2
 
 """ Calculate basis function indices """
-cmax = N_p*N_q*N_r  # total number of permutations of basis functions
+cmax = N_p*N_q  # total number of permutations of basis functions
 fn.WP(str(cmax), filename)
 
 # cmat is the matrix containing all permutations of basis function indices
@@ -79,10 +66,6 @@ fn.WP(msg, filename)
 
 """ perform the orthogonal regressions """
 
-coeff_prt = np.zeros((ii_end-ii_stt, 10), dtype='complex128')
-test_prt = np.zeros(   , dtype='complex128')
-
-f_X = h5py.File('X_parts.hdf5', 'r')
 c = 0
 
 indxvec = gsh.gsh_basis_info()
@@ -99,6 +82,27 @@ bsz_eul = domain_eul_sz/n_eul
 
 bsz_th = L_th/n_th
 
+
+"""Open file for raw data
+file order:
+theta, phi1, Phi, phi2,
+sigma'22, sigma'11, sigma'33, sigma'12, sigma'13, sigma'23,
+total shear rate,
+w12, w13, w23
+"""
+
+f_raw = h5py.File('var_extract_total.hdf5', 'r')
+var_set = f_raw.get('var_set')
+sinphi = np.sin(var_set[:, 2])
+Yset = var_set[:, 4:]
+n_y = Yset.shape[1]
+
+f_raw.close()
+
+f_X = h5py.File('X_parts.hdf5', 'r')
+
+coeff_prt = np.zeros((ii_end-ii_stt, n_y), dtype='complex128')
+
 for ii in xrange(ii_stt, ii_end):
 
     msg = str(ii)
@@ -107,8 +111,8 @@ for ii in xrange(ii_stt, ii_end):
     st = time.time()
 
     p, q = cmat[ii, :]
-    basis_p = f.get('p_%s' % p)[...]
-    basis_q = f.get('q_%s' % q)[...]
+    basis_p = f_X.get('p_%s' % p)[...]
+    basis_q = f_X.get('q_%s' % q)[...]
 
     ep_set = np.squeeze(basis_p)*basis_q
 
@@ -127,29 +131,19 @@ for ii in xrange(ii_stt, ii_end):
 
     c_tot = c_eul*c_th*bsz_eul*bsz_th
 
+    for jj in xrange(n_y):
 
-
-
-
-    tmp = c_tot*np.sum(Y*ep_set.conj()*sinphi)
-
-    test_prt += tmp*ep_set
-    del ep_set
-
-    coeff_prt[c] = tmp
-
-
-
-
+        tmp = c_tot*np.sum(Yset[:, jj]*ep_set.conj()*sinphi)
+        coeff_prt[c] = tmp
 
     msg = "integration time: %ss" % np.round(time.time()-st, 3)
     fn.WP(msg, filename)
 
     c += 1
 
-f.close()
+f_X.close()  # close the evaluated basis function file
 
-f = h5py.File('coeff_prt_%s.hdf5' % tnum, 'w')
-f.create_dataset('coeff_prt', data=coeff_prt)
-f.create_dataset('test_prt', data=test_prt)
-f.close()
+"""save this section of the coefficients"""
+f_coef = h5py.File('coeff_prt_%s.hdf5' % tnum, 'w')
+f_coef.create_dataset('coeff_prt', data=coeff_prt)
+f_coef.close()

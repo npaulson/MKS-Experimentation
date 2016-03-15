@@ -1,6 +1,6 @@
-cd /gpfs/pace1/project/me-kalidindi/shared/dir_nhp
+cd /gpfs/scratch1/3/nhpnp3/3_14_cpdb
 
-for f in {0..39}
+for f in {0..14}
 do
     echo " Submitting $f file..."
     export number=$f;

@@ -1,14 +1,14 @@
 import numpy as np
-# import itertools as it
 import db_functions as fn
 import gsh_hex_tri_L0_16 as gsh
 import h5py
 import time
 import sys
+import constants
 
 
 tnum = np.int64(sys.argv[1])
-
+C = constants.const()
 filename = 'log_integrate_parallel_%s.txt' % str(tnum)
 
 """ Load Y vec """
@@ -18,49 +18,23 @@ sinphi = np.sin(var_set[:, 2])
 Y = var_set[:, 5]
 f.close
 
-""" Initialize important variables """
-a = 0.00485  # start for en range
-b = 0.00905  # end for en range
-
-LL_p = 16  # gsh truncation level
-indxvec = gsh.gsh_basis_info()
-
-N_p = np.sum(indxvec[:, 0] <= LL_p)  # N_p: number of GSH bases to evaluate
-N_q = 40  # number of cosine bases to evaluate for theta
-N_r = 14  # number of cosine bases to evaluate for en
-
-n_jobs = 400.  # number of jobs submitted to cluster
-
-inc_eul = 5.  # degree increment for angular variables
-inc_th = 1.5
-
-n_th = 60/inc_th  # number of theta samples for FZ
-n_p1 = 360/inc_eul  # number of phi1 samples for FZ
-n_P = 90/inc_eul  # number of Phi samples for FZ
-n_p2 = 60/inc_eul  # number of phi2 samples for FZ
-n_en = 14  # number of et samples for FZ
-
-L_th = np.pi/3.
-L_en = b-a
-
-n_eul = n_p1*n_P*n_p2
-
 """ Calculate basis function indices """
-cmax = N_p*N_q*N_r  # total number of permutations of basis functions
-fn.WP(str(cmax), filename)
+# cmax: total number of permutations of basis functions
+fn.WP(str(C['cmax']), filename)
 
 # cmat is the matrix containing all permutations of basis function indices
-cmat = np.unravel_index(np.arange(cmax), [N_p, N_q, N_r])
+cmat = np.unravel_index(np.arange(C['cmax']), C['N_tuple'])
 cmat = np.array(cmat).T
 
 """ Deal with the parallelization of this operation specifically pick range
 of indxmat to calculate """
-n_ii = np.int64(np.ceil(np.float(cmax)/n_jobs))  # number dot products per job
+# n_ii: number dot products per job
+n_ii = np.int64(np.ceil(np.float(C['cmax'])/C['n_jobs_integrate']))
 fn.WP(str(n_ii), filename)
 
 ii_stt = tnum*n_ii  # start index
-if (tnum+1)*n_ii > cmax:
-    ii_end = cmax
+if (tnum+1)*n_ii > C['cmax']:
+    ii_end = C['cmax']
 else:
     ii_end = (tnum+1)*n_ii  # end index
 
@@ -78,10 +52,6 @@ f = h5py.File('X_parts.hdf5', 'r')
 c = 0
 
 indxvec = gsh.gsh_basis_info()
-
-bsz_eul = ((np.pi**3)/3)/n_eul
-bsz_th = L_th/n_th
-bsz_en = L_en/n_en
 
 for ii in xrange(ii_stt, ii_end):
 
@@ -103,19 +73,19 @@ for ii in xrange(ii_stt, ii_end):
     st = time.time()
 
     l = indxvec[p, 0]
-    c_eul = (1./(2.*l+1.))*(3./(2.*np.pi**2))
+    c_eul = (1./(2.*l+1.))*C['fzsz_eul']
 
     if q == 0:
-        c_th = 1./L_th
+        c_th = 1./C['L_th']
     else:
-        c_th = 2./L_th
+        c_th = 2./C['L_th']
 
     if r == 0:
-        c_en = 1./L_en
+        c_en = 1./C['L_th']
     else:
-        c_en = 2./L_en
+        c_en = 2./C['L_th']
 
-    c_tot = c_eul*c_th*c_en*bsz_eul*bsz_th*bsz_en
+    c_tot = c_eul*c_th*c_en*C['bsz_eul']*C['bsz_th']*C['bsz_en']
 
     tmp = c_tot*np.sum(Y*ep_set.conj()*sinphi)
 

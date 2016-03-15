@@ -1,4 +1,4 @@
-cd /gpfs/scratch1/3/nhpnp3/1_31_5deg
+cd /gpfs/scratch1/3/nhpnp3/3_14_cpdb
 
 for f in {0..400}
 do

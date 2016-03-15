@@ -1,12 +1,12 @@
 #PBS -N calfem
 #PBS -l nodes=1:ppn=1
-#PBS -l mem=20gb
+#PBS -l mem=12gb
 #PBS -q granulous
-#PBS -l walltime=01:00:00
+#PBS -l walltime=05:00:00
 #PBS -j oe
 #PBS -o out.$PBS_JOBID
 
-cd /gpfs/pace1/project/me-kalidindi/shared/dir_nhp
+cd /gpfs/scratch1/3/nhpnp3/3_14_cpdb
 module purge
 module load anaconda2
 echo " Processing file" $number "\n"
