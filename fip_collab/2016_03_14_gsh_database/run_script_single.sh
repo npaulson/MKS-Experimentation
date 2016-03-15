@@ -9,4 +9,4 @@
 cd /gpfs/scratch1/3/nhpnp3/3_14_db
 module purge
 module load anaconda2
-python combine_coeff.py
+python combine_Xcalc.py

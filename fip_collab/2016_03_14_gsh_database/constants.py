@@ -1,4 +1,4 @@
-import gsh_cub_tri_L0_16 as gsh
+import gsh_hex_tri_L0_16 as gsh
 import numpy as np
 
 

@@ -22,7 +22,6 @@ for name in f_cos.keys():
 f_cos.close()
 
 """load the GSH basis evaluations"""
-
 for jobnum in xrange(C['n_jobs_Xcalc']):
 
     f_gsh = h5py.File("X_parts_GSH_%s.hdf5" % jobnum, 'r')
