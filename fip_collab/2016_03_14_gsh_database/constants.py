@@ -10,7 +10,7 @@ def const():
     phimax = 90  # theoretical max Phi in degrees
     phi2max = 60  # theoretical max phi2 in degrees
 
-    inc_eul = 5.0  # degree increment for euler angles
+    inc_eul = 3.0  # degree increment for euler angles
     inc_th = 1.5  # degree increment for deformation mode angle
     n_th = np.int64(thetamax/inc_th)  # number of theta samples for FZ
     n_p1 = np.int64(phi1max/inc_eul)  # number of phi1 samples for FZ
@@ -38,7 +38,7 @@ def const():
 
     """define variables required for integration"""
     n_jobs_Xcalc = 40  # number of jobs submitted for Xcalc
-    n_jobs_integrate = 400.  # number of jobs submitted for integration
+    n_jobs_integrate = 400  # number of jobs submitted for integration
 
     LL_p = 16  # gsh truncation level
     indxvec = gsh.gsh_basis_info()

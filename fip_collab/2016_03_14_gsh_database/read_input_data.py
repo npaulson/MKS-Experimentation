@@ -18,8 +18,6 @@ tnum = sys.argv[1]
 C = constants.const()
 
 # these indices are defined for the sampled db inputs
-inc_eul = 5  # degree increment for angular variables
-inc_th = 1.5
 sub2rad_eul = C['inc_eul']*np.pi/180.
 sub2rad_th = C['inc_th']*np.pi/180.
 
@@ -59,6 +57,8 @@ euler = np.zeros([C['n_eul'], 3])
 for k in xrange(C['n_eul']):
     temp_line = linelist[k+1]
     euler[k, :] = temp_line.split()[1:4]
+
+print np.max(euler, 0)*(180./np.pi)
 
 f.close()
 
