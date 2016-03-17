@@ -2,17 +2,14 @@ import vtk_read as vtk
 import euler_to_gsh as e2g
 import correlate as corr
 import plot_correlation as pltcorr
-# import pca_on_correlations as pcaC
-# import plot_SVE_pc as pltPC
+import pca_on_correlations as pcaC
+import sve_plot_pc as pltPC
 import time
 
 
-# ns_cal = [10, 10, 10]
-# set_id_cal = ['random', 'transverse', 'basaltrans']
-# dir_cal = ['random', 'transverse', 'basaltrans']
-ns_cal = [5]
-set_id_cal = ['random']
-dir_cal = ['random']
+ns_cal = [10, 10, 10]
+set_id_cal = ['dream3Drandom', 'dream3Dtransverse', 'dream3Dbasaltrans']
+dir_cal = ['dream3Drandom', 'dream3Dtransverse', 'dream3Dbasaltrans']
 
 L = 4
 H = 15
@@ -39,20 +36,20 @@ for ii in xrange(len(set_id_cal)):
     e2g.euler_to_gsh(el, H, ns_cal[ii], set_id_cal[ii], step,
                      wrt_file)
 
-"""Compute the periodic autocorrelations for the microstructures"""
+"""Compute the periodic statistics for the microstructures"""
 for ii in xrange(len(set_id_cal)):
     corr.correlate(el, ns_cal[ii], H, set_id_cal[ii], step, wrt_file)
 
 """Plot an autocorrelation"""
 sn = 0
-iA = 1
-iB = 1
-pltcorr.pltcorr(el, ns_cal[0], set_id_cal[0], step, sn, iA, iB)
+iA = 3
+iB = 5
+pltcorr.pltcorr(el, ns_cal[1], set_id_cal[1], step, sn, iA, iB)
 
-# """Perform PCA on autocorrelations"""
-# pcaC.doPCA(el, H, ns_cal, set_id_cal, step, wrt_file)
+"""Perform PCA on autocorrelations"""
+pcaC.doPCA(el, H, ns_cal, set_id_cal, step, wrt_file)
 
-# """Plot the microstructures in PC space"""
-# pcA = 0
-# pcB = 1
-# pltPC.pltPC(el, ns_cal, set_id_cal, step, pcA, pcB)
+"""Plot the microstructures in PC space"""
+pcA = 0
+pcB = 6
+pltPC.pltPC(el, ns_cal, set_id_cal, step, pcA, pcB)

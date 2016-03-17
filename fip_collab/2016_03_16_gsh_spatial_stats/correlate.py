@@ -17,9 +17,13 @@ def correlate(el, ns, H, set_id, step, wrt_file):
 
     ff = f.create_dataset("ff",
                           (ns, H, H, el, el, el),
-                          dtype='complex128')
+                          dtype='float64')
 
-    S = (1./(el**3))
+    # ff = f.create_dataset("ff",
+    #                       (ns, H, H, el, el, el),
+    #                       dtype='complex128')
+
+    S = 1./(el**3)
 
     cmax = H*H
     cmat = np.unravel_index(np.arange(cmax), [H, H])
@@ -49,7 +53,9 @@ def correlate(el, ns, H, set_id, step, wrt_file):
         del term1, term2
 
         FF[:, ii, jj, ...] = FFtmp
-        ff[:, ii, jj, ...] = np.fft.ifftn(FFtmp, [el, el, el], [1, 2, 3])
+
+        tmp = np.fft.ifftn(FFtmp, [el, el, el], [1, 2, 3])
+        ff[:, ii, jj, ...] = tmp.real
 
         if c == 0:
             szgb = np.round(H*H*FFtmp.nbytes/(1e9), 3)
@@ -58,7 +64,7 @@ def correlate(el, ns, H, set_id, step, wrt_file):
 
     f.close()
 
-    msg = "autocorrelations computed: %ss" % np.round(time.time()-st, 5)
+    msg = "correlations computed: %ss" % np.round(time.time()-st, 5)
     rr.WP(msg, wrt_file)
 
 

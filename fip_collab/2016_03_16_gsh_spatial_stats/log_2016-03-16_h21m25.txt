@@ -1,6 +1,0 @@
-euler angles read from .vtk file for random: 6.795 seconds
-Conversion from Euler angles to GSH coefficients completed: 0.628 seconds
-FFT3 conversion of micr to M_5random_s0: 0.233 seconds
-Size of M_5random_s0: 11113200 bytes
-ff = 0.167 gb
-autocorrelations computed: 50.213s

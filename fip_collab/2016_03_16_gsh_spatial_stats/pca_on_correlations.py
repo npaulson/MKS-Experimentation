@@ -5,18 +5,24 @@ import time
 import h5py
 
 
-def doPCA(el, n_corr, ns_set, set_id_set, step, wrt_file):
+def doPCA(el, H, ns_set, set_id_set, step, wrt_file):
 
     st = time.time()
 
+    n_corr = H**2
+
     ns_tot = np.sum(ns_set)
     f_master = h5py.File("D_%s%s_s%s.hdf5" % (ns_tot, 'allsets', step), 'a')
+
     f_master.create_dataset("allcorr",
                             (ns_tot, n_corr*el**3),
-                            dtype='complex128')
-    allcorr = f_master.get('allcorr')
+                            dtype='float64')
 
-    # allcorr = np.zeros((ns_tot, n_corr*el**3), dtype='complex128')
+    # f_master.create_dataset("allcorr",
+    #                         (ns_tot, n_corr*el**3),
+    #                         dtype='complex128')
+
+    allcorr = f_master.get('allcorr')
 
     c = 0
     for ii in xrange(len(set_id_set)):
@@ -24,16 +30,17 @@ def doPCA(el, n_corr, ns_set, set_id_set, step, wrt_file):
         f_temp = h5py.File("D_%s%s_s%s.hdf5" %
                            (ns_set[ii], set_id_set[ii], step), 'a')
 
-        tmp = f_temp.get('ff_auto')[...]
-        ff_auto = tmp.reshape(ns_set[ii], n_corr*el**3)
+        tmp = f_temp.get('ff')[...]
+        ff = tmp.reshape(ns_set[ii], n_corr*el**3)
 
-        allcorr[c:c+ns_set[ii], ...] = ff_auto
+        allcorr[c:c+ns_set[ii], ...] = ff
 
         c += ns_set[ii]
 
         f_temp.close()
 
-    # f_master.create_dataset('allcorr', data=allcorr)
+    msg = "correlations combined"
+    rr.WP(msg, wrt_file)
 
     pca = PCA(n_components=10)
     pca.fit(allcorr[...])
@@ -45,11 +52,12 @@ def doPCA(el, n_corr, ns_set, set_id_set, step, wrt_file):
 
         f_temp = h5py.File("D_%s%s_s%s.hdf5" %
                            (ns_set[ii], set_id_set[ii], step), 'a')
-        ff_auto = f_temp.get('ff_auto')[...].reshape(ns_set[ii], n_corr*el**3)
+        ff = f_temp.get('ff')[...].reshape(ns_set[ii], n_corr*el**3)
 
-        tmp = pca.transform(ff_auto)
+        tmp = pca.transform(ff)
 
-        f_temp.create_dataset('pc_corr', data=tmp, dtype='complex128')
+        f_temp.create_dataset('pc_corr', data=tmp, dtype='float64')
+        # f_temp.create_dataset('pc_corr', data=tmp, dtype='complex128')
 
         f_temp.close()
 
@@ -59,10 +67,10 @@ def doPCA(el, n_corr, ns_set, set_id_set, step, wrt_file):
 
 if __name__ == '__main__':
     el = 21
-    n_corr = 15
+    H = 15
     ns_set = [10, 10, 10]
     set_id_set = ['random', 'transverse', 'basaltrans']
     step = 0
     wrt_file = 'test.txt'
 
-    doPCA(el, n_corr, ns_set, set_id_set, step, wrt_file)
+    doPCA(el, H, ns_set, set_id_set, step, wrt_file)

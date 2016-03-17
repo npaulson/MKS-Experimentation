@@ -13,39 +13,51 @@ def pltcorr(el, ns, set_id, step, sn, iA, iB):
     auto = f.get('ff')[sn, iA, iB, ...]
     f.close()
 
-    auto_centered = np.fft.fftshift(auto)
+    corr_centered = np.fft.fftshift(auto)
 
     """Plot slices of the response"""
     plt.figure(num=1, figsize=[11, 2.7])
 
-    plt.subplot(131)
-    ax = plt.imshow(euler[0, :, :], origin='lower',
+    plt.subplot(121)
+    ax = plt.imshow(euler[10, :, :], origin='lower',
                     interpolation='none', cmap='magma')
     plt.colorbar(ax)
     plt.title('phi1 field')
 
-    plt.subplot(132)
-    ax = plt.imshow(auto_centered[10, :, :].real, origin='lower',
+    plt.subplot(122)
+    ax = plt.imshow(corr_centered[10, :, :], origin='lower',
                     interpolation='none', cmap='viridis')
     plt.colorbar(ax)
-    plt.title('real(ff): %s, %s' % (iA, iB))
+    plt.title('ff: %s, %s' % (iA, iB))
 
-    plt.subplot(133)
-    ax = plt.imshow(auto_centered[10, :, :].imag, origin='lower',
-                    interpolation='none', cmap='viridis')
-    plt.colorbar(ax)
-    plt.title('imag(ff): %s, %s' % (iA, iB))
+    # plt.subplot(131)
+    # ax = plt.imshow(euler[0, :, :], origin='lower',
+    #                 interpolation='none', cmap='magma')
+    # plt.colorbar(ax)
+    # plt.title('phi1 field')
+
+    # plt.subplot(132)
+    # ax = plt.imshow(auto_centered[10, :, :].real, origin='lower',
+    #                 interpolation='none', cmap='viridis')
+    # plt.colorbar(ax)
+    # plt.title('real(ff): %s, %s' % (iA, iB))
+
+    # plt.subplot(133)
+    # ax = plt.imshow(auto_centered[10, :, :].imag, origin='lower',
+    #                 interpolation='none', cmap='viridis')
+    # plt.colorbar(ax)
+    # plt.title('imag(ff): %s, %s' % (iA, iB))
 
     plt.show()
 
 
 if __name__ == '__main__':
     el = 21
-    ns = 5
-    set_id = 'random'
+    ns = 10
+    set_id = 'inclusion'
     step = 0
-    sn = 1
+    sn = 0
     iA = 2
-    iB = 6
+    iB = 2
 
     pltcorr(el, ns, set_id, step, sn, iA, iB)

@@ -16,16 +16,33 @@ def euler_to_gsh(el, H, ns, set_id, step, wrt_file):
 
     start = time.time()
 
+    """get the euler angle files"""
     f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'r')
     euler = f.get('euler')[...]
     f.close()
 
-    euler_GSH = np.zeros([ns, H, el**3], dtype='complex128')
+    """evaluate the gsh basis functions at the point of interest
+    note that we do not keep redundant information due to symmetry in
+    the complex arguments"""
 
-    for sn in xrange(ns):
+    indxvec = gsh.gsh_basis_info()
+    euler_GSH = np.zeros([ns, H, el**3], dtype='float64')
 
-        tmp = gsh.gsh_eval(euler[sn, ...].swapaxes(0, 1), np.arange(15))
-        euler_GSH[sn, :, :] = tmp.swapaxes(0, 1)
+    for h in xrange(H):
+
+        tmp = gsh.gsh_eval(euler.swapaxes(1, 2), [h])
+
+        if indxvec[h, 1] >= 0:
+            tmp = np.squeeze(tmp).real
+        elif indxvec[h, 1] < 0:
+            tmp = np.squeeze(tmp).imag
+
+        euler_GSH[:, h, :] = tmp
+
+    # euler_GSH = np.zeros([ns, H, el**3], dtype='complex128')
+    # for sn in xrange(ns):
+    #     tmp = gsh.gsh_eval(euler[sn, ...].swapaxes(0, 1), np.arange(15))
+    #     euler_GSH[sn, :, :] = tmp.swapaxes(0, 1)
 
     end = time.time()
     timeE = np.round((end - start), 3)
