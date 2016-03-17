@@ -4,7 +4,7 @@ import time
 import h5py
 
 
-def auto(el, ns, set_id, step, wrt_file):
+def correlate(el, ns, set_id, step, wrt_file):
 
     st = time.time()
 
