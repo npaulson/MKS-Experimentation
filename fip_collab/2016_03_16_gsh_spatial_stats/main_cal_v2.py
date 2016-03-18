@@ -9,12 +9,15 @@ import numpy as np
 import time
 
 
-ns_cal = [10, 10, 10, 10]
-set_id_cal = ['randomD3D', 'random', 'delta', 'inclusion']
+ns_cal = [10, 20]
+set_id_cal = ['delta', 'bicrystal']
 
-ns_D3D = [10]
-set_id_D3D = ['randomD3D']
-dir_D3D = ['randomD3D']
+# ns_cal = [10, 10, 10, 10]
+# set_id_cal = ['randomD3D', 'random', 'delta', 'inclusion']
+
+# ns_D3D = [10]
+# set_id_D3D = ['randomD3D']
+# dir_D3D = ['randomD3D']
 
 # ns_cal = [10, 10, 10]
 # set_id_cal = ['randomD3D', 'transverseD3D', 'basaltransD3D']
@@ -39,15 +42,16 @@ if tensorID == 2, we read the plastic strain tensor
 """
 
 """Gather data from calibration vtk files"""
-for ii in xrange(len(set_id_D3D)):
-    vtk.read_euler(el, ns_D3D[ii], set_id_D3D[ii],
-                   step, dir_D3D[ii], wrt_file, 0)
+# for ii in xrange(len(set_id_D3D)):
+#     vtk.read_euler(el, ns_D3D[ii], set_id_D3D[ii],
+#                    step, dir_D3D[ii], wrt_file, 0)
 
-gen.rand(el, ns_cal[1], set_id_cal[1], step, wrt_file)
-gen.delta(el, ns_cal[2], set_id_cal[2], step, wrt_file)
+gen.delta(el, ns_cal[0], set_id_cal[0], step, wrt_file)
 
-vfrac = np.array([.1, .05])
-gen.inclusion(el, ns_cal[3], set_id_cal[3], step, wrt_file, vfrac)
+# vfrac = np.array([.1, .05])
+# gen.inclusion(el, ns_cal[3], set_id_cal[3], step, wrt_file, vfrac)
+
+gen.bicrystal(el, ns_cal[1], set_id_cal[1], step, wrt_file)
 
 """Compute GSH coefficients to create microstructure function in real and
 fourier space"""
@@ -63,7 +67,7 @@ for ii in xrange(len(set_id_cal)):
 sn = 0
 iA = 1
 iB = 1
-pltcorr.pltcorr(el, ns_cal[3], set_id_cal[3], step, sn, iA, iB)
+pltcorr.pltcorr(el, ns_cal[1], set_id_cal[1], step, sn, iA, iB)
 
 """Perform PCA on autocorrelations"""
 pcaC.doPCA(el, H, ns_cal, set_id_cal, step, wrt_file)

@@ -53,11 +53,11 @@ def pltcorr(el, ns, set_id, step, sn, iA, iB):
 
 if __name__ == '__main__':
     el = 21
-    ns = 10
-    set_id = 'inclusion'
+    ns = 20
+    set_id = 'bicrystal'
     step = 0
-    sn = 0
-    iA = 2
+    sn = 19
+    iA = 1
     iB = 2
 
     pltcorr(el, ns, set_id, step, sn, iA, iB)

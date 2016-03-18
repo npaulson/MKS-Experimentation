@@ -1,0 +1,14 @@
+10 delta SVEs generated random orientations: 0.032s
+20 bicrystal SVEs generated: 0.046s
+Conversion from Euler angles to GSH coefficients completed: 0.467 seconds
+FFT3 conversion of micr to M_10delta_s0: 0.422 seconds
+Size of M_10delta_s0: 22226400 bytes
+Conversion from Euler angles to GSH coefficients completed: 1.435 seconds
+FFT3 conversion of micr to M_20bicrystal_s0: 1.19 seconds
+Size of M_20bicrystal_s0: 44452800 bytes
+ff = 0.333 gb
+correlations computed: 52.345s
+ff = 0.667 gb
+correlations computed: 93.948s
+correlations combined
+PCA completed: 60.905s
