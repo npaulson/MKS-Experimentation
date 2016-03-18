@@ -12,35 +12,24 @@ def correlate(el, ns, H, set_id, step, wrt_file):
     M = f.get('M')[...]
 
     FF = f.create_dataset("FF",
-                          (ns, H, H, el, el, el),
+                          (ns, H-1, el, el, el),
                           dtype='complex128')
 
     ff = f.create_dataset("ff",
-                          (ns, H, H, el, el, el),
+                          (ns, H-1, el, el, el),
                           dtype='float64')
-
-    # ff = f.create_dataset("ff",
-    #                       (ns, H, H, el, el, el),
-    #                       dtype='complex128')
 
     S = el**3
 
-    cmax = H*H
-    cmat = np.unravel_index(np.arange(cmax), [H, H])
-    cmat = np.array(cmat).T
+    ii = 0
+    M1 = M[:, ii, ...]
+    mag1 = np.abs(M1)
+    ang1 = np.arctan2(M1.imag, M1.real)
+    exp1 = np.exp(-1j*ang1)
+    term1 = mag1*exp1
+    del M1, mag1, ang1, exp1
 
-    for c in xrange(cmax):
-
-        ii, jj = cmat[c, :]
-        if np.mod(c, 20) == 0:
-            print str([ii, jj])
-
-        M1 = M[:, ii, ...]
-        mag1 = np.abs(M1)
-        ang1 = np.arctan2(M1.imag, M1.real)
-        exp1 = np.exp(-1j*ang1)
-        term1 = mag1*exp1
-        del M1, mag1, ang1, exp1
+    for jj in xrange(H-1):
 
         M2 = M[:, jj, ...]
         mag2 = np.abs(M2)
@@ -50,15 +39,15 @@ def correlate(el, ns, H, set_id, step, wrt_file):
         del M2, mag2, ang2, exp2
 
         FFtmp = term1*term2/S
-        del term1, term2
+        del term2
 
-        FF[:, ii, jj, ...] = FFtmp
+        FF[:, jj, ...] = FFtmp
 
         tmp = np.fft.ifftn(FFtmp, [el, el, el], [1, 2, 3])
-        ff[:, ii, jj, ...] = tmp.real
+        ff[:, jj, ...] = tmp.real
 
-        if c == 0:
-            szgb = np.round(H*H*FFtmp.nbytes/(1e9), 3)
+        if jj == 0:
+            szgb = np.round((H-1)*FFtmp.nbytes/(1e9), 3)
             msg = "ff = %s gb" % szgb
             rr.WP(msg, wrt_file)
 
@@ -71,9 +60,8 @@ def correlate(el, ns, H, set_id, step, wrt_file):
 if __name__ == '__main__':
     el = 21
     ns = 10
-    H = 15
     set_id = 'random'
     step = 0
     wrt_file = 'test.txt'
 
-    correlate(el, ns, H, set_id, step, wrt_file)
+    correlate(el, ns, set_id, step, wrt_file)

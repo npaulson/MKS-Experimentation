@@ -61,7 +61,7 @@ def euler_to_gsh(el, H, ns, set_id, step, wrt_file):
 
     size = M.nbytes
 
-    f = h5py.File("D_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
+    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
     f.create_dataset('M', data=M)
     f.close()
 

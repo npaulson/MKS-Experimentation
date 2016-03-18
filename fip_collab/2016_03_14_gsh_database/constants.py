@@ -38,7 +38,7 @@ def const():
 
     """define variables required for integration"""
     n_jobs_Xcalc = 40  # number of jobs submitted for Xcalc
-    n_jobs_integrate = 50  # number of jobs submitted for integration
+    n_jobs_integrate = 15  # number of jobs submitted for integration
 
     LL_p = 16  # gsh truncation level
     indxvec = gsh.gsh_basis_info()

@@ -50,6 +50,9 @@ test_prt = np.zeros(Y.shape, dtype='complex128')
 
 f = h5py.File('X_parts.hdf5', 'r')
 c = 0
+p_old = 1e10
+q_old = 1e10
+r_old = 1e10
 
 indxvec = gsh.gsh_basis_info()
 
@@ -61,16 +64,24 @@ for ii in xrange(ii_stt, ii_end):
     st = time.time()
 
     p, q, r = cmat[ii, :]
-    basis_p = f.get('p_%s' % p)[...]
-    basis_q = f.get('q_%s' % q)[...]
-    basis_r = f.get('r_%s' % r)[...]
 
-    ep_set = np.squeeze(basis_p)*basis_q*basis_r
+    """only load the basis if necessary!!!"""
+    if p != p_old:
+        basis_p = f.get('p_%s' % p)[...]
+        print "basis_p loaded"
+    if r != r_old:
+        basis_q = f.get('q_%s' % q)[...]
+        print "basis_q loaded"
+    if q != q_old:
+        basis_r = f.get('r_%s' % r)[...]
+        print "basis_r loaded"
 
     msg = "load time: %ss" % np.round(time.time()-st, 3)
     fn.WP(msg, filename)
 
     st = time.time()
+
+    ep_set = np.squeeze(basis_p)*basis_q*basis_r
 
     l = indxvec[p, 0]
     c_eul = (1./(2.*l+1.))*C['fzsz_eul']
@@ -97,6 +108,9 @@ for ii in xrange(ii_stt, ii_end):
     msg = "integration time: %ss" % np.round(time.time()-st, 3)
     fn.WP(msg, filename)
 
+    p_old = p
+    q_old = q
+    r_old = r
     c += 1
 
 f.close()

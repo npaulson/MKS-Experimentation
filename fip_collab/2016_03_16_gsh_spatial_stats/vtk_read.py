@@ -34,7 +34,7 @@ def read_euler(el, ns, set_id, step, newdir, wrt_file, funit):
     """return to the original directory"""
     os.chdir('..')
 
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
+    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'w')
     f.create_dataset('euler', data=euler)
     f.close()
 
