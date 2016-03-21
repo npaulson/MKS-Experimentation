@@ -2,6 +2,16 @@ import time
 import h5py
 import numpy as np
 import functions as rr
+from scipy.spatial.distance import cdist
+
+
+def sample_H(H):
+    Hvec = range(H)
+    h1 = np.random.choice(Hvec)
+    Hvec.remove(h1)
+    h2 = np.random.choice(Hvec)
+
+    return h1, h2
 
 
 def bicrystal(el, ns, H, set_id, step, wrt_file):
@@ -13,19 +23,105 @@ def bicrystal(el, ns, H, set_id, step, wrt_file):
     f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'w')
     sves = f.create_dataset("sves", sshape, dtype='int64')
 
+    gridvec = np.arange(el)
+    gridx, gridy, gridz = np.meshgrid(gridvec, gridvec, gridvec)
+    gridx = gridx.reshape(gridx.size)
+    gridy = gridy.reshape(gridy.size)
+    gridz = gridz.reshape(gridz.size)
+    grid = np.vstack([gridx, gridy, gridz]).T
+
     for sn in xrange(ns):
 
-        sves[sn, ...] = np.int64(H*np.random.rand())
+        loc1 = np.zeros((1, 3))
+
+        randi2 = np.int8(2*np.random.rand())
+        randi6 = np.int8(6*np.random.rand())
+
+        if randi6 == 0:
+            loc1[0, 0] = 0
+            loc1[0, 1] = np.int8(el*np.random.rand())
+            loc1[0, 2] = np.int8(el*np.random.rand())
+        elif randi6 == 1:
+            loc1[0, 0] = el-1
+            loc1[0, 1] = np.int8(el*np.random.rand())
+            loc1[0, 2] = np.int8(el*np.random.rand())
+        elif randi6 == 2:
+            loc1[0, 0] = np.int8(el*np.random.rand())
+            loc1[0, 1] = 0
+            loc1[0, 2] = np.int8(el*np.random.rand())
+        elif randi6 == 3:
+            loc1[0, 0] = np.int8(el*np.random.rand())
+            loc1[0, 1] = el-1
+            loc1[0, 2] = np.int8(el*np.random.rand())
+        elif randi6 == 4:
+            loc1[0, 0] = np.int8(el*np.random.rand())
+            loc1[0, 1] = np.int8(el*np.random.rand())
+            loc1[0, 2] = 0
+        elif randi6 == 5:
+            loc1[0, 0] = np.int8(el*np.random.rand())
+            loc1[0, 1] = np.int8(el*np.random.rand())
+            loc1[0, 2] = el-1
+
+        loc2 = np.int8(el*np.random.random((1, 3)))
+
+        dist_loc1 = np.squeeze(cdist(grid, loc1))
+        dist_loc2 = np.squeeze(cdist(grid, loc2))
+
+        if randi2 == 0:
+            dist_xgy = dist_loc1 >= dist_loc2
+        if randi2 == 1:
+            dist_xgy = dist_loc1 < dist_loc2
+
+        dist_xgy = np.int8(dist_xgy)
+
+        h1, h2 = sample_H(H)
+
+        # print h1, h2
+        # print np.sum(dist_xgy == 0)
+        # print np.sum(dist_xgy == 1)
+
+        sve = np.zeros(el**3, dtype='int8')
+
+        sve[dist_xgy == 0] = h1
+        sve[dist_xgy == 1] = h2
+
+        # print np.unique(sve)
+
+        sves[sn, ...] = sve.reshape(el, el, el)
+
+    f.close()
+
+    end = time.time()
+    timeE = np.round((end - start), 3)
+
+    msg = "%s bicrystal SVEs generated: %ss" % (ns, timeE)
+    rr.WP(msg, wrt_file)
+
+
+def bicrystal_orthog(el, ns, H, set_id, step, wrt_file):
+
+    start = time.time()
+
+    sshape = (ns, el, el, el)
+
+    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'w')
+    sves = f.create_dataset("sves", sshape, dtype='int64')
+
+    for sn in xrange(ns):
+
+        h1, h2 = sample_H(H)
+
+        sves[sn, ...] = h1
 
         direc = np.int8(3*np.random.rand())  # define a random direction
         vf = np.int8(20*np.random.rand())+1  # define a random volume fraction
 
         if direc == 0:
-            sves[sn, :vf, :, :] = np.int64(H*np.random.rand())
+            sves[sn, :vf, :, :] = h2
         elif direc == 1:
-            sves[sn, :, :vf, :] = np.int64(H*np.random.rand())
+            sves[sn, :, :vf, :] = h2
         elif direc == 2:
-            sves[sn, :, :, :vf] = np.int64(H*np.random.rand())
+            sves[sn, :, :, :vf] = h2
 
     f.close()
 
@@ -45,9 +141,11 @@ def delta(el, ns, H, set_id, step, wrt_file):
     f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'w')
     sves = f.create_dataset("sves", sshape, dtype='int64')
 
+    h1, h2 = sample_H(H)
+
     for sn in xrange(ns):
-        sves[sn, ...] = np.int64(H*np.random.rand())
-        sves[sn, 10, 10, 10] = np.int64(H*np.random.rand())
+        sves[sn, ...] = h1
+        sves[sn, 10, 10, 10] = h2
 
     f.close()
 
@@ -69,14 +167,17 @@ def inclusion(el, ns, H, set_id, step, wrt_file, vfrac):
     sves = f.create_dataset("sves", sshape, dtype='int64')
 
     for sn in xrange(ns):
-        svetmp = np.int64(H*np.random.rand()*np.ones(el**3))
+
+        h1, h2 = sample_H(H)
+
+        svetmp = np.int64(h1*np.ones(el**3))
 
         tmp = np.random.rand(el**3)
 
         for ii in xrange(n_phase):
 
             indx = (tmp > np.sum(vfrac[:ii]))*(tmp < np.sum(vfrac[:(ii+1)]))
-            svetmp[indx] = np.int64(H*np.random.rand())
+            svetmp[indx] = h2
 
         sves[sn, ...] = svetmp.reshape(el, el, el)
 
@@ -167,10 +268,10 @@ def rod(el, ns, H, set_id, step, wrt_file, raxis):
 
 if __name__ == '__main__':
     el = 21
-    ns = 2
+    ns = 1
     H = 5
     set_id = 'test'
     step = 0
     wrt_file = 'test.txt'
 
-    delta(el, ns, H, set_id, step, wrt_file)
+    bicrystal(el, ns, H, set_id, step, wrt_file)

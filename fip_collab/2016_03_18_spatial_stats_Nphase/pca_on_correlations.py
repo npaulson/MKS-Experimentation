@@ -9,12 +9,19 @@ def doPCA(el, ns_set, H, set_id_set, step, wrt_file):
 
     st = time.time()
 
+    print H
+    n_corr = H**2
+
     ns_tot = np.sum(ns_set)
     f_master = h5py.File("ref_%s%s_s%s.hdf5" % (ns_tot, 'allsets', step), 'w')
 
     f_master.create_dataset("allcorr",
-                            (ns_tot, (H-1)*el**3),
+                            (ns_tot, n_corr*el**3),
                             dtype='float64')
+
+    # f_master.create_dataset("allcorr",
+    #                         (ns_tot, n_corr*el**3),
+    #                         dtype='complex128')
 
     allcorr = f_master.get('allcorr')
 
@@ -25,7 +32,7 @@ def doPCA(el, ns_set, H, set_id_set, step, wrt_file):
                            (ns_set[ii], set_id_set[ii], step), 'a')
 
         tmp = f_temp.get('ff')[...]
-        ff = tmp.reshape(ns_set[ii], (H-1)*el**3)
+        ff = tmp.reshape(ns_set[ii], n_corr*el**3)
 
         allcorr[c:c+ns_set[ii], ...] = ff
 
@@ -48,7 +55,7 @@ def doPCA(el, ns_set, H, set_id_set, step, wrt_file):
 
         f_temp = h5py.File("ref_%s%s_s%s.hdf5" %
                            (ns_set[ii], set_id_set[ii], step), 'a')
-        ff = f_temp.get('ff')[...].reshape(ns_set[ii], (H-1)*el**3)
+        ff = f_temp.get('ff')[...].reshape(ns_set[ii], n_corr*el**3)
 
         tmp = pca.transform(ff)
 
@@ -63,9 +70,10 @@ def doPCA(el, ns_set, H, set_id_set, step, wrt_file):
 
 if __name__ == '__main__':
     el = 21
-    ns_cal = [10, 2, 10, 10]
-    set_id_cal = ['random', 'delta', 'inclusion', 'bicrystal']
+    H = 15
+    ns_set = [10, 10, 10]
+    set_id_set = ['random', 'transverse', 'basaltrans']
     step = 0
     wrt_file = 'test.txt'
 
-    doPCA(el, ns_cal, set_id_cal, step, wrt_file)
+    doPCA(el, H, ns_set, set_id_set, step, wrt_file)

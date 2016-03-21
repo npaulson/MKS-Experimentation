@@ -3,25 +3,20 @@ import matplotlib.pyplot as plt
 import h5py
 
 
-def pltcorr(el, ns, set_id, step, sn, iB):
+def pltcorr(el, ns, set_id, step, sn, iA, iB):
 
     f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
-    sve = f.get('sves')[sn, ...]
+    sves = f.get('sves')[sn, ...]
+    corr = f.get('ff')[sn, iA, iB, ...]
     f.close()
 
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
-    auto = f.get('ff')[sn, iB, ...]
-    f.close()
-
-    corr_centered = np.fft.fftshift(auto)
-
-    iA = 0
+    corr_centered = np.fft.fftshift(corr)
 
     """Plot slices of the response"""
     plt.figure(num=1, figsize=[11, 2.7])
 
     plt.subplot(121)
-    ax = plt.imshow(sve[10, :, :], origin='lower',
+    ax = plt.imshow(sves[10, :, :], origin='lower',
                     interpolation='none', cmap='magma')
     plt.colorbar(ax)
     plt.title('phi1 field')
@@ -37,10 +32,11 @@ def pltcorr(el, ns, set_id, step, sn, iB):
 
 if __name__ == '__main__':
     el = 21
-    ns = 30
-    set_id = 'yrod'
+    ns = 10
+    set_id = 'bicrystal'
     step = 0
-    sn = 0
-    iB = 0
+    sn = 3
+    iA = 2
+    iB = 1
 
-    pltcorr(el, ns, set_id, step, sn, iB)
+    pltcorr(el, ns, set_id, step, sn, iA, iB)
