@@ -1,38 +1,43 @@
 import h5py
-import numpy as np
 import constants
 
 
-C = constants.const()
+def combine():
 
-n_par = C['n_eul']*C['n_en']
+    C = constants.const()
 
-f1 = h5py.File('var_extract_total.hdf5', 'w')
-alldata = f1.create_dataset("var_set", (n_par*C['n_th'], 6))
+    n_par = C['n_eul']*C['n_en']
 
-c = 0
+    f1 = h5py.File(C['combineread_output'], 'w')
+    alldata = f1.create_dataset("var_set", (n_par*C['n_th'], 6))
 
-for tt in xrange(0, C['n_th']):
+    c = 0
 
-    print "Deformation Mode: %s deg" % str((tt+0.5)*C['inc_th'])
+    for tt in xrange(0, C['n_th']):
 
-    # create file for pre-database outputs
-    f2 = h5py.File('var_extract_%s.hdf5' % str(tt+1).zfill(2), 'r')
+        print "Deformation Mode: %s deg" % str((tt+0.5)*C['inc_th'])
 
-    ep_tmp = f2.get("var_set")
+        # create file for pre-database outputs
+        f2 = h5py.File(C['read_output'] % str(tt).zfill(5), 'r')
 
-    stt = (c)*n_par
-    print "start index: %s" % stt
+        ep_tmp = f2.get("var_set")
 
-    end = (c+1)*n_par
-    print "end index: %s" % end
+        stt = (c)*n_par
+        print "start index: %s" % stt
 
-    alldata[stt:end, :] = ep_tmp
+        end = (c+1)*n_par
+        print "end index: %s" % end
 
-    f2.close()
+        alldata[stt:end, :] = ep_tmp
 
-    c += 1
+        f2.close()
 
-print alldata.shape
+        c += 1
 
-f1.close()
+    print alldata.shape
+
+    f1.close()
+
+
+if __name__ == '__main__':
+    combine()

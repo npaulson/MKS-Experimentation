@@ -9,11 +9,11 @@ import constants
 
 tnum = np.int64(sys.argv[1])
 C = constants.const()
-filename = 'log_Xcalc_GSH_parallel_%s.txt' % str(tnum)
+filename = 'log_Xcalc_GSH_parallel_%s.txt' % str(tnum).zfill(5)
 
 """ Load info from collected simulation info file """
 
-f = h5py.File('var_extract_total.hdf5', 'r')
+f = h5py.File(C['combineread_output'], 'r')
 var_set = f.get('var_set')
 
 X = var_set[:, 1:4]  # contains phi1, phi and phi2
@@ -25,7 +25,7 @@ f.close
 of indxmat to calculate """
 
 # n_ii: number dot products per job
-n_ii = np.int64(np.ceil(np.float(C['N_p'])/C['n_jobs_Xcalc']))
+n_ii = np.int64(np.ceil(np.float(C['N_p'])/C['XcalcGSH_njobs']))
 fn.WP(str(n_ii), filename)
 
 ii_stt = tnum*n_ii  # start index
@@ -41,7 +41,7 @@ fn.WP(msg, filename)
 
 """ first evalute the GSH basis functions """
 
-f = h5py.File('X_parts_GSH_%s.hdf5' % tnum, 'a')
+f = h5py.File(C['XcalcGSH_output'] % str(tnum).zfill(5), 'w')
 
 for p in xrange(ii_stt, ii_end):
 
@@ -49,7 +49,7 @@ for p in xrange(ii_stt, ii_end):
 
     vec = gsh.gsh_eval(X, [p])
 
-    set_id = 'p_%s' % p
+    set_id = 'p_%s' % str(p).zfill(5)
     f.create_dataset(set_id, data=vec)
     fn.WP(set_id, filename)
 
@@ -57,3 +57,6 @@ for p in xrange(ii_stt, ii_end):
     fn.WP(msg, filename)
 
 f.close()
+
+f_flag = open("flag%s" % str(tnum).zfill(5), 'w')
+f_flag.close()

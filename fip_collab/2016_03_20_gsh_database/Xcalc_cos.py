@@ -5,52 +5,57 @@ import time
 import constants
 
 
-C = constants.const()
+def calculate():
 
-filename = 'Xcalc_log_cos.txt'
+    C = constants.const()
 
-""" Load info from collected simulation info file """
+    filename = 'Xcalc_log_cos.txt'
 
-f = h5py.File('var_extract_total.hdf5', 'r')
-var_set = f.get('var_set')
+    """ Load info from collected simulation info file """
 
-theta = var_set[:, 0]
-et_norm = var_set[:, 4]
+    f = h5py.File(C['combineread_output'], 'r')
+    var_set = f.get('var_set')
 
-f.close
+    theta = var_set[:, 0]
+    et_norm = var_set[:, 4]
 
-f = h5py.File('X_parts_cos.hdf5', 'a')
+    f.close
 
-"""Evalute the cosine basis functions for theta"""
+    f = h5py.File(C['Xcalccos_output'], 'a')
 
-st = time.time()
+    """Evalute the cosine basis functions for theta"""
 
-for q in xrange(C['N_q']):
+    st = time.time()
 
-    vec = np.cos(q*np.pi*theta/C['L_th'])
+    for q in xrange(C['N_q']):
 
-    set_id = 'q_%s' % q
-    f.create_dataset(set_id, data=vec)
-    fn.WP(set_id, filename)
+        vec = np.cos(q*np.pi*theta/C['L_th'])
 
-msg = "Cosine basis evaluation for theta complete: %ss" \
-    % np.round(time.time()-st, 3)
-fn.WP(msg, filename)
+        set_id = 'q_%s' % str(q).zfill(5)
+        f.create_dataset(set_id, data=vec)
+        fn.WP(set_id, filename)
 
-"""Evalute the cosine basis functions for en"""
+    msg = "Cosine basis evaluation for theta complete: %ss" \
+        % np.round(time.time()-st, 3)
+    fn.WP(msg, filename)
 
-st = time.time()
+    """Evalute the cosine basis functions for en"""
 
-for r in xrange(C['N_r']):
+    st = time.time()
 
-    vec = np.cos(r*np.pi*(et_norm-C['a'])/C['L_en'])
+    for r in xrange(C['N_r']):
 
-    set_id = 'r_%s' % r
-    f.create_dataset(set_id, data=vec)
-    fn.WP(set_id, filename)
+        vec = np.cos(r*np.pi*(et_norm-C['a'])/C['L_en'])
 
-msg = "Cosine basis evaluation for en complete: %ss" \
-    % np.round(time.time()-st, 3)
-fn.WP(msg, filename)
+        set_id = 'r_%s' % str(r).zfill(5)
+        f.create_dataset(set_id, data=vec)
+        fn.WP(set_id, filename)
 
-f.close()
+    msg = "Cosine basis evaluation for en complete: %ss" \
+        % np.round(time.time()-st, 3)
+    fn.WP(msg, filename)
+
+    f.close()
+
+if __name__ == '__main__':
+    calculate()

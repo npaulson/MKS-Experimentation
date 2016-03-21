@@ -13,7 +13,7 @@ the angular variable
 
 # initialize important variables
 
-tnum = sys.argv[1]
+tnum = np.int64(sys.argv[1])
 
 C = constants.const()
 
@@ -41,12 +41,12 @@ nvec = np.array([C['n_th'], C['n_p1'], C['n_P'], C['n_p2'], C['n_en']])
 print "nvec: %s" % str(nvec)
 
 # create file for pre-database outputs
-f_nhp = h5py.File('var_extract_%s.hdf5' % str(tnum).zfill(2), 'w')
+f_nhp = h5py.File(C['read_output'] % str(tnum).zfill(5), 'w')
 var_set = f_nhp.create_dataset("var_set",
                                (C['n_eul']*C['n_en'], 6))
 
 # Read Simulation info from "sim" file
-filename = 'sim_Ti64_tensor_%s.txt' % str(tnum).zfill(2)
+filename = 'sim_Ti64_tensor_%s.txt' % str(tnum+1).zfill(2)
 
 f = open(filename, "r")
 
@@ -65,12 +65,12 @@ f.close()
 # Get data for all simulations
 
 # open file containing Matthew's data
-filename = 'Results_tensor_%s.hdf5' % str(tnum).zfill(2)
+filename = 'Results_tensor_%s.hdf5' % str(tnum+1).zfill(2)
 f_mwp = h5py.File(filename, 'r')
 
 c = 0
 
-th_val = ((np.int64(tnum)-1)+0.5)*sub2rad_th
+th_val = (tnum+0.5)*sub2rad_th
 print "th_val: %s" % str(th_val*(180/np.pi))
 
 for ii in xrange(0, C['n_eul']):
@@ -107,6 +107,9 @@ for ii in xrange(0, C['n_eul']):
 
 print C['n_eul']*C['n_en']
 print c
+
+f_flag = open("flag%s" % str(tnum).zfill(5), 'w')
+f_flag.close()
 
 f_mwp.close()
 f_nhp.close()

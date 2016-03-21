@@ -9,10 +9,10 @@ import constants
 
 tnum = np.int64(sys.argv[1])
 C = constants.const()
-filename = 'log_integrate_parallel_%s.txt' % str(tnum)
+filename = 'log_integrate_parallel_%s.txt' % str(tnum).zfill(5)
 
 """ Load Y vec """
-f = h5py.File('var_extract_total.hdf5', 'r')
+f = h5py.File(C['combineread_output'], 'r')
 var_set = f.get('var_set')
 sinphi = np.sin(var_set[:, 2])
 Y = var_set[:, 5]
@@ -29,7 +29,7 @@ cmat = np.array(cmat).T
 """ Deal with the parallelization of this operation specifically pick range
 of indxmat to calculate """
 # n_ii: number dot products per job
-n_ii = np.int64(np.ceil(np.float(C['cmax'])/C['n_jobs_integrate']))
+n_ii = np.int64(np.ceil(np.float(C['cmax'])/C['integrate_njobs']))
 fn.WP(str(n_ii), filename)
 
 ii_stt = tnum*n_ii  # start index
@@ -48,7 +48,7 @@ fn.WP(msg, filename)
 coeff_prt = np.zeros(ii_end-ii_stt, dtype='complex128')
 test_prt = np.zeros(Y.shape, dtype='complex128')
 
-f = h5py.File('X_parts.hdf5', 'r')
+f = h5py.File(C['combineXcalc_output'], 'r')
 c = 0
 p_old = -1
 q_old = -1
@@ -67,11 +67,11 @@ for ii in xrange(ii_stt, ii_end):
 
     """only load the basis if necessary!!!"""
     if p != p_old:
-        basis_p = f.get('p_%s' % p)[...]
+        basis_p = f.get('p_%s' % str(p).zfill(5))[...]
     if r != r_old:
-        basis_q = f.get('q_%s' % q)[...]
+        basis_q = f.get('q_%s' % str(q).zfill(5))[...]
     if q != q_old:
-        basis_r = f.get('r_%s' % r)[...]
+        basis_r = f.get('r_%s' % str(r).zfill(5))[...]
 
     msg = "load time: %ss" % np.round(time.time()-st, 3)
     fn.WP(msg, filename)
@@ -112,7 +112,10 @@ for ii in xrange(ii_stt, ii_end):
 
 f.close()
 
-f = h5py.File('coeff_prt_%s.hdf5' % tnum, 'w')
+f = h5py.File(C['integrate_output'] % str(tnum).zfill(5), 'w')
 f.create_dataset('coeff_prt', data=coeff_prt)
 f.create_dataset('test_prt', data=test_prt)
 f.close()
+
+f_flag = open("flag%s" % str(tnum).zfill(5), 'w')
+f_flag.close()
