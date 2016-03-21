@@ -4,12 +4,11 @@ import correlate as corr
 import plot_correlation as pltcorr
 import pca_on_correlations as pcaC
 import sve_plot_pc as pltPC
-import numpy as np
 import time
 
 
-ns_cal = [10, 40, 40]
-set_id_cal = ['incl1', 'bicrystal_orthog', 'bicrystal']
+ns_cal = [10, 10, 10, 10, 40, 60]
+set_id_cal = ['incl1', 'rod1', 'rod2', 'rod3', 'bicrystal_orthog', 'improcess']
 
 # ns_cal = [30, 30, 30]
 # set_id_cal = ['xrod', 'yrod', 'zrod']
@@ -18,7 +17,7 @@ set_id_cal = ['incl1', 'bicrystal_orthog', 'bicrystal']
 # set_id_cal = ['incl1', 'incl2', 'incl3']
 
 el = 21
-H = 4
+H = 3
 step = 0
 
 wrt_file = 'log_%s.txt' % (time.strftime("%Y-%m-%d_h%Hm%M"))
@@ -41,15 +40,17 @@ gen.inclusion_red(el, ns_cal[0], H, set_id_cal[0], step, wrt_file, vfrac)
 # vfrac = [.125, .075]
 # gen.inclusion_red(el, ns_cal[2], H, set_id_cal[2], step, wrt_file, vfrac)
 
-gen.bicrystal_orthog(el, ns_cal[1], H, set_id_cal[1], step, wrt_file)
-gen.bicrystal(el, ns_cal[2], H, set_id_cal[2], step, wrt_file)
+raxis = 0
+gen.rod(el, ns_cal[1], H, set_id_cal[1], step, wrt_file, raxis)
+raxis = 1
+gen.rod(el, ns_cal[2], H, set_id_cal[2], step, wrt_file, raxis)
+raxis = 2
+gen.rod(el, ns_cal[3], H, set_id_cal[3], step, wrt_file, raxis)
 
-# raxis = 0
-# gen.rod(el, ns_cal[0], H, set_id_cal[0], step, wrt_file, raxis)
-# raxis = 1
-# gen.rod(el, ns_cal[1], H, set_id_cal[1], step, wrt_file, raxis)
-# raxis = 2
-# gen.rod(el, ns_cal[2], H, set_id_cal[2], step, wrt_file, raxis)
+
+gen.bicrystal_orthog(el, ns_cal[4], H, set_id_cal[4], step, wrt_file)
+gen.improcess(el, ns_cal[5], H, set_id_cal[5], step, wrt_file)
+
 
 """Generate the fourier space microstructure functions"""
 

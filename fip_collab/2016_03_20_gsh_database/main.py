@@ -20,23 +20,12 @@ af.job_submit(njobs=C['read_njobs'],
               path=C['path'],
               scriptname=C['read_scriptname'])
 
-# for ii in xrange(C['read_njobs']):
-#     filename = 'read_input.sh'
-#     mem = C['read_mem']
-#     walltime = C['read_walltime']
-#     path = C['path']
-#     script_etc = '%s %s' % (C['read_scriptname'], str(ii+1))
-#     af.writefile(filename, mem, walltime, path, script_etc)
-
-#     sp.call('msub %s' % filename, shell=True)
-
 """check that the read jobs have completed"""
 
 af.job_check(n_jobs=C['read_njobs'],
              walltime=C['read_walltime'],
              scriptname=C['read_scriptname'],
              logfile=logfile)
-
 
 """combine the files to read"""
 
@@ -50,16 +39,6 @@ af.job_submit(njobs=C['XcalcGSH_njobs'],
               walltime=C['XcalcGSH_walltime'],
               path=C['path'],
               scriptname=C['XcalcGSH_scriptname'])
-
-# for ii in xrange(C['XcalcGSH_njobs']):
-#     filename = 'XcalcGSH_parallel.sh'
-#     mem = C['XcalcGSH_mem']
-#     walltime = C['XcalcGSH_walltime']
-#     path = C['path']
-#     script_etc = '%s %s' % (C['XcalcGSH_scriptname'], str(ii))
-#     af.writefile(filename, mem, walltime, path, script_etc)
-
-#     sp.call('msub %s' % filename, shell=True)
 
 """run scripts to calculate X for the cosine bases"""
 

@@ -3,6 +3,8 @@ import h5py
 import numpy as np
 import functions as rr
 from scipy.spatial.distance import cdist
+from scipy.ndimage.filters import convolve
+from scipy.ndimage.filters import gaussian_filter
 
 
 def sample_H(H):
@@ -124,6 +126,52 @@ def bicrystal_orthog(el, ns, H, set_id, step, wrt_file):
             sves[sn, :, :, :vf] = h2
 
     f.close()
+
+    end = time.time()
+    timeE = np.round((end - start), 3)
+
+    msg = "%s bicrystal SVEs generated: %ss" % (ns, timeE)
+    rr.WP(msg, wrt_file)
+
+
+def improcess(el, ns, H, set_id, step, wrt_file):
+
+    start = time.time()
+
+    sshape = (ns, el, el, el)
+
+    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'w')
+    sves = f.create_dataset("sves", sshape, dtype='int64')
+
+    sigset = [0., .2, .4, .6, .8, 2, 5]
+
+    for sn in xrange(ns):
+
+        base = np.random.random((el, el, el))
+
+        r2a = np.random.randint(1, 5)
+        r2b = np.random.randint(1, 5)
+        r2c = np.random.randint(1, 5)
+        weights = np.random.random(size=(r2a, r2b, r2c))
+
+        raw = convolve(base, weights, mode='wrap')
+
+        blur = gaussian_filter(raw, sigma=np.random.choice(sigset))
+        scaled = scale_array(blur)
+
+        scaled_lin = scaled.reshape(el**3)
+        sve = np.zeros((el**3))
+
+        vf_bounds = np.zeros(H+1)
+        vf_bounds[-1] = 1
+        tmp = np.sort(np.random.rand(H-1))
+        vf_bounds[1:H] = tmp
+
+        for ii in xrange(H):
+            indx = (scaled_lin > vf_bounds[ii])*(scaled_lin <= vf_bounds[ii+1])
+            sve[indx] = ii
+
+        sves[sn, ...] = sve.reshape(el, el, el)
 
     end = time.time()
     timeE = np.round((end - start), 3)
@@ -262,8 +310,15 @@ def rod(el, ns, H, set_id, step, wrt_file, raxis):
     end = time.time()
     timeE = np.round((end - start), 3)
 
-    msg = "%s SVEs with inclusions generated: %ss" % (ns, timeE)
+    msg = "%s SVEs with rods generated: %ss" % (ns, timeE)
     rr.WP(msg, wrt_file)
+
+
+def scale_array(raw):
+    amin = raw.min()
+    amax = raw.max()
+    return (raw-amin)/(amax-amin)
+
 
 
 if __name__ == '__main__':

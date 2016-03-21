@@ -11,14 +11,16 @@ tnum = np.int64(sys.argv[1])
 C = constants.const()
 filename = 'log_integrate_parallel_%s.txt' % str(tnum).zfill(5)
 
-""" Load Y vec """
+"""load Y vec"""
+
 f = h5py.File(C['combineread_output'], 'r')
 var_set = f.get('var_set')
 sinphi = np.sin(var_set[:, 2])
 Y = var_set[:, 5]
 f.close
 
-""" Calculate basis function indices """
+"""calculate basis function indices"""
+
 # cmax: total number of permutations of basis functions
 fn.WP(str(C['cmax']), filename)
 
@@ -26,8 +28,9 @@ fn.WP(str(C['cmax']), filename)
 cmat = np.unravel_index(np.arange(C['cmax']), C['N_tuple'])
 cmat = np.array(cmat).T
 
-""" Deal with the parallelization of this operation specifically pick range
-of indxmat to calculate """
+"""deal with the parallelization of this operation specifically pick range
+of indxmat to calculate"""
+
 # n_ii: number dot products per job
 n_ii = np.int64(np.ceil(np.float(C['cmax'])/C['integrate_njobs']))
 fn.WP(str(n_ii), filename)
@@ -43,7 +46,7 @@ fn.WP(msg, filename)
 msg = "ii_end = %s" % ii_end
 fn.WP(msg, filename)
 
-""" perform the orthogonal regressions """
+"""perform the integrations"""
 
 coeff_prt = np.zeros(ii_end-ii_stt, dtype='complex128')
 test_prt = np.zeros(Y.shape, dtype='complex128')

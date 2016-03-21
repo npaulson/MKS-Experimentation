@@ -2,6 +2,7 @@ import time
 import h5py
 import numpy as np
 import functions as rr
+from scipy.spatial.distance import cdist
 
 
 def reul(shape):
@@ -84,6 +85,88 @@ def inclusion(el, ns, set_id, step, wrt_file, vfrac):
 
 
 def bicrystal(el, ns, set_id, step, wrt_file):
+
+    start = time.time()
+
+    sshape = (ns, 3, el**3)
+
+    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'w')
+    euler = f.create_dataset("euler", sshape, dtype='float64')
+
+    gridvec = np.arange(el)
+    gridx, gridy, gridz = np.meshgrid(gridvec, gridvec, gridvec)
+    gridx = gridx.reshape(gridx.size)
+    gridy = gridy.reshape(gridy.size)
+    gridz = gridz.reshape(gridz.size)
+    grid = np.vstack([gridx, gridy, gridz]).T
+
+    for sn in xrange(ns):
+
+        loc1 = np.zeros((1, 3))
+
+        randi2 = np.int8(2*np.random.rand())
+        randi6 = np.int8(6*np.random.rand())
+
+        if randi6 == 0:
+            loc1[0, 0] = 0
+            loc1[0, 1] = np.int8(el*np.random.rand())
+            loc1[0, 2] = np.int8(el*np.random.rand())
+        elif randi6 == 1:
+            loc1[0, 0] = el-1
+            loc1[0, 1] = np.int8(el*np.random.rand())
+            loc1[0, 2] = np.int8(el*np.random.rand())
+        elif randi6 == 2:
+            loc1[0, 0] = np.int8(el*np.random.rand())
+            loc1[0, 1] = 0
+            loc1[0, 2] = np.int8(el*np.random.rand())
+        elif randi6 == 3:
+            loc1[0, 0] = np.int8(el*np.random.rand())
+            loc1[0, 1] = el-1
+            loc1[0, 2] = np.int8(el*np.random.rand())
+        elif randi6 == 4:
+            loc1[0, 0] = np.int8(el*np.random.rand())
+            loc1[0, 1] = np.int8(el*np.random.rand())
+            loc1[0, 2] = 0
+        elif randi6 == 5:
+            loc1[0, 0] = np.int8(el*np.random.rand())
+            loc1[0, 1] = np.int8(el*np.random.rand())
+            loc1[0, 2] = el-1
+
+        loc2 = np.int8(el*np.random.random((1, 3)))
+
+        dist_loc1 = np.squeeze(cdist(grid, loc1))
+        dist_loc2 = np.squeeze(cdist(grid, loc2))
+
+        if randi2 == 0:
+            dist_xgy = dist_loc1 >= dist_loc2
+        if randi2 == 1:
+            dist_xgy = dist_loc1 < dist_loc2
+
+        dist_xgy = np.int8(dist_xgy)
+
+        sve = np.zeros([3, el**3], dtype='int8')
+
+        sve[0, dist_xgy == 0] = 360*np.random.rand()
+        sve[1, dist_xgy == 0] = 360*np.random.rand()
+        sve[2, dist_xgy == 0] = 360*np.random.rand()
+        sve[0, dist_xgy == 1] = 360*np.random.rand()
+        sve[1, dist_xgy == 1] = 360*np.random.rand()
+        sve[2, dist_xgy == 1] = 360*np.random.rand()
+
+        # print np.unique(sve)
+
+        euler[sn, ...] = sve
+
+    f.close()
+
+    end = time.time()
+    timeE = np.round((end - start), 3)
+
+    msg = "%s bicrystal SVEs generated: %ss" % (ns, timeE)
+    rr.WP(msg, wrt_file)
+
+
+def bicrystal_orthog(el, ns, set_id, step, wrt_file):
 
     start = time.time()
 

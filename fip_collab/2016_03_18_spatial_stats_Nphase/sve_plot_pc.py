@@ -42,10 +42,10 @@ def pltPC(el, ns_set, set_id_set, step, pcA, pcB):
 
 if __name__ == '__main__':
     el = 21
-    ns_cal = [10, 40, 40]
-    set_id_cal = ['incl1', 'bicrystal_orthog', 'bicrystal']
+    ns_cal = [10, 10, 10, 10, 40, 60]
+    set_id_cal = ['incl1', 'rod1', 'rod2', 'rod3', 'bicrystal_orthog', 'improcess']
     step = 0
-    pcA = 3
-    pcB = 4
+    pcA = 5
+    pcB = 7
 
     pltPC(el, ns_cal, set_id_cal, step, pcA, pcB)

@@ -32,11 +32,11 @@ def pltcorr(el, ns, set_id, step, sn, iA, iB):
 
 if __name__ == '__main__':
     el = 21
-    ns = 10
-    set_id = 'bicrystal'
+    ns = 60
+    set_id = 'improcess'
     step = 0
-    sn = 3
-    iA = 2
-    iB = 1
+    sn = 29
+    iA = 1
+    iB = 2
 
     pltcorr(el, ns, set_id, step, sn, iA, iB)
