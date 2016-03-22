@@ -21,7 +21,7 @@ f.close
 """ Initialize important variables """
 a = 0.00485  # start for en range
 b = 0.00905  # end for en range
-N_p = 500  # number of GSH bases to evaluate
+N_p = 550  # number of GSH bases to evaluate
 N_q = 40  # number of cosine bases to evaluate for theta
 N_r = 14  # number of cosine bases to evaluate for en
 
@@ -80,6 +80,10 @@ bsz_eul = ((np.pi**3)/3)/n_eul
 bsz_th = L_th/n_th
 bsz_en = L_en/n_en
 
+p_old = -1
+q_old = -1
+r_old = -1
+
 for ii in xrange(ii_stt, ii_end):
 
     msg = str(ii)
@@ -88,9 +92,17 @@ for ii in xrange(ii_stt, ii_end):
     st = time.time()
 
     p, q, r = cmat[ii, :]
-    basis_p = f.get('p_%s' % p)[...]
-    basis_q = f.get('q_%s' % q)[...]
-    basis_r = f.get('r_%s' % r)[...]
+
+    if p != p_old:
+        basis_p = f.get('p_%s' % p)[...]
+    if q != q_old:
+        basis_q = f.get('q_%s' % q)[...]
+    if r != r_old:
+        basis_r = f.get('r_%s' % r)[...]
+
+    # basis_p = f.get('p_%s' % p)[...]
+    # basis_q = f.get('q_%s' % q)[...]
+    # basis_r = f.get('r_%s' % r)[...]
 
     ep_set = np.squeeze(basis_p)*basis_q*basis_r
 
@@ -123,6 +135,10 @@ for ii in xrange(ii_stt, ii_end):
 
     msg = "integration time: %ss" % np.round(time.time()-st, 3)
     fn.WP(msg, filename)
+
+    p_old = p
+    q_old = q
+    r_old = r
 
     c += 1
 

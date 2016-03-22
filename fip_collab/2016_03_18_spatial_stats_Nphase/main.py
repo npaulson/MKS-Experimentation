@@ -7,7 +7,7 @@ import sve_plot_pc as pltPC
 import time
 
 
-ns_cal = [10, 10, 10, 10, 40, 60]
+ns_cal = [10, 10, 10, 10, 40, 10]
 set_id_cal = ['incl1', 'rod1', 'rod2', 'rod3', 'bicrystal_orthog', 'improcess']
 
 # ns_cal = [30, 30, 30]
@@ -71,6 +71,6 @@ pltcorr.pltcorr(el, ns_cal[2], set_id_cal[2], step, sn, iA, iB)
 pcaC.doPCA(el, ns_cal, H, set_id_cal, step, wrt_file)
 
 """Plot the microstructures in PC space"""
-pcA = 0
-pcB = 1
+pcA = 1
+pcB = 2
 pltPC.pltPC(el, ns_cal, set_id_cal, step, pcA, pcB)

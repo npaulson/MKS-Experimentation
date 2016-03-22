@@ -71,9 +71,9 @@ for ii in xrange(ii_stt, ii_end):
     """only load the basis if necessary!!!"""
     if p != p_old:
         basis_p = f.get('p_%s' % str(p).zfill(5))[...]
-    if r != r_old:
-        basis_q = f.get('q_%s' % str(q).zfill(5))[...]
     if q != q_old:
+        basis_q = f.get('q_%s' % str(q).zfill(5))[...]
+    if r != r_old:
         basis_r = f.get('r_%s' % str(r).zfill(5))[...]
 
     msg = "load time: %ss" % np.round(time.time()-st, 3)

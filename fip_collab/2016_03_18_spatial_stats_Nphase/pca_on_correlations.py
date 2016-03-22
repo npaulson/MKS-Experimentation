@@ -1,6 +1,7 @@
 import functions as rr
 import numpy as np
-from sklearn.decomposition import PCA
+# from sklearn.decomposition import PCA
+from sklearn.decomposition import TruncatedSVD
 import matplotlib.pyplot as plt
 import time
 import h5py
@@ -44,9 +45,15 @@ def doPCA(el, ns_set, H, set_id_set, step, wrt_file):
     msg = "correlations combined"
     rr.WP(msg, wrt_file)
 
-    pca = PCA(n_components=20)
-    pca.fit(allcorr[...])
-    ratios = np.round(100*pca.explained_variance_ratio_, 1)
+    # pca = PCA(n_components=20)
+    # pca.fit(allcorr[...])
+    # ratios = np.round(100*pca.explained_variance_ratio_, 1)
+    # msg = "pca explained variance: %s%%" % str(ratios)
+    # rr.WP(msg, wrt_file)
+
+    svd = TruncatedSVD(n_components=20)
+    svd.fit(allcorr[...])
+    ratios = np.round(100*svd.explained_variance_ratio_, 1)
     msg = "pca explained variance: %s%%" % str(ratios)
     rr.WP(msg, wrt_file)
 
@@ -65,7 +72,8 @@ def doPCA(el, ns_set, H, set_id_set, step, wrt_file):
                            (ns_set[ii], set_id_set[ii], step), 'a')
         ff = f_temp.get('ff')[...].reshape(ns_set[ii], n_corr*el**3)
 
-        tmp = pca.transform(ff)
+        # tmp = pca.transform(ff)
+        tmp = svd.transform(ff)
 
         f_temp.create_dataset('pc_corr', data=tmp, dtype='float64')
         # f_temp.create_dataset('pc_corr', data=tmp, dtype='complex128')

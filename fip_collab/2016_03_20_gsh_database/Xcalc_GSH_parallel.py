@@ -16,8 +16,10 @@ filename = 'log_Xcalc_GSH_parallel_%s.txt' % str(tnum).zfill(5)
 f = h5py.File(C['combineread_output'], 'r')
 var_set = f.get('var_set')
 
-X = var_set[:, 1:4]  # contains phi1, phi and phi2
-print X.nbytes/(1e9)
+X = np.zeros((var_set.shape[0], 3), dtype='float64')
+X[:, 0] = var_set[:, 1]  # phi1
+X[:, 1] = var_set[:, 2]  # phi
+X[:, 2] = var_set[:, 3]  # phi2
 
 f.close
 
