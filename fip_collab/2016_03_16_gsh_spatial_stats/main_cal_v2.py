@@ -5,6 +5,8 @@ import correlate as corr
 import plot_correlation as pltcorr
 import pca_on_correlations as pcaC
 import sve_plot_pc as pltPC
+import explained_variance as ev
+import numpy as np
 import time
 
 
@@ -62,16 +64,21 @@ for ii in xrange(len(set_id_cal)):
 for ii in xrange(len(set_id_cal)):
     corr.correlate(el, ns_cal[ii], H, set_id_cal[ii], step, wrt_file)
 
-"""Plot an autocorrelation"""
-sn = 0
-iA = 1
-iB = 1
-pltcorr.pltcorr(el, ns_cal[0], set_id_cal[0], step, sn, iA, iB)
-
 """Perform PCA on autocorrelations"""
 pcaC.doPCA(el, H, ns_cal, set_id_cal, step, wrt_file)
 
-"""Plot the microstructures in PC space"""
-pcA = 0
-pcB = 1
-pltPC.pltPC(el, ns_cal, set_id_cal, step, pcA, pcB)
+
+# """Plot an autocorrelation"""
+# sn = 0
+# iA = 1
+# iB = 1
+# pltcorr.pltcorr(el, ns_cal[0], set_id_cal[0], step, sn, iA, iB)
+
+# """Plot the percentage explained variance"""
+# ns_tot = np.sum(ns_cal)
+# ev.variance(el, ns_tot, step)
+
+# """Plot the microstructures in PC space"""
+# pcA = 0
+# pcB = 1
+# pltPC.pltPC(el, ns_cal, set_id_cal, step, pcA, pcB)

@@ -1,7 +1,6 @@
 import functions as rr
 import numpy as np
 from sklearn.decomposition import PCA
-import matplotlib.pyplot as plt
 import time
 import h5py
 
@@ -46,15 +45,11 @@ def doPCA(el, H, ns_set, set_id_set, step, wrt_file):
     pca = PCA(n_components=50)
     pca.fit(allcorr[...])
     ratios = np.round(100*pca.explained_variance_ratio_, 2)
+
     msg = "pca explained variance: %s%%" % str(ratios)
     rr.WP(msg, wrt_file)
 
-    plt.figure(10)
-    plt.plot(np.arange(ratios.size), ratios)
-    plt.xlabel('pc number')
-    plt.ylabel('pca explained variance (%)')
-    plt.title('pca explained variance plot')
-    plt.show()
+    f_master.create_dataset('ratios', data=ratios)
 
     f_master.close()
 
