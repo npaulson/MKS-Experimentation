@@ -1,5 +1,5 @@
 import numpy as np
-import gsh_hex_tri_L0_16 as gsh
+import gsh_cub_tri_L0_16 as gsh
 import db_functions as fn
 import h5py
 import time
@@ -16,31 +16,39 @@ filename = 'log_Xcalc_GSH_parallel_%s.txt' % str(tnum).zfill(5)
 f = h5py.File(C['combineread_output'], 'r')
 var_set = f.get('var_set')
 
-X = np.zeros((var_set.shape[0], 3), dtype='float64')
-X[:, 0] = var_set[:, 1]  # phi1
-X[:, 1] = var_set[:, 2]  # phi
-X[:, 2] = var_set[:, 3]  # phi2
+N_par = var_set.shape[0]
+
+theta = np.sort(np.unique(var_set[:, 0]))
+
+indxvec = var_set[:, 0] == theta[0]
+
+g = np.zeros((C['n_eul'], 3), dtype='float64')
+g[...] = var_set[indxvec, 1:4]
 
 f.close
 
 """ Deal with the parallelization of this operation specifically pick range
 of indxmat to calculate """
 
-# n_ii: number dot products per job
+# n_ii: number of basis evaluations per job
 n_ii = np.int64(np.ceil(np.float(C['N_p'])/C['XcalcGSH_njobs']))
 fn.WP(str(n_ii), filename)
 
 ii_stt = tnum*n_ii  # start index
 ii_end = ii_stt + n_ii  # end index
-if ii_end > C['N_p']:
-    ii_end = C['N_p']
+if ii_end > ['N_p']:
+    ii_end = ['N_p']
 
 msg = "ii_stt = %s" % ii_stt
 fn.WP(msg, filename)
 msg = "ii_end = %s" % ii_end
 fn.WP(msg, filename)
 
-""" first evalute the GSH basis functions """
+"""Evalute the GSH basis functions
+I am chunking X into smaller pieces to reduce the memory burden"""
+
+# ch_len: chunk lengths
+ch_len = np.int64(np.ceil(np.float(N_par)/C['XcalcGSH_nchunks']))
 
 f = h5py.File(C['XcalcGSH_output'] % str(tnum).zfill(5), 'w')
 
@@ -48,7 +56,16 @@ for p in xrange(ii_stt, ii_end):
 
     st = time.time()
 
-    vec = gsh.gsh_eval(X, [p])
+    vec = np.zeros(N_par, dtype='complex128')
+
+    for jj in xrange(C['XcalcGSH_nchunks']):
+        jj_stt = jj*ch_len  # start index
+        jj_end = jj_stt + ch_len
+        if jj_end > N_par:
+            jj_end = N_par
+
+        tmp = gsh.gsh_eval(g[ii_stt:ii_end, :], [p])
+        vec[ii_stt:ii_end] = np.squeeze(tmp)
 
     set_id = 'p_%s' % str(p).zfill(5)
     f.create_dataset(set_id, data=vec)

@@ -1,4 +1,4 @@
-import gsh_hex_tri_L0_16 as gsh
+import gsh_cub_tri_L0_16 as gsh
 import numpy as np
 
 
@@ -7,10 +7,10 @@ def const():
     C = {}
 
     """general constants"""
-    C['path'] = '/gpfs/scratch1/3/nhpnp3/3_14_db'
+    C['path'] = '/gpfs/scratch1/3/nhpnp3/3_14_cpdb'
 
     """for read_input_data"""
-    C['read_njobs'] = 40
+    C['read_njobs'] = 60
     C['read_mem'] = 8
     C['read_walltime'] = 4
     C['read_scriptname'] = 'read_input_data.py'
@@ -22,8 +22,9 @@ def const():
 
     """for Xcalc_GSH_parallel"""
     C['XcalcGSH_njobs'] = 40
-    C['XcalcGSH_mem'] = 15
-    C['XcalcGSH_walltime'] = 5
+    C['XcalcGSH_nchunks'] = 100
+    C['XcalcGSH_mem'] = 12
+    C['XcalcGSH_walltime'] = 4
     C['XcalcGSH_scriptname'] = 'Xcalc_GSH_parallel.py'
     C['XcalcGSH_output'] = 'X_parts_GSH_%s.hdf5'
 
@@ -37,8 +38,8 @@ def const():
 
     """for integrate_parallel"""
     C['integrate_njobs'] = 200
-    C['integrate_mem'] = 12
-    C['integrate_walltime'] = 24
+    C['integrate_mem'] = 15
+    C['integrate_walltime'] = 48
     C['integrate_scriptname'] = 'integrate_parallel.py'
     C['integrate_output'] = 'coef_prt_%s.hdf5'
 
@@ -51,19 +52,18 @@ def const():
     C['thetamax'] = 60  # theoretical max theta in degrees
     C['phi1max'] = 360  # theoretical max phi1 in degrees
     C['phimax'] = 90  # theoretical max Phi in degrees
-    C['phi2max'] = 60  # theoretical max phi2 in degrees
+    C['phi2max'] = 90  # theoretical max phi2 in degrees
 
-    C['inc_eul'] = 3.0  # degree increment for euler angles
-    C['inc_th'] = 1.5  # degree increment for deformation mode angles
+    C['inc'] = 1.0  # degree increment for euler angles
 
     # n_th: number of theta samples for FZ
-    C['n_th'] = np.int64(C['thetamax']/C['inc_th'])
+    C['n_th'] = np.int64(C['thetamax']/C['inc'])
     # n_p1 number of phi1 samples for FZ
-    C['n_p1'] = np.int64(C['phi1max']/C['inc_eul'])
+    C['n_p1'] = np.int64(C['phi1max']/C['inc'])
     # n_P: number of Phi sample for FZ
-    C['n_P'] = np.int64(C['phimax']/C['inc_eul'])
+    C['n_P'] = np.int64(C['phimax']/C['inc'])
     # n_p2: number of phi2 sample for FZ
-    C['n_p2'] = np.int64(C['phi2max']/C['inc_eul'])
+    C['n_p2'] = np.int64(C['phi2max']/C['inc'])
 
     # n_eul: total number of orientations
     C['n_eul'] = C['n_p1'] * C['n_P'] * C['n_p2']
@@ -78,20 +78,12 @@ def const():
     C['fzsz_eul'] = 1./(C['eul_frac']*8.*np.pi**2)
     C['bsz_eul'] = C['domain_eul_sz']/C['n_eul']
 
-    """define variables related to the total strain"""
-    C['a'] = 0.00485  # start for en range
-    C['b'] = 0.00905  # end for en range
-    C['n_en'] = 14
-    C['L_en'] = C['b']-C['a']
-    C['bsz_en'] = C['L_en']/C['n_en']
-
     """define variables required for integration"""
     LL_p = 16  # gsh truncation level
     indxvec = gsh.gsh_basis_info()
     C['N_p'] = np.sum(indxvec[:, 0] <= LL_p)  # number of GSH bases to evaluate
     C['N_q'] = C['n_th']  # number of cosine bases to evaluate for theta
-    C['N_r'] = C['n_en']  # number of cosine bases to evaluate for en
-    C['N_tuple'] = [C['N_p'], C['N_q'], C['N_r']]
-    C['cmax'] = C['N_p']*C['N_q']*C['N_r']
+    C['N_tuple'] = [C['N_p'], C['N_q']]
+    C['cmax'] = C['N_p']*C['N_q']
 
     return C

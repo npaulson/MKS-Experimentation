@@ -36,10 +36,9 @@ n_ii = np.int64(np.ceil(np.float(C['cmax'])/C['integrate_njobs']))
 fn.WP(str(n_ii), filename)
 
 ii_stt = tnum*n_ii  # start index
-if (tnum+1)*n_ii > C['cmax']:
+ii_end = ii_stt + n_ii  # end index
+if ii_end > C['cmax']:
     ii_end = C['cmax']
-else:
-    ii_end = (tnum+1)*n_ii  # end index
 
 msg = "ii_stt = %s" % ii_stt
 fn.WP(msg, filename)
@@ -48,7 +47,7 @@ fn.WP(msg, filename)
 
 """perform the integrations"""
 
-coeff_prt = np.zeros(ii_end-ii_stt, dtype='complex128')
+coef_prt = np.zeros(ii_end-ii_stt, dtype='complex128')
 test_prt = np.zeros(Y.shape, dtype='complex128')
 
 f = h5py.File(C['combineXcalc_output'], 'r')
@@ -103,7 +102,7 @@ for ii in xrange(ii_stt, ii_end):
     test_prt += tmp*ep_set
     del ep_set
 
-    coeff_prt[c] = tmp
+    coef_prt[c] = tmp
 
     msg = "integration time: %ss" % np.round(time.time()-st, 3)
     fn.WP(msg, filename)
@@ -116,7 +115,7 @@ for ii in xrange(ii_stt, ii_end):
 f.close()
 
 f = h5py.File(C['integrate_output'] % str(tnum).zfill(5), 'w')
-f.create_dataset('coeff_prt', data=coeff_prt)
+f.create_dataset('coef_prt', data=coef_prt)
 f.create_dataset('test_prt', data=test_prt)
 f.close()
 

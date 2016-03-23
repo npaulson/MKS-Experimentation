@@ -1,4 +1,3 @@
-import subprocess as sp
 import alljobs_functions as af
 import db_functions as fn
 import combine_input_data as cid

@@ -40,17 +40,17 @@ def combine():
         fn.WP(str(tnum), filename)
 
         # load partially filled coefficient arrays from each file
-        f = h5py.File('coeff_prt_%s.hdf5' % str(tnum).zfill(5), 'r')
-        coeff_prt = f.get('coeff_prt')[...]
+        f = h5py.File('coef_prt_%s.hdf5' % str(tnum).zfill(5), 'r')
+        coef_prt = f.get('coef_prt')[...]
         test_prt = f.get('test_prt')[...]
         f.close()
 
         Y_ += test_prt  # add pre-calculated portions to function prediction
 
         # insert pre-calculated coefficients to final list
-        for ii in xrange(coeff_prt.shape[0]):
+        for ii in xrange(coef_prt.shape[0]):
 
-            coef[c] = coeff_prt[ii]
+            coef[c] = coef_prt[ii]
             c += 1
 
     # save the coefficients file
