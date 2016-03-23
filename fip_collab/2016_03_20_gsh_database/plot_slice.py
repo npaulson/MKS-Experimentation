@@ -17,7 +17,7 @@ fig = plt.figure(num=1, figsize=[14, 8])
 ax = fig.add_subplot(111, projection='3d')
 
 ax.scatter(slc[:, 1], slc[:, 2], slc[:, 5].real, c='b')
-ax.scatter(slc[:, 1], slc[:, 2], .125*slc[:, 6].real, c='r')
+ax.scatter(slc[:, 1], slc[:, 2], slc[:, 6].real, c='r')
 
 title_text = "theta = %s, phi2 = %s, en = %s" % (th, phi2, en)
 ax.set_title(title_text)

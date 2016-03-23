@@ -7,12 +7,12 @@ def const():
     C = {}
 
     """general constants"""
-    C['path'] = '/gpfs/scratch1/3/nhpnp3/1_31_5deg'
+    C['path'] = '/gpfs/scratch1/3/nhpnp3/3_14_db'
 
     """for read_input_data"""
     C['read_njobs'] = 40
     C['read_mem'] = 8
-    C['read_walltime'] = 1
+    C['read_walltime'] = 4
     C['read_scriptname'] = 'read_input_data.py'
     C['read_output'] = 'var_extract_%s.hdf5'
 
@@ -22,7 +22,7 @@ def const():
 
     """for Xcalc_GSH_parallel"""
     C['XcalcGSH_njobs'] = 40
-    C['XcalcGSH_mem'] = 12
+    C['XcalcGSH_mem'] = 15
     C['XcalcGSH_walltime'] = 5
     C['XcalcGSH_scriptname'] = 'Xcalc_GSH_parallel.py'
     C['XcalcGSH_output'] = 'X_parts_GSH_%s.hdf5'
@@ -53,7 +53,7 @@ def const():
     C['phimax'] = 90  # theoretical max Phi in degrees
     C['phi2max'] = 60  # theoretical max phi2 in degrees
 
-    C['inc_eul'] = 5.0  # degree increment for euler angles
+    C['inc_eul'] = 3.0  # degree increment for euler angles
     C['inc_th'] = 1.5  # degree increment for deformation mode angles
 
     # n_th: number of theta samples for FZ

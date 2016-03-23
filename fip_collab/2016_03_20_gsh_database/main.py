@@ -12,50 +12,50 @@ import time
 C = constants.const()
 logfile = 'log_%s.txt' % time.strftime("%Y-%m-%d_h%Hm%M")
 
-# """run scripts to read files"""
+"""run scripts to read files"""
 
-# af.job_submit(njobs=C['read_njobs'],
-#               mem=C['read_mem'],
-#               walltime=C['read_walltime'],
-#               path=C['path'],
-#               scriptname=C['read_scriptname'])
+af.job_submit(njobs=C['read_njobs'],
+              mem=C['read_mem'],
+              walltime=C['read_walltime'],
+              path=C['path'],
+              scriptname=C['read_scriptname'])
 
-# """check that the read jobs have completed"""
+"""check that the read jobs have completed"""
 
-# af.job_check(n_jobs=C['read_njobs'],
-#              walltime=C['read_walltime'],
-#              scriptname=C['read_scriptname'],
-#              logfile=logfile)
+af.job_check(n_jobs=C['read_njobs'],
+             walltime=C['read_walltime'],
+             scriptname=C['read_scriptname'],
+             logfile=logfile)
 
-# """combine the files to read"""
+"""combine the files to read"""
 
-# cid.combine()
-# fn.WP('input files combined', logfile)
+cid.combine()
+fn.WP('input files combined', logfile)
 
-# """run scripts to calculate X for GSH"""
+"""run scripts to calculate X for GSH"""
 
-# af.job_submit(njobs=C['XcalcGSH_njobs'],
-#               mem=C['XcalcGSH_mem'],
-#               walltime=C['XcalcGSH_walltime'],
-#               path=C['path'],
-#               scriptname=C['XcalcGSH_scriptname'])
+af.job_submit(njobs=C['XcalcGSH_njobs'],
+              mem=C['XcalcGSH_mem'],
+              walltime=C['XcalcGSH_walltime'],
+              path=C['path'],
+              scriptname=C['XcalcGSH_scriptname'])
 
-# """run scripts to calculate X for the cosine bases"""
+"""run scripts to calculate X for the cosine bases"""
 
-# xcos.calculate()
-# fn.WP('X calculated for the cosine bases', logfile)
+xcos.calculate()
+fn.WP('X calculated for the cosine bases', logfile)
 
-# """check to see that the jobs for XcalcGSH have completed"""
+"""check to see that the jobs for XcalcGSH have completed"""
 
-# af.job_check(n_jobs=C['XcalcGSH_njobs'],
-#              walltime=C['XcalcGSH_walltime'],
-#              scriptname=C['XcalcGSH_scriptname'],
-#              logfile=logfile)
+af.job_check(n_jobs=C['XcalcGSH_njobs'],
+             walltime=C['XcalcGSH_walltime'],
+             scriptname=C['XcalcGSH_scriptname'],
+             logfile=logfile)
 
-# """combine the X calculations"""
+"""combine the X calculations"""
 
-# cxc.combine()
-# fn.WP('X combined for all bases', logfile)
+cxc.combine()
+fn.WP('X combined for all bases', logfile)
 
 """run scripts to perform the integration for coefficients"""
 

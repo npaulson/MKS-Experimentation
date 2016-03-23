@@ -6,7 +6,7 @@
 #PBS -j oe
 #PBS -o out.$PBS_JOBID
 
-cd /gpfs/scratch1/3/nhpnp3/1_31_5deg
+cd /gpfs/scratch1/3/nhpnp3/3_14_db
 module purge
 module load anaconda2
 python main.py
