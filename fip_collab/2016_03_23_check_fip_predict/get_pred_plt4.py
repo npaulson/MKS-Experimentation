@@ -93,6 +93,53 @@ def is_equiv_g(g1, g2):
     return is_equiv
 
 
+def bunge2g(euler):
+    # this has been cross-checked
+    # only works for radians
+
+    phi1 = euler[0]
+    Phi = euler[1]
+    phi2 = euler[2]
+
+    g = np.zeros([3, 3])
+
+    g[0, 0] = np.cos(phi1)*np.cos(phi2) - \
+        np.sin(phi1)*np.sin(phi2)*np.cos(Phi)
+
+    g[0, 1] = np.sin(phi1)*np.cos(phi2) + \
+        np.cos(phi1)*np.sin(phi2)*np.cos(Phi)
+
+    g[0, 2] = np.sin(phi2)*np.sin(Phi)
+
+    g[1, 0] = -np.cos(phi1)*np.sin(phi2) - \
+        np.sin(phi1)*np.cos(phi2)*np.cos(Phi)
+
+    g[1, 1] = -np.sin(phi1)*np.sin(phi2) + \
+        np.cos(phi1)*np.cos(phi2)*np.cos(Phi)
+
+    g[1, 2] = np.cos(phi2)*np.sin(Phi)
+
+    g[2, 0] = np.sin(phi1)*np.sin(Phi)
+
+    g[2, 1] = -np.cos(phi1)*np.sin(Phi)
+
+    g[2, 2] = np.cos(Phi)
+
+    return g
+
+
+def return2fz(euler):
+    g = bunge2g(euler)
+    symhex = ef.symhex()
+    for ii in xrange(symhex.shape[0]):
+        g_symm = np.dot(symhex[ii, ...], g)
+        euler_ = g2bunge(g_symm)
+        euler_ += 2*np.pi*np.array(euler_ < 0)
+        if np.all(euler_ < np.array([2*np.pi, np.pi/2, np.pi/3])):
+            break
+    return euler_
+
+
 def g2bunge(g):
 
     # if np.abs(np.abs(g[2, 2]) - 1) < 1E-8:
@@ -203,12 +250,15 @@ def get_pred(sn, el, ns, set_id, step, compl):
     print "max(theta): %s\n" % np.str(theta.max()*180./np.pi)
 
     """find g_p2c = g_p2s*g_s2c"""
-    g_s2c = ef.bunge2g(euler[:, 0], euler[:, 1], euler[:, 2])
+
+    g_s2c = np.zeros((el**3, 3, 3))
+    for ii in xrange(el**3):
+        g_s2c[ii, ...] = bunge2g(euler[ii, :])
+
+    # g_s2c = ef.bunge2g(euler[:, 0], euler[:, 1], euler[:, 2])
 
     """this application of einsum is validated vs loop with np.dot()"""
     g_p2c = np.einsum('...ij,...jk', g_s2c, g_p2s)
-
-    # phi1, phi, phi2 = ef.g2bunge(g_p2c)
 
     phi1 = np.zeros(el**3)
     phi = np.zeros(el**3)
@@ -219,9 +269,24 @@ def get_pred(sn, el, ns, set_id, step, compl):
         phi[ii] = tmp[1]
         phi2[ii] = tmp[2]
 
+    # phi1, phi, phi2 = ef.g2bunge(g_p2c)
+
+    # euler_fz = np.zeros((el**3, 3))
+
+    # for ii in xrange(el**3):
+    #     tmp = np.array([phi1[ii], phi[ii], phi2[ii]])
+    #     euler_fz[ii, :] = return2fz(tmp)
+
     """try to reconstruct et_"""
 
-    g_p2c_ = ef.bunge2g(phi1, phi, phi2)
+    g_p2c_ = np.zeros((el**3, 3, 3))
+    for ii in xrange(el**3):
+        g_p2c_[ii, ...] = bunge2g(np.array([phi1[ii], phi[ii], phi2[ii]]))
+
+    # g_p2c_ = ef.bunge2g(phi1, phi, phi2)
+
+    eultmp = np.array([phi1[rcell], phi[rcell], phi2[rcell]])
+    print "euler angles for cell#%s: %s" % (rcell, eultmp)
 
     geq = np.all(np.isclose(g_p2c[rcell, ...], g_p2c_[rcell, ...]))
     print "are g_p2c and g_p2c_ equal for cell #%s?: %s" % (rcell, geq)
@@ -251,8 +316,6 @@ def get_pred(sn, el, ns, set_id, step, compl):
     # X = np.array(ef.g2bunge(g_p2s.swapaxes(1, 2))).T
     # X = np.array(ef.g2bunge(g_s2c)).T
     # X = np.array(ef.g2bunge(g_s2c.swapaxes(1, 2))).T
-
-    del phi1, phi, phi2
 
     orig = tensnorm(ep)
     pred = rr.eval_func(theta, X, en).real
