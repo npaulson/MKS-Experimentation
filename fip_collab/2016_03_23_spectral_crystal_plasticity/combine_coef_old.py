@@ -1,12 +1,12 @@
 import numpy as np
 import db_functions as fn
 import h5py
-import constants
+import constants_old
 
 
 def combine():
 
-    C = constants.const()
+    C = constants_old.const()
     filename = 'log_combine_coef.txt'
 
     """ Combine the results of the coefficient determination"""
@@ -34,9 +34,9 @@ def combine():
     f.create_dataset('coef', data=coef)
     f.close()
 
-    # rrr = np.hstack([np.arange(coef.shape[0])[:, None],
-    #                  coef[:, 0].real[:, None]])
-    # print np.round(rrr, 1)
+    rrr = np.hstack([np.arange(coef.shape[0])[:, None],
+                     coef[:, 0].real[:, None]])
+    print np.round(rrr, 1)
 
 if __name__ == '__main__':
     combine()

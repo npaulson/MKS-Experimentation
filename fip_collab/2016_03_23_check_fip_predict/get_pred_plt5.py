@@ -13,11 +13,8 @@ def field_std(el, ns, traSET, newSET, slc, typecomp, plotnum):
 
     # dmin = np.min([newSET[slc, :, :], traSET[slc, :, :]])
     # dmax = np.max([newSET[slc, :, :], traSET[slc, :, :]])
-    # dmin = np.min(newSET[slc, :, :])
-    # dmax = np.max(newSET[slc, :, :])
-
-    dmin = 0.0
-    dmax = 0.00036
+    dmin = np.min(newSET[slc, :, :])
+    dmax = np.max(newSET[slc, :, :])
 
     plt.subplot(121)
     ax = plt.imshow(newSET[slc, :, :], origin='lower',
@@ -187,12 +184,12 @@ def get_pred(el, etv, epv, euler):
 
     X = np.vstack([phi1, phi, phi2]).T
 
-    return epn_CPFEM, theta, X, en
+    return epn_CPFEM, theta, X, en, eigval
 
 
 if __name__ == '__main__':
 
-    sn = 1
+    sn = 2
     el = 21
     ns = 100
     set_id = 'val'
@@ -223,16 +220,23 @@ if __name__ == '__main__':
     theta_m = np.zeros(el**3)
     X_m = np.zeros((el**3, 3))
     en_m = np.zeros(el**3)
+    eigval_m = np.zeros((el**3, 3))
 
     for ii in xrange(el**3):
         if np.mod(ii, 100) == 0:
             print ii
 
-        orig, theta, X, en = get_pred(el, etv[ii, :], epv[ii, :], euler[ii, :])
+        orig, theta, X, en, eigval = get_pred(el, etv[ii, :], epv[ii, :], euler[ii, :])
         orig_m[ii] = orig
         theta_m[ii] = theta
         X_m[ii, :] = X
         en_m[ii] = en
+        eigval_m[ii, :] = eigval
+
+    """write file for matthew"""
+
+    tempm = np.hstack([eigval_m*en_m[:, None], X_m])
+    np.savetxt('et_file.txt', tempm)
 
     pred_m = rr.eval_func(theta_m, X_m, en_m).real
 

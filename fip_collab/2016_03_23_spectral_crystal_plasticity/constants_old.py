@@ -7,7 +7,7 @@ def const():
     C = {}
 
     """general constants"""
-    C['path'] = '/gpfs/scratch1/3/nhpnp3/3_14_cpdb'
+    C['path'] = '/gpfs/pace1/project/me-kalidindi/shared/dir_nhp_test'
 
     """for read_input_data"""
     C['read_njobs'] = 60
@@ -21,10 +21,10 @@ def const():
     C['combineread_output'] = 'var_extract_total.hdf5'
 
     """for Xcalc_GSH_parallel"""
-    C['XcalcGSH_njobs'] = 40
-    C['XcalcGSH_nchunks'] = 100
-    C['XcalcGSH_mem'] = 12
-    C['XcalcGSH_walltime'] = 4
+    C['XcalcGSH_njobs'] = 1
+    C['XcalcGSH_nchunks'] = 1
+    C['XcalcGSH_mem'] = 4
+    C['XcalcGSH_walltime'] = 1
     C['XcalcGSH_scriptname'] = 'Xcalc_GSH_parallel.py'
     C['XcalcGSH_output'] = 'X_parts_GSH_%s.hdf5'
 
@@ -37,9 +37,9 @@ def const():
     C['combineXcalc_output'] = 'X_parts.hdf5'
 
     """for integrate_parallel"""
-    C['integrate_njobs'] = 200
-    C['integrate_mem'] = 15
-    C['integrate_walltime'] = 48
+    C['integrate_njobs'] = 1
+    C['integrate_mem'] = 4
+    C['integrate_walltime'] = 1
     C['integrate_scriptname'] = 'integrate_parallel.py'
     C['integrate_output'] = 'coef_prt_%s.hdf5'
 
@@ -54,7 +54,7 @@ def const():
     C['phimax'] = 90  # theoretical max Phi in degrees
     C['phi2max'] = 90  # theoretical max phi2 in degrees
 
-    C['inc'] = 1.0  # degree increment for euler angles
+    C['inc'] = 10.0  # degree increment for euler angles
 
     # n_th: number of theta samples for FZ
     C['n_th'] = np.int64(C['thetamax']/C['inc'])
@@ -79,7 +79,7 @@ def const():
     C['bsz_eul'] = C['domain_eul_sz']/C['n_eul']
 
     """define variables required for integration"""
-    LL_p = 16  # gsh truncation level
+    LL_p = 4  # gsh truncation level
     indxvec = gsh.gsh_basis_info()
     C['N_p'] = np.sum(indxvec[:, 0] <= LL_p)  # number of GSH bases to evaluate
     C['N_q'] = C['n_th']  # number of cosine bases to evaluate for theta

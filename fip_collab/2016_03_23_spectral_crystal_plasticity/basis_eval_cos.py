@@ -15,6 +15,8 @@ def calculate():
     f = h5py.File(C['combineread_output'], 'r')
     var_set = f.get('var_set')
     theta = np.sort(np.unique(var_set[:, 0]))
+    msg = "theta vec: %s" % str(theta*(180/np.pi))
+    fn.WP(msg, filename)
     f.close
 
     f = h5py.File(C['basiscos_output'], 'a')

@@ -4,11 +4,11 @@ import db_functions as fn
 import h5py
 import time
 import sys
-import constants
+import constants_old
 
 
 tnum = np.int64(sys.argv[1])
-C = constants.const()
+C = constants_old.const()
 filename = 'log_Xcalc_GSH_parallel_%s.txt' % str(tnum).zfill(5)
 
 """ Load info from collected simulation info file """
@@ -55,14 +55,16 @@ for p in xrange(ii_stt, ii_end):
 
     vec = np.zeros(N_par, dtype='complex128')
 
-    for jj in xrange(C['XcalcGSH_nchunks']):
-        jj_stt = jj*ch_len  # start index
-        jj_end = jj_stt + ch_len
-        if jj_end > N_par:
-            jj_end = N_par
+    # for jj in xrange(C['XcalcGSH_nchunks']):
+    #     jj_stt = jj*ch_len  # start index
+    #     jj_end = jj_stt + ch_len
+    #     if jj_end > N_par:
+    #         jj_end = N_par
 
-        tmp = gsh.gsh_eval(X[ii_stt:ii_end, :], [p])
-        vec[ii_stt:ii_end] = np.squeeze(tmp)
+    #     tmp = gsh.gsh_eval(X[ii_stt:ii_end, :], [p])
+    #     vec[ii_stt:ii_end] = np.squeeze(tmp)
+
+    vec = np.squeeze(gsh.gsh_eval(X, [p]))
 
     set_id = 'p_%s' % str(p).zfill(5)
     f.create_dataset(set_id, data=vec)

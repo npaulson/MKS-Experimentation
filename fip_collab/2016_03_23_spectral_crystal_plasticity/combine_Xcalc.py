@@ -1,11 +1,11 @@
 import db_functions as fn
-import constants
+import constants_old
 import h5py
 
 
 def combine():
 
-    C = constants.const()
+    C = constants_old.const()
 
     filename = 'log_Xcalc_combine.txt'
 

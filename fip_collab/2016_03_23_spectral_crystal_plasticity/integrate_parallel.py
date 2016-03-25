@@ -4,11 +4,11 @@ import gsh_cub_tri_L0_16 as gsh
 import h5py
 import time
 import sys
-import constants
+import constants_old
 
 
 tnum = np.int64(sys.argv[1])
-C = constants.const()
+C = constants_old.const()
 filename = 'log_integrate_parallel_%s.txt' % str(tnum).zfill(5)
 
 """calculate basis function indices"""

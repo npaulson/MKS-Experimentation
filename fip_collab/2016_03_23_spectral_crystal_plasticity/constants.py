@@ -12,7 +12,7 @@ def const():
     """for read_input_data"""
     C['read_njobs'] = 60
     C['read_mem'] = 8
-    C['read_walltime'] = 4
+    C['read_walltime'] = 1
     C['read_scriptname'] = 'read_input_data.py'
     C['read_output'] = 'var_extract_%s.hdf5'
 
@@ -22,9 +22,8 @@ def const():
 
     """for basis_eval_gsh"""
     C['basisgsh_njobs'] = 15
-    C['basisgsh_nchunks'] = 10
     C['basisgsh_mem'] = 12
-    C['basisgsh_walltime'] = 4
+    C['basisgsh_walltime'] = 8
     C['basisgsh_scriptname'] = 'basis_eval_gsh.py'
     C['basisgsh_output'] = 'basis_eval_gsh_%s.hdf5'
 
@@ -38,7 +37,7 @@ def const():
 
     """for integrate_parallel"""
     C['integrate_njobs'] = 200
-    C['integrate_mem'] = 15
+    C['integrate_mem'] = 8
     C['integrate_walltime'] = 48
     C['integrate_scriptname'] = 'integrate.py'
     C['integrate_output'] = 'coef_prt_%s.hdf5'
@@ -67,6 +66,7 @@ def const():
 
     # n_eul: total number of orientations
     C['n_eul'] = C['n_p1'] * C['n_P'] * C['n_p2']
+    C['n_tot'] = C['n_eul']*C['n_th']
     C['L_th'] = C['thetamax']*(np.pi/180.)  # range of theta in radians
     C['bsz_th'] = C['L_th']/C['n_th']
 

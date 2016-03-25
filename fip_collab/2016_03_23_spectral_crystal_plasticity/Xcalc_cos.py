@@ -2,12 +2,12 @@ import numpy as np
 import db_functions as fn
 import h5py
 import time
-import constants
+import constants_old
 
 
 def calculate():
 
-    C = constants.const()
+    C = constants_old.const()
 
     filename = 'Xcalc_log_cos.txt'
 
