@@ -7,7 +7,7 @@ def const():
     C = {}
 
     """general constants"""
-    C['path'] = '/gpfs/pace1/project/me-kalidindi/shared/dir_nhp'
+    C['path'] = '/gpfs/scratch1/3/nhpnp3/3_14_cpdb'
 
     """for read_input_data"""
     C['read_njobs'] = 60
@@ -20,27 +20,27 @@ def const():
     C['combineread_scriptname'] = 'combine_input_data.py'
     C['combineread_output'] = 'var_extract_total.hdf5'
 
-    """for basis_eval_gsh"""
-    C['basisgsh_njobs'] = 15
-    C['basisgsh_nchunks'] = 10
-    C['basisgsh_mem'] = 12
-    C['basisgsh_walltime'] = 4
-    C['basisgsh_scriptname'] = 'basis_eval_gsh.py'
-    C['basisgsh_output'] = 'basis_eval_gsh_%s.hdf5'
+    """for Xcalc_GSH_parallel"""
+    C['XcalcGSH_njobs'] = 40
+    C['XcalcGSH_nchunks'] = 100
+    C['XcalcGSH_mem'] = 12
+    C['XcalcGSH_walltime'] = 4
+    C['XcalcGSH_scriptname'] = 'Xcalc_GSH_parallel.py'
+    C['XcalcGSH_output'] = 'X_parts_GSH_%s.hdf5'
 
-    """for basis_eval_cos"""
-    C['basiscos_scriptname'] = 'basis_eval_cos.py'
-    C['basiscos_output'] = 'basis_eval_cos.hdf5'
+    """for Xcalc_cos"""
+    C['Xcalccos_scriptname'] = 'Xcalc_cos.py'
+    C['Xcalccos_output'] = 'X_parts_cos.hdf5'
 
-    """for combine_basis.py"""
-    C['combinebasis_scriptname'] = 'combine_basis.py'
-    C['combinebasis_output'] = 'basis_eval.hdf5'
+    """for combine_input_data.py"""
+    C['combineXcalc_scriptname'] = 'combine_Xcalc.py'
+    C['combineXcalc_output'] = 'X_parts.hdf5'
 
     """for integrate_parallel"""
     C['integrate_njobs'] = 200
     C['integrate_mem'] = 15
     C['integrate_walltime'] = 48
-    C['integrate_scriptname'] = 'integrate.py'
+    C['integrate_scriptname'] = 'integrate_parallel.py'
     C['integrate_output'] = 'coef_prt_%s.hdf5'
 
     """for combine_coef.py"""

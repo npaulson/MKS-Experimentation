@@ -9,15 +9,21 @@ import constants
 
 tnum = np.int64(sys.argv[1])
 C = constants.const()
-filename = 'log_basis_eval_gsh_%s.txt' % str(tnum).zfill(5)
+filename = 'log_Xcalc_GSH_parallel_%s.txt' % str(tnum).zfill(5)
 
 """ Load info from collected simulation info file """
 
 f = h5py.File(C['combineread_output'], 'r')
 var_set = f.get('var_set')
 
+N_par = var_set.shape[0]
+
+theta = np.sort(np.unique(var_set[:, 0]))
+
+indxvec = var_set[:, 0] == theta[0]
+
 g = np.zeros((C['n_eul'], 3), dtype='float64')
-g[...] = var_set[:C['n_eul'], 1:4]
+g[...] = var_set[indxvec, 1:4]
 
 f.close
 
@@ -25,7 +31,7 @@ f.close
 of indxmat to calculate """
 
 # n_ii: number of basis evaluations per job
-n_ii = np.int64(np.ceil(np.float(C['N_p'])/C['basisgsh_njobs']))
+n_ii = np.int64(np.ceil(np.float(C['N_p'])/C['XcalcGSH_njobs']))
 fn.WP(str(n_ii), filename)
 
 ii_stt = tnum*n_ii  # start index
@@ -42,21 +48,21 @@ fn.WP(msg, filename)
 I am chunking X into smaller pieces to reduce the memory burden"""
 
 # ch_len: chunk lengths
-ch_len = np.int64(np.ceil(np.float(C['n_eul'])/C['basisgsh_nchunks']))
+ch_len = np.int64(np.ceil(np.float(N_par)/C['XcalcGSH_nchunks']))
 
-f = h5py.File(C['basisgsh_output'] % str(tnum).zfill(5), 'w')
+f = h5py.File(C['XcalcGSH_output'] % str(tnum).zfill(5), 'w')
 
 for p in xrange(ii_stt, ii_end):
 
     st = time.time()
 
-    vec = np.zeros(C['n_eul'], dtype='complex128')
+    vec = np.zeros(N_par, dtype='complex128')
 
-    for jj in xrange(C['basisgsh_nchunks']):
+    for jj in xrange(C['XcalcGSH_nchunks']):
         jj_stt = jj*ch_len  # start index
         jj_end = jj_stt + ch_len
-        if jj_end > C['n_eul']:
-            jj_end = C['n_eul']
+        if jj_end > N_par:
+            jj_end = N_par
 
         tmp = gsh.gsh_eval(g[ii_stt:ii_end, :], [p])
         vec[ii_stt:ii_end] = np.squeeze(tmp)

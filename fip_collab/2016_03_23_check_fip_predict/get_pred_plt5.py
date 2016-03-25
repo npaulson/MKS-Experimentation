@@ -13,8 +13,11 @@ def field_std(el, ns, traSET, newSET, slc, typecomp, plotnum):
 
     # dmin = np.min([newSET[slc, :, :], traSET[slc, :, :]])
     # dmax = np.max([newSET[slc, :, :], traSET[slc, :, :]])
-    dmin = np.min(newSET[slc, :, :])
-    dmax = np.max(newSET[slc, :, :])
+    # dmin = np.min(newSET[slc, :, :])
+    # dmax = np.max(newSET[slc, :, :])
+
+    dmin = 0.0
+    dmax = 0.00036
 
     plt.subplot(121)
     ax = plt.imshow(newSET[slc, :, :], origin='lower',
@@ -123,29 +126,17 @@ def get_pred(el, etv, epv, euler):
     et = tens2mat(etv)
     ep = tens2mat(epv)
 
-    # print "et (strain tensor):"
-    # print et
-
     """find the deviatoric strain tensor"""
     hydro = (et[0, 0]+et[1, 1]+et[2, 2])/3.
     et_dev = et - hydro*np.identity(3)
 
-    # print "et_dev (deviatoric strain tensor):"
-    # print et_dev
-    # print "trace(et_dev): %s" % str(np.trace(et_dev))
-
     """find the norm of the tensors"""
     en = tensnorm(et_dev)
-    # print "en (norm(et_dev)): %s" % str(en)
 
     epn_CPFEM = tensnorm(ep)
 
     """normalize the deviatoric strain tensor"""
     et_n = et_dev/en
-
-    # print "et_n (normalized deviatoric strain tensor):"
-    # print et_n
-    # print "norm(et_n): %s" % str(tensnorm(et_n))
 
     """find the principal values of the normalized tensor"""
     eigval, g_p2s = LA.eigh(et_n)
@@ -154,56 +145,39 @@ def get_pred(el, etv, epv, euler):
     eigval = eigval[esort]
     g_p2s = g_p2s[:, esort]
 
-    # print "principal values of et_n: %s" % str(eigval)
-    # # print "eigenvectors:"
-    # # print g_p2s
-
-    # """show that the matrix of eigenvectors is g_p2s"""
-    # print "use the backwards tensor transformation to " +\
-    #       "get et_n_prinicipal using g_p2s\n" +\
-    #       "(et_n_principal = g_p2s^t * et_n * g_p2s)"
-    # print np.round(np.dot(np.dot(g_p2s.T, et_n), g_p2s), 6)
+    """check for improper rotations"""
+    if np.isclose(np.linalg.det(g_p2s), -1.0):
+        # print "warning: improper rotation"
+        g_p2s[:, 2] = -1*g_p2s[:, 2]
 
     """find the deformation mode"""
     theta = np.arctan2(-2*eigval[0]-eigval[2], np.sqrt(3)*eigval[2])
     if theta < 0:
         theta += np.pi
-    # print "theta (deformation mode): %s deg" % str(theta*180/np.pi)
-
-    # """recover the principal values from the deformation mode"""
-    # print "principal values of et_n recovered from theta: %s" %\
-    #       theta2eig(theta)
 
     """find g_p2c = g_p2s*g_s2c"""
     g_s2c = bunge2g(euler)
 
-    # g_p2c = np.einsum('ij,jk', g_s2c, g_p2s)
     g_p2c = np.dot(g_s2c, g_p2s)
 
-    # print g_p2c
+    if np.isclose(np.linalg.det(g_p2c), -1.0):
+        print "warning: g_p2c is improper"
 
     phi1, phi, phi2 = g2bunge(g_p2c)
 
     euler_p2c = np.array([phi1, phi, phi2])
     euler_p2c += 2*np.pi*np.array(euler_p2c < 0)
-    # print "g_p2c euler angles: %s" % str(euler_p2c)
-
-    # print bunge2g(euler_p2c)
-    # print bunge2g(return2fz(np.array([phi1, phi, phi2])))
-
-    # euler_p2c = return2fz(np.array([phi1, phi, phi2]))
-    # print "g_p2c euler angles (euler_p2c): %s" % str(euler_p2c)
 
     """try to recover et_dev from theta and euler_p2c"""
     g_p2c_ = bunge2g(euler_p2c)
-    if np.all(g_p2c != g_p2c_):
-        print "g_p2c_ != g_p2c"
+    # if np.all(g_p2c != g_p2c_):
+    #     print "g_p2c_ != g_p2c"
     princ_vals = theta2eig(theta)
     et_n_P = np.zeros((3, 3))
     et_n_P[0, 0] = princ_vals[0]
     et_n_P[1, 1] = princ_vals[1]
     et_n_P[2, 2] = princ_vals[2]
-    et_n_C = np.dot(np.dot(g_p2c, et_n_P), g_p2c.T)
+    et_n_C = np.dot(np.dot(g_p2c_, et_n_P), g_p2c_.T)
     g_c2s = g_s2c.T
     et_n_S = np.dot(np.dot(g_c2s, et_n_C), g_c2s.T)
     et_dev_ = et_n_S * en
@@ -213,14 +187,12 @@ def get_pred(el, etv, epv, euler):
 
     X = np.vstack([phi1, phi, phi2]).T
 
-    epn_SPECTRAL = rr.eval_func(theta, X, en).real
-
-    return epn_CPFEM, epn_SPECTRAL
+    return epn_CPFEM, theta, X, en
 
 
 if __name__ == '__main__':
 
-    sn = 7
+    sn = 1
     el = 21
     ns = 100
     set_id = 'val'
@@ -248,21 +220,29 @@ if __name__ == '__main__':
     f.close()
 
     orig_m = np.zeros(el**3)
-    pred_m = np.zeros(el**3)
+    theta_m = np.zeros(el**3)
+    X_m = np.zeros((el**3, 3))
+    en_m = np.zeros(el**3)
 
     for ii in xrange(el**3):
         if np.mod(ii, 100) == 0:
             print ii
 
-        orig, pred = get_pred(el, etv[ii, :], epv[ii, :], euler[ii, :])
+        orig, theta, X, en = get_pred(el, etv[ii, :], epv[ii, :], euler[ii, :])
+        orig_m[ii] = orig
+        theta_m[ii] = theta
+        X_m[ii, :] = X
+        en_m[ii] = en
+
+    pred_m = rr.eval_func(theta_m, X_m, en_m).real
 
     orig_m = orig_m.reshape(el, el, el)
     pred_m = pred_m.reshape(el, el, el)
 
-    maxindx = np.unravel_index(np.argmax(np.abs(orig)),
-                               orig.shape)
+    maxindx = np.unravel_index(np.argmax(np.abs(orig_m)),
+                               orig_m.shape)
     slc = maxindx[0]
 
-    field_std(el, ns, orig, pred, slc, "$|\epsilon^{p}|$", 1)
+    field_std(el, ns, orig_m, pred_m, slc, "$|\epsilon^{p}|$", 1)
 
     plt.show()

@@ -47,14 +47,14 @@ w12, w13, w23
 
 f_raw = h5py.File(C['combineread_output'], 'r')
 var_set = f_raw.get('var_set')
-sinphi = np.sin(var_set[:C['n_eul'], 2])
+sinphi = np.sin(var_set[:, 2])
 n_y = 10
 
 """perform the integrations"""
 
 coef_prt = np.zeros((ii_end-ii_stt, n_y), dtype='complex128')
 
-f_X = h5py.File(C['combinebasis_output'], 'r')
+f_X = h5py.File(C['combineXcalc_output'], 'r')
 
 p_old = -1
 q_old = -1
@@ -106,7 +106,7 @@ for hh in xrange(n_y):
             ep_set = basis_p * \
                 (basis_q[jj]*np.ones(C['n_eul'], dtype='complex128'))
 
-            tmp += np.sum(Y[jj_stt:jj_end]*ep_set.conj()*sinphi)
+            tmp += np.sum(Y[jj_stt:jj_end]*ep_set.conj()*sinphi[jj_stt:jj_end])
 
         coef_prt[c, hh] = c_tot*tmp
 
@@ -117,10 +117,6 @@ for hh in xrange(n_y):
         q_old = q
 
         c += 1
-
-    msg = "integration for output variable #%s completed" % hh
-    fn.WP(msg, filename)
-
 
 f_X.close()
 f_raw.close()

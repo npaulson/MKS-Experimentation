@@ -35,7 +35,7 @@ for ii in xrange(1, 7):
 
     """eulerset contents (for columns)
     phi1, Phi, phi2"""
-    eulerset = np.loadtxt('euler%s.inp' % ii, skiprows=1)
+    eulerset = np.loadtxt('euler%s.inp' % ii, skiprows=1)*(np.pi/180)
 
     setL = eulerset.shape[0]
 
@@ -66,3 +66,6 @@ for ii in xrange(1, 7):
     c += setL
 
 f.close()
+
+f_flag = open("flag%s" % str(tnum).zfill(5), 'w')
+f_flag.close()

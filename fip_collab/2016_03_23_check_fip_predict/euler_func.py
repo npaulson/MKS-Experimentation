@@ -6,7 +6,7 @@ def g2bunge(g):
     LTT = np.abs(np.abs(g[..., 2, 2]) - 1) < 1E-8
 
     print '# of g: %s' % g.shape[0]
-    print "# of Phi close to 0: %s" % np.sum(LTT)
+    print "# of Phi close n*pi: %s" % np.sum(LTT)
 
     # print "number of orientations with Phi close to zero: %s" % np.sum(LTT)
 
@@ -41,12 +41,21 @@ def g2bunge(g):
         phi2 = np.arctan2(g[..., 0, 2]/np.sin(Phi), g[..., 1, 2]/np.sin(Phi))
     """
 
-    return phi1, Phi, phi2
+    euler = np.zeros((phi1.size, 3))
+    euler[:, 0] = phi1
+    euler[:, 1] = Phi
+    euler[:, 2] = phi2
+
+    return euler
 
 
-def bunge2g(phi1, Phi, phi2):
+def bunge2g(euler):
     # this has been cross-checked
     # only works for radians
+
+    phi1 = euler[:, 0]
+    Phi = euler[:, 1]
+    phi2 = euler[:, 2]
 
     g = np.zeros([phi1.shape[0], 3, 3])
 
@@ -73,6 +82,40 @@ def bunge2g(phi1, Phi, phi2):
     g[..., 2, 2] = np.cos(Phi)
 
     return g
+
+
+# def check_euler_op(euler):
+
+#     symop = symhex()
+
+#     g_test = bunge2g(euler)
+#     euler_test = g2bunge(g_test)
+#     euler_test += 2*np.pi*np.array(euler_test < 0)
+
+#     for ii in xrange(euler.shape[0]):
+#         iseq = np.all(np.isclose(euler[ii, :], euler_test[ii, :]))
+#         if not iseq:
+#             print "\neuler: %s" % str(euler[ii, :])
+#             phi1phi2 = np.array([euler[ii, 0]+euler[ii, 2],
+#                                  euler[ii, 0]-euler[ii, 2]])
+#             print "phi1 +- phi2 for euler: %s" % str(phi1phi2)
+#             print "euler_test: %s" % str(euler_test[ii, :])
+
+#     g_test2 = bunge2g(euler_test)
+#     gsymm = np.einsum(symop)
+
+#         isgeq = False
+
+#         for ii in xrange(symop.shape[0]):
+
+#             gtmp = bunge2g(euler_test[ii, :][None, :])
+
+#             g_symm = np.dot(symop[ii, ...], gtmp)
+#             if np.all(np.isclose(gtmp, g_symm)):
+#                 isgeq = True
+
+#         if not isgeq:
+#             print "g != g_test"
 
 
 def symhex():

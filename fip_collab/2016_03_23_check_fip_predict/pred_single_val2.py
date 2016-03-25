@@ -175,6 +175,12 @@ if __name__ == '__main__':
     # print g_p2s
     # print "\n"
 
+    if np.isclose(np.linalg.det(g_p2s), -1.0):
+        print "warning: improper rotation"
+        g_p2s[:, 2] = -1*g_p2s[:, 2]
+
+    print "det(g_p2s): %s" % np.linalg.det(g_p2s)
+
     print "principal values of et_n: %s" % str(eigval)
     # print "eigenvectors:"
     # print g_p2s
@@ -206,8 +212,8 @@ if __name__ == '__main__':
     phi1, phi, phi2 = g2bunge(g_p2c)
 
     euler_p2c = np.array([phi1, phi, phi2])
-    euler_p2c += 2*np.pi*np.array(euler_p2c < 0)
-    print "g_p2c euler angles: %s" % str(euler_p2c)
+    # euler_p2c += 2*np.pi*np.array(euler_p2c < 0)
+    # print "g_p2c euler angles: %s" % str(euler_p2c)
 
     # print bunge2g(euler_p2c)
     # print bunge2g(return2fz(np.array([phi1, phi, phi2])))
@@ -225,7 +231,7 @@ if __name__ == '__main__':
     et_n_P[0, 0] = princ_vals[0]
     et_n_P[1, 1] = princ_vals[1]
     et_n_P[2, 2] = princ_vals[2]
-    et_n_C = np.dot(np.dot(g_p2c, et_n_P), g_p2c.T)
+    et_n_C = np.dot(np.dot(g_p2c_, et_n_P), g_p2c_.T)
     g_c2s = g_s2c.T
     et_n_S = np.dot(np.dot(g_c2s, et_n_C), g_c2s.T)
     et_dev_ = et_n_S * en

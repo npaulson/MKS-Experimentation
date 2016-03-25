@@ -1,8 +1,8 @@
 import alljobs_functions as af
 import db_functions as fn
 import combine_input_data as cid
-import basis_eval_cos as bcos
-import combine_basis as bc
+import Xcalc_cos as xcos
+import combine_Xcalc as cxc
 import combine_coef as cc
 import constants
 import time
@@ -31,32 +31,30 @@ logfile = 'log_%s.txt' % time.strftime("%Y-%m-%d_h%Hm%M")
 # cid.combine()
 # fn.WP('input files combined', logfile)
 
-# """run scripts to evalute basis for GSH"""
+# """run scripts to calculate X for GSH"""
 
-# af.job_submit(njobs=C['basisgsh_njobs'],
-#               mem=C['basisgsh_mem'],
-#               walltime=C['basisgsh_walltime'],
+# af.job_submit(njobs=C['XcalcGSH_njobs'],
+#               mem=C['XcalcGSH_mem'],
+#               walltime=C['XcalcGSH_walltime'],
 #               path=C['path'],
-#               scriptname=C['basisgsh_scriptname'])
+#               scriptname=C['XcalcGSH_scriptname'])
 
 # """run scripts to calculate X for the cosine bases"""
 
-# bcos.calculate()
-# fn.WP('cosine bases evaluated', logfile)
+# xcos.calculate()
+# fn.WP('X calculated for the cosine bases', logfile)
 
 # """check to see that the jobs for XcalcGSH have completed"""
 
-# af.job_check(n_jobs=C['basisgsh_njobs'],
-#              walltime=C['basisgsh_walltime'],
-#              scriptname=C['basisgsh_scriptname'],
+# af.job_check(n_jobs=C['XcalcGSH_njobs'],
+#              walltime=C['XcalcGSH_walltime'],
+#              scriptname=C['XcalcGSH_scriptname'],
 #              logfile=logfile)
 
-# fn.WP('gsh bases evaluated', logfile)
+# """combine the X calculations"""
 
-# """combine the basis evaluations"""
-
-# bc.combine()
-# fn.WP('all bases combined', logfile)
+# cxc.combine()
+# fn.WP('X combined for all bases', logfile)
 
 """run scripts to perform the integration for coefficients"""
 
