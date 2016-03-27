@@ -15,8 +15,8 @@ phi2 = np.round(par[1]*180./np.pi, 0)
 fig = plt.figure(num=1, figsize=[14, 8])
 ax = fig.add_subplot(111, projection='3d')
 
-ax.scatter(slc[::6, 1], slc[::6, 2], slc[::6, 4].real, c='b')
-ax.scatter(slc[::6, 1], slc[::6, 2], slc[::6, 5].real, c='r')
+ax.scatter(slc[::4, 1], slc[::4, 2], slc[::4, 4].real, c='b')
+ax.scatter(slc[::4, 1], slc[::4, 2], slc[::4, 5].real, c='r')
 
 title_text = "theta = %s, phi2 = %s" % (th, phi2)
 ax.set_title(title_text)

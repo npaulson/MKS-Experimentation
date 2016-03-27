@@ -14,7 +14,7 @@ data[:, 10] = total shear rate (output indexed 6)
 data[:, 11:14] = w12, w13, w23 (outputs indexed 7:10)
 """
 
-var_id = 0
+var_id = 6
 thr = 0.0
 
 C = constants.const()
