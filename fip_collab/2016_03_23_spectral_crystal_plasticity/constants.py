@@ -1,4 +1,4 @@
-import gsh_cub_tri_L0_16 as gsh
+import gsh_cub_tri_L0_24 as gsh
 import numpy as np
 
 
@@ -36,9 +36,9 @@ def const():
     C['combinebasis_output'] = 'basis_eval.hdf5'
 
     """for integrate_parallel"""
-    C['integrate_njobs'] = 200
+    C['integrate_njobs'] = 600
     C['integrate_mem'] = 8
-    C['integrate_walltime'] = 48
+    C['integrate_walltime'] = 24
     C['integrate_scriptname'] = 'integrate.py'
     C['integrate_output'] = 'coef_prt_%s.hdf5'
 
@@ -79,7 +79,7 @@ def const():
     C['bsz_eul'] = C['domain_eul_sz']/C['n_eul']
 
     """define variables required for integration"""
-    LL_p = 16  # gsh truncation level
+    LL_p = 24  # gsh truncation level
     indxvec = gsh.gsh_basis_info()
     C['N_p'] = np.sum(indxvec[:, 0] <= LL_p)  # number of GSH bases to evaluate
     C['N_q'] = C['n_th']  # number of cosine bases to evaluate for theta

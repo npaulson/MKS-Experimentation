@@ -1,5 +1,5 @@
 import numpy as np
-import gsh_cub_tri_L0_16 as gsh
+import gsh_cub_tri_L0_24 as gsh
 import db_functions as fn
 import h5py
 import time
