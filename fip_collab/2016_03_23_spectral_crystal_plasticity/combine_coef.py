@@ -15,7 +15,8 @@ def combine():
     coef = np.zeros((C['cmax'], 10), dtype='complex128')
 
     c = 0
-    for tnum in xrange(C['integrate_njobs']):
+    # for tnum in xrange(C['integrate_njobs']):
+    for tnum in xrange(596):
 
         fn.WP(str(tnum), filename)
 

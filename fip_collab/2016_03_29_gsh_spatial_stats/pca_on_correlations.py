@@ -54,10 +54,24 @@ def doPCA(el, H, ns_set, set_id_set, step, wrt_file):
 
     # f_master.close()
 
-    print "allcorr.dtype: %s" % str(allcorr[...].dtype)
-    print "allcorr.shape: %s" % str(allcorr.shape)
-    U, S, V = svd(allcorr[...], 20)
+    corr_tmp = allcorr[...]
+    # subtract out the mean feature values from corr_tmp
+    corr_mean = np.mean(corr_tmp, 0)[None, :]
+    corr_tmp += -corr_mean
+
+    print "allcorr.dtype: %s" % str(corr_tmp.dtype)
+    print "allcorr.shape: %s" % str(corr_tmp.shape)
+    U, S, V = svd(corr_tmp, 29)
     print "V.shape: %s" % str(V.shape)
+
+    """calculate percentage explained variance"""
+    X_transformed = np.dot(U, np.diag(S))
+    exp_var = np.var(X_transformed, axis=0)
+    full_var = np.var(corr_tmp, axis=0).sum()
+    ratios = np.round(100*(exp_var/full_var), 2)
+    print ratios.sum()
+    msg = "pca explained variance: %s%%" % str(ratios)
+    rr.WP(msg, wrt_file)
 
     for ii in xrange(len(set_id_set)):
 
@@ -66,7 +80,12 @@ def doPCA(el, H, ns_set, set_id_set, step, wrt_file):
         ff = f_temp.get('ff')[...].reshape(ns_set[ii], n_corr*el**3)
 
         # tmp = pca.transform(ff)
-        tmp = np.dot(ff, V)
+
+        # subtract out the mean feature values
+        ff_r = ff - corr_mean
+        # perfrom whitening
+        V_norm = V/(np.sqrt(S)[None, :])
+        tmp = np.dot(ff_r, V_norm)
 
         f_temp.create_dataset('pc_corr', data=tmp, dtype='complex128')
 

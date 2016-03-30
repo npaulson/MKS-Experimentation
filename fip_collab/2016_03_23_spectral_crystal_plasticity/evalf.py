@@ -1,6 +1,6 @@
 import numpy as np
 import db_functions as fn
-import gsh_cub_tri_L0_16 as gsh
+import gsh_cub_tri_L0_24 as gsh
 import constants
 import h5py
 import time
@@ -71,7 +71,7 @@ def evalf(theta, euler, var_id, thr):
 
         Y_ += coef[ii]*ep_set
 
-        if np.mod(ii, 100) == 0:
+        if np.mod(ii, 1000) == 0:
             msg = "evaluation complete for coefficient" +\
                   " %s out of %s" % (ii, N_coef)
             fn.WP(msg, filename)

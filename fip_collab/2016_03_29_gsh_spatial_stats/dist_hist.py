@@ -1,10 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.spatial.distance import cdist
 import h5py
 
 
 def dist_complex(set1, set2):
+    """
+    compute the distance between all points in set 1 and
+    all points in set 2 using euclidean distance.
+    Do so for complex numbers
+    """
 
     s1len = set1.shape[0]
     s2len = set2.shape[0]
@@ -15,10 +19,9 @@ def dist_complex(set1, set2):
         for jj in xrange(s2len):
 
             tmp = set1[ii, :] - set2[jj, :]
-            tmp = np.sqrt(np.sum(tmp**2))
-            # tmp = np.sqrt(np.sum(tmp.conj()*tmp))
+            tmp = np.sqrt(np.sum(tmp.conj()*tmp))
 
-            dist[ii, jj] = tmp
+            dist[ii, jj] = tmp.real
 
     return dist
 
@@ -49,7 +52,6 @@ def pltPC(el, ns_set, set_id_set, step):
         set2 = f.get('pc_corr')[...]
         f.close()
 
-        # dist = cdist(set1, set2)
         dist = dist_complex(set1, set2)
 
         plt.hist(dist.reshape(dist.size),
@@ -66,8 +68,8 @@ def pltPC(el, ns_set, set_id_set, step):
 
 if __name__ == '__main__':
     el = 21
-    ns_cal = [30, 30, 30]
-    set_id_cal = ['incl1', 'incl2', 'incl3']
+    ns_cal = [10, 10, 10]
+    set_id_cal = ['randomD3D', 'transverseD3D', 'basaltransD3D']
     step = 0
 
     pltPC(el, ns_cal, set_id_cal, step)
