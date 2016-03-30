@@ -1,7 +1,8 @@
 import functions as rr
 import numpy as np
 # from sklearn.decomposition import PCA
-from sklearn.decomposition import TruncatedSVD
+# from sklearn.decomposition import TruncatedSVD
+from scipy.linalg.interpolative import svd
 import matplotlib.pyplot as plt
 import time
 import h5py
@@ -51,18 +52,22 @@ def doPCA(el, ns_set, H, set_id_set, step, wrt_file):
     # msg = "pca explained variance: %s%%" % str(ratios)
     # rr.WP(msg, wrt_file)
 
-    svd = TruncatedSVD(n_components=20)
-    svd.fit(allcorr[...])
-    ratios = np.round(100*svd.explained_variance_ratio_, 1)
-    msg = "pca explained variance: %s%%" % str(ratios)
-    rr.WP(msg, wrt_file)
+    # svd = TruncatedSVD(n_components=20)
+    # svd.fit(allcorr[...])
+    # ratios = np.round(100*svd.explained_variance_ratio_, 1)
+    # msg = "pca explained variance: %s%%" % str(ratios)
+    # rr.WP(msg, wrt_file)
 
-    plt.figure(10)
-    plt.plot(np.arange(ratios.size), ratios)
-    plt.xlabel('pc number')
-    plt.ylabel('pca explained variance (%)')
-    plt.title('pca explained variance plot')
-    plt.show()
+    print "allcorr.shape: %s" % str(allcorr.shape)
+    U, S, V = svd(allcorr[...], 20)
+    print "V.shape: %s" % str(V.shape)
+
+    # plt.figure(10)
+    # plt.plot(np.arange(ratios.size), ratios)
+    # plt.xlabel('pc number')
+    # plt.ylabel('pca explained variance (%)')
+    # plt.title('pca explained variance plot')
+    # plt.show()
 
     f_master.close()
 
@@ -73,7 +78,8 @@ def doPCA(el, ns_set, H, set_id_set, step, wrt_file):
         ff = f_temp.get('ff')[...].reshape(ns_set[ii], n_corr*el**3)
 
         # tmp = pca.transform(ff)
-        tmp = svd.transform(ff)
+        # tmp = svd.transform(ff)
+        tmp = np.dot(ff, V)
 
         f_temp.create_dataset('pc_corr', data=tmp, dtype='float64')
         # f_temp.create_dataset('pc_corr', data=tmp, dtype='complex128')

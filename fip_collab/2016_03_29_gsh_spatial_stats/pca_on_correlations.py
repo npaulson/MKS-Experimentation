@@ -1,6 +1,7 @@
 import functions as rr
 import numpy as np
-from sklearn.decomposition import PCA
+# from sklearn.decomposition import PCA
+from scipy.linalg.interpolative import svd
 import time
 import h5py
 
@@ -14,13 +15,13 @@ def doPCA(el, H, ns_set, set_id_set, step, wrt_file):
     ns_tot = np.sum(ns_set)
     f_master = h5py.File("ref_%s%s_s%s.hdf5" % (ns_tot, 'allsets', step), 'w')
 
-    f_master.create_dataset("allcorr",
-                            (ns_tot, n_corr*el**3),
-                            dtype='float64')
-
     # f_master.create_dataset("allcorr",
     #                         (ns_tot, n_corr*el**3),
-    #                         dtype='complex128')
+    #                         dtype='float64')
+
+    f_master.create_dataset("allcorr",
+                            (ns_tot, n_corr*el**3),
+                            dtype='complex128')
 
     allcorr = f_master.get('allcorr')
 
@@ -42,16 +43,21 @@ def doPCA(el, H, ns_set, set_id_set, step, wrt_file):
     msg = "correlations combined"
     rr.WP(msg, wrt_file)
 
-    pca = PCA(n_components=50)
-    pca.fit(allcorr[...])
-    ratios = np.round(100*pca.explained_variance_ratio_, 2)
+    # pca = PCA(n_components=50)
+    # pca.fit(allcorr[...])
+    # ratios = np.round(100*pca.explained_variance_ratio_, 2)
 
-    msg = "pca explained variance: %s%%" % str(ratios)
-    rr.WP(msg, wrt_file)
+    # msg = "pca explained variance: %s%%" % str(ratios)
+    # rr.WP(msg, wrt_file)
 
-    f_master.create_dataset('ratios', data=ratios)
+    # f_master.create_dataset('ratios', data=ratios)
 
-    f_master.close()
+    # f_master.close()
+
+    print "allcorr.dtype: %s" % str(allcorr[...].dtype)
+    print "allcorr.shape: %s" % str(allcorr.shape)
+    U, S, V = svd(allcorr[...], 20)
+    print "V.shape: %s" % str(V.shape)
 
     for ii in xrange(len(set_id_set)):
 
@@ -59,10 +65,10 @@ def doPCA(el, H, ns_set, set_id_set, step, wrt_file):
                            (ns_set[ii], set_id_set[ii], step), 'a')
         ff = f_temp.get('ff')[...].reshape(ns_set[ii], n_corr*el**3)
 
-        tmp = pca.transform(ff)
+        # tmp = pca.transform(ff)
+        tmp = np.dot(ff, V)
 
-        f_temp.create_dataset('pc_corr', data=tmp, dtype='float64')
-        # f_temp.create_dataset('pc_corr', data=tmp, dtype='complex128')
+        f_temp.create_dataset('pc_corr', data=tmp, dtype='complex128')
 
         f_temp.close()
 

@@ -15,13 +15,13 @@ def correlate(el, ns, H, set_id, step, wrt_file):
                           (ns, H, H, el, el, el),
                           dtype='complex128')
 
-    ff = f.create_dataset("ff",
-                          (ns, H, H, el, el, el),
-                          dtype='float64')
-
     # ff = f.create_dataset("ff",
     #                       (ns, H, H, el, el, el),
-    #                       dtype='complex128')
+    #                       dtype='float64')
+
+    ff = f.create_dataset("ff",
+                          (ns, H, H, el, el, el),
+                          dtype='complex128')
 
     S = el**3
 
@@ -55,7 +55,7 @@ def correlate(el, ns, H, set_id, step, wrt_file):
         FF[:, ii, jj, ...] = FFtmp
 
         tmp = np.fft.ifftn(FFtmp, [el, el, el], [1, 2, 3])
-        ff[:, ii, jj, ...] = tmp.real
+        ff[:, ii, jj, ...] = tmp
 
         if c == 0:
             szgb = np.round(H*H*FFtmp.nbytes/(1e9), 3)

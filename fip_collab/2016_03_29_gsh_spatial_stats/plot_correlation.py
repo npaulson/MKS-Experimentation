@@ -15,35 +15,35 @@ def pltcorr(el, ns, set_id, step, sn, iA, iB):
     """Plot slices of the response"""
     plt.figure(num=1, figsize=[11, 2.7])
 
-    plt.subplot(121)
-    ax = plt.imshow(euler[10, :, :], origin='lower',
-                    interpolation='none', cmap='magma')
-    plt.colorbar(ax)
-    plt.title('phi1 field')
-
-    plt.subplot(122)
-    ax = plt.imshow(corr_centered[10, :, :], origin='lower',
-                    interpolation='none', cmap='viridis')
-    plt.colorbar(ax)
-    plt.title('ff: %s, %s' % (iA, iB))
-
-    # plt.subplot(131)
-    # ax = plt.imshow(euler[0, :, :], origin='lower',
+    # plt.subplot(121)
+    # ax = plt.imshow(euler[10, :, :], origin='lower',
     #                 interpolation='none', cmap='magma')
     # plt.colorbar(ax)
     # plt.title('phi1 field')
 
-    # plt.subplot(132)
-    # ax = plt.imshow(auto_centered[10, :, :].real, origin='lower',
+    # plt.subplot(122)
+    # ax = plt.imshow(corr_centered[10, :, :], origin='lower',
     #                 interpolation='none', cmap='viridis')
     # plt.colorbar(ax)
-    # plt.title('real(ff): %s, %s' % (iA, iB))
+    # plt.title('ff: %s, %s' % (iA, iB))
 
-    # plt.subplot(133)
-    # ax = plt.imshow(auto_centered[10, :, :].imag, origin='lower',
-    #                 interpolation='none', cmap='viridis')
-    # plt.colorbar(ax)
-    # plt.title('imag(ff): %s, %s' % (iA, iB))
+    plt.subplot(131)
+    ax = plt.imshow(euler[0, :, :], origin='lower',
+                    interpolation='none', cmap='magma')
+    plt.colorbar(ax)
+    plt.title('phi1 field')
+
+    plt.subplot(132)
+    ax = plt.imshow(corr_centered[10, :, :].real, origin='lower',
+                    interpolation='none', cmap='viridis')
+    plt.colorbar(ax)
+    plt.title('real(ff): %s, %s' % (iA, iB))
+
+    plt.subplot(133)
+    ax = plt.imshow(corr_centered[10, :, :].imag, origin='lower',
+                    interpolation='none', cmap='viridis')
+    plt.colorbar(ax)
+    plt.title('imag(ff): %s, %s' % (iA, iB))
 
     plt.show()
 
@@ -53,8 +53,8 @@ if __name__ == '__main__':
     ns = 10
     set_id = 'bicrystal'
     step = 0
-    sn = 3
-    iA = 2
-    iB = 1
+    sn = 5
+    iA = 4
+    iB = 2
 
     pltcorr(el, ns, set_id, step, sn, iA, iB)

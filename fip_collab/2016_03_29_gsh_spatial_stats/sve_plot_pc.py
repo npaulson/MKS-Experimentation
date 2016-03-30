@@ -24,17 +24,30 @@ def pltPC(el, ns_set, set_id_set, step, pcA, pcB):
 
         f_temp.close()
 
-        plt.plot(pc_corr[:, pcA], pc_corr[:, pcB],
+        # plt.plot(pc_corr[:, pcA], pc_corr[:, pcB],
+        #          marker='o', markersize=7, color=colormat[ii, :],
+        #          linestyle='', label=set_id_set[ii])
+
+        # plt.plot(pc_corr[:, pcA].mean(), pc_corr[:, pcB].mean(),
+        #          marker='D', markersize=8, color=colormat[ii, :],
+        #          linestyle='')
+
+        plt.plot(pc_corr[:, pcA].real, pc_corr[:, pcA].imag,
                  marker='o', markersize=7, color=colormat[ii, :],
                  linestyle='', label=set_id_set[ii])
 
-        plt.plot(pc_corr[:, pcA].mean(), pc_corr[:, pcB].mean(),
+        plt.plot(pc_corr[:, pcA].real.mean(), pc_corr[:, pcA].imag.mean(),
                  marker='D', markersize=8, color=colormat[ii, :],
                  linestyle='')
 
-    plt.title("SVE sets in PC space")
-    plt.xlabel("PC%s" % pcA)
-    plt.ylabel("PC%s" % pcB)
+    # plt.title("SVE sets in PC space")
+    plt.title("SVE sets for PC%s" % pcA)
+
+    # plt.xlabel("PC%s" % pcA)
+    # plt.ylabel("PC%s" % pcB)
+    plt.xlabel("real part of PC score")
+    plt.ylabel("imaginary part of PC score")
+
     plt.legend(loc='upper right', shadow=True, fontsize='medium')
 
     plt.show()

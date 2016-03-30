@@ -12,7 +12,7 @@ import time
 import h5py
 
 
-def euler_to_gsh(el, H, ns, set_id, step, wrt_file):
+def get_M(el, H, ns, set_id, step, wrt_file):
 
     start = time.time()
 
@@ -21,28 +21,30 @@ def euler_to_gsh(el, H, ns, set_id, step, wrt_file):
     euler = f.get('euler')[...]
     f.close()
 
-    """evaluate the gsh basis functions at the point of interest
-    note that we do not keep redundant information due to symmetry in
-    the complex arguments"""
-
     indxvec = gsh.gsh_basis_info()
-    euler_GSH = np.zeros([ns, H, el**3], dtype='float64')
 
+    # """evaluate the gsh basis functions at the point of interest
+    # note that we do not keep redundant information due to symmetry in
+    # the complex arguments"""
+
+    # euler_GSH = np.zeros([ns, H, el**3], dtype='float64')
+
+    # for h in xrange(H):
+
+    #     tmp = gsh.gsh_eval(euler.swapaxes(1, 2), [h])
+
+    #     if indxvec[h, 1] >= 0:
+    #         tmp = np.squeeze(tmp).real
+    #     elif indxvec[h, 1] < 0:
+    #         tmp = np.squeeze(tmp).imag
+
+    #     euler_GSH[:, h, :] = tmp
+
+    mf = np.zeros([ns, H, el**3], dtype='complex128')
     for h in xrange(H):
-
         tmp = gsh.gsh_eval(euler.swapaxes(1, 2), [h])
-
-        if indxvec[h, 1] >= 0:
-            tmp = np.squeeze(tmp).real
-        elif indxvec[h, 1] < 0:
-            tmp = np.squeeze(tmp).imag
-
-        euler_GSH[:, h, :] = tmp
-
-    # euler_GSH = np.zeros([ns, H, el**3], dtype='complex128')
-    # for sn in xrange(ns):
-    #     tmp = gsh.gsh_eval(euler[sn, ...].swapaxes(0, 1), np.arange(15))
-    #     euler_GSH[sn, :, :] = tmp.swapaxes(0, 1)
+        tmp = np.squeeze(tmp)
+        mf[:, h, :] = (2*indxvec[h, 0]+1)*tmp.conj()
 
     end = time.time()
     timeE = np.round((end - start), 3)
@@ -51,13 +53,13 @@ def euler_to_gsh(el, H, ns, set_id, step, wrt_file):
           " %s seconds" % timeE
     rr.WP(msg, wrt_file)
 
-    euler_GSH = euler_GSH.reshape([ns, H, el, el, el])
+    mf = mf.reshape([ns, H, el, el, el])
 
     # MICROSTRUCTURE FUNCTIONS IN FREQUENCY SPACE
     start = time.time()
 
-    M = np.fft.fftn(euler_GSH, axes=[2, 3, 4])
-    del euler_GSH
+    M = np.fft.fftn(mf, axes=[2, 3, 4])
+    del mf
 
     size = M.nbytes
 
