@@ -22,22 +22,18 @@ def get_M(el, H, ns, set_id, step, wrt_file):
 
     indxvec = gsh.gsh_basis_info()
 
-    # """evaluate the gsh basis functions at the point of interest
-    # note that we do not keep redundant information due to symmetry in
-    # the complex arguments"""
+    """evaluate the gsh basis functions at the point of interest
+    note that we do not keep redundant information due to symmetry in
+    the complex arguments"""
 
-    # euler_GSH = np.zeros([ns, H, el**3], dtype='float64')
-
+    # mf = np.zeros([ns, H, el**3], dtype='float64')
     # for h in xrange(H):
-
     #     tmp = gsh.gsh_eval(euler.swapaxes(1, 2), [h])
-
     #     if indxvec[h, 1] >= 0:
     #         tmp = np.squeeze(tmp).real
     #     elif indxvec[h, 1] < 0:
     #         tmp = np.squeeze(tmp).imag
-
-    #     euler_GSH[:, h, :] = tmp
+    #     mf[:, h, :] = (2*indxvec[h, 0]+1)*tmp.conj()
 
     mf = np.zeros([ns, H, el**3], dtype='complex128')
     for h in xrange(H):

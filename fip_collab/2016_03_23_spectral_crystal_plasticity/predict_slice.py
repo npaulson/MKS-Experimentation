@@ -14,7 +14,11 @@ data[:, 10] = total shear rate (output indexed 6)
 data[:, 11:14] = w12, w13, w23 (outputs indexed 7:10)
 """
 
-var_id = 0
+var_set = ['sig11', 'sig22', 'sig33',
+           'sig12', 'sig13', 'sig23',
+           'total shear rate',
+           'w12', 'w13', 'w23']
+var_id = 1
 thr = 0.0
 
 C = constants.const()
@@ -44,12 +48,12 @@ ang_sel = (data[:, 0] == th) * \
 print "theta: %s" % th
 print "phi2: %s" % phi2
 
-parameters = np.array([th, phi2])
+parameters = np.array([var_set[var_id], str(th), str(phi2)])
 
 theta = data[ang_sel, 0]
 euler = data[ang_sel, 1:4]
 Y = data[ang_sel, 4+var_id]
-Y_ = evalf.evalf(theta, euler, var_id, thr)
+Y_ = evalf.evalf(theta, euler, var_id, thr).real
 error = np.abs(Y-Y_)
 
 """get a few error metrics"""

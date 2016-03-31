@@ -3,7 +3,6 @@ import numpy as np
 from sklearn.decomposition import PCA
 from sklearn.decomposition import TruncatedSVD
 from scipy.linalg.interpolative import svd
-import matplotlib.pyplot as plt
 import time
 import h5py
 
@@ -21,6 +20,10 @@ def reduce(el, ns_set, H, set_id_set, step, wrt_file):
     f_master.create_dataset("allcorr",
                             (ns_tot, n_corr*el**3),
                             dtype='complex128')
+
+    # f_master.create_dataset("allcorr",
+    #                         (ns_tot, n_corr*el**3),
+    #                         dtype='float64')
 
     allcorr = f_master.get('allcorr')
 
@@ -81,13 +84,6 @@ def reduce(el, ns_set, H, set_id_set, step, wrt_file):
     msg = "pca explained variance: %s%%" % str(ratios)
     rr.WP(msg, wrt_file)
 
-    # plt.figure(10)
-    # plt.plot(np.arange(tmp_var.size), tmp_var)
-    # plt.xlabel('pc number')
-    # plt.ylabel('pc variance')
-    # plt.title('pc variance plot after whitening')
-    # plt.show()
-
     f_red = h5py.File("sve_reduced.hdf5", 'w')
 
     for ii in xrange(len(set_id_set)):
@@ -107,6 +103,10 @@ def reduce(el, ns_set, H, set_id_set, step, wrt_file):
         f_red.create_dataset('reduced_%s' % set_id_set[ii],
                              data=tmp,
                              dtype='complex128')
+
+        # f_red.create_dataset('reduced_%s' % set_id_set[ii],
+        #                      data=tmp,
+        #                      dtype='float64')
 
     f_red.close()
     f_stats.close()

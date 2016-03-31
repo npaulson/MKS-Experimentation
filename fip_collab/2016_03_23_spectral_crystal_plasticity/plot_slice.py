@@ -9,16 +9,17 @@ slc = f.get('slice')[...]
 par = f.get('parameters')[...]
 f.close()
 
-th = np.round(par[0]*180./np.pi, 2)
-phi2 = np.round(par[1]*180./np.pi, 0)
+var = par[0]
+th = np.round(np.float(par[1])*180./np.pi, 2)
+phi2 = np.round(np.float(par[2])*180./np.pi, 0)
 
 fig = plt.figure(num=1, figsize=[14, 8])
 ax = fig.add_subplot(111, projection='3d')
 
-ax.scatter(slc[::4, 1], slc[::4, 2], slc[::4, 4].real, c='b')
-ax.scatter(slc[::4, 1], slc[::4, 2], slc[::4, 5].real, c='r')
+ax.scatter(slc[::3, 1], slc[::3, 2], slc[::3, 4].real, c='b')
+ax.scatter(slc[::3, 1], slc[::3, 2], slc[::3, 5].real, c='r')
 
-title_text = "theta = %s, phi2 = %s" % (th, phi2)
+title_text = "%s, theta = %s, phi2 = %s" % (var, th, phi2)
 ax.set_title(title_text)
 ax.set_xlabel('phi1')
 ax.set_ylabel('Phi')

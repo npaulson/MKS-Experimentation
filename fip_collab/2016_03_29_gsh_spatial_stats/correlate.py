@@ -55,6 +55,7 @@ def correlate(el, ns, H, set_id, step, wrt_file):
         FF[:, ii, jj, ...] = FFtmp
 
         tmp = np.fft.ifftn(FFtmp, [el, el, el], [1, 2, 3])
+        # ff[:, ii, jj, ...] = tmp.real
         ff[:, ii, jj, ...] = tmp
 
         if c == 0:

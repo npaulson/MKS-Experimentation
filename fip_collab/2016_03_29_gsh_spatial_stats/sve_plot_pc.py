@@ -29,35 +29,53 @@ def pltPC(el, ns_set, set_id_set, step, pcA, pcB):
         #          marker='D', markersize=8, color=colormat[ii, :],
         #          linestyle='')
 
-        plt.subplot(211)
+        # plt.title("SVE sets in PC space")
+        # plt.xlabel("PC%s" % pcA)
+        # plt.ylabel("PC%s" % pcB)
+        # plt.legend(loc='upper right', shadow=True, fontsize='medium')
 
-        plt.plot(reduced[:, pcA].real, reduced[:, pcB].real,
+        plt.plot(reduced[:, pcA].real, reduced[:, pcA].imag,
                  marker='o', markersize=7, color=colormat[ii, :],
                  linestyle='', label=set_id_set[ii])
 
-        plt.plot(reduced[:, pcA].real.mean(), reduced[:, pcB].real.mean(),
+        plt.plot(reduced[:, pcA].mean().real, reduced[:, pcA].mean().imag,
                  marker='D', markersize=8, color=colormat[ii, :],
                  linestyle='')
 
-        plt.title("SVE sets in PC space (real)")
-        plt.xlabel("PC%s" % pcA)
-        plt.ylabel("PC%s" % pcB)
+        plt.title("SVE sets for PC: %s" % pcA)
+        plt.xlabel("real part")
+        plt.ylabel("imaginary part")
         plt.legend(loc='upper right', shadow=True, fontsize='medium')
 
-        plt.subplot(212)
+        # plt.subplot(211)
 
-        plt.plot(reduced[:, pcA].imag, reduced[:, pcB].imag,
-                 marker='o', markersize=7, color=colormat[ii, :],
-                 linestyle='', label=set_id_set[ii])
+        # plt.plot(reduced[:, pcA].real, reduced[:, pcB].real,
+        #          marker='o', markersize=7, color=colormat[ii, :],
+        #          linestyle='', label=set_id_set[ii])
 
-        plt.plot(reduced[:, pcA].imag.mean(), reduced[:, pcB].imag.mean(),
-                 marker='D', markersize=8, color=colormat[ii, :],
-                 linestyle='')
+        # plt.plot(reduced[:, pcA].real.mean(), reduced[:, pcB].real.mean(),
+        #          marker='D', markersize=8, color=colormat[ii, :],
+        #          linestyle='')
 
-        plt.title("SVE sets in PC space (imaginary)")
-        plt.xlabel("PC%s" % pcA)
-        plt.ylabel("PC%s" % pcB)
-        plt.legend(loc='upper right', shadow=True, fontsize='medium')
+        # plt.title("SVE sets in PC space (real)")
+        # plt.xlabel("PC%s" % pcA)
+        # plt.ylabel("PC%s" % pcB)
+        # plt.legend(loc='upper right', shadow=True, fontsize='medium')
+
+        # plt.subplot(212)
+
+        # plt.plot(reduced[:, pcA].imag, reduced[:, pcB].imag,
+        #          marker='o', markersize=7, color=colormat[ii, :],
+        #          linestyle='', label=set_id_set[ii])
+
+        # plt.plot(reduced[:, pcA].imag.mean(), reduced[:, pcB].imag.mean(),
+        #          marker='D', markersize=8, color=colormat[ii, :],
+        #          linestyle='')
+
+        # plt.title("SVE sets in PC space (imaginary)")
+        # plt.xlabel("PC%s" % pcA)
+        # plt.ylabel("PC%s" % pcB)
+        # plt.legend(loc='upper right', shadow=True, fontsize='medium')
 
     f_red.close()
 
