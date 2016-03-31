@@ -15,22 +15,21 @@ def pltPC(el, ns_set, set_id_set, step, pcA, pcB):
                          [.7, .0, .7],
                          [.7, .7, .0]])
 
+    f_red = h5py.File("sve_reduced.hdf5", 'r')
+
     for ii in xrange(len(set_id_set)):
 
-        f_temp = h5py.File("ref_%s%s_s%s.hdf5" %
-                           (ns_set[ii], set_id_set[ii], step), 'a')
+        reduced = f_red.get('reduced_%s' % set_id_set[ii])[...]
 
-        pc_corr = f_temp.get('pc_corr')[...]
-
-        f_temp.close()
-
-        plt.plot(pc_corr[:, pcA], pc_corr[:, pcB],
+        plt.plot(reduced[:, pcA], reduced[:, pcB],
                  marker='o', markersize=7, color=colormat[ii, :],
                  linestyle='', label=set_id_set[ii])
 
-        plt.plot(pc_corr[:, pcA].mean(), pc_corr[:, pcB].mean(),
+        plt.plot(reduced[:, pcA].mean(), reduced[:, pcB].mean(),
                  marker='D', markersize=8, color=colormat[ii, :],
                  linestyle='')
+
+    f_red.close()
 
     plt.title("SVE sets in PC space")
     plt.xlabel("PC%s" % pcA)

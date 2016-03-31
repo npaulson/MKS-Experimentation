@@ -22,8 +22,8 @@ def bicrystal(el, ns, H, set_id, step, wrt_file):
 
     sshape = (ns, el, el, el)
 
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'w')
-    sves = f.create_dataset("sves", sshape, dtype='int64')
+    f = h5py.File("spatial_stats.hdf5", 'a')
+    sves = f.create_dataset("sves_%s" % set_id, sshape, dtype='int64')
 
     gridvec = np.arange(el)
     gridx, gridy, gridz = np.meshgrid(gridvec, gridvec, gridvec)
@@ -106,8 +106,8 @@ def bicrystal_orthog(el, ns, H, set_id, step, wrt_file):
 
     sshape = (ns, el, el, el)
 
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'w')
-    sves = f.create_dataset("sves", sshape, dtype='int64')
+    f = h5py.File("spatial_stats.hdf5", 'a')
+    sves = f.create_dataset("sves_%s" % set_id, sshape, dtype='int64')
 
     for sn in xrange(ns):
 
@@ -140,8 +140,8 @@ def improcess(el, ns, H, set_id, step, wrt_file):
 
     sshape = (ns, el, el, el)
 
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'w')
-    sves = f.create_dataset("sves", sshape, dtype='int64')
+    f = h5py.File("spatial_stats.hdf5", 'a')
+    sves = f.create_dataset("sves_%s" % set_id, sshape, dtype='int64')
 
     sigset = [0., .2, .4, .6, .8, 2, 5]
 
@@ -173,6 +173,8 @@ def improcess(el, ns, H, set_id, step, wrt_file):
 
         sves[sn, ...] = sve.reshape(el, el, el)
 
+    f.close()
+
     end = time.time()
     timeE = np.round((end - start), 3)
 
@@ -186,8 +188,8 @@ def delta(el, ns, H, set_id, step, wrt_file):
 
     sshape = (ns, el, el, el)
 
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'w')
-    sves = f.create_dataset("sves", sshape, dtype='int64')
+    f = h5py.File("spatial_stats.hdf5", 'a')
+    sves = f.create_dataset("sves_%s" % set_id, sshape, dtype='int64')
 
     h1, h2 = sample_H(H)
 
@@ -211,8 +213,8 @@ def inclusion(el, ns, H, set_id, step, wrt_file, vfrac):
     sshape = (ns, el, el, el)
     n_phase = len(vfrac)
 
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'w')
-    sves = f.create_dataset("sves", sshape, dtype='int64')
+    f = h5py.File("spatial_stats.hdf5", 'a')
+    sves = f.create_dataset("sves_%s" % set_id, sshape, dtype='int64')
 
     for sn in xrange(ns):
 
@@ -251,13 +253,13 @@ def inclusion_red(el, ns, H, set_id, step, wrt_file, vfrac):
     vfrac = np.array(vfrac)
     n_phase = len(vfrac)
 
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'w')
-    sves = f.create_dataset("sves", sshape, dtype='int64')
+    f = h5py.File("spatial_stats.hdf5", 'a')
+    sves = f.create_dataset("sves_%s" % set_id, sshape, dtype='int64')
 
     for sn in xrange(ns):
 
         # perturb vfrac to make things less defined
-        delta = 0.015*(2*(np.random.random(n_phase))-1)
+        delta = 0.025*(2*(np.random.random(n_phase))-1)
         vfrac_ = vfrac + delta
 
         if np.any(vfrac_ < 0):
@@ -289,8 +291,8 @@ def rod(el, ns, H, set_id, step, wrt_file, raxis):
 
     sshape = (ns, el, el, el)
 
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'w')
-    sves = f.create_dataset("sves", sshape, dtype='int64')
+    f = h5py.File("spatial_stats.hdf5", 'a')
+    sves = f.create_dataset("sves_%s" % set_id, sshape, dtype='int64')
 
     cmat = np.unravel_index(np.arange(el**2), [el, el])
     cmat = np.array(cmat).T
@@ -318,7 +320,6 @@ def scale_array(raw):
     amin = raw.min()
     amax = raw.max()
     return (raw-amin)/(amax-amin)
-
 
 
 if __name__ == '__main__':

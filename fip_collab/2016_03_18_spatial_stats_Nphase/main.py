@@ -5,6 +5,7 @@ import plot_correlation as pltcorr
 import pca_on_correlations as pcaC
 import sve_plot_pc as pltPC
 import time
+import h5py
 
 
 # ns_cal = [10, 10, 10, 10, 40, 10]
@@ -31,6 +32,9 @@ if tensorID == 2, we read the plastic strain tensor
 
 """Generate microstructures"""
 
+f = h5py.File("spatial_stats.hdf5", 'w')
+f.close()
+
 # gen.delta(el, ns_cal[0], H, set_id_cal[0], step, wrt_file)
 
 vfrac = [.075, .125]
@@ -41,11 +45,11 @@ vfrac = [.125, .075]
 gen.inclusion_red(el, ns_cal[2], H, set_id_cal[2], step, wrt_file, vfrac)
 
 # raxis = 0
-# gen.rod(el, ns_cal[1], H, set_id_cal[1], step, wrt_file, raxis)
+# gen.rod(el, ns_cal[0], H, set_id_cal[0], step, wrt_file, raxis)
 # raxis = 1
-# gen.rod(el, ns_cal[2], H, set_id_cal[2], step, wrt_file, raxis)
+# gen.rod(el, ns_cal[1], H, set_id_cal[1], step, wrt_file, raxis)
 # raxis = 2
-# gen.rod(el, ns_cal[3], H, set_id_cal[3], step, wrt_file, raxis)
+# gen.rod(el, ns_cal[2], H, set_id_cal[2], step, wrt_file, raxis)
 
 
 # gen.bicrystal_orthog(el, ns_cal[4], H, set_id_cal[4], step, wrt_file)
@@ -61,16 +65,16 @@ for ii in xrange(len(set_id_cal)):
 for ii in xrange(len(set_id_cal)):
     corr.correlate(el, ns_cal[ii], H, set_id_cal[ii], step, wrt_file)
 
-"""Plot an autocorrelation"""
-sn = 0
-iA = 0
-iB = 0
-pltcorr.pltcorr(el, ns_cal[2], set_id_cal[2], step, sn, iA, iB)
-
 """Perform PCA on autocorrelations"""
 pcaC.doPCA(el, ns_cal, H, set_id_cal, step, wrt_file)
 
+# """Plot an autocorrelation"""
+# sn = 0
+# iA = 0
+# iB = 0
+# pltcorr.pltcorr(el, ns_cal[2], set_id_cal[2], step, sn, iA, iB)
+
 """Plot the microstructures in PC space"""
-pcA = 1
-pcB = 2
+pcA = 0
+pcB = 1
 pltPC.pltPC(el, ns_cal, set_id_cal, step, pcA, pcB)

@@ -1,7 +1,7 @@
 import functions as rr
 import numpy as np
-# from sklearn.decomposition import PCA
-# from sklearn.decomposition import TruncatedSVD
+from sklearn.decomposition import PCA
+from sklearn.decomposition import TruncatedSVD
 from scipy.linalg.interpolative import svd
 import matplotlib.pyplot as plt
 import time
@@ -16,51 +16,60 @@ def doPCA(el, ns_set, H, set_id_set, step, wrt_file):
     n_corr = H**2
 
     ns_tot = np.sum(ns_set)
-    f_master = h5py.File("ref_%s%s_s%s.hdf5" % (ns_tot, 'allsets', step), 'w')
+    f_master = h5py.File("sve_reduced_all.hdf5", 'w')
 
     f_master.create_dataset("allcorr",
                             (ns_tot, n_corr*el**3),
                             dtype='float64')
 
-    # f_master.create_dataset("allcorr",
-    #                         (ns_tot, n_corr*el**3),
-    #                         dtype='complex128')
-
     allcorr = f_master.get('allcorr')
+
+    f_stats = h5py.File("spatial_stats.hdf5", 'a')
 
     c = 0
     for ii in xrange(len(set_id_set)):
 
-        f_temp = h5py.File("ref_%s%s_s%s.hdf5" %
-                           (ns_set[ii], set_id_set[ii], step), 'a')
-
-        tmp = f_temp.get('ff')[...]
+        tmp = f_stats.get('ff_%s' % set_id_set[ii])[...]
         ff = tmp.reshape(ns_set[ii], n_corr*el**3)
 
         allcorr[c:c+ns_set[ii], ...] = ff
 
         c += ns_set[ii]
 
-        f_temp.close()
-
     msg = "correlations combined"
     rr.WP(msg, wrt_file)
 
-    # pca = PCA(n_components=20)
-    # pca.fit(allcorr[...])
+    corr_tmp = allcorr[...]
+    # subtract out the mean feature values from corr_tmp
+    corr_mean = np.mean(corr_tmp, 0)[None, :]
+    corr_tmp = corr_tmp-corr_mean
+
+    pca = PCA(n_components=20)
+    pca.fit(corr_tmp)
+    ratios = np.round(100*pca.explained_variance_ratio_, 1)
+    msg = "pca explained variance: %s%%" % str(ratios)
+    rr.WP(msg, wrt_file)
+
+    # pca = TruncatedSVD(n_components=20)
+    # pca.fit(corr_tmp)
     # ratios = np.round(100*pca.explained_variance_ratio_, 1)
     # msg = "pca explained variance: %s%%" % str(ratios)
     # rr.WP(msg, wrt_file)
 
-    # svd = TruncatedSVD(n_components=20)
-    # svd.fit(allcorr[...])
-    # ratios = np.round(100*svd.explained_variance_ratio_, 1)
+    # print "corr_tmp.shape: %s" % str(corr_tmp.shape)
+    # print "corr_mean.shape: %s" % str(corr_mean.shape)
+
+    # U, S, V = svd(corr_tmp, 20)
+    # print "V.shape: %s" % str(V.shape)
+
+    # """calculate percentage explained variance"""
+    # X_transformed = np.dot(U, np.diag(S))
+    # exp_var = np.var(X_transformed, axis=0)
+    # full_var = np.var(corr_tmp, axis=0).sum()
+    # ratios = np.round(100*(exp_var/full_var), 1)
+    # print ratios.sum()
     # msg = "pca explained variance: %s%%" % str(ratios)
     # rr.WP(msg, wrt_file)
-
-    print "allcorr.shape: %s" % str(allcorr.shape)
-    U, S, V = svd(allcorr[...], 20)
-    print "V.shape: %s" % str(V.shape)
 
     # plt.figure(10)
     # plt.plot(np.arange(ratios.size), ratios)
@@ -71,20 +80,29 @@ def doPCA(el, ns_set, H, set_id_set, step, wrt_file):
 
     f_master.close()
 
+    f_red = h5py.File("sve_reduced.hdf5", 'w')
+
     for ii in xrange(len(set_id_set)):
 
-        f_temp = h5py.File("ref_%s%s_s%s.hdf5" %
-                           (ns_set[ii], set_id_set[ii], step), 'a')
-        ff = f_temp.get('ff')[...].reshape(ns_set[ii], n_corr*el**3)
+        ff = f_stats.get('ff_%s' % set_id_set[ii])[...]
+        ff = ff.reshape(ns_set[ii], n_corr*el**3)
 
-        # tmp = pca.transform(ff)
-        # tmp = svd.transform(ff)
-        tmp = np.dot(ff, V)
+        # subtract out the mean feature values
+        ff_r = ff
+        ff_r = ff_r - corr_mean
 
-        f_temp.create_dataset('pc_corr', data=tmp, dtype='float64')
-        # f_temp.create_dataset('pc_corr', data=tmp, dtype='complex128')
+        tmp = pca.transform(ff_r)
 
-        f_temp.close()
+        # perfrom whitening
+        # V_norm = V/(np.sqrt(S)[None, :])
+        # tmp = np.dot(ff_r, V)
+
+        f_red.create_dataset('reduced_%s' % set_id_set[ii],
+                             data=tmp,
+                             dtype='float64')
+
+    f_red.close()
+    f_stats.close()
 
     msg = "PCA completed: %ss" % np.round(time.time()-st, 5)
     rr.WP(msg, wrt_file)
