@@ -1,13 +1,15 @@
 import vtk_read as vtk
-import sve_gen as gen
+# import sve_gen as gen
 import correlate as corr
 import plot_correlation as pltcorr
 import pca_on_correlations as pcaC
 import sve_plot_pc as pltPC
 # import explained_variance as ev
 # import numpy as np
+import dim_reduce
 import time
 import get_M
+import h5py
 
 
 # ns_cal = [10]
@@ -20,20 +22,23 @@ import get_M
 # set_id_D3D = ['randomD3D']
 # dir_D3D = ['randomD3D']
 
-ns_cal = [10, 10, 10]
-set_id_cal = ['randomD3D', 'transverseD3D', 'basaltransD3D']
-dir_cal = ['randomD3D', 'transverseD3D', 'basaltransD3D']
+ns_cal = [10, 10, 10, 10]
+set_id_cal = ['randomD3D', 'transverseD3D', 'basaltransD3D', 'actualD3D']
+dir_cal = ['randomD3D', 'transverseD3D', 'basaltransD3D', 'actualD3D']
 
-ns_D3D = [10, 10, 10]
-set_id_D3D = ['randomD3D', 'transverseD3D', 'basaltransD3D']
-dir_D3D = ['randomD3D', 'transverseD3D', 'basaltransD3D']
+ns_D3D = [10, 10, 10, 10]
+set_id_D3D = ['randomD3D', 'transverseD3D', 'basaltransD3D', 'actualD3D']
+dir_D3D = ['randomD3D', 'transverseD3D', 'basaltransD3D', 'actualD3D']
 
 L = 4
-H = 6
+H = 15
 el = 21
-step = 0
+step = 6
 
 wrt_file = 'log_%s.txt' % (time.strftime("%Y-%m-%d_h%Hm%M"))
+
+f = h5py.File("spatial_stats.hdf5", 'w')
+f.close()
 
 """
 The tensorID determines the type of tensor data read from the .vtk file
@@ -45,7 +50,7 @@ if tensorID == 2, we read the plastic strain tensor
 """Gather data from calibration vtk files"""
 for ii in xrange(len(set_id_D3D)):
     vtk.read_euler(el, ns_D3D[ii], set_id_D3D[ii],
-                   step, dir_D3D[ii], wrt_file, 0)
+                   step, dir_D3D[ii], wrt_file, 1)
 
 # gen.delta(el, ns_cal[1], set_id_cal[1], step, wrt_file)
 
@@ -64,12 +69,12 @@ for ii in xrange(len(set_id_cal)):
     corr.correlate(el, ns_cal[ii], H, set_id_cal[ii], step, wrt_file)
 
 """Perform PCA on correlations"""
-pcaC.doPCA(el, H, ns_cal, set_id_cal, step, wrt_file)
+dim_reduce.reduce(el, ns_cal, H, set_id_cal, step, wrt_file)
 
 """Plot an autocorrelation"""
-sn = 5
+sn = 0
 iA = 1
-iB = 2
+iB = 1
 pltcorr.pltcorr(el, ns_cal[0], set_id_cal[0], step, sn, iA, iB)
 
 # """Plot the percentage explained variance"""

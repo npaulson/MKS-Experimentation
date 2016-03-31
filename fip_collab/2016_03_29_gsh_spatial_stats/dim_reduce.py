@@ -8,11 +8,11 @@ import time
 import h5py
 
 
-def doPCA(el, ns_set, H, set_id_set, step, wrt_file):
+def reduce(el, ns_set, H, set_id_set, step, wrt_file):
 
     st = time.time()
 
-    print H
+    print "H: %s" % H
     n_corr = H**2
 
     ns_tot = np.sum(ns_set)
@@ -20,7 +20,7 @@ def doPCA(el, ns_set, H, set_id_set, step, wrt_file):
 
     f_master.create_dataset("allcorr",
                             (ns_tot, n_corr*el**3),
-                            dtype='float64')
+                            dtype='complex128')
 
     allcorr = f_master.get('allcorr')
 
@@ -64,11 +64,11 @@ def doPCA(el, ns_set, H, set_id_set, step, wrt_file):
     U, S, V = svd(corr_tmp, 20)
     print "V.shape: %s" % str(V.shape)
 
-    """check variance after whitening"""
-    V_norm = V/(S[None, :]*np.sqrt(n_samp))
-    corr_tmp_wht = np.dot(corr_tmp, V_norm)
-    tmp_var = np.var(corr_tmp_wht, axis=0)
-    print "variance for each pc axis: %s" % str(tmp_var)
+    # """check variance after whitening"""
+    # V_norm = V/(S[None, :]*np.sqrt(n_samp))
+    # corr_tmp_wht = np.dot(corr_tmp, V_norm)
+    # tmp_var = np.var(corr_tmp_wht, axis=0)
+    # print "variance for each pc axis: %s" % str(tmp_var)
 
     """calculate percentage explained variance"""
     # X_transformed = np.dot(U, np.diag(S))
@@ -81,14 +81,12 @@ def doPCA(el, ns_set, H, set_id_set, step, wrt_file):
     msg = "pca explained variance: %s%%" % str(ratios)
     rr.WP(msg, wrt_file)
 
-    plt.figure(10)
-    plt.plot(np.arange(tmp_var.size), tmp_var)
-    plt.xlabel('pc number')
-    plt.ylabel('pc variance')
-    plt.title('pc variance plot after whitening')
-    plt.show()
-
-    f_master.close()
+    # plt.figure(10)
+    # plt.plot(np.arange(tmp_var.size), tmp_var)
+    # plt.xlabel('pc number')
+    # plt.ylabel('pc variance')
+    # plt.title('pc variance plot after whitening')
+    # plt.show()
 
     f_red = h5py.File("sve_reduced.hdf5", 'w')
 
@@ -108,10 +106,11 @@ def doPCA(el, ns_set, H, set_id_set, step, wrt_file):
 
         f_red.create_dataset('reduced_%s' % set_id_set[ii],
                              data=tmp,
-                             dtype='float64')
+                             dtype='complex128')
 
     f_red.close()
     f_stats.close()
+    f_master.close()
 
     msg = "PCA completed: %ss" % np.round(time.time()-st, 5)
     rr.WP(msg, wrt_file)
@@ -125,4 +124,4 @@ if __name__ == '__main__':
     step = 0
     wrt_file = 'test.txt'
 
-    doPCA(el, H, ns_set, set_id_set, step, wrt_file)
+    reduce(el, H, ns_set, set_id_set, step, wrt_file)

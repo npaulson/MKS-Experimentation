@@ -34,8 +34,8 @@ def read_euler(el, ns, set_id, step, newdir, wrt_file, funit):
     """return to the original directory"""
     os.chdir('..')
 
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'w')
-    f.create_dataset('euler', data=euler)
+    f = h5py.File("spatial_stats.hdf5", 'a')
+    f.create_dataset('euler_%s' % set_id, data=euler)
     f.close()
 
     end = time.time()
@@ -65,8 +65,8 @@ def read_fip(el, ns, set_id, step, newdir, wrt_file):
     """return to the original directory"""
     os.chdir('..')
 
-    f = h5py.File("fip_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
-    f.create_dataset('fip', data=fip)
+    f = h5py.File("spatial_stats.hdf5", 'a')
+    f.create_dataset('fip_%s' % set_id, data=fip)
     f.close()
 
     end = time.time()
@@ -104,8 +104,8 @@ def read_meas(el, ns, set_id, step, comp, tensor_id, newdir, wrt_file):
     """return to the original directory"""
     os.chdir('..')
 
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
-    f.create_dataset('r%s_%s' % (comp, typ[tensor_id]), data=r_fem)
+    f = h5py.File("spatial_stats.hdf5", 'a')
+    f.create_dataset('meas_%s' % set_id, data=meas)
     f.close()
 
     """FFT OF RESPONSE FIELD"""

@@ -8,18 +8,18 @@ def correlate(el, ns, H, set_id, step, wrt_file):
 
     st = time.time()
 
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
-    M = f.get('M')[...]
+    f = h5py.File("spatial_stats.hdf5", 'a')
+    M = f.get('M_%s' % set_id)[...]
 
-    FF = f.create_dataset("FF",
+    FF = f.create_dataset("FF_%s" % set_id,
                           (ns, H, H, el, el, el),
                           dtype='complex128')
 
-    # ff = f.create_dataset("ff",
+    # ff = f.create_dataset("ff_%s" % set_id,
     #                       (ns, H, H, el, el, el),
     #                       dtype='float64')
 
-    ff = f.create_dataset("ff",
+    ff = f.create_dataset("ff_%s" % set_id,
                           (ns, H, H, el, el, el),
                           dtype='complex128')
 

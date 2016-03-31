@@ -30,40 +30,40 @@ if tensorID == 1, we read the strain tensor
 if tensorID == 2, we read the plastic strain tensor
 """
 
-"""Generate microstructures"""
+# """Generate microstructures"""
 
-f = h5py.File("spatial_stats.hdf5", 'w')
-f.close()
+# f = h5py.File("spatial_stats.hdf5", 'w')
+# f.close()
 
-# gen.delta(el, ns_cal[0], H, set_id_cal[0], step, wrt_file)
+# # gen.delta(el, ns_cal[0], H, set_id_cal[0], step, wrt_file)
 
-vfrac = [.075, .125]
-gen.inclusion_red(el, ns_cal[0], H, set_id_cal[0], step, wrt_file, vfrac)
-vfrac = [.100, .100]
-gen.inclusion_red(el, ns_cal[1], H, set_id_cal[1], step, wrt_file, vfrac)
-vfrac = [.125, .075]
-gen.inclusion_red(el, ns_cal[2], H, set_id_cal[2], step, wrt_file, vfrac)
+# vfrac = [.075, .125]
+# gen.inclusion_red(el, ns_cal[0], H, set_id_cal[0], step, wrt_file, vfrac)
+# vfrac = [.100, .100]
+# gen.inclusion_red(el, ns_cal[1], H, set_id_cal[1], step, wrt_file, vfrac)
+# vfrac = [.125, .075]
+# gen.inclusion_red(el, ns_cal[2], H, set_id_cal[2], step, wrt_file, vfrac)
 
-# raxis = 0
-# gen.rod(el, ns_cal[0], H, set_id_cal[0], step, wrt_file, raxis)
-# raxis = 1
-# gen.rod(el, ns_cal[1], H, set_id_cal[1], step, wrt_file, raxis)
-# raxis = 2
-# gen.rod(el, ns_cal[2], H, set_id_cal[2], step, wrt_file, raxis)
-
-
-# gen.bicrystal_orthog(el, ns_cal[4], H, set_id_cal[4], step, wrt_file)
-# gen.improcess(el, ns_cal[5], H, set_id_cal[5], step, wrt_file)
+# # raxis = 0
+# # gen.rod(el, ns_cal[0], H, set_id_cal[0], step, wrt_file, raxis)
+# # raxis = 1
+# # gen.rod(el, ns_cal[1], H, set_id_cal[1], step, wrt_file, raxis)
+# # raxis = 2
+# # gen.rod(el, ns_cal[2], H, set_id_cal[2], step, wrt_file, raxis)
 
 
-"""Generate the fourier space microstructure functions"""
+# # gen.bicrystal_orthog(el, ns_cal[4], H, set_id_cal[4], step, wrt_file)
+# # gen.improcess(el, ns_cal[5], H, set_id_cal[5], step, wrt_file)
 
-for ii in xrange(len(set_id_cal)):
-    gm.get_M(el, ns_cal[ii], H, set_id_cal[ii], step, wrt_file)
 
-"""Compute the periodic statistics for the microstructures"""
-for ii in xrange(len(set_id_cal)):
-    corr.correlate(el, ns_cal[ii], H, set_id_cal[ii], step, wrt_file)
+# """Generate the fourier space microstructure functions"""
+
+# for ii in xrange(len(set_id_cal)):
+#     gm.get_M(el, ns_cal[ii], H, set_id_cal[ii], step, wrt_file)
+
+# """Compute the periodic statistics for the microstructures"""
+# for ii in xrange(len(set_id_cal)):
+#     corr.correlate(el, ns_cal[ii], H, set_id_cal[ii], step, wrt_file)
 
 """Perform PCA on autocorrelations"""
 pcaC.doPCA(el, ns_cal, H, set_id_cal, step, wrt_file)

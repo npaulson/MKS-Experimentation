@@ -5,9 +5,9 @@ import h5py
 
 def pltcorr(el, ns, set_id, step, sn, iA, iB):
 
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
-    euler = f.get('euler')[sn, 0, :].reshape(el, el, el)
-    corr = f.get('ff')[sn, iA, iB, ...]
+    f = h5py.File("spatial_stats.hdf5", 'r')
+    euler = f.get('euler_%s' % set_id)[sn, 0, :].reshape(el, el, el)
+    corr = f.get('ff_%s' % set_id)[sn, iA, iB, ...]
     f.close()
 
     corr_centered = np.fft.fftshift(corr)

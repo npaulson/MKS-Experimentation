@@ -259,7 +259,7 @@ def inclusion_red(el, ns, H, set_id, step, wrt_file, vfrac):
     for sn in xrange(ns):
 
         # perturb vfrac to make things less defined
-        delta = 0.025*(2*(np.random.random(n_phase))-1)
+        delta = 0.0125*(2*(np.random.random(n_phase))-1)
         vfrac_ = vfrac + delta
 
         if np.any(vfrac_ < 0):

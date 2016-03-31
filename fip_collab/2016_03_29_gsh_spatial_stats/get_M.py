@@ -17,9 +17,8 @@ def get_M(el, H, ns, set_id, step, wrt_file):
     start = time.time()
 
     """get the euler angle files"""
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'r')
-    euler = f.get('euler')[...]
-    f.close()
+    f = h5py.File("spatial_stats.hdf5", 'a')
+    euler = f.get('euler_%s' % set_id)[...]
 
     indxvec = gsh.gsh_basis_info()
 
@@ -63,8 +62,7 @@ def get_M(el, H, ns, set_id, step, wrt_file):
 
     size = M.nbytes
 
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'a')
-    f.create_dataset('M', data=M)
+    f.create_dataset('M_%s' % set_id, data=M)
     f.close()
 
     end = time.time()

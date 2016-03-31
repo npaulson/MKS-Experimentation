@@ -38,16 +38,12 @@ def pltPC(el, ns_set, set_id_set, step):
     n_sets = len(set_id_set)
 
     """find the internal and external set distances for the first set"""
-    f = h5py.File("ref_%s%s_s%s.hdf5" %
-                  (ns_set[0], set_id_set[0], step), 'a')
-    set1 = f.get('pc_corr')[...]
-    f.close()
+
+    f_red = h5py.File("sve_reduced.hdf5", 'r')
+    set1 = f_red.get('reduced_%s' % set_id_set[0])[...]
 
     for ii in xrange(n_sets):
-        f = h5py.File("ref_%s%s_s%s.hdf5" %
-                      (ns_set[ii], set_id_set[ii], step), 'a')
-        set2 = f.get('pc_corr')[...]
-        f.close()
+        set2 = f_red.get('reduced_%s' % set_id_set[ii])[...]
 
         # dist = cdist(set1, set2)
         dist = dist_complex(set1, set2)
@@ -55,6 +51,8 @@ def pltPC(el, ns_set, set_id_set, step):
         plt.hist(dist.reshape(dist.size),
                  bins=20, histtype='step', color=colormat[ii, :],
                  label=set_id_set[ii])
+
+    f_red.close()
 
     plt.title("Euclidean PC distance histograms for set %s versus other sets" % set_id_set[0])
     plt.xlabel("Euclidean PC distance")
