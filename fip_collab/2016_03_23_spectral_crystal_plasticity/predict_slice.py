@@ -18,8 +18,9 @@ var_set = ['sig11', 'sig22', 'sig33',
            'sig12', 'sig13', 'sig23',
            'total shear rate',
            'w12', 'w13', 'w23']
-var_id = 1
+var_id = 0
 thr = 0.0
+LL_p = 20
 
 C = constants.const()
 
@@ -37,10 +38,13 @@ phi2_U = np.unique(data[:, 3])
 
 np.random.seed()
 
-th = theta_U[np.int64(np.random.rand()*theta_U.size)]
-# phi1 = phi1_U[np.int64(np.random.rand()*phi1_U.size)]
-# Phi = Phi_U[np.int64(np.random.rand()*Phi_U.size)]
-phi2 = phi2_U[np.int64(np.random.rand()*phi2_U.size)]
+# th = theta_U[np.int64(np.random.rand()*theta_U.size)]
+# # phi1 = phi1_U[np.int64(np.random.rand()*phi1_U.size)]
+# # Phi = Phi_U[np.int64(np.random.rand()*Phi_U.size)]
+# phi2 = phi2_U[np.int64(np.random.rand()*phi2_U.size)]
+
+th = theta_U[np.int64(.5*theta_U.size)]
+phi2 = phi2_U[np.int64(.5*phi2_U.size)]
 
 ang_sel = (data[:, 0] == th) * \
     (data[:, 3] == phi2)
@@ -53,7 +57,7 @@ parameters = np.array([var_set[var_id], str(th), str(phi2)])
 theta = data[ang_sel, 0]
 euler = data[ang_sel, 1:4]
 Y = data[ang_sel, 4+var_id]
-Y_ = evalf.evalf(theta, euler, var_id, thr).real
+Y_ = evalf.evalf(theta, euler, var_id, thr, LL_p).real
 error = np.abs(Y-Y_)
 
 """get a few error metrics"""

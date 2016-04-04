@@ -6,7 +6,7 @@ import h5py
 import time
 
 
-def evalf(theta, euler, var_id, thr):
+def evalf(theta, euler, var_id, thr, LL_p):
 
     filename = "log_eval.txt"
 
@@ -15,6 +15,9 @@ def evalf(theta, euler, var_id, thr):
     f = h5py.File('coef.hdf5', 'r')
     coef = f.get('coef')[:, var_id]
     f.close()
+
+    basis_info = gsh.gsh_basis_info()
+    N_p_tmp = np.sum(basis_info[:, 0] <= LL_p)  # number of GSH bases to evaluate
 
     N_pts = theta.size
 
@@ -28,7 +31,8 @@ def evalf(theta, euler, var_id, thr):
 
     cuttoff = thr*np.abs(coef).max()
     print "cutoff: %s" % cuttoff
-    cuttoffvec = np.abs(coef) > cuttoff
+    cuttoffvec = (np.abs(coef) > cuttoff) * \
+                 (np.arange(C['cmax']) < N_p_tmp*C['N_q'])
     print "cuttoffvec.shape: %s" % str(cuttoffvec.shape)
     indxvec = np.arange(C['cmax'])[cuttoffvec]
 
