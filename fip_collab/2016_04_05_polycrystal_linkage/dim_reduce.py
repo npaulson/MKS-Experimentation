@@ -1,7 +1,7 @@
 import functions as rr
 import numpy as np
-from sklearn.decomposition import PCA
-from sklearn.decomposition import TruncatedSVD
+# from sklearn.decomposition import PCA
+# from sklearn.decomposition import TruncatedSVD
 from scipy.linalg.interpolative import svd
 import time
 import h5py
