@@ -29,11 +29,9 @@ def modulus(el, ns, set_id, step, newdir, wrt_file):
 
     f = h5py.File("responses.hdf5", 'a')
 
-    print '%s_%s' % (typ[0], set_id)
     sig = f.get('%s_%s' % (typ[0], set_id))[...]
     sig_mean = np.mean(sig, axis=(1, 2, 3))
 
-    print '%s_%s' % (typ[1], set_id)
     eps = f.get('%s_%s' % (typ[1], set_id))[...]
     eps_mean = np.mean(eps, axis=(1, 2, 3))
 

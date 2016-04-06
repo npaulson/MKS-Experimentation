@@ -56,16 +56,15 @@ def get_M(el, H, ns, set_id, step, wrt_file):
     M = np.fft.fftn(mf, axes=[2, 3, 4])
     del mf
 
-    size = M.nbytes
-
     f.create_dataset('M_%s' % set_id, data=M)
     f.close()
 
     end = time.time()
     timeE = np.round((end - start), 3)
 
-    msg = "FFT3 conversion of micr to M_%s%s_s%s: %s seconds" % \
-          (ns, set_id, step, timeE)
+    msg = "FFT3 conversion of mf to M for %s: %s seconds" % \
+          (set_id, timeE)
     rr.WP(msg, wrt_file)
-    msg = 'Size of M_%s%s_s%s: %s bytes' % (ns, set_id, step, size)
+
+    msg = 'Size of M: %s mb' % str(M.nbytes/(1e6))
     rr.WP(msg, wrt_file)

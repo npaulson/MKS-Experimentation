@@ -42,8 +42,8 @@ wrt_file = 'log_%s.txt' % (time.strftime("%Y-%m-%d_h%Hm%M"))
 # ev.variance(el, ns_tot, step)
 
 """Plot the microstructures in PC space"""
-pcA = 0
-pcB = 1
+pcA = 3
+pcB = 3
 pltPC.pltPC(el, ns_cal, set_id_cal, step, pcA, pcB)
 
 """Plot the effective modulus versus a PC dimension"""

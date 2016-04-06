@@ -105,7 +105,6 @@ def read_meas(el, ns, set_id, step, comp, tensor_id, newdir, wrt_file):
     os.chdir('..')
 
     f = h5py.File("responses.hdf5", 'a')
-    print '%s_%s' % (typ[tensor_id], set_id)
     f.create_dataset('%s_%s' % (typ[tensor_id], set_id), data=r_fem)
     f.close()
 
@@ -123,5 +122,7 @@ def read_meas(el, ns, set_id, step, comp, tensor_id, newdir, wrt_file):
     timeE = np.round((end - start), 3)
 
     msg = 'The measure of interest has been read from .vtk file' \
-          ' for %s, set %s: %s seconds' % (set_id, comp, timeE)
+          ' for %s, component %s, type %s: %s seconds' % (set_id, comp,
+                                                          typ[tensor_id],
+                                                          timeE)
     rr.WP(msg, wrt_file)

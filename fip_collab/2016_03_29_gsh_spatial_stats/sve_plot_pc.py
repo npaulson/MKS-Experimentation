@@ -5,7 +5,7 @@ import h5py
 
 def pltPC(el, ns_set, set_id_set, step, pcA, pcB):
 
-    plt.figure(num=2, figsize=[14, 12])
+    plt.figure(num=2, figsize=[8, 6])
 
     # colormat = np.random.rand(len(set_id_set), 3)
     colormat = np.array([[.3, .3, 1.],

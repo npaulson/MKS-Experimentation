@@ -65,7 +65,9 @@ def correlate(el, ns, H, set_id, step, wrt_file):
 
     f.close()
 
-    msg = "correlations computed: %ss" % np.round(time.time()-st, 5)
+    timeE = np.round(time.time()-st, 5)
+
+    msg = "correlations computed for %s: %ss" % (set_id, timeE)
     rr.WP(msg, wrt_file)
 
 

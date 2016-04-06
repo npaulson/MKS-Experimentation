@@ -8,6 +8,7 @@ Noah Paulson, 5/28/2014
 """
 
 import numpy as np
+import itertools as it
 import vtk
 
 
@@ -148,6 +149,95 @@ def read_vtk_vector(filename):
         euler_py[2, ii] = Euler.GetValue(ii*3 + 2)
 
     return euler_py
+
+
+def regress(x_cal, x_val, y_cal, y_val, n_pc, n_poly):
+
+    """calculate the indices for the regression bases"""
+
+    xmax = n_pc*n_poly
+
+    print "xmax: %s" % xmax
+
+    xmat = np.unravel_index(np.arange(xmax), (n_pc, n_poly))
+    xmat = np.array(xmat).T
+
+    """calculate the X matrix for calibration"""
+
+    n_samp = x_cal.shape[0]
+
+    X_cal = np.zeros((n_samp, xmax), dtype='complex128')
+
+    for xx in xrange(xmax):
+        pc, deg = xmat[xx, :]
+
+        X_cal[:, xx] = x_cal[:, pc]**deg
+
+    """calculate the X matrix for validation"""
+
+    n_samp = x_val.shape[0]
+
+    X_val = np.zeros((n_samp, xmax), dtype='complex128')
+
+    for xx in xrange(xmax):
+        pc, deg = xmat[xx, :]
+
+        X_val[:, xx] = x_val[:, pc]**deg
+
+    """calculate the XhX matrix"""
+
+    XhX = np.zeros((xmax, xmax), dtype='complex128')
+
+    tmp = it.combinations_with_replacement(np.arange(xmax), 2)
+    Imat = np.array(list(tmp))
+    ImatL = Imat.shape[0]
+
+    for I in xrange(ImatL):
+
+        ii, jj = Imat[I, :]
+
+        dotvec = np.dot(X_cal[:, ii].conj(), X_cal[:, jj])
+
+        if ii == jj:
+            XhX[ii, ii] = dotvec
+        else:
+            XhX[ii, jj] = dotvec
+            XhX[jj, ii] = dotvec
+
+    print "shape(XhX): %s" % str(XhX.shape)
+    print XhX
+    print "rank(XhX): %s" % np.linalg.matrix_rank(XhX)
+
+    """calculate XhY"""
+
+    XhY = np.zeros(xmax, dtype='complex128')
+
+    for ii in xrange(xmax):
+        XhY[ii] = np.dot(X_cal[:, ii].conj(), y_cal)
+
+    """perform the regression"""
+
+    coef = np.linalg.solve(XhX, XhY)
+
+    """cross-validate with the validation data"""
+
+    y_val_predict = np.dot(coef, X_val.T).real
+
+    err = np.abs(y_val-y_val_predict)
+    err_mean = err.mean()
+    err_max = err.max()
+
+    print "mean error: %s" % err_mean
+    print "max error: %s" % err_max
+
+    print "y min: %s" % y_val.min()
+    print "y_predict min: %s" % y_val_predict.min()
+    print "y mean: %s" % y_val.mean()
+    print "y_predict mean: %s" % y_val_predict.mean()
+    print "y max: %s" % y_val.max()
+    print "y_predict max: %s" % y_val_predict.max()
+
+    return err_mean, err_max, coef
 
 
 def WP(msg, filename):

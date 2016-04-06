@@ -7,7 +7,7 @@ import time
 import h5py
 
 
-def reduce(el, ns_set, H, set_id_set, step, wrt_file):
+def new_space(el, ns_set, H, set_id_set, step, wrt_file):
 
     st = time.time()
 
@@ -66,6 +66,10 @@ def reduce(el, ns_set, H, set_id_set, step, wrt_file):
 
     U, S, V = svd(corr_tmp, 20)
     print "V.shape: %s" % str(V.shape)
+    f_master.create_dataset('corr_mean', data=corr_mean)
+    f_master.create_dataset('U', data=U)
+    f_master.create_dataset('S', data=S)
+    f_master.create_dataset('V', data=V)
 
     # """check variance after whitening"""
     # V_norm = V/(S[None, :]*np.sqrt(n_samp))
@@ -85,32 +89,6 @@ def reduce(el, ns_set, H, set_id_set, step, wrt_file):
     rr.WP(msg, wrt_file)
     f_master.create_dataset('ratios', data=ratios)
 
-    f_red = h5py.File("sve_reduced.hdf5", 'w')
-
-    for ii in xrange(len(set_id_set)):
-
-        ff = f_stats.get('ff_%s' % set_id_set[ii])[...]
-        ff = ff.reshape(ns_set[ii], n_corr*el**3)
-
-        # subtract out the mean feature values
-        ff_r = ff
-        ff_r = ff_r - corr_mean
-
-        # tmp = pca.transform(ff_r)
-
-        # calculate the pc scores for ff_r
-        tmp = np.dot(ff_r, V)
-
-        f_red.create_dataset('reduced_%s' % set_id_set[ii],
-                             data=tmp,
-                             dtype='complex128')
-
-        # f_red.create_dataset('reduced_%s' % set_id_set[ii],
-        #                      data=tmp,
-        #                      dtype='float64')
-
-    f_red.close()
-    f_stats.close()
     f_master.close()
 
     msg = "PCA completed: %ss" % np.round(time.time()-st, 5)
