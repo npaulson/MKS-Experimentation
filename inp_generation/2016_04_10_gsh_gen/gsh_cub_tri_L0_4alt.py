@@ -34,7 +34,6 @@ def gsh_eval(X, Bvec):
 
     c = 0
     for Bindx in Bvec:
-
         if Bindx == 0:
             tfunc[..., c] = 1
 
@@ -109,6 +108,7 @@ def gsh_eval(X, Bvec):
             t84 = t86 ** 2
             t90 = 1 + t84 + 6 * t86
             tfunc[..., c] = (0.3e1 / 0.64e2) * np.sqrt(0.3e1) * np.sqrt(0.5e1) * np.sqrt(0.2e1) * ((14 * t84 - 28 * t86 + 14) * np.exp((4*1j) * phi2) + (t90 + t91) * np.exp((-4*1j) * (phi1 - phi2)) + (t90 - t91) * np.exp((4*1j) * (phi1 + phi2)))
+
 
         c += 1
 
