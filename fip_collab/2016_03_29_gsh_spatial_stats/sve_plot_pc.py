@@ -84,8 +84,8 @@ def pltPC(el, ns_set, set_id_set, step, pcA, pcB):
 
 if __name__ == '__main__':
     el = 21
-    ns_cal = [10, 10, 10]
-    set_id_cal = ['randomD3D', 'transverseD3D', 'basaltransD3D']
+    ns_cal = [10, 10, 10, 10]
+    set_id_cal = ['randomD3D', 'transverseD3D', 'basaltransD3D', 'actualD3D']
     step = 0
     pcA = 0
     pcB = 1

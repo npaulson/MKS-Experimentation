@@ -1,7 +1,5 @@
 import numpy as np
 from numpy import linalg as LA
-import h5py
-import functions as rr
 import euler_func as ef
 
 
@@ -96,47 +94,10 @@ def return2fz(euler):
 
 if __name__ == '__main__':
 
-    sn = 0
-    el = 21
-    ns = 100
-    set_id = 'val'
-    step = 1
-    compl = ['11', '22', '33', '12', '13', '23']
-    cellnum = np.int64(np.random.rand()*el**3)
-    # cellnum = 8
+    euler = (2*np.pi)*np.random.random((3))
 
-    """read the file for euler angle, total strain and plastic strain fields"""
-    f = h5py.File("ref_%s%s_s%s.hdf5" % (ns, set_id, step), 'r')
-
-    euler = f.get('euler')[sn, :, cellnum]
-    print "euler angles: %s" % str(euler)
-
-    """check to make sure that the Euler manipulations are functioning"""
-    g_test = bunge2g(euler)
-    euler_test = g2bunge(g_test)
-    euler_test += 2*np.pi*np.array(euler_test < 0)
-    print "result of converting from euler to g and back: %s" % str(euler_test)
-
-    # euler_ = return2fz(euler)
-    # print "convert euler to g and back (into the FZ): %s" % euler_
-
-    """load the total and plastic strain tensors"""
-    etv = np.zeros((6))
-    epv = np.zeros((6))
-
-    for ii in xrange(6):
-        comp = compl[ii]
-
-        tmp = f.get('r%s_epsilon_t' % comp)[sn, ...]
-        etv[ii] = tmp.reshape(el**3)[cellnum]
-
-        tmp = f.get('r%s_epsilon_p' % comp)[sn, ...]
-        epv[ii] = tmp.reshape(el**3)[cellnum]
-
-    f.close()
-
-    et = tens2mat(etv)
-    ep = tens2mat(epv)
+    F = 2*np.random.random((3, 3))-1
+    et = 0.5*(np.dot(F, F.T)-np.eye(3))
 
     print "et (strain tensor):"
     print et
@@ -153,8 +114,6 @@ if __name__ == '__main__':
     en = tensnorm(et_dev)
     print "en (norm(et_dev)): %s" % str(en)
 
-    epn_CPFEM = tensnorm(ep)
-
     """normalize the deviatoric strain tensor"""
     et_n = et_dev/en
 
@@ -164,8 +123,9 @@ if __name__ == '__main__':
 
     """find the principal values of the normalized tensor"""
     eigval, g_p2s = LA.eigh(et_n)
-    esort = np.argsort(np.abs(eigval))[::-1]
-    
+    # esort = np.argsort(np.abs(eigval))[::-1]
+    esort = np.argsort(eigval)[::-1]
+
     # print "\n"
     # print eigval
     # print g_p2s
@@ -192,9 +152,27 @@ if __name__ == '__main__':
     print np.round(np.dot(np.dot(g_p2s.T, et_n), g_p2s), 6)
 
     """find the deformation mode"""
-    theta = np.arctan2(-2*eigval[0]-eigval[2], np.sqrt(3)*eigval[2])
+    # theta = np.arctan2(-2*eigval[0]-eigval[2], np.sqrt(3)*eigval[2])
+
+    theta = np.arccos(np.sqrt(3./2.)*eigval[0])+(np.pi/3.)
     if theta < 0:
         theta += np.pi
+    elif theta > np.pi/3:
+        theta = (2*np.pi/3)-theta
+    print "theta (deformation mode): %s deg" % str(theta*180/np.pi)
+
+    theta = np.arccos(np.sqrt(3./2.)*eigval[1])-(np.pi/3.)
+    if theta < 0:
+        theta += np.pi
+    elif theta > np.pi/3:
+        theta = (2*np.pi/3)-theta
+    print "theta (deformation mode): %s deg" % str(theta*180/np.pi)
+
+    theta = np.arccos(-np.sqrt(3./2.)*eigval[2])
+    if theta < 0:
+        theta += np.pi
+    elif theta > np.pi/3:
+        theta = (2*np.pi/3)-theta
     print "theta (deformation mode): %s deg" % str(theta*180/np.pi)
 
     """recover the principal values from the deformation mode"""
@@ -207,26 +185,17 @@ if __name__ == '__main__':
     # g_p2c = np.einsum('ij,jk', g_s2c, g_p2s)
     g_p2c = np.dot(g_s2c, g_p2s)
 
-    # print g_p2c
-
     phi1, phi, phi2 = g2bunge(g_p2c)
 
     euler_p2c = np.array([phi1, phi, phi2])
-    # euler_p2c += 2*np.pi*np.array(euler_p2c < 0)
-    # print "g_p2c euler angles: %s" % str(euler_p2c)
-
-    # print bunge2g(euler_p2c)
-    # print bunge2g(return2fz(np.array([phi1, phi, phi2])))
-
-    # euler_p2c = return2fz(np.array([phi1, phi, phi2]))
-    # print "g_p2c euler angles (euler_p2c): %s" % str(euler_p2c)
 
     """try to recover et_dev from theta and euler_p2c"""
     g_p2c_ = bunge2g(euler_p2c)
+    print "g_p2c from g_p2s*g_s2c:"
     print g_p2c
+    print "g_p2c_ from euler angles extracted from g_p2c"
     print g_p2c_
     princ_vals = theta2eig(theta)
-    print princ_vals
     et_n_P = np.zeros((3, 3))
     et_n_P[0, 0] = princ_vals[0]
     et_n_P[1, 1] = princ_vals[1]
@@ -237,33 +206,3 @@ if __name__ == '__main__':
     et_dev_ = et_n_S * en
     print "et_dev reconstructed from theta, euler_p2c and en"
     print et_dev_
-
-    X = np.vstack([phi1, phi, phi2]).T
-    # X = euler
-
-    epn_SPECTRAL = rr.eval_func(theta, X, en).real
-
-    print "CPFEM plastic strain magnitude: %s" % epn_CPFEM
-    print "predicted plastic strain magnitude: %s" % epn_SPECTRAL[0]
-
-    """check database predction with single point data:
-    tensor components are as follows: 11, 22, 33, 12, 13, 23
-    the array structure is detailed here:
-    rawdata[:, 0] = time
-    rawdata[:, 1:7] = stress tensor
-    rawdata[:, 7:13] = total strain tensor
-    rawdata[:, 13:19] = plastic strain tensor"""
-
-    rawdata = np.loadtxt("single_pt.txt")
-    et_P_vec = rawdata[:, 7:10]
-    ep_C_vec = rawdata[:, 13:19]
-
-    en_vec = np.sqrt(np.sum(et_P_vec**2, 1))
-
-    indx = np.argmin(np.abs(en_vec - en))
-
-    ep_C = tens2mat(ep_C_vec[indx, :])
-
-    epn_SPCP = tensnorm(ep_C)
-
-    print "single point CP plastic strain magnitude: %s" % epn_SPCP

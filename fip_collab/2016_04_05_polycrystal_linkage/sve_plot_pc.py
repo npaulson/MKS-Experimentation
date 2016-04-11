@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import h5py
 
 
-def pltPC(el, ns_set, set_id_set, step, pcA, pcB):
+def pltPC(el, ns_set, set_id_set, pcA, pcB):
 
     plt.figure(num=2, figsize=[14, 12])
 
@@ -84,10 +84,10 @@ def pltPC(el, ns_set, set_id_set, step, pcA, pcB):
 
 if __name__ == '__main__':
     el = 21
-    ns_cal = [10, 10, 10]
-    set_id_cal = ['randomD3D', 'transverseD3D', 'basaltransD3D']
-    step = 0
+    ns_val = [10, 10, 10, 10]
+    set_id_val = ['randomD3D_val', 'transverseD3D_val',
+                  'basaltransD3D_val', 'actualD3D_val']
     pcA = 0
     pcB = 1
 
-    pltPC(el, ns_cal, set_id_cal, step, pcA, pcB)
+    pltPC(el, ns_val, set_id_val, pcA, pcB)

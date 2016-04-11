@@ -31,9 +31,9 @@ iA = 1
 iB = 1
 pltcorr.pltcorr(el, ns_cal[0], set_id_cal[0], step, sn, iA, iB)
 
-"""Plot the percentage explained variance"""
-ns_tot = np.sum(ns_cal)
-ev.variance(el, ns_tot, step)
+# """Plot the percentage explained variance"""
+# ns_tot = np.sum(ns_cal)
+# ev.variance(el, ns_tot, step)
 
 """Plot the microstructures in PC space"""
 pcA = 0

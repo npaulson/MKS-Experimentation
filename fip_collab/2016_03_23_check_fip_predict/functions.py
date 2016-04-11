@@ -35,6 +35,7 @@ def eval_func(theta, X, et_norm):
     # N_p: number of GSH bases to evaluate
     indxvec = gsh.gsh_basis_info()
     N_p = np.sum(indxvec[:, 0] <= LL_p)
+    # N_p = 500
 
     N_q = 40  # number of cosine bases to evaluate for theta
     N_r = 14  # number of cosine bases to evaluate for en
@@ -44,7 +45,7 @@ def eval_func(theta, X, et_norm):
 
     # filename = 'log_final_results9261.txt'
 
-    f = h5py.File('coef.hdf5', 'r')
+    f = h5py.File('coef_sortbymag.hdf5', 'r')
     coeff = f.get('coef')[...]
     f.close()
 
