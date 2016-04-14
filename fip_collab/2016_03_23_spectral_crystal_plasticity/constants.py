@@ -1,4 +1,4 @@
-import gsh_cub_tri_L0_24 as gsh
+import gsh_cub_tri_L0_40 as gsh
 import numpy as np
 
 
@@ -12,9 +12,13 @@ def const():
     """for read_input_data"""
     C['read_njobs'] = 60
     C['read_mem'] = 8
-    C['read_walltime'] = 1
+    C['read_walltime'] = 2
     C['read_scriptname'] = 'read_input_data.py'
     C['read_output'] = 'var_extract_%s.hdf5'
+
+    C['m'] = 0.01
+    C['epsdot'] = 0.001
+    C['s'] = 100
 
     """for combine_input_data.py"""
     C['combineread_scriptname'] = 'combine_input_data.py'
@@ -22,7 +26,7 @@ def const():
 
     """for basis_eval_gsh"""
     C['basisgsh_njobs'] = 15
-    C['basisgsh_mem'] = 12
+    C['basisgsh_mem'] = 25
     C['basisgsh_walltime'] = 8
     C['basisgsh_scriptname'] = 'basis_eval_gsh.py'
     C['basisgsh_output'] = 'basis_eval_gsh_%s.hdf5'

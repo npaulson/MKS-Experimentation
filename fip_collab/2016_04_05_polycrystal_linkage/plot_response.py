@@ -1,9 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 import h5py
 
 
-def plt_modulus(el, ns_set, set_id_set, step, pcA):
+def pltresponse(el, ns_set, set_id_set, resptyp, pcA):
 
     plt.figure(num=33, figsize=[10, 7])
 
@@ -21,15 +22,15 @@ def plt_modulus(el, ns_set, set_id_set, step, pcA):
     for ii in xrange(len(set_id_set)):
 
         reduced = f_red.get('reduced_%s' % set_id_set[ii])[...]
-        Eeff = f_link.get('Eeff_%s' % set_id_set[ii])[...]
+        response = f_link.get('%s_%s' % (resptyp, set_id_set[ii]))[...]
 
-        plt.plot(reduced[:, pcA].real, Eeff,
+        plt.plot(reduced[:, pcA].real, response,
                  marker='D', markersize=8, color=colormat[ii, :],
                  linestyle='', label=set_id_set[ii])
 
-        plt.title("Effective modulus verus principal components")
+        plt.title("%s verus principal components" % resptyp)
         plt.xlabel("real(PC %s)" % str(pcA+1))
-        plt.ylabel("Effective Modulus")
+        plt.ylabel(resptyp)
         plt.legend(loc='upper right', shadow=True, fontsize='medium')
 
     f_red.close()
@@ -40,9 +41,13 @@ def plt_modulus(el, ns_set, set_id_set, step, pcA):
 
 if __name__ == '__main__':
     el = 21
-    ns_cal = [10, 10, 10]
-    set_id_cal = ['randomD3D', 'transverseD3D', 'basaltransD3D']
-    step = 0
-    pcA = 0
+    # ns_cal = [20, 20, 20, 20]
+    # set_id_cal = ['randomD3D_cal', 'transverseD3D_cal',
+    #               'basaltransD3D_cal', 'actualD3D_cal']
+    ns_cal = [20]
+    set_id_cal = ['randomD3D_cal']
 
-    plt_modulus(el, ns_cal, set_id_cal, step, pcA)
+    resptyp = 'Eeff'
+    pcA = np.int64(sys.argv[1])
+
+    pltresponse(el, ns_cal, set_id_cal, resptyp, pcA)

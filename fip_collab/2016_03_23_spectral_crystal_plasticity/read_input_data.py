@@ -55,13 +55,22 @@ for ii in xrange(1, 7):
     nwd = os.getcwd() + '/dir_nhp'  # for unix
     os.chdir(nwd)
 
+    sigma = varset1[:, :6]/(C['s']*C['epsdot']**C['m'])
+    shearrate = (varset1[:, 6]/C['epsdot'])[:, None]
+    wstar = varset2/C['epsdot']
+
     print "set %s" % ii
     print "thetaset.shape: %s" % str(thetaset.shape)
     print "eulerset.shape: %s" % str(eulerset.shape)
-    print "varset1.shape: %s" % str(varset1.shape)
-    print "varset2.shape: %s" % str(varset2.shape)
+    print "sigma.shape: %s" % str(sigma.shape)
+    print "wstar.shape: %s" % str(wstar.shape)
+    print "shearrate.shape: %s" % str(shearrate.shape)
 
-    var_set[c:c+setL, :] = np.hstack([thetaset, eulerset, varset1, varset2])
+    var_set[c:c+setL, :] = np.hstack([thetaset,
+                                      eulerset,
+                                      sigma,
+                                      shearrate,
+                                      wstar])
 
     c += setL
 

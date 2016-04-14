@@ -4,7 +4,7 @@ import vtk_read as read
 import h5py
 
 
-def modulus(el, ns, set_id, step, newdir, wrt_file):
+def Eeff(el, ns, set_id, step, newdir, wrt_file):
 
     """
     The tensorID determines the type of tensor data read from the .vtk file
@@ -49,6 +49,28 @@ def modulus(el, ns, set_id, step, newdir, wrt_file):
     f.close()
 
 
+def FIP(el, ns, set_id, step, newdir, wrt_file):
+
+    # get the fip values
+    read.read_fip(el, ns, set_id, step, newdir, wrt_file)
+
+    """read the fip values into memory"""
+
+    f = h5py.File("responses.hdf5", 'a')
+    fip = f.get('fip_%s' % set_id)[...]
+    f.close()
+
+    """calculate the maximum fip per SVE"""
+    maxfip = np.max(fip, axis=1)
+
+    msg = 'maxfip set: %s' % str(maxfip)
+    rr.WP(msg, wrt_file)
+
+    f = h5py.File("linkage.hdf5", 'a')
+    f.create_dataset('maxfip_%s' % set_id, data=maxfip)
+    f.close()
+
+
 if __name__ == '__main__':
     el = 21
     ns = 10
@@ -57,4 +79,4 @@ if __name__ == '__main__':
     newdir = 'transverseD3D'
     wrt_file = 'test.txt'
 
-    modulus(el, ns, set_id, step, newdir, wrt_file)
+    Eeff(el, ns, set_id, step, newdir, wrt_file)

@@ -87,7 +87,7 @@ if __name__ == '__main__':
     ns_cal = [10, 10, 10, 10]
     set_id_cal = ['randomD3D', 'transverseD3D', 'basaltransD3D', 'actualD3D']
     step = 0
-    pcA = 0
+    pcA = 2
     pcB = 1
 
     pltPC(el, ns_cal, set_id_cal, step, pcA, pcB)

@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import h5py
+import sys
 
 
 def pltPC(el, ns_set, set_id_set, pcA, pcB):
@@ -84,10 +85,11 @@ def pltPC(el, ns_set, set_id_set, pcA, pcB):
 
 if __name__ == '__main__':
     el = 21
-    ns_val = [10, 10, 10, 10]
-    set_id_val = ['randomD3D_val', 'transverseD3D_val',
-                  'basaltransD3D_val', 'actualD3D_val']
-    pcA = 0
+    ns_cal = [20, 20, 20, 20]
+    set_id_cal = ['randomD3D_cal', 'transverseD3D_cal',
+                  'basaltransD3D_cal', 'actualD3D_cal']
+
+    pcA = np.int64(sys.argv[1])
     pcB = 1
 
-    pltPC(el, ns_val, set_id_val, pcA, pcB)
+    pltPC(el, ns_cal, set_id_cal, pcA, pcB)
