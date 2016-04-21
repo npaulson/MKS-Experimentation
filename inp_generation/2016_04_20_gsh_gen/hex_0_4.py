@@ -111,9 +111,9 @@ def gsh_eval(X, Bvec):
 
 if __name__ == '__main__':
     X = np.zeros([2, 3])
-    phi1 = np.array([0.1, 0.2])
+    phi1 = np.array([0.1,0.2])
     X[:, 0] = phi1
-    phi = np.array([0.2, 0.0])
+    phi = np.array([0.0, 0.4])
     X[:, 1] = phi
     phi2 = np.array([0.3, 0.6])
     X[:, 2] = phi2

@@ -25,7 +25,7 @@ def const():
     C['combineread_output'] = 'var_extract_total.hdf5'
 
     """for basis_eval_gsh"""
-    C['basisgsh_njobs'] = 15
+    C['basisgsh_njobs'] = 60
     C['basisgsh_mem'] = 25
     C['basisgsh_walltime'] = 8
     C['basisgsh_scriptname'] = 'basis_eval_gsh.py'
@@ -83,7 +83,7 @@ def const():
     C['bsz_eul'] = C['domain_eul_sz']/C['n_eul']
 
     """define variables required for integration"""
-    LL_p = 24  # gsh truncation level
+    LL_p = 40  # gsh truncation level
     indxvec = gsh.gsh_basis_info()
     C['N_p'] = np.sum(indxvec[:, 0] <= LL_p)  # number of GSH bases to evaluate
     C['N_q'] = C['n_th']  # number of cosine bases to evaluate for theta

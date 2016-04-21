@@ -238,6 +238,9 @@ if __name__ == '__main__':
     print f.get('euler').shape
 
     euler = f.get('euler')[sn, ...]
+
+    np.save('euler.npy', euler)
+
     euler = euler.swapaxes(0, 1)
 
     etv = np.zeros((el**3, 6))
