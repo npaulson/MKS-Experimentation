@@ -1,5 +1,5 @@
 import numpy as np
-import hex_0_4_real as gsh
+import cub_0_16_real as gsh
 
 
 def WP(msg, filename):
@@ -61,7 +61,7 @@ N_L = indxvec.shape[0]
 
 phi1max = 360
 phimax = 90
-phi2max = 60
+phi2max = 90
 
 # domain_sz is the integration domain in radians
 domain_sz = phi1max*phimax*phi2max*(np.pi/180.)**3

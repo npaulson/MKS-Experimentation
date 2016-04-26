@@ -3,12 +3,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 el = 21
-slc = 1
+slc = 7
 
 filename = "theta_fields.hdf5"
 
 f = h5py.File(filename, 'r')
-slc_mat = f.get('alltheta')[:, :, slc, :]*(180/np.pi)
+print "alltheta.shape: %s" % str(f.get('alltheta').shape)
+slc_mat = f.get('alltheta')[:, slc, :, :]*(180/np.pi)
 envec = f.get('envec')[...]
 
 n_sub = envec.size
@@ -17,15 +18,17 @@ n_sub = envec.size
 dmin = slc_mat.min()
 dmax = slc_mat.max()
 
-fig, axs = plt.subplots(3, 4, figsize=(4*3, 3*3))
+fig, axs = plt.subplots(2, 4, figsize=(4*3, 2*3))
 
 """Plot slices of the response"""
-for ii in xrange(n_sub):
+c = 0
+for ii in xrange(0, n_sub, 14):
 
-    ax = plt.subplot(3, 4, ii+1)
+    ax = plt.subplot(2, 4, c+1)
     im = ax.imshow(slc_mat[ii, ...], origin='lower',
                    interpolation='none', cmap='jet', vmin=dmin, vmax=dmax)
     plt.title('$|\epsilon^t|$ = %s' % np.round(envec[ii], 5))
+    c += 1
 
 fig.subplots_adjust(right=0.8)
 cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])

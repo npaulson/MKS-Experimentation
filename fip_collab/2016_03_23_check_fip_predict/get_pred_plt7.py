@@ -33,6 +33,16 @@ def field_std(el, ns, SET1, SET2, SET3, slc, typecomp, plotnum):
     plt.title('CPFEM, %s, slice %s' % (typecomp, slc))
 
 
+def field_euler(slc, euler, plotnum):
+
+    """Plot slices of the response"""
+    plt.figure(num=plotnum, figsize=[4, 2.7])
+
+    plt.imshow(euler[slc, :, :, 0], origin='lower',
+               interpolation='none', cmap='magma')
+    plt.title("Grain Structure")
+
+
 def bunge2g(euler):
     # this has been cross-checked
     # only works for radians
@@ -290,5 +300,9 @@ if __name__ == '__main__':
     slc = maxindx[0]
 
     field_std(el, ns, SPECTRAL_m, SPCP_m, CPFEM_m, slc, "$|\epsilon^{p}|$", 1)
+
+    print 'shape of euler: %s' % str(euler.shape)
+
+    field_euler(slc, euler.reshape((el, el, el, 3)), 2)
 
     plt.show()

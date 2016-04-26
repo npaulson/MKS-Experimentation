@@ -71,6 +71,7 @@ def get_file(el, ns, set_id, PC_A, PC_B, PCvalA, PCvalB):
                         np.vstack([reducedA, reducedB]).T)
     mindx = np.argmin(dist)
 
+    print "mindx: %s" % mindx
     print dist
 
     print "closest: PCvalA=%s, PCvalB=%s" % (reducedA[mindx],
@@ -102,10 +103,10 @@ def get_file(el, ns, set_id, PC_A, PC_B, PCvalA, PCvalB):
 if __name__ == '__main__':
     el = 21
     ns_cal = 20
-    set_id_cal = 'basaltransD3D_cal'
+    set_id_cal = sys.argv[1]
     PC_A = 0
     PC_B = 1
-    PCvalA = np.int64(sys.argv[1])
-    PCvalB = np.int64(sys.argv[2])
+    PCvalA = np.float64(sys.argv[2])
+    PCvalB = np.float64(sys.argv[3])
 
     get_file(el, ns_cal, set_id_cal, PC_A, PC_B, PCvalA, PCvalB)

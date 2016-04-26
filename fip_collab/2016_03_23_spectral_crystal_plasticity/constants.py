@@ -26,8 +26,8 @@ def const():
 
     """for basis_eval_gsh"""
     C['basisgsh_njobs'] = 60
-    C['basisgsh_mem'] = 25
-    C['basisgsh_walltime'] = 8
+    C['basisgsh_mem'] = 6
+    C['basisgsh_walltime'] = 24
     C['basisgsh_scriptname'] = 'basis_eval_gsh.py'
     C['basisgsh_output'] = 'basis_eval_gsh_%s.hdf5'
 
@@ -40,8 +40,8 @@ def const():
     C['combinebasis_output'] = 'basis_eval.hdf5'
 
     """for integrate_parallel"""
-    C['integrate_njobs'] = 600
-    C['integrate_mem'] = 8
+    C['integrate_njobs'] = 2312
+    C['integrate_mem'] = 4
     C['integrate_walltime'] = 24
     C['integrate_scriptname'] = 'integrate.py'
     C['integrate_output'] = 'coef_prt_%s.hdf5'

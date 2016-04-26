@@ -9,7 +9,7 @@ def tensnorm(tensvec):
 if __name__ == '__main__':
 
     el = 21
-    nsteps = 13
+    nsteps = 100
 
     f = h5py.File("theta_fields.hdf5", 'w')
     alltheta = f.create_dataset("alltheta", (nsteps-1, el, el, el))
@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
     for ii in xrange(nsteps-1):
         filename = "Results_Ti64_Dream3D_XdirLoad_210microns_9261el_AbqInp" +\
-                  "_PowerLaw_LCF_10cycles_1_data_strain_step0_frame%s.txt" % str(ii+1)
+                  "_PowerLaw_LCF_10cycles_3_data_strain_step0_frame%s.txt" % str(ii+1)
         rawdata = np.loadtxt(filename, skiprows=2)
 
         """sort the data by element"""

@@ -1,7 +1,7 @@
 import numpy as np
-import hex_complex_0_16 as gsh_old
+import gsh_hex_tri_L0_16 as gsh_old
 # import hex_complex_0_16 as gsh_new
-import hex_0_4_real as gsh_new
+import hex_0_6_complex as gsh_new
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
@@ -78,10 +78,12 @@ def euler_rand(n_tot, phi1max, phimax, phi2max):
 
 
 indxvec_complex = gsh_old.gsh_basis_info()
-N_L_complex = np.sum(indxvec_complex[:, 0] <= 4)
+N_L_complex = np.sum(indxvec_complex[:, 0] <= 6)
+indxvec_complex = indxvec_complex[:N_L_complex, :]
 
 indxvec_real = gsh_new.gsh_basis_info()
-N_L_real = np.sum(indxvec_real[:, 0] <= 4)
+N_L_real = np.sum(indxvec_real[:, 0] <= 6)
+indxvec_real = indxvec_complex[:N_L_real, :]
 
 print "N_L_complex = %s" % N_L_complex
 
@@ -89,21 +91,62 @@ phi1max = 360.
 phimax = 90.
 phi2max = 60.
 
-inc = 10.
+inc = 3.
 euler, n_tot = euler_grid_center(inc, phi1max, phimax, phi2max)
 
 """ Generate Y """
 
-# bvec = [0,  1, 5, 7, 13, 18, 38]
-# bval = [40., 10., 10., 4, 4, 24, 24]
+indxlist = np.arange(N_L_complex)
+bvec = [0]
+bval = [40]
 
-bvec = [0, 1, 5]
-bval = [40., 20., 20.]
+for ii in xrange(100):
+    indx1 = np.random.choice(indxlist)
+    print "indx1: %s" % indx1
+
+    if np.any(bvec == indx1):
+        continue
+
+    indxset1 = indxvec_complex[indx1, :]
+    print "indxset1: %s" % str(indxset1)
+
+    val = np.random.randint(-20, 21)
+    # print "val: %s" % val
+
+    if indxset1[1] == 0:
+        bvec.append(indx1)
+        bval.append(val)
+    else:
+        indxset2 = indxset1*[1, -1, 1]
+
+        loc = (indxvec_complex[:, 0] == indxset2[0]) * \
+              (indxvec_complex[:, 1] == indxset2[1]) * \
+              (indxvec_complex[:, 2] == indxset2[2])
+        indx2 = np.argmax(loc)
+
+        print "indx2: %s" % indx2
+        print "indxset2: %s" % str(indxvec_complex[indx2, :])
+
+        bvec.append(indx1)
+        bvec.append(indx2)
+        bval.append(val)
+        bval.append(val)
+
+    if len(bvec) > 5:
+        break
+
+print bvec
+print bval
+
+# bvec = [0, 1, 5]
+# bval = [40., 20., 20.]
 
 Y = np.zeros(euler.shape[0], dtype='complex128')
 for ii in xrange(len(bvec)):
     Xtmp = np.squeeze(gsh_old.gsh_eval(euler, [bvec[ii]]))
     Y += bval[ii]*Xtmp
+
+Y = Y.real
 
 """ Perform the regression """
 
@@ -137,7 +180,7 @@ plt.title("coefficients from integration")
 plt.grid(True)
 
 plt.xticks(np.arange(0, N_L_real, 2), rotation='vertical')
-plt.yticks(np.arange(-12, 42, 2))
+# plt.yticks(np.arange(np.int64(), 1))
 
 """ To check the regression accuracy first lets generate a set of euler
 angles"""
@@ -156,16 +199,24 @@ for ii in xrange(len(bvec)):
     Xtmp = np.squeeze(gsh_old.gsh_eval(euler, [bvec[ii]]))
     Y += bval[ii]*Xtmp
 
+Y = Y.real
+
 Y_ = np.zeros(euler.shape[0], dtype='complex128')
 for ii in xrange(N_L_real):
     Xtmp = np.squeeze(gsh_new.gsh_eval(euler, [ii]))
     Y_ += coef[ii]*Xtmp
 
-print "min(Y): %s" % np.min(Y)
-print "mean(Y): %s" % np.mean(Y)
-print "max(Y): %s" % np.max(Y)
-print "std(Y): %s" % np.std(Y)
+print "min(Y.real): %s" % np.min(Y.real)
+print "mean(Y.real): %s" % np.mean(Y.real)
+print "max(Y.real): %s" % np.max(Y.real)
+
+print "min(Y.imag): %s" % np.min(Y.imag)
+print "mean(Y.imag): %s" % np.mean(Y.imag)
+print "max(Y.imag): %s" % np.max(Y.imag)
 print "\n"
+
+if np.max(np.abs(Y.imag)) > 1:
+    print "WARNING: test function has significant imaginary components"
 
 error = np.abs(Y_.real - Y.real)
 
