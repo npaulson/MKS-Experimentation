@@ -1,5 +1,6 @@
 import numpy as np
 import hex_0_16_real_alt as gsh
+import sys
 
 
 def WP(msg, filename):
@@ -52,65 +53,52 @@ def euler_grid_center(inc, phi1max, phimax, phi2max):
 
     return euler, n_tot
 
-"""Initialize important variables"""
+if __name__ == '__main__':
 
-indxvec = gsh.gsh_basis_info()
+    """Initialize important variables"""
 
-# N_L = indxvec.shape[0]
-N_L = 7
+    ii = np.int64(sys.argv[1])
+    jj = np.int64(sys.argv[2])
 
-phi1max = 360
-phimax = 90
-phi2max = 60
+    indxvec = gsh.gsh_basis_info()
 
-# domain_sz is the integration domain in radians
-domain_sz = phi1max*phimax*phi2max*(np.pi/180.)**3
-# euler_sz is the size of euler space in radians
-euler_sz = (2*np.pi)*(np.pi)*(2*np.pi)
+    N_L = indxvec.shape[0]
+    # N_L = 7
 
-inc = 3.
+    phi1max = 360
+    phimax = 90
+    phi2max = 60
 
-n_test = 20
-filename = "orthogonality_check_%s.txt" % N_L
+    # domain_sz is the integration domain in radians
+    domain_sz = phi1max*phimax*phi2max*(np.pi/180.)**3
+    # euler_sz is the size of euler space in radians
+    euler_sz = (2*np.pi)*(np.pi)*(2*np.pi)
 
-"""Retrieve Euler angle set"""
+    inc = 3.
 
-euler, n_tot = euler_grid_center(inc, phi1max, phimax, phi2max)
+    """Retrieve Euler angle set"""
 
-"""Perform the orthogonality check"""
+    euler, n_tot = euler_grid_center(inc, phi1max, phimax, phi2max)
 
-inner_mat = np.zeros((N_L, N_L), dtype='complex128')
+    """Perform the orthogonality check"""
 
-euler_frac = domain_sz/euler_sz
-msg = "integration domains per euler space: %s" % str(1./euler_frac)
-WP(msg, filename)
+    euler_frac = domain_sz/euler_sz
+    print "integration domains per euler space: %s" % str(1./euler_frac)
 
-fzsz = 1./(euler_frac*8.*np.pi**2)
-bsz = domain_sz/n_tot
+    fzsz = 1./(euler_frac*8.*np.pi**2)
+    bsz = domain_sz/n_tot
 
-msg = "bsz: %s" % bsz
-WP(msg, filename)
-msg = "n_tot: %s" % n_tot
-WP(msg, filename)
+    print "bsz: %s" % bsz
+    print "n_tot: %s" % n_tot
 
-for nn in xrange(n_test):
-
-    ii, jj = np.random.randint(N_L, size=[2])
-
-    if np.mod(nn, 2) == 0:
-        jj = ii
-
-    msg = "basis A: %s" % str(indxvec[ii, :])
-    WP(msg, filename)
-    msg = "basis B: %s" % str(indxvec[jj, :])
-    WP(msg, filename)
+    print "basis A: %s" % str(indxvec[ii, :])
+    print "basis B: %s" % str(indxvec[jj, :])
 
     bA = np.squeeze(gsh.gsh_eval(euler, [ii]))
     bB = np.squeeze(gsh.gsh_eval(euler, [jj]))
 
-    l = indxvec[jj, 0]
+    l = indxvec[jj, 1]
     tmp = (1./(2.*l+1.)) * \
         np.sum(bA*bB.conj()*np.sin(euler[:, 1]))*bsz*fzsz
 
-    msg = "results of check A and B: %s\n" % tmp
-    WP(msg, filename)
+    print "results of check A and B: %s\n" % tmp

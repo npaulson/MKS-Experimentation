@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import h5py
 
 
-def plot_check(el, ns_set, set_id_set, resptyp):
+def pltcheck(ns_set, set_id_set, resptyp):
 
     colormat = np.array([[.3, .3, 1.],
                          [.3, 1., .3],
@@ -99,11 +99,10 @@ def plot_check(el, ns_set, set_id_set, resptyp):
 
 
 if __name__ == '__main__':
-    el = 21
     ns_val = [10, 10, 10, 10]
     set_id_val = ['randomD3D_val', 'transverseD3D_val',
                   'basaltransD3D_val', 'actualD3D_val']
 
     resptyp = 'maximum FIP'
 
-    plot_check(el, ns_val, set_id_val, resptyp)
+    pltcheck(ns_val, set_id_val, resptyp)

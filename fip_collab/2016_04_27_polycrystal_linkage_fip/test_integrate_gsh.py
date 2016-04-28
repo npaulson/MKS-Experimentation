@@ -1,7 +1,6 @@
 import numpy as np
-import gsh_cub_tri_L0_16 as gsh_old
-# import cub_0_16_real as gsh_new
-import gsh_cub_tri_L0_16 as gsh_new
+import gsh_hex_tri_L0_16 as gsh_old
+import hex_0_16_real as gsh_new
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
@@ -42,9 +41,9 @@ def euler_grid_center(inc, phi1max, phimax, phi2max):
 
 phi1max = 360.  # max phi1 angle (deg) for integration domain
 phimax = 90.  # max phi angle (deg) for integration domain
-phi2max = 90.  # max phi2 angle (deg) for integration domain
+phi2max = 60.  # max phi2 angle (deg) for integration domain
 inc = 3.  # degree increment for euler angle generation
-L_trunc = 8  # truncation level in the l index for the GSH
+L_trunc = 16  # truncation level in the l index for the GSH
 
 indxvec_new = gsh_old.gsh_basis_info()
 N_L_new = np.sum(indxvec_new[:, 0] <= L_trunc)
@@ -170,16 +169,10 @@ print "max error: %s" % np.max(error)
 
 """ Plot the regression results """
 
-phi_u = np.unique(euler[:, 1])
-phi2_u = np.unique(euler[:, 2])
+thr = (1E3)/n_tot
+print "selection zone: %s" % thr
 
-
-# thr = (1E3)/n_tot
-# print "selection zone: %s" % thr
-
-# ang_sel = np.abs(euler[:, 2] - np.pi/5) < thr
-
-ang_sel = euler[:, 2] == phi2_u[np.int64(len(phi2_u)/2.)]
+ang_sel = np.abs(euler[:, 2] - np.pi/5) < thr
 
 fig = plt.figure(num=2, figsize=[10, 6])
 ax = fig.add_subplot(111, projection='3d')
@@ -187,8 +180,7 @@ ax = fig.add_subplot(111, projection='3d')
 ax.scatter(euler[ang_sel, 0], euler[ang_sel, 1], Y[ang_sel], c='b')
 ax.scatter(euler[ang_sel, 0], euler[ang_sel, 1], Y_[ang_sel], c='r')
 
-# ang_sel = np.abs(euler[:, 1] - np.pi/2) < thr
-ang_sel = euler[:, 1] == phi_u[np.int64(len(phi_u)/2.)]
+ang_sel = np.abs(euler[:, 1] - np.pi/2) < thr
 
 fig = plt.figure(num=3, figsize=[10, 6])
 ax = fig.add_subplot(111, projection='3d')

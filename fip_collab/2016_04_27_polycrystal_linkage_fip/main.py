@@ -29,10 +29,9 @@ dir_val = ['randomD3D_val', 'transverseD3D_val',
 # set_id_val = ['randomD3D_val']
 # dir_val = ['randomD3D_val']
 
-
-L = 6
-H = 23
+H = 9
 el = 21
+vmax = 5
 step = 1
 n_pc_tot = 20
 
@@ -77,23 +76,23 @@ for ii in xrange(len(set_id_cal)):
 
 """Compute the periodic statistics for the microstructures"""
 for ii in xrange(len(set_id_cal)):
-    corr.correlate(el, ns_cal[ii], H, set_id_cal[ii], step, wrt_file)
-    corr.correlate(el, ns_val[ii], H, set_id_val[ii], step, wrt_file)
+    corr.correlate(el, vmax, ns_cal[ii], H, set_id_cal[ii], step, wrt_file)
+    corr.correlate(el, vmax, ns_val[ii], H, set_id_val[ii], step, wrt_file)
 
 """Perform PCA on correlations"""
-pca = gns.new_space(el, ns_cal, H, set_id_cal, step, n_pc_tot, wrt_file)
+pca = gns.new_space(vmax, ns_cal, H, set_id_cal, step, n_pc_tot, wrt_file)
 
 """transform statistics to reduced dimensionality space"""
 f = h5py.File("sve_reduced.hdf5", 'w')
 f.close()
 
 for ii in xrange(len(set_id_cal)):
-    tf.transform(el, ns_cal[ii], H, set_id_cal[ii], step, pca, wrt_file)
-    tf.transform(el, ns_val[ii], H, set_id_val[ii], step, pca, wrt_file)
+    tf.transform(vmax, ns_cal[ii], H, set_id_cal[ii], step, pca, wrt_file)
+    tf.transform(vmax, ns_val[ii], H, set_id_val[ii], step, pca, wrt_file)
 
 """create the specified array of linkages and cross validate"""
 
-gl.linkage(el, ns_cal, ns_val, set_id_cal,
+gl.linkage(ns_cal, ns_val, set_id_cal,
            set_id_val, 'fip', n_pc_tot, wrt_file)
 
 """

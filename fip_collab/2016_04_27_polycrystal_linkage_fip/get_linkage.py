@@ -4,7 +4,7 @@ import h5py
 import time
 
 
-def linkage(el, ns_cal_set, ns_val_set,
+def linkage(ns_cal_set, ns_val_set,
             set_id_cal_set, set_id_val_set, resptyp, n_pc_tot, wrt_file):
 
     st = time.time()
@@ -107,11 +107,10 @@ def linkage(el, ns_cal_set, ns_val_set,
 
 
 if __name__ == '__main__':
-    el = 21
     ns = 10
     set_id = 'transverseD3D'
     step = 1
     newdir = 'transverseD3D'
     wrt_file = 'test.txt'
 
-    linkage(el, ns, set_id, step, newdir, wrt_file)
+    linkage(ns, set_id, step, newdir, wrt_file)

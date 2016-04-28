@@ -4,9 +4,9 @@ import sys
 import h5py
 
 
-def pltresponse(el, ns_set, set_id_set, resptyp, pcA):
+def pltresponse(ns_set, set_id_set, resptyp, pcA):
 
-    plt.figure(num=33, figsize=[10, 7])
+    plt.figure(num=4, figsize=[10, 7])
 
     # colormat = np.random.rand(len(set_id_set), 3)
     colormat = np.array([[.3, .3, 1.],
@@ -40,7 +40,6 @@ def pltresponse(el, ns_set, set_id_set, resptyp, pcA):
 
 
 if __name__ == '__main__':
-    el = 21
     ns_cal = [20, 20, 20, 20]
     set_id_cal = ['randomD3D_cal', 'transverseD3D_cal',
                   'basaltransD3D_cal', 'actualD3D_cal']
@@ -50,4 +49,4 @@ if __name__ == '__main__':
     resptyp = 'Eeff'
     pcA = np.int64(sys.argv[1])
 
-    pltresponse(el, ns_cal, set_id_cal, resptyp, pcA)
+    pltresponse(ns_cal, set_id_cal, resptyp, pcA)

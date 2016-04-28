@@ -1,5 +1,5 @@
 import numpy as np
-import hex_0_16_real_alt as gsh
+import hex_0_16_real as gsh
 
 
 def WP(msg, filename):
@@ -56,8 +56,8 @@ def euler_grid_center(inc, phi1max, phimax, phi2max):
 
 indxvec = gsh.gsh_basis_info()
 
-# N_L = indxvec.shape[0]
-N_L = 7
+N_L = indxvec.shape[0]
+# N_L = 500
 
 phi1max = 360
 phimax = 90
@@ -70,7 +70,7 @@ euler_sz = (2*np.pi)*(np.pi)*(2*np.pi)
 
 inc = 3.
 
-n_test = 20
+n_test = 100
 filename = "orthogonality_check_%s.txt" % N_L
 
 """Retrieve Euler angle set"""
@@ -97,7 +97,7 @@ for nn in xrange(n_test):
 
     ii, jj = np.random.randint(N_L, size=[2])
 
-    if np.mod(nn, 2) == 0:
+    if np.mod(nn, 10) == 0:
         jj = ii
 
     msg = "basis A: %s" % str(indxvec[ii, :])

@@ -168,7 +168,7 @@ def gsh_eval(X, Bvec):
     phi += (1e-7)*zvec*(randvec - randvecopp)
 
     final_shape = np.hstack([phi1.shape, len(Bvec)])
-    tfunc = np.zeros(final_shape, dtype='complex128')
+    tfunc = np.zeros(final_shape, dtype='float64')
 
     c = 0
     for Bindx in Bvec:

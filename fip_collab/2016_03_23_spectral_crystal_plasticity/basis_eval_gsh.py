@@ -37,8 +37,8 @@ fn.WP(str(n_ii), filename)
 
 ii_stt = tnum*n_ii  # start index
 ii_end = ii_stt + n_ii  # end index
-if ii_end > ['N_p']:
-    ii_end = ['N_p']
+if ii_end > C['N_p']:
+    ii_end = C['N_p']
 
 msg = "ii_stt = %s" % ii_stt
 fn.WP(msg, filename)
