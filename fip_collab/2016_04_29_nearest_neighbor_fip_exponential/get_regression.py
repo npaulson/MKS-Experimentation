@@ -61,7 +61,7 @@ def regress(ns, set_id):
     XhY = np.zeros(C['xmax'], dtype='float64')
 
     for ii in xrange(C['xmax']):
-        XhY[ii] = np.dot(X[:, ii], fip)
+        XhY[ii] = np.dot(X[:, ii], np.log(fip))
 
     """perform the regression"""
     coef = np.linalg.lstsq(XhX, XhY)[0]

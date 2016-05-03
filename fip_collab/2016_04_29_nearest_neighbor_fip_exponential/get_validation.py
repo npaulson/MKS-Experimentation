@@ -29,7 +29,7 @@ def validate(ns, set_id):
     f.close()
 
     """evalute the fit response"""
-    r_fit = np.dot(coef, X.T)
+    r_fit = np.exp(np.dot(coef, X.T))
 
     f = h5py.File('validation_%s.hdf5' % set_id, 'w')
     f.create_dataset('r_fit', data=r_fit)

@@ -3,24 +3,6 @@ import hex_0_16_real_alt as gsh
 import sys
 
 
-def WP(msg, filename):
-    """
-    Summary:
-        This function takes an input message and a filename, and appends that
-        message to the file. This function also prints the message
-    Inputs:
-        msg (string): the message to write and print.
-        filename (string): the full name of the file to append to.
-    Outputs:
-        both prints the message and writes the message to the specified file
-    """
-    fil = open(filename, 'a')
-    print msg
-    fil.write(msg)
-    fil.write('\n')
-    fil.close()
-
-
 def euler_grid_center(inc, phi1max, phimax, phi2max):
 
     n_p1 = (phi1max/inc)  # number of phi1 samples for FZ

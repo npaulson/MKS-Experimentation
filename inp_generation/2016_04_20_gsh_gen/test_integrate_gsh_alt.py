@@ -1,7 +1,7 @@
 import numpy as np
-import gsh_cub_tri_L0_16 as gsh_old
-import cub_0_16_real as gsh_new
-# import gsh_cub_tri_L0_40 as gsh_new
+import gsh_hex_tri_L0_16 as gsh_old
+# import hex_0_16_real_alt as gsh_new
+import gsh_hex_tri_L0_16 as gsh_new
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
@@ -20,14 +20,14 @@ def euler_grid_center(inc, phi1max, phimax, phi2max):
     phivec = (np.arange(n_P)+0.5)*inc2rad
     phi2vec = (np.arange(n_p2)+0.5)*inc2rad
 
-    print phi1vec.min()
-    print phi1vec.max()
+    # print phi1vec.min()
+    # print phi1vec.max()
 
-    print phivec.min()
-    print phivec.max()
+    # print phivec.min()
+    # print phivec.max()
 
-    print phi2vec.min()
-    print phi2vec.max()
+    # print phi2vec.min()
+    # print phi2vec.max()
 
     phi1, phi, phi2 = np.meshgrid(phi1vec, phivec, phi2vec)
 
@@ -42,60 +42,40 @@ def euler_grid_center(inc, phi1max, phimax, phi2max):
 
 phi1max = 360.  # max phi1 angle (deg) for integration domain
 phimax = 90.  # max phi angle (deg) for integration domain
-phi2max = 90.  # max phi2 angle (deg) for integration domain
+phi2max = 60.  # max phi2 angle (deg) for integration domain
 inc = 3.  # degree increment for euler angle generation
-L_trunc = 30  # truncation level in the l index for the GSH
+L_trunc = 4  # truncation level in the l index for the GSH
 
-indxvec_new = gsh_old.gsh_basis_info()
-N_L_new = np.sum(indxvec_new[:, 0] <= L_trunc)
-indxvec_new = indxvec_new[:N_L_new, :]
+indxvec_old = gsh_old.gsh_basis_info()
+N_L_old = np.sum(indxvec_old[:, 0] <= L_trunc)
+indxvec_old = indxvec_old[:N_L_old, :]
+print "N_L_old = %s" % N_L_old
 
 indxvec_new = gsh_new.gsh_basis_info()
 N_L_new = np.sum(indxvec_new[:, 0] <= L_trunc)
 indxvec_new = indxvec_new[:N_L_new, :]
-
 print "N_L_new = %s" % N_L_new
 
 euler, n_tot = euler_grid_center(inc, phi1max, phimax, phi2max)
 
 """ Generate Y """
 
-indxlist = np.arange(N_L_new)
-bvec = [0]
-bval = [5]
+np.random.seed(140)
 
-while len(bval) <= 10:
-    indx = np.random.choice(indxlist)
-    print "indx: %s" % indx
-
-    if np.any(bvec == indx):
-        continue
-
-    indxset1 = indxvec_new[indx, :]
-    print "indxset1: %s" % str(indxset1)
-
-    val = np.random.randint(-10, 11)
-
-    bvec.append(indx)
-    bval.append(val)
-
-bvec = np.array(bvec)
-bval = np.array(bval)
-
-indxsort = np.argsort(bvec)
-
-bvec = bvec[indxsort]
-bval = bval[indxsort]
-
-print bvec
-print bval
+bvec = np.arange(N_L_old)
+bval = np.random.normal(scale=1.0, size=bvec.shape)**3
 
 Y = np.zeros(euler.shape[0], dtype='complex128')
-for ii in xrange(len(bvec)):
-    Xtmp = np.squeeze(gsh_old.gsh_eval(euler, [bvec[ii]]))
-    Y += bval[ii]*Xtmp
+for indx in bvec:
+    Xtmp = np.squeeze(gsh_old.gsh_eval(euler, [indx]))
+    Y += bval[indx]*Xtmp
 
 Y = Y.real
+
+print "bval.min(): %s" % bval.min()
+print "bval.mean(): %s" % bval.mean()
+print "bval.max(): %s" % bval.max()
+
 
 """ Perform the regression """
 
@@ -124,12 +104,12 @@ for ii in xrange(N_L_new):
 """ plot a visual representation of the coefficients """
 
 fig = plt.figure(num=1, figsize=[12, 8])
-plt.bar(np.arange(N_L_new), coef.real)
+plt.plot(np.arange(N_L_old), bval, 'bx')
+plt.plot(np.arange(N_L_new), coef.real, 'rx')
 plt.title("coefficients from integration")
-plt.grid(True)
 
-plt.xticks(np.arange(0, N_L_new, 1), rotation='vertical')
-plt.yticks(np.arange(-11, 11, 1))
+# plt.xticks(np.arange(0, N_L_new, 1), rotation='vertical')
+# plt.yticks(np.arange(-11, 11, 1))
 
 """ To check the regression accuracy first lets generate a set of euler
 angles"""
@@ -141,19 +121,17 @@ inc = 5.0
 # euler is the array of euler angles for the purposes of validation
 euler, n_tot = euler_grid_center(inc, phi1max, phimax, phi2max)
 
-print euler.shape
-
 Y = np.zeros(euler.shape[0], dtype='complex128')
-for ii in xrange(len(bvec)):
-    Xtmp = np.squeeze(gsh_old.gsh_eval(euler, [bvec[ii]]))
-    Y += bval[ii]*Xtmp
+for indx in bvec:
+    Xtmp = np.squeeze(gsh_old.gsh_eval(euler, [indx]))
+    Y += bval[indx]*Xtmp
 
 Y = Y.real
 
 Y_ = np.zeros(euler.shape[0], dtype='complex128')
-for ii in xrange(N_L_new):
-    Xtmp = np.squeeze(gsh_new.gsh_eval(euler, [ii]))
-    Y_ += coef[ii]*Xtmp
+for indx in xrange(N_L_new):
+    Xtmp = np.squeeze(gsh_new.gsh_eval(euler, [indx]))
+    Y_ += coef[indx]*Xtmp
 
 Y_ = Y_.real
 
