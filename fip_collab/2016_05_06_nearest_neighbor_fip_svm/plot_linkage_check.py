@@ -55,6 +55,6 @@ if __name__ == '__main__':
 
     C = const()
 
-    ns = C['ns_val']
-    set_id = C['set_id_val']
+    ns = C['ns_cal']
+    set_id = C['set_id_cal']
     pltcheck(ns, set_id)

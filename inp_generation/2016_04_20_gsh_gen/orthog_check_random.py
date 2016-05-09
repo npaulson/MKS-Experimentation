@@ -1,5 +1,5 @@
 import numpy as np
-import tri_0_10_real as gsh
+import hex_0_8_real as gsh
 
 
 def WP(msg, filename):
@@ -60,8 +60,8 @@ N_L = indxvec.shape[0]
 # N_L = 10
 
 phi1max = 360
-phimax = 180
-phi2max = 360
+phimax = 90
+phi2max = 60
 
 # domain_sz is the integration domain in radians
 domain_sz = phi1max*phimax*phi2max*(np.pi/180.)**3
@@ -97,7 +97,7 @@ for nn in xrange(n_test):
 
     ii, jj = np.random.randint(N_L, size=[2])
 
-    if np.mod(nn, 10) == 0:
+    if np.mod(nn, 5) == 0:
         jj = ii
 
     msg = "basis A: %s" % str(indxvec[ii, :])

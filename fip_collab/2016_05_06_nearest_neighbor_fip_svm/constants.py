@@ -19,7 +19,7 @@ def const():
     C['set_id_val'] = 'val'
     C['dir_val'] = 'val'
 
-    C['H'] = 288
+    C['H'] = 9
     C['el'] = 21
     C['step'] = 1
     C['ext'] = 3
@@ -35,16 +35,8 @@ def const():
     # n_samp: number of data points for regression
     C['n_samp'] = (C['ns_cal'])*(C['el']**3)
 
-    """ """
     tmp = it.combinations_with_replacement(np.arange(C['xmax']), 2)
     C['Imat'] = np.array(list(tmp))
     C['ImatL'] = C['Imat'].shape[0]
-
-    """for read_input_data"""
-    C['XhX_njobs'] = 100
-    C['XhX_mem'] = 8
-    C['XhX_walltime'] = 2
-    C['XhX_scriptname'] = 'get_XhX.py'
-    C['XhX_output'] = 'XhX_%s.hdf5'
 
     return C

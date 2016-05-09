@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Feb 05 15:06:31 2015
-
-@author: nhpnp3
-"""
 
 import time
 import h5py

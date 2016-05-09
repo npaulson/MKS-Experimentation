@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Jun 16 11:32:08 2014
-
-@author: nhpnp3
-"""
 
 import functions as rr
 import numpy as np
@@ -18,22 +13,20 @@ def read_euler(el, ns, set_id, step, newdir, wrt_file, funit):
 
     euler = np.zeros([ns, 3, el**3])
 
-#    nwd = os.getcwd() + '\\' + newdir
+    # nwd = os.getcwd() + '\\' + newdir
     nwd = os.getcwd() + '/' + newdir  # for unix
     os.chdir(nwd)
 
     sn = 0
 
-    if set_id == "cal":
-        for filename in os.listdir(nwd):
-            if filename.endswith('%s.vtk' % step):
-                euler[sn, :, :] = rr.read_vtk_vector(filename=filename)
-                sn += 1
-    else:
-        for filename in os.listdir(nwd):
-            if filename.endswith('.vtk'):
-                euler[sn, :, :] = rr.read_vtk_vector(filename=filename)
-                sn += 1
+    # for filename in os.listdir(nwd):
+    #     if filename.endswith('%s.vtk' % step):
+    #         euler[sn, :, :] = rr.read_vtk_vector(filename=filename)
+    #         sn += 1
+
+    for sn in xrange(ns):
+        filename = "Ti64_Dream3D_v01_Output_%s.vtk" % str(sn+1)
+        euler[sn, :, :] = rr.read_vtk_vector(filename=filename)
 
     if funit == 1:
         euler = euler * (np.pi/180.)
@@ -58,7 +51,7 @@ def read_meas(el, ns, set_id, step, comp, tensor_id, newdir, wrt_file):
 
     start = time.time()
 
-#    nwd = os.getcwd() + '\\' + newdir
+    # nwd = os.getcwd() + '\\' + newdir
     nwd = os.getcwd() + '/' + newdir  # for unix
     os.chdir(nwd)
 
@@ -69,22 +62,20 @@ def read_meas(el, ns, set_id, step, comp, tensor_id, newdir, wrt_file):
 
     sn = 0
 
-    if set_id == "cal":
-        for filename in os.listdir(nwd):
-            if filename.endswith('%s.vtk' % step):
-                r_temp = rr.read_vtk_tensor(filename=filename,
-                                            tensor_id=tensor_id,
-                                            comp=compp)
-                r_real[sn, ...] = r_temp.reshape([el, el, el])
-                sn += 1
-    else:
-        for filename in os.listdir(nwd):
-            if filename.endswith('.vtk'):
-                r_temp = rr.read_vtk_tensor(filename=filename,
-                                            tensor_id=tensor_id,
-                                            comp=compp)
-                r_real[sn, ...] = r_temp.reshape([el, el, el])
-                sn += 1
+    # for filename in os.listdir(nwd):
+    #     if filename.endswith('%s.vtk' % step):
+    #         r_temp = rr.read_vtk_tensor(filename=filename,
+    #                                     tensor_id=tensor_id,
+    #                                     comp=compp)
+    #         r_real[sn, ...] = r_temp.reshape([el, el, el])
+    #         sn += 1
+
+    for sn in xrange(ns):
+        filename = "Ti64_Dream3D_v01_Output_%s.vtk" % str(sn+1)
+        r_temp = rr.read_vtk_tensor(filename=filename,
+                                    tensor_id=tensor_id,
+                                    comp=compp)
+        r_real[sn, ...] = r_temp.reshape([el, el, el])
 
     # return to the original directory
     os.chdir('..')
@@ -113,24 +104,24 @@ def read_meas(el, ns, set_id, step, comp, tensor_id, newdir, wrt_file):
 
 def read_scalar(el, ns, set_id, step, newdir, wrt_file):
 
+    start = time.time()
+
     grain = np.zeros([ns, el**3])
 
-#    nwd = os.getcwd() + '\\' + newdir
+    # nwd = os.getcwd() + '\\' + newdir
     nwd = os.getcwd() + '/' + newdir  # for unix
     os.chdir(nwd)
 
     sn = 0
 
-    if set_id == "cal":
-        for filename in os.listdir(nwd):
-            if filename.endswith('%s.vtk' % step):
-                grain[sn, :] = rr.read_vtk_scalar(filename=filename)
-                sn += 1
-    else:
-        for filename in os.listdir(nwd):
-            if filename.endswith('.vtk'):
-                grain[sn, :] = rr.read_vtk_scalar(filename=filename)
-                sn += 1
+    # for filename in os.listdir(nwd):
+    #     if filename.endswith('%s.vtk' % step):
+    #         grain[sn, :] = rr.read_vtk_scalar(filename=filename)
+    #         sn += 1
+
+    for sn in xrange(ns):
+        filename = "Ti64_Dream3D_v01_Output_%s.vtk" % str(sn+1)
+        grain[sn, :] = rr.read_vtk_scalar(filename=filename)
 
     # return to the original directory
     os.chdir('..')
@@ -139,3 +130,9 @@ def read_scalar(el, ns, set_id, step, newdir, wrt_file):
     dset_name = 'gID_%s%s_s%s' % (ns, set_id, step)
     f.create_dataset(dset_name, data=grain)
     f.close()
+
+    end = time.time()
+    timeE = np.round((end - start), 3)
+
+    msg = 'The scalar of interest has been read from .vtk file for %s: %s seconds' % (set_id, timeE)
+    rr.WP(msg, wrt_file)

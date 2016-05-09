@@ -1,12 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri May 23 14:25:50 2014
-
-This script predicts the FE response of a set of microstructures designated by
-a specific set-ID using a previously calibrated MKS
-
-@author: nhpnp3
-"""
 
 import time
 import h5py

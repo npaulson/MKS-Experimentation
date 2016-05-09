@@ -30,8 +30,7 @@ dir_val = ['randomD3D_val', 'transverseD3D_val',
 # dir_val = ['randomD3D_val']
 
 
-L = 6
-H = 23
+H = 4
 el = 21
 step = 1
 n_pc_tot = 20

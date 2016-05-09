@@ -1,7 +1,7 @@
 import numpy as np
-import gsh_hex_tri_L0_16 as gsh_old
-# import hex_0_16_real_alt as gsh_new
-import gsh_hex_tri_L0_16 as gsh_new
+import gsh_tri_tri_L0_16 as gsh_old
+import tri_0_10_real as gsh_new
+# import gsh_tri_tri_L0_16 as gsh_new
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
@@ -41,8 +41,8 @@ def euler_grid_center(inc, phi1max, phimax, phi2max):
 """Initialize the important constants"""
 
 phi1max = 360.  # max phi1 angle (deg) for integration domain
-phimax = 90.  # max phi angle (deg) for integration domain
-phi2max = 60.  # max phi2 angle (deg) for integration domain
+phimax = 180.  # max phi angle (deg) for integration domain
+phi2max = 360.  # max phi2 angle (deg) for integration domain
 inc = 3.  # degree increment for euler angle generation
 L_trunc = 4  # truncation level in the l index for the GSH
 
@@ -60,7 +60,7 @@ euler, n_tot = euler_grid_center(inc, phi1max, phimax, phi2max)
 
 """ Generate Y """
 
-np.random.seed(140)
+np.random.seed(141)
 
 bvec = np.arange(N_L_old)
 bval = np.random.normal(scale=1.0, size=bvec.shape)**3

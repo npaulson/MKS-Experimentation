@@ -1,12 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri May 23 14:25:50 2014
-
-This script performs the MKS calibration given the microstructure function
-and the FIP response, both in frequency space.
-
-@author: nhpnp3
-"""
 
 import time
 import numpy as np

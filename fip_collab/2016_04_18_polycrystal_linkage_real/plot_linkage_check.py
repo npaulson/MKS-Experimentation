@@ -59,8 +59,9 @@ def plot_check(el, ns_set, set_id_set, resptyp):
     Rsim = f_reg.get('Rsim')[...]
     Rpred = f_reg.get('Rpred')[indx, :]
 
-    """plot the prediction equal to simulation line"""
-    plt.figure(num=6, figsize=[10, 7])
+    """plot the pred
+    iction equal to simulation line"""
+    plt.figure(num=6, figsize=[8, 7])
 
     minval = np.min([Rsim, Rpred])
     maxval = np.max([Rsim, Rpred])
@@ -104,6 +105,6 @@ if __name__ == '__main__':
     set_id_val = ['randomD3D_val', 'transverseD3D_val',
                   'basaltransD3D_val', 'actualD3D_val']
 
-    resptyp = 'maximum FIP'
+    resptyp = 'Eeff'
 
     plot_check(el, ns_val, set_id_val, resptyp)

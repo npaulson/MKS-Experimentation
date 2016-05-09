@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Oct 01 13:52:33 2014
-
-@author: nhpnp3
-"""
 
 import numpy as np
 import functions as rr
@@ -20,7 +15,7 @@ def results(el, ns, set_id, step, typ, comp, comp_app, wrt_file, wrt_file2):
 
     dset_name = '%s%s_fem_%s%s_s%s' % (typ, comp_app, ns, set_id, step)
     r_app = f.get(dset_name)[...]
-    nfac = r_app.mean()
+    nfac = np.abs(r_app.mean())
     del r_app
 
     f.close()

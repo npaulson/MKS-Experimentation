@@ -21,10 +21,14 @@ def get_M(el, H, ns, set_id, step, wrt_file):
     euler = f.get('euler_%s' % set_id)[...]
 
     mf = np.zeros([ns, H, el**3], dtype='float64')
-    for h in xrange(H):
+
+    c = 0
+    # for h in xrange(1, 4):
+    for h in [0, 1, 2, 3]:
         tmp = gsh.gsh_eval(euler.swapaxes(1, 2), [h])
         tmp = np.squeeze(tmp)
-        mf[:, h, :] = tmp
+        mf[:, c, :] = tmp
+        c += 1
         # mf[:, h, :] = (2*indxvec[h, 0]+1)*tmp # 2*l+1 included in maple generator
 
     end = time.time()

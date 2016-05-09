@@ -54,7 +54,7 @@ def writefile(filename, mem, walltime, path, script_etc):
     f.write('#PBS -N calfem\n')
     f.write('#PBS -l nodes=1:ppn=1\n')
     f.write('#PBS -l mem=%sgb\n' % np.int64(mem))
-    f.write('#PBS -q granulous\n')
+    f.write('#PBS -q iw-shared-6\n')
     f.write('#PBS -l walltime=%s:00:00\n' % str(walltime).zfill(2))
     f.write('#PBS -j oe\n')
     f.write('#PBS -o out.$PBS_JOBID\n\n')
