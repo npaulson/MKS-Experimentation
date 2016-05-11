@@ -3,7 +3,6 @@ import functions as rr
 # import matplotlib.pyplot as plt
 from constants import const
 from sklearn.externals import joblib
-from sklearn import svm
 import h5py
 import time
 

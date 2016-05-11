@@ -89,7 +89,7 @@ phi2max = np.pi/2.
 # n_tot = 72000
 # euler = euler_rand(n_tot, phi1max, phimax, phi2max)
 
-inc = 10.
+inc = 15.
 euler, n_tot = euler_grid_center(inc, phi1max, phimax, phi2max)
 
 """ Calculate X """

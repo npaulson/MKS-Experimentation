@@ -1,94 +1,64 @@
 import numpy as np
+import constants
 import h5py
+import os
 
-"""
-in this version of the code the id of the tensor is an argument to
-the script.
+"""initialize important variables"""
 
-trying to reduce the amount of data to analyse by half sampling in
-the angular variable
-"""
+C = constants.const()
 
-# initialize important variables
-n_eul = 21**3
-n_eul_old = n_eul
+# these indices are defined for the sampled db inputs
+sub2rad = C['inc']*np.pi/180.
 
-# here we determine the sampling for en
-a_std = 0.0050
-b_std = 0.0085
-a = 0.00485  # start for en range
-b = 0.00905  # end for en range
-en_inc = 0.0001  # en increment
-et_norm = np.linspace(.0001, .0100, 100)
-ai = np.int64(np.round(a_std/en_inc))-1  # index for start of en range
-bi = np.int64(np.round(b_std/en_inc))-1  # index for end of en range
-sample_indx = np.arange(ai, bi+1, 1)
-n_en = sample_indx.size
-
-print sample_indx
-
-# xnode: en values for nodes
-xnode = et_norm[sample_indx]
-print xnode
+nvec = np.array([C['n_th'], C['n_p1'], C['n_P'], C['n_p2']])
+print "nvec: %s" % str(nvec)
 
 # create file for pre-database outputs
-f_nhp = h5py.File('var_extract_check.hdf5', 'w')
-var_set = f_nhp.create_dataset("var_set",
-                               (n_eul, 6))
+f = h5py.File("check_data.hdf5", 'w')
 
-# Read Simulation info from "sim" file
-filename = 'sim_Ti64_tensor_check.txt'
+os.chdir('..')
+# nwd = os.getcwd() + '\\dir_db_input'
+nwd = os.getcwd() + '/check'  # for unix
+os.chdir(nwd)
 
-f = open(filename, "r")
+print os.getcwd()
 
-linelist = f.readlines()
+"""angleset contents (for columns)
+phi1, Phi, phi2, theta"""
+angleset = np.loadtxt('testEuler.txt', skiprows=0)*(np.pi/180)
+eulerset = angleset[:, :3]
+thetaset = angleset[:, 3][:, None]
 
-angles = np.zeros([n_eul_old, 4])
+"""varset1 contents (for columns)
+sigma'22, sigma'11, sigma'33, sigma'12, sigma'13, sigma'23,
+total shear rate"""
+varset1 = np.loadtxt("CrsytalStresses.txt", skiprows=0)
 
-for k in xrange(n_eul_old):
-    temp_line = linelist[k+1]
-    angles[k, 0] = temp_line.split()[7]
-    angles[k, 1:4] = temp_line.split()[1:4]
+"""varset2 contents (for columns)
+w12, w13, w23"""
+varset2 = np.loadtxt("Wstar.txt", skiprows=0)
+
+os.chdir('..')
+# nwd = os.getcwd() + '\\dir_nhp'
+nwd = os.getcwd() + '/dir_db_check'  # for unix
+os.chdir(nwd)
+
+sigma = varset1[:, :6]/(C['s']*C['epsdot']**C['m'])
+shearrate = (varset1[:, 6]/C['epsdot'])[:, None]
+wstar = varset2/C['epsdot']
+
+print "thetaset.shape: %s" % str(thetaset.shape)
+print "eulerset.shape: %s" % str(eulerset.shape)
+print "sigma.shape: %s" % str(sigma.shape)
+print "wstar.shape: %s" % str(wstar.shape)
+print "shearrate.shape: %s" % str(shearrate.shape)
+
+data = np.hstack([thetaset,
+                  eulerset,
+                  sigma,
+                  shearrate,
+                  wstar])
+
+var_set = f.create_dataset("data", data=data)
 
 f.close()
-
-# Get data for all simulations
-
-# open file containing Matthew's data
-filename = 'Results_tensor_check.hdf5'
-f_mwp = h5py.File(filename, 'r')
-
-for ii in xrange(n_eul_old):
-
-    test_id = 'sim%s' % str(ii+1).zfill(7)
-
-    if ii % 10000 == 0:
-        print test_id
-
-    dset = f_mwp.get(test_id)
-
-    """
-    Column order in each dataset:
-    time,...
-    sig11,sig22,sig33,sig12,sig13,sig23...
-    e11,e22,e33,e12,e13,e23
-    ep11,ep22,ep33,ep12,ep13,ep23,
-    fip,gamdot,signorm
-
-    """
-
-    tmp = np.int64(np.random.rand()*sample_indx.size)
-    indx_rand = sample_indx[tmp]
-
-    en = et_norm[indx_rand]
-    var = dset[indx_rand, 19]
-
-    tmp = np.hstack([angles[ii, 0],
-                     angles[ii, 1:4],
-                     en,
-                     var])
-
-    var_set[ii, :] = tmp
-
-f_mwp.close()
-f_nhp.close()

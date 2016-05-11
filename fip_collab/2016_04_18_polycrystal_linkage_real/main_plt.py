@@ -38,12 +38,12 @@ wrt_file = 'log_%s.txt' % (time.strftime("%Y-%m-%d_h%Hm%M"))
 
 """Plot the microstructures in PC space"""
 pcA = 0
-pcB = 3
+pcB = 1
 pltPC.pltPC(el, ns_cal, set_id_cal, pcA, pcB)
 
 """Plot the effective stiffness versus a PC dimension"""
 pcA = 0
-pr.pltresponse(el, ns_cal, set_id_cal, 'fip', pcA)
+pr.pltresponse(el, ns_cal, set_id_cal, 'Eeff', pcA)
 
 """Plot the predicted versus actual values of the property of interest"""
-plc.plot_check(el, ns_val, set_id_val, 'fip')
+plc.plot_check(el, ns_val, set_id_val, 'Eeff')

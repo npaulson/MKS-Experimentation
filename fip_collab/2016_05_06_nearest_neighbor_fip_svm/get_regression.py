@@ -4,7 +4,9 @@ from constants import const
 import h5py
 import time
 from sklearn.externals import joblib
-from sklearn import svm
+# from sklearn import svm
+# from sklearn import neighbors
+from sklearn import tree
 
 
 def regress(ns, set_id):
@@ -24,11 +26,13 @@ def regress(ns, set_id):
     y = y.reshape((C['n_samp']))
     f.close()
 
-    clf = svm.SVR()
+    # clf = svm.SVR()
+    # clf = neighbors.KNeighborsRegressor(n_neighbors=1, weights='uniform')
+    clf = tree.DecisionTreeRegressor(max_depth=10)
+
     clf.fit(X, y)
 
     joblib.dump(clf, 'modelfit.pkl')
-    # clf = joblib.load('modelfit.pkl')
 
     timeE = np.round(time.time()-st, 1)
     msg = "fit completed: %s s" % timeE

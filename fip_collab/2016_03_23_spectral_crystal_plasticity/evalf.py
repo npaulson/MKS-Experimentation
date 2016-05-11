@@ -8,6 +8,19 @@ import time
 
 def evalf(theta, euler, var_id, thr, LL_p):
 
+    """variable assignments
+    var_id 0: sigma'11
+    var_id 1: sigma'22
+    var_id 2: sigma'33
+    var_id 3: sigma'12
+    var_id 4: sigma'12
+    var_id 5: sigma'23
+    var_id 6: total shear rate
+    var_id 7: w12
+    var_id 8: w13
+    var_id 9: w23
+    """
+
     filename = "log_eval.txt"
 
     C = constants.const()
@@ -37,7 +50,7 @@ def evalf(theta, euler, var_id, thr, LL_p):
     indxvec = np.arange(C['cmax'])[cuttoffvec]
 
     N_coef = indxvec.size
-    pct_coef = 100.*N_coef/C['cmax']
+    pct_coef = 100.*N_coef/(N_p_tmp*C['N_q'])
     fn.WP("number of coefficients retained: %s" % N_coef, filename)
     fn.WP("percentage of coefficients retained %s%%"
           % np.round(pct_coef, 4), filename)

@@ -71,7 +71,7 @@ def read_fip(ns, set_id, newdir):
     os.chdir('..')
 
     f = h5py.File("responses.hdf5", 'a')
-    f.create_dataset('fip_%s' % set_id, data=(1e10)*fip)
+    f.create_dataset('fip_%s' % set_id, data=(1e9)*fip)
     f.close()
 
     end = time.time()

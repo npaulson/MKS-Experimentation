@@ -34,7 +34,7 @@ def pltcheck(ns, set_id):
     plt.plot(line, line, 'k-')
 
     plt.plot(r_sim, r_fit,
-             marker='o', markersize=7, color=[.7, .1, .1],
+             marker='o', markersize=3, color=[.7, .1, .1],
              linestyle='')
 
     minval_ = minval - 0.1*valrange
@@ -55,6 +55,6 @@ if __name__ == '__main__':
 
     C = const()
 
-    ns = C['ns_cal']
-    set_id = C['set_id_cal']
+    ns = C['ns_val']
+    set_id = C['set_id_val']
     pltcheck(ns, set_id)

@@ -5,7 +5,7 @@ close all
 % number of elements per side
 el=21;
 % this is the number of total samples
-ns=1;
+ns=50;
 
 set_id = 'test';
 
@@ -41,6 +41,9 @@ end
 %%
 filename = ['M_',int2str(ns),set_id,'.mat'];
 save(filename,'M')
+filename = ['M_',int2str(ns),set_id,'.txt'];
+dlmwrite(filename, M)
+
 
 nodesets(el);
 loadings(el);

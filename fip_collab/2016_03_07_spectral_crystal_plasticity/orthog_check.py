@@ -114,7 +114,7 @@ ax = plt.imshow(inner_mat.real,
                 vmax=dmax)
 
 plt.colorbar(ax)
-plt.title("Numerical othogonality check for the hexagonal GSH functions")
+plt.title("Numerical othogonality check for the cubic GSH functions")
 plt.xlabel("basis function index")
 plt.ylabel("basis function index")
 plt.show()
