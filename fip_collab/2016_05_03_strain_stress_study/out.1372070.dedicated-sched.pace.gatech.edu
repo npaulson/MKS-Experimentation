@@ -1,0 +1,144 @@
+---------------------------------------
+Begin PBS Prologue Sun May  8 18:54:08 EDT 2016
+Job ID:     1372070.dedicated-sched.pace.gatech.edu
+User ID:    nhpnp3
+Job name:   calfem
+Queue:      granulous
+End PBS Prologue Sun May  8 18:54:08 EDT 2016
+---------------------------------------
+ =========================================================================
+|                                                                         |
+|       A note about all current anaconda modules:                        |
+|       Anaconda doesn’t play well with modules - once you load the       |
+|       anaconda module, module commands no longer work (not even         |
+|       module purge) unless you log out and back in again.               |
+|                                                                         |
+|       We’re working with Continuum to find a solution, but for now,     |
+|       we recommend you load the anaconda modules last if at all         |
+|       possible. Thanks!                                                 |
+|                                                                         |
+ =========================================================================
+The scalar of interest has been read from .vtk file for val_actual: 27.697 seconds
+euler angles read from .vtk file for val_actual: 18.842 seconds
+Conversion from Euler angles to GSH coefficients completed: 21.205 seconds
+generate real-space microstructure function from GSH-coefficients: 1.348 seconds
+FFT3 conversion of micr to M_500val_actual_s1: 56.435 seconds
+Size of M_500val_actual_s1: 1111320000 bytes
+validation performed for component 11: 7.179 seconds
+validation performed for component 22: 6.52 seconds
+validation performed for component 33: 6.69 seconds
+validation performed for component 23: 8.064 seconds
+validation performed for component 12: 7.668 seconds
+validation performed for component 13: 7.989 seconds
+conversion from strain to stress: 35.0059969425s
+write .vtk files: 138.926944971s
+The scalar of interest has been read from .vtk file for val_random: 32.882 seconds
+euler angles read from .vtk file for val_random: 36.037 seconds
+Conversion from Euler angles to GSH coefficients completed: 19.76 seconds
+generate real-space microstructure function from GSH-coefficients: 1.049 seconds
+FFT3 conversion of micr to M_500val_random_s1: 53.786 seconds
+Size of M_500val_random_s1: 1111320000 bytes
+validation performed for component 11: 6.738 seconds
+validation performed for component 22: 6.567 seconds
+validation performed for component 33: 6.61 seconds
+validation performed for component 23: 7.368 seconds
+validation performed for component 12: 8.302 seconds
+validation performed for component 13: 9.017 seconds
+conversion from strain to stress: 35.6080379486s
+write .vtk files: 139.592917919s
+The scalar of interest has been read from .vtk file for val_basaltrans: 33.373 seconds
+euler angles read from .vtk file for val_basaltrans: 19.081 seconds
+Conversion from Euler angles to GSH coefficients completed: 19.703 seconds
+generate real-space microstructure function from GSH-coefficients: 1.527 seconds
+FFT3 conversion of micr to M_500val_basaltrans_s1: 54.771 seconds
+Size of M_500val_basaltrans_s1: 1111320000 bytes
+validation performed for component 11: 7.101 seconds
+validation performed for component 22: 7.085 seconds
+validation performed for component 33: 9.215 seconds
+validation performed for component 23: 10.232 seconds
+validation performed for component 12: 7.692 seconds
+validation performed for component 13: 9.832 seconds
+conversion from strain to stress: 34.983798027s
+write .vtk files: 140.717618942s
+The scalar of interest has been read from .vtk file for val_trans: 37.651 seconds
+euler angles read from .vtk file for val_trans: 42.845 seconds
+Conversion from Euler angles to GSH coefficients completed: 19.811 seconds
+generate real-space microstructure function from GSH-coefficients: 0.981 seconds
+FFT3 conversion of micr to M_500val_trans_s1: 55.736 seconds
+Size of M_500val_trans_s1: 1111320000 bytes
+validation performed for component 11: 8.526 seconds
+validation performed for component 22: 6.874 seconds
+validation performed for component 33: 8.086 seconds
+validation performed for component 23: 7.633 seconds
+validation performed for component 12: 8.1 seconds
+validation performed for component 13: 7.783 seconds
+conversion from strain to stress: 35.686619997s
+write .vtk files: 137.608954906s
+The scalar of interest has been read from .vtk file for val_actual: 29.067 seconds
+euler angles read from .vtk file for val_actual: 33.756 seconds
+Conversion from Euler angles to GSH coefficients completed: 18.813 seconds
+generate real-space microstructure function from GSH-coefficients: 1.07 seconds
+FFT3 conversion of micr to M_500val_actual_s2: 54.22 seconds
+Size of M_500val_actual_s2: 1111320000 bytes
+validation performed for component 11: 6.921 seconds
+validation performed for component 22: 6.436 seconds
+validation performed for component 33: 6.235 seconds
+validation performed for component 23: 7.043 seconds
+validation performed for component 12: 6.315 seconds
+validation performed for component 13: 6.171 seconds
+conversion from strain to stress: 37.9326620102s
+write .vtk files: 175.382307053s
+The scalar of interest has been read from .vtk file for val_random: 34.943 seconds
+euler angles read from .vtk file for val_random: 39.98 seconds
+Conversion from Euler angles to GSH coefficients completed: 22.424 seconds
+generate real-space microstructure function from GSH-coefficients: 1.272 seconds
+FFT3 conversion of micr to M_500val_random_s2: 68.09 seconds
+Size of M_500val_random_s2: 1111320000 bytes
+validation performed for component 11: 8.179 seconds
+validation performed for component 22: 8.379 seconds
+validation performed for component 33: 9.465 seconds
+validation performed for component 23: 10.183 seconds
+validation performed for component 12: 10.384 seconds
+validation performed for component 13: 8.176 seconds
+conversion from strain to stress: 42.3319368362s
+write .vtk files: 172.176168919s
+The scalar of interest has been read from .vtk file for val_basaltrans: 31.131 seconds
+euler angles read from .vtk file for val_basaltrans: 33.82 seconds
+Conversion from Euler angles to GSH coefficients completed: 22.89 seconds
+generate real-space microstructure function from GSH-coefficients: 1.224 seconds
+FFT3 conversion of micr to M_500val_basaltrans_s2: 67.292 seconds
+Size of M_500val_basaltrans_s2: 1111320000 bytes
+validation performed for component 11: 8.966 seconds
+validation performed for component 22: 7.771 seconds
+validation performed for component 33: 7.571 seconds
+validation performed for component 23: 8.143 seconds
+validation performed for component 12: 8.261 seconds
+validation performed for component 13: 8.329 seconds
+conversion from strain to stress: 43.7471718788s
+write .vtk files: 171.521917105s
+The scalar of interest has been read from .vtk file for val_trans: 33.009 seconds
+euler angles read from .vtk file for val_trans: 24.883 seconds
+Conversion from Euler angles to GSH coefficients completed: 21.984 seconds
+generate real-space microstructure function from GSH-coefficients: 1.008 seconds
+FFT3 conversion of micr to M_500val_trans_s2: 67.341 seconds
+Size of M_500val_trans_s2: 1111320000 bytes
+validation performed for component 11: 8.163 seconds
+validation performed for component 22: 9.665 seconds
+validation performed for component 33: 8.422 seconds
+validation performed for component 23: 11.421 seconds
+validation performed for component 12: 7.809 seconds
+validation performed for component 13: 8.026 seconds
+conversion from strain to stress: 43.6676368713s
+write .vtk files: 170.395185947s
+---------------------------------------
+Begin PBS Epilogue Sun May  8 19:45:51 EDT 2016
+Job ID:     1372070.dedicated-sched.pace.gatech.edu
+User ID:    nhpnp3
+Job name:   calfem
+Resources:  mem=12000mb,neednodes=1:ppn=1,nodes=1:ppn=1,walltime=10:00:00
+Rsrc Used:  cput=00:46:09,energy_used=0,mem=3357944kb,vmem=4184164kb,walltime=00:51:43
+Queue:      granulous
+Nodes:     
+iw-c29-30.pace.gatech.edu
+End PBS Epilogue Sun May  8 19:45:51 EDT 2016
+---------------------------------------

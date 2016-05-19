@@ -1,0 +1,426 @@
+---------------------------------------
+Begin PBS Prologue Wed May  4 13:14:49 EDT 2016
+Job ID:     1367882.dedicated-sched.pace.gatech.edu
+User ID:    nhpnp3
+Job name:   calfem
+Queue:      granulous
+End PBS Prologue Wed May  4 13:14:49 EDT 2016
+---------------------------------------
+ =========================================================================
+|                                                                         |
+|       A note about all current anaconda modules:                        |
+|       Anaconda doesn’t play well with modules - once you load the       |
+|       anaconda module, module commands no longer work (not even         |
+|       module purge) unless you log out and back in again.               |
+|                                                                         |
+|       We’re working with Continuum to find a solution, but for now,     |
+|       we recommend you load the anaconda modules last if at all         |
+|       possible. Thanks!                                                 |
+|                                                                         |
+ =========================================================================
+euler angles read from .vtk file for cal: 182.241 seconds
+Conversion from Euler angles to GSH coefficients completed: 18.299 seconds
+generate real-space microstructure function from GSH-coefficients: 0.938 seconds
+FFT3 conversion of micr to M_400cal_s1: 55.643 seconds
+Size of M_400cal_s1: 889056000 bytes
+The measure of interest has been read from .vtk file for cal, component 11: 176.186 seconds
+The measure of interest has been read from .vtk file for cal, component 22: 183.702 seconds
+The measure of interest has been read from .vtk file for cal, component 33: 194.304 seconds
+The measure of interest has been read from .vtk file for cal, component 23: 200.973 seconds
+The measure of interest has been read from .vtk file for cal, component 12: 203.781 seconds
+The measure of interest has been read from .vtk file for cal, component 13: 234.954 seconds
+Calibration, component 11: 112.46 seconds
+Calibration, component 22: 116.003 seconds
+Calibration, component 33: 117.572 seconds
+Calibration, component 23: 119.127 seconds
+Calibration, component 12: 111.345 seconds
+Calibration, component 13: 111.488 seconds
+euler angles read from .vtk file for val: 46.893 seconds
+Conversion from Euler angles to GSH coefficients completed: 4.5 seconds
+generate real-space microstructure function from GSH-coefficients: 0.243 seconds
+FFT3 conversion of micr to M_100val_s1: 14.251 seconds
+Size of M_100val_s1: 222264000 bytes
+The measure of interest has been read from .vtk file for val, component 11: 49.051 seconds
+The measure of interest has been read from .vtk file for val, component 22: 44.936 seconds
+The measure of interest has been read from .vtk file for val, component 33: 47.295 seconds
+The measure of interest has been read from .vtk file for val, component 23: 42.778 seconds
+The measure of interest has been read from .vtk file for val, component 12: 44.411 seconds
+The measure of interest has been read from .vtk file for val, component 13: 45.996 seconds
+validation performed for component 11: 2.356 seconds
+validation performed for component 22: 1.607 seconds
+validation performed for component 33: 1.572 seconds
+validation performed for component 23: 1.703 seconds
+validation performed for component 12: 1.478 seconds
+validation performed for component 13: 1.606 seconds
+Mean voxel difference over all microstructures (divided by nfac), epsilon11: 0.182381182567%
+standard deviation of difference over all microstructures (divided by nfac), epsilon11: 0.143847357757%
+Average Maximum voxel difference per microstructure (divided by nfac), epsilon11: 1.07769271926%
+Maximum voxel difference in all microstructures (divided by nfac), epsilon11: 1.5238338375%
+val    epsilon11    100    0.182381182567    1.07769271926    1.5238338375
+Average, epsilon11, FEM: -4.87479507387e-10
+Average, epsilon11, MKS: -9.68768212033e-10
+Standard deviation, epsilon11, FEM: 0.000185351405138
+Standard deviation, epsilon11, MKS: 0.000184893512884
+Mean minimum, epsilon11, FEM: -0.000684410369722
+Mean minimum, epsilon11, MKS: -0.000664824178232
+Mean maximum, epsilon11, FEM: 0.00060018059361
+Mean maximum, epsilon11, MKS: 0.000618230847595
+Mean voxel difference over all microstructures (divided by nfac), epsilon22: 0.18290336581%
+standard deviation of difference over all microstructures (divided by nfac), epsilon22: 0.144573282769%
+Average Maximum voxel difference per microstructure (divided by nfac), epsilon22: 1.08679136975%
+Maximum voxel difference in all microstructures (divided by nfac), epsilon22: 1.64119720546%
+val    epsilon22    100    0.18290336581    1.08679136975    1.64119720546
+Average, epsilon22, FEM: -1.38443261801e-09
+Average, epsilon22, MKS: -1.3045109232e-09
+Standard deviation, epsilon22, FEM: 0.00018550882134
+Standard deviation, epsilon22, MKS: 0.00018503308623
+Mean minimum, epsilon22, FEM: -0.000681448157411
+Mean minimum, epsilon22, MKS: -0.000659174695112
+Mean maximum, epsilon22, FEM: 0.000583875408047
+Mean maximum, epsilon22, MKS: 0.000604430830609
+Mean voxel difference over all microstructures (divided by nfac), epsilon33: 0.194910696506%
+standard deviation of difference over all microstructures (divided by nfac), epsilon33: 0.154887701595%
+Average Maximum voxel difference per microstructure (divided by nfac), epsilon33: 1.19475074379%
+Maximum voxel difference in all microstructures (divided by nfac), epsilon33: 1.96374763039%
+val    epsilon33    100    0.194910696506    1.19475074379    1.96374763039
+Average, epsilon33, FEM: 0.00498753297632
+Average, epsilon33, MKS: 0.00498753320654
+Standard deviation, epsilon33, FEM: 0.000144960970018
+Standard deviation, epsilon33, MKS: 0.000144331556061
+Mean minimum, epsilon33, FEM: 0.0044054317195
+Mean minimum, epsilon33, MKS: 0.0043773887835
+Mean maximum, epsilon33, FEM: 0.00547042358667
+Mean maximum, epsilon33, MKS: 0.0054521755551
+Mean voxel difference over all microstructures (divided by nfac), epsilon23: 0.327032144318%
+standard deviation of difference over all microstructures (divided by nfac), epsilon23: 0.259512667008%
+Average Maximum voxel difference per microstructure (divided by nfac), epsilon23: 1.944127448%
+Maximum voxel difference in all microstructures (divided by nfac), epsilon23: 2.46534544299%
+val    epsilon23    100    0.327032144318    1.944127448    2.46534544299
+Average, epsilon23, FEM: 1.05535630209e-09
+Average, epsilon23, MKS: 1.24053029216e-09
+Standard deviation, epsilon23, FEM: 0.000203774053914
+Standard deviation, epsilon23, MKS: 0.000202320838923
+Mean minimum, epsilon23, FEM: -0.00074913947552
+Mean minimum, epsilon23, MKS: -0.000757209493228
+Mean maximum, epsilon23, FEM: 0.000736030511907
+Mean maximum, epsilon23, MKS: 0.000746311513858
+Mean voxel difference over all microstructures (divided by nfac), epsilon12: 0.344327278686%
+standard deviation of difference over all microstructures (divided by nfac), epsilon12: 0.276979849225%
+Average Maximum voxel difference per microstructure (divided by nfac), epsilon12: 2.17792320593%
+Maximum voxel difference in all microstructures (divided by nfac), epsilon12: 2.9764594939%
+val    epsilon12    100    0.344327278686    2.17792320593    2.9764594939
+Average, epsilon12, FEM: 1.88210497111e-09
+Average, epsilon12, MKS: 1.59164551292e-09
+Standard deviation, epsilon12, FEM: 0.000382426077175
+Standard deviation, epsilon12, MKS: 0.00038169749251
+Mean minimum, epsilon12, FEM: -0.00119904885301
+Mean minimum, epsilon12, MKS: -0.00124207667963
+Mean maximum, epsilon12, FEM: 0.00121657794924
+Mean maximum, epsilon12, MKS: 0.00124480238514
+Mean voxel difference over all microstructures (divided by nfac), epsilon13: 0.329326501637%
+standard deviation of difference over all microstructures (divided by nfac), epsilon13: 0.260916044774%
+Average Maximum voxel difference per microstructure (divided by nfac), epsilon13: 1.96542851539%
+Maximum voxel difference in all microstructures (divided by nfac), epsilon13: 2.67416587812%
+val    epsilon13    100    0.329326501637    1.96542851539    2.67416587812
+Average, epsilon13, FEM: 1.56864414385e-09
+Average, epsilon13, MKS: 1.26751444811e-09
+Standard deviation, epsilon13, FEM: 0.00020311887229
+Standard deviation, epsilon13, MKS: 0.000201950499975
+Mean minimum, epsilon13, FEM: -0.000753331912565
+Mean minimum, epsilon13, MKS: -0.000756315542205
+Mean maximum, epsilon13, FEM: 0.000749132478959
+Mean maximum, epsilon13, MKS: 0.000753200541261
+The measure of interest has been read from .vtk file for val, component 11: 49.684 seconds
+The measure of interest has been read from .vtk file for val, component 22: 46.709 seconds
+The measure of interest has been read from .vtk file for val, component 33: 48.14 seconds
+The measure of interest has been read from .vtk file for val, component 23: 47.854 seconds
+The measure of interest has been read from .vtk file for val, component 12: 47.319 seconds
+The measure of interest has been read from .vtk file for val, component 13: 43.259 seconds
+conversion from strain to stress: 9.1998000145s
+Mean voxel difference over all microstructures (divided by nfac), sigma11: 0.146001911589%
+standard deviation of difference over all microstructures (divided by nfac), sigma11: 0.117438657188%
+Average Maximum voxel difference per microstructure (divided by nfac), sigma11: 0.938145937901%
+Maximum voxel difference in all microstructures (divided by nfac), sigma11: 1.32312300366%
+val    sigma11    100    0.146001911589    0.938145937901    1.32312300366
+Average, sigma11, FEM: 418.696441489
+Average, sigma11, MKS: 418.675320034
+Standard deviation, sigma11, FEM: 29.1251988371
+Standard deviation, sigma11, MKS: 29.2564399298
+Mean minimum, sigma11, FEM: 313.468383484
+Mean minimum, sigma11, MKS: 313.250152613
+Mean maximum, sigma11, FEM: 530.772784424
+Mean maximum, sigma11, MKS: 531.603219125
+Mean voxel difference over all microstructures (divided by nfac), sigma22: 0.146578869608%
+standard deviation of difference over all microstructures (divided by nfac), sigma22: 0.117887357832%
+Average Maximum voxel difference per microstructure (divided by nfac), sigma22: 0.92790776821%
+Maximum voxel difference in all microstructures (divided by nfac), sigma22: 1.44406759823%
+val    sigma22    100    0.146578869608    0.92790776821    1.44406759823
+Average, sigma22, FEM: 419.287498946
+Average, sigma22, MKS: 419.268654066
+Standard deviation, sigma22, FEM: 29.3454782499
+Standard deviation, sigma22, MKS: 29.4830183
+Mean minimum, sigma22, FEM: 313.413482361
+Mean minimum, sigma22, MKS: 313.394199979
+Mean maximum, sigma22, FEM: 530.672576294
+Mean maximum, sigma22, MKS: 531.409850176
+Mean voxel difference over all microstructures (divided by nfac), sigma33: 0.997054293399%
+standard deviation of difference over all microstructures (divided by nfac), sigma33: 0.200964806851%
+Average Maximum voxel difference per microstructure (divided by nfac), sigma33: 1.8156019382%
+Maximum voxel difference in all microstructures (divided by nfac), sigma33: 2.12172888474%
+val    sigma33    100    0.997054293399    1.8156019382    2.12172888474
+Average, sigma33, FEM: 880.587049527
+Average, sigma33, MKS: 871.807290099
+Standard deviation, sigma33, FEM: 22.2510236668
+Standard deviation, sigma33, MKS: 22.2738591864
+Mean minimum, sigma33, FEM: 807.431166382
+Mean minimum, sigma33, MKS: 799.428792309
+Mean maximum, sigma33, FEM: 994.804595337
+Mean maximum, sigma33, MKS: 986.449010571
+Mean voxel difference over all microstructures (divided by nfac), sigma23: 0.0880880053964%
+standard deviation of difference over all microstructures (divided by nfac), sigma23: 0.070592262087%
+Average Maximum voxel difference per microstructure (divided by nfac), sigma23: 0.546214660069%
+Maximum voxel difference in all microstructures (divided by nfac), sigma23: 0.760894534921%
+val    sigma23    100    0.0880880053964    0.546214660069    0.760894534921
+Average, sigma23, FEM: 0.107448800368
+Average, sigma23, MKS: 0.108282564839
+Standard deviation, sigma23, FEM: 10.22330382
+Standard deviation, sigma23, MKS: 10.2575015147
+Mean minimum, sigma23, FEM: -40.5571537018
+Mean minimum, sigma23, MKS: -41.6752623646
+Mean maximum, sigma23, FEM: 41.2901499176
+Mean maximum, sigma23, MKS: 42.3969992072
+Mean voxel difference over all microstructures (divided by nfac), sigma12: 0.0949001861696%
+standard deviation of difference over all microstructures (divided by nfac), sigma12: 0.0764542142321%
+Average Maximum voxel difference per microstructure (divided by nfac), sigma12: 0.628435448019%
+Maximum voxel difference in all microstructures (divided by nfac), sigma12: 0.836117305853%
+val    sigma12    100    0.0949001861696    0.628435448019    0.836117305853
+Average, sigma12, FEM: 0.493801559603
+Average, sigma12, MKS: 0.498758653451
+Standard deviation, sigma12, FEM: 21.2220551325
+Standard deviation, sigma12, MKS: 21.3506568489
+Mean minimum, sigma12, FEM: -73.196793251
+Mean minimum, sigma12, MKS: -74.9212172471
+Mean maximum, sigma12, FEM: 75.1379096222
+Mean maximum, sigma12, MKS: 76.9697530077
+Mean voxel difference over all microstructures (divided by nfac), sigma13: 0.0885921915901%
+standard deviation of difference over all microstructures (divided by nfac), sigma13: 0.0710771307354%
+Average Maximum voxel difference per microstructure (divided by nfac), sigma13: 0.549312967221%
+Maximum voxel difference in all microstructures (divided by nfac), sigma13: 0.733147342138%
+val    sigma13    100    0.0885921915901    0.549312967221    0.733147342138
+Average, sigma13, FEM: -0.0135481913251
+Average, sigma13, MKS: -0.0123142916036
+Standard deviation, sigma13, FEM: 10.1828905246
+Standard deviation, sigma13, MKS: 10.2297030046
+Mean minimum, sigma13, FEM: -41.6425
+Mean minimum, sigma13, MKS: -43.0395102773
+Mean maximum, sigma13, FEM: 41.3380897903
+Mean maximum, sigma13, MKS: 42.4123114424
+euler angles read from .vtk file for cal: 194.433 seconds
+Conversion from Euler angles to GSH coefficients completed: 17.91 seconds
+generate real-space microstructure function from GSH-coefficients: 0.963 seconds
+FFT3 conversion of micr to M_400cal_s2: 53.103 seconds
+Size of M_400cal_s2: 889056000 bytes
+The measure of interest has been read from .vtk file for cal, component 11: 186.689 seconds
+The measure of interest has been read from .vtk file for cal, component 22: 187.781 seconds
+The measure of interest has been read from .vtk file for cal, component 33: 208.289 seconds
+The measure of interest has been read from .vtk file for cal, component 23: 211.81 seconds
+The measure of interest has been read from .vtk file for cal, component 12: 193.872 seconds
+The measure of interest has been read from .vtk file for cal, component 13: 206.652 seconds
+Calibration, component 11: 119.017 seconds
+Calibration, component 22: 118.009 seconds
+Calibration, component 33: 119.617 seconds
+Calibration, component 23: 122.933 seconds
+Calibration, component 12: 114.555 seconds
+Calibration, component 13: 99.817 seconds
+euler angles read from .vtk file for val: 69.487 seconds
+Conversion from Euler angles to GSH coefficients completed: 4.465 seconds
+generate real-space microstructure function from GSH-coefficients: 0.238 seconds
+FFT3 conversion of micr to M_100val_s2: 13.205 seconds
+Size of M_100val_s2: 222264000 bytes
+The measure of interest has been read from .vtk file for val, component 11: 54.407 seconds
+The measure of interest has been read from .vtk file for val, component 22: 47.404 seconds
+The measure of interest has been read from .vtk file for val, component 33: 51.956 seconds
+The measure of interest has been read from .vtk file for val, component 23: 46.956 seconds
+The measure of interest has been read from .vtk file for val, component 12: 45.956 seconds
+The measure of interest has been read from .vtk file for val, component 13: 42.591 seconds
+validation performed for component 11: 1.906 seconds
+validation performed for component 22: 1.451 seconds
+validation performed for component 33: 1.542 seconds
+validation performed for component 23: 1.402 seconds
+validation performed for component 12: 1.415 seconds
+validation performed for component 13: 1.39 seconds
+Mean voxel difference over all microstructures (divided by nfac), epsilon11: 0.186799669571%
+standard deviation of difference over all microstructures (divided by nfac), epsilon11: 0.147270288241%
+Average Maximum voxel difference per microstructure (divided by nfac), epsilon11: 1.09928699536%
+Maximum voxel difference in all microstructures (divided by nfac), epsilon11: 1.5329515261%
+val    epsilon11    100    0.186799669571    1.09928699536    1.5329515261
+Average, epsilon11, FEM: -2.91622769125e-10
+Average, epsilon11, MKS: -7.83539563688e-10
+Standard deviation, epsilon11, FEM: 0.000188039865777
+Standard deviation, epsilon11, MKS: 0.000187566995421
+Mean minimum, epsilon11, FEM: -0.000609154618578
+Mean minimum, epsilon11, MKS: -0.000626752611269
+Mean maximum, epsilon11, FEM: 0.000693120756769
+Mean maximum, epsilon11, MKS: 0.000673929511749
+Mean voxel difference over all microstructures (divided by nfac), epsilon22: 0.187350952173%
+standard deviation of difference over all microstructures (divided by nfac), epsilon22: 0.148012056505%
+Average Maximum voxel difference per microstructure (divided by nfac), epsilon22: 1.11144872542%
+Maximum voxel difference in all microstructures (divided by nfac), epsilon22: 1.62890269063%
+val    epsilon22    100    0.187350952173    1.11144872542    1.62890269063
+Average, epsilon22, FEM: -1.18823917048e-09
+Average, epsilon22, MKS: -1.11302627877e-09
+Standard deviation, epsilon22, FEM: 0.000188215905332
+Standard deviation, epsilon22, MKS: 0.000187717941854
+Mean minimum, epsilon22, FEM: -0.000592644366552
+Mean minimum, epsilon22, MKS: -0.00061276717881
+Mean maximum, epsilon22, FEM: 0.000690162327955
+Mean maximum, epsilon22, MKS: 0.000668112837402
+Mean voxel difference over all microstructures (divided by nfac), epsilon33: 0.205432133031%
+standard deviation of difference over all microstructures (divided by nfac), epsilon33: 0.163138835602%
+Average Maximum voxel difference per microstructure (divided by nfac), epsilon33: 1.25426012505%
+Maximum voxel difference in all microstructures (divided by nfac), epsilon33: 2.05759241155%
+val    epsilon33    100    0.205432133031    1.25426012505    2.05759241155
+Average, epsilon33, FEM: -0.00501255076015
+Average, epsilon33, MKS: -0.00501255045569
+Standard deviation, epsilon33, FEM: 0.000150875468177
+Standard deviation, epsilon33, MKS: 0.000150199509023
+Mean minimum, epsilon33, FEM: -0.00551627306268
+Mean minimum, epsilon33, MKS: -0.00549635972118
+Mean maximum, epsilon33, FEM: -0.00440897662658
+Mean maximum, epsilon33, MKS: -0.00437864503986
+Mean voxel difference over all microstructures (divided by nfac), epsilon23: 0.341331386732%
+standard deviation of difference over all microstructures (divided by nfac), epsilon23: 0.270798216114%
+Average Maximum voxel difference per microstructure (divided by nfac), epsilon23: 2.02966644006%
+Maximum voxel difference in all microstructures (divided by nfac), epsilon23: 2.58370399735%
+val    epsilon23    100    0.341331386732    2.02966644006    2.58370399735
+Average, epsilon23, FEM: 1.10806671753e-09
+Average, epsilon23, MKS: 1.30547336826e-09
+Standard deviation, epsilon23, FEM: 0.000209504697907
+Standard deviation, epsilon23, MKS: 0.000207956363136
+Mean minimum, epsilon23, FEM: -0.000756540274597
+Mean minimum, epsilon23, MKS: -0.000766526406874
+Mean maximum, epsilon23, FEM: 0.000770622016862
+Mean maximum, epsilon23, MKS: 0.000778882378453
+Mean voxel difference over all microstructures (divided by nfac), epsilon12: 0.353558204446%
+standard deviation of difference over all microstructures (divided by nfac), epsilon12: 0.284265667063%
+Average Maximum voxel difference per microstructure (divided by nfac), epsilon12: 2.22713441427%
+Maximum voxel difference in all microstructures (divided by nfac), epsilon12: 3.03330607247%
+val    epsilon12    100    0.353558204446    2.22713441427    3.03330607247
+Average, epsilon12, FEM: 1.94654283557e-09
+Average, epsilon12, MKS: 1.64732175687e-09
+Standard deviation, epsilon12, FEM: 0.000388074191272
+Standard deviation, epsilon12, MKS: 0.000387309206749
+Mean minimum, epsilon12, FEM: -0.0012335609179
+Mean minimum, epsilon12, MKS: -0.00126296035812
+Mean maximum, epsilon12, FEM: 0.00121583485161
+Mean maximum, epsilon12, MKS: 0.00126015664364
+Mean voxel difference over all microstructures (divided by nfac), epsilon13: 0.343680725106%
+standard deviation of difference over all microstructures (divided by nfac), epsilon13: 0.272266548154%
+Average Maximum voxel difference per microstructure (divided by nfac), epsilon13: 2.05167153934%
+Maximum voxel difference in all microstructures (divided by nfac), epsilon13: 2.76458457266%
+val    epsilon13    100    0.343680725106    2.05167153934    2.76458457266
+Average, epsilon13, FEM: 1.65365629858e-09
+Average, epsilon13, MKS: 1.34141540906e-09
+Standard deviation, epsilon13, FEM: 0.000208675660899
+Standard deviation, epsilon13, MKS: 0.000207420237279
+Mean minimum, epsilon13, FEM: -0.000769900043379
+Mean minimum, epsilon13, MKS: -0.000774081785316
+Mean maximum, epsilon13, FEM: 0.000773485690588
+Mean maximum, epsilon13, MKS: 0.000776692836646
+The measure of interest has been read from .vtk file for val, component 11: 35.202 seconds
+The measure of interest has been read from .vtk file for val, component 22: 26.63 seconds
+The measure of interest has been read from .vtk file for val, component 33: 26.565 seconds
+The measure of interest has been read from .vtk file for val, component 23: 26.71 seconds
+The measure of interest has been read from .vtk file for val, component 12: 26.671 seconds
+The measure of interest has been read from .vtk file for val, component 13: 26.594 seconds
+conversion from strain to stress: 7.22175312042s
+Mean voxel difference over all microstructures (divided by nfac), sigma11: 0.15217555348%
+standard deviation of difference over all microstructures (divided by nfac), sigma11: 0.121768256685%
+Average Maximum voxel difference per microstructure (divided by nfac), sigma11: 0.957738569491%
+Maximum voxel difference in all microstructures (divided by nfac), sigma11: 1.38701746612%
+val    sigma11    100    0.15217555348    0.957738569491    1.38701746612
+Average, sigma11, FEM: -420.794965676
+Average, sigma11, MKS: -420.807652944
+Standard deviation, sigma11, FEM: 29.3544798217
+Standard deviation, sigma11, MKS: 29.3666794191
+Mean minimum, sigma11, FEM: -533.785214539
+Mean minimum, sigma11, MKS: -534.130049382
+Mean maximum, sigma11, FEM: -314.46740387
+Mean maximum, sigma11, MKS: -315.014903367
+Mean voxel difference over all microstructures (divided by nfac), sigma22: 0.152884351305%
+standard deviation of difference over all microstructures (divided by nfac), sigma22: 0.122323627342%
+Average Maximum voxel difference per microstructure (divided by nfac), sigma22: 0.949378476182%
+Maximum voxel difference in all microstructures (divided by nfac), sigma22: 1.50317232116%
+val    sigma22    100    0.152884351305    0.949378476182    1.50317232116
+Average, sigma22, FEM: -421.388341779
+Average, sigma22, MKS: -421.404093055
+Standard deviation, sigma22, FEM: 29.5737243913
+Standard deviation, sigma22, MKS: 29.5949046513
+Mean minimum, sigma22, FEM: -533.682462769
+Mean minimum, sigma22, MKS: -533.931295457
+Mean maximum, sigma22, FEM: -314.422233582
+Mean maximum, sigma22, MKS: -315.109931046
+Mean voxel difference over all microstructures (divided by nfac), sigma33: 1.01219034326%
+standard deviation of difference over all microstructures (divided by nfac), sigma33: 0.21413579954%
+Average Maximum voxel difference per microstructure (divided by nfac), sigma33: 2.0155267549%
+Maximum voxel difference in all microstructures (divided by nfac), sigma33: 2.84543513774%
+val    sigma33    100    1.01219034326    2.0155267549    2.84543513774
+Average, sigma33, FEM: -867.341120573
+Average, sigma33, MKS: -876.1201007
+Standard deviation, sigma33, FEM: 22.148494001
+Standard deviation, sigma33, MKS: 22.2613039463
+Mean minimum, sigma33, FEM: -980.810068359
+Mean minimum, sigma33, MKS: -991.702536997
+Mean maximum, sigma33, FEM: -794.564029541
+Mean maximum, sigma33, MKS: -802.544641216
+Mean voxel difference over all microstructures (divided by nfac), sigma23: 0.092283036176%
+standard deviation of difference over all microstructures (divided by nfac), sigma23: 0.0762106857573%
+Average Maximum voxel difference per microstructure (divided by nfac), sigma23: 0.626309456243%
+Maximum voxel difference in all microstructures (divided by nfac), sigma23: 0.87049375573%
+val    sigma23    100    0.092283036176    0.626309456243    0.87049375573
+Average, sigma23, FEM: -0.107248695264
+Average, sigma23, MKS: -0.108806828284
+Standard deviation, sigma23, FEM: 10.1374555198
+Standard deviation, sigma23, MKS: 10.3958140059
+Mean minimum, sigma23, FEM: -41.0034645844
+Mean minimum, sigma23, MKS: -43.0197694517
+Mean maximum, sigma23, FEM: 40.2846216965
+Mean maximum, sigma23, MKS: 42.2838146475
+Mean voxel difference over all microstructures (divided by nfac), sigma12: 0.0992365123428%
+standard deviation of difference over all microstructures (divided by nfac), sigma12: 0.080965999115%
+Average Maximum voxel difference per microstructure (divided by nfac), sigma12: 0.69080835003%
+Maximum voxel difference in all microstructures (divided by nfac), sigma12: 0.929696682531%
+val    sigma12    100    0.0992365123428    0.69080835003    0.929696682531
+Average, sigma12, FEM: -0.496268907977
+Average, sigma12, MKS: -0.501401857049
+Standard deviation, sigma12, FEM: 21.308876295
+Standard deviation, sigma12, MKS: 21.4035950037
+Mean minimum, sigma12, FEM: -75.4961495209
+Mean minimum, sigma12, MKS: -77.5051222184
+Mean maximum, sigma12, FEM: 73.5462752151
+Mean maximum, sigma12, MKS: 75.4422379203
+Mean voxel difference over all microstructures (divided by nfac), sigma13: 0.0932483215349%
+standard deviation of difference over all microstructures (divided by nfac), sigma13: 0.0769991221603%
+Average Maximum voxel difference per microstructure (divided by nfac), sigma13: 0.624260444596%
+Maximum voxel difference in all microstructures (divided by nfac), sigma13: 0.853776683677%
+val    sigma13    100    0.0932483215349    0.624260444596    0.853776683677
+Average, sigma13, FEM: 0.013629820152
+Average, sigma13, MKS: 0.0123254671443
+Standard deviation, sigma13, FEM: 10.0956956982
+Standard deviation, sigma13, MKS: 10.3653158653
+Mean minimum, sigma13, FEM: -41.0561780357
+Mean minimum, sigma13, MKS: -43.0183354032
+Mean maximum, sigma13, FEM: 41.3755869293
+Mean maximum, sigma13, MKS: 43.6659949083
+---------------------------------------
+Begin PBS Epilogue Wed May  4 14:51:26 EDT 2016
+Job ID:     1367882.dedicated-sched.pace.gatech.edu
+User ID:    nhpnp3
+Job name:   calfem
+Resources:  mem=12000mb,neednodes=1:ppn=1,nodes=1:ppn=1,walltime=10:00:00
+Rsrc Used:  cput=01:13:29,energy_used=0,mem=2707200kb,vmem=3565780kb,walltime=01:36:37
+Queue:      granulous
+Nodes:     
+iw-c29-30.pace.gatech.edu
+End PBS Epilogue Wed May  4 14:51:26 EDT 2016
+---------------------------------------
