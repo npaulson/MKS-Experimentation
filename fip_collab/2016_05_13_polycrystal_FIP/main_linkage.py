@@ -20,18 +20,19 @@ dir_val = C['dir_val']
 
 """get the data for the linkage"""
 
-f = h5py.File("raw_responses.hdf5", 'w')
-f.close()
+# f = h5py.File("raw_responses.hdf5", 'w')
+# f.close()
+
+# """Gather data from vtk files"""
+# for ii in xrange(len(set_id_cal)):
+#     vtk.read_fip(strt_cal[ii], ns_cal[ii], set_id_cal[ii],
+#                  dir_cal[ii])
+# for ii in xrange(len(set_id_val)):
+#     vtk.read_fip(strt_val[ii], ns_val[ii], set_id_val[ii],
+#                  dir_val[ii])
+
 f = h5py.File("responses.hdf5", 'w')
 f.close()
-
-"""Gather data from vtk files"""
-for ii in xrange(len(set_id_cal)):
-    vtk.read_fip(strt_cal[ii], ns_cal[ii], set_id_cal[ii],
-                 dir_cal[ii])
-for ii in xrange(len(set_id_val)):
-    vtk.read_fip(strt_val[ii], ns_val[ii], set_id_val[ii],
-                 dir_val[ii])
 
 """get the fitting coefficients for the linkage"""
 for ii in xrange(len(set_id_cal)):
@@ -52,6 +53,13 @@ gl.linkage(par)
 
 par = 'c2'
 gl.linkage(par)
+
+par = 'c3'
+gl.linkage(par)
+
+par = 'c4'
+gl.linkage(par)
+
 
 """
 NOTES:

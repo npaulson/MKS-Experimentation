@@ -1,6 +1,6 @@
 import numpy as np
 # import hex_0_6_real as gsh
-import gsh_hex_tri_L0_40 as gsh
+import gsh_cub_tri_L0_40 as gsh
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
@@ -61,7 +61,7 @@ euler_d = euler[indxrand, :]
 Y = np.zeros((n_tot,))
 Y[indxrand] = 1  # assign delta response
 
-""" Perform the integration """
+""" Perform the integration / validation simuletaneously """
 
 coef = np.zeros(N_L, dtype='complex128')
 
@@ -73,6 +73,8 @@ eul_frac = domain_sz/full_sz
 fzsz = 1./(eul_frac*8.*np.pi**2)
 bsz = domain_sz/n_tot
 
+Y_ = np.zeros(euler.shape[0], dtype='complex128')
+
 for ii in xrange(N_L):
 
     if np.mod(ii, 100) == 0:
@@ -82,31 +84,23 @@ for ii in xrange(N_L):
 
     l = indxvec[ii, 0]
     tmp = (1./(2.*l+1.))*np.sum(Y*Xtmp.conj()*np.sin(euler[:, 1]))*bsz*fzsz
+    Y_ += tmp*Xtmp
     coef[ii] = tmp
+
+Y_ = Y_.real
 
 # print "coefficients from integration: %s" % str(coef)
 
 """ plot a visual representation of the coefficients """
 
-fig = plt.figure(num=1, figsize=[12, 8])
-plt.plot(np.arange(N_L), coef.real, 'rx')
-plt.title("coefficients from integration")
+# fig = plt.figure(num=1, figsize=[12, 8])
+# plt.plot(np.arange(N_L), coef.real, 'rx')
+# plt.title("coefficients from integration")
 
 # plt.xticks(np.arange(0, N_L_new, 1), rotation='vertical')
 # plt.yticks(np.arange(-11, 11, 1))
 
-plt.show()
-
-""" To check the regression accuracy first lets generate a set of euler
-angles"""
-
-Y_ = np.zeros(euler.shape[0], dtype='complex128')
-for indx in xrange(N_L):
-    Xtmp = np.squeeze(gsh.gsh_eval(euler, [indx]))
-    Y_ += coef[indx]*Xtmp
-
-Y_ = Y_.real
-
+# plt.show()
 
 """ Plot the regression results """
 
@@ -117,10 +111,18 @@ ax = fig.add_subplot(111, projection='3d')
 
 ax.scatter(euler[ang_sel, 0], euler[ang_sel, 1], Y[ang_sel], c='b')
 
+ax.set_xlabel("$\phi_1$")
+ax.set_ylabel("$\Phi$")
+ax.set_zlabel("y")
+
 fig = plt.figure(num=3, figsize=[10, 6])
 ax = fig.add_subplot(111, projection='3d')
 
 ax.scatter(euler[ang_sel, 0], euler[ang_sel, 1], Y_[ang_sel], c='r')
+
+ax.set_xlabel("$\phi_1$")
+ax.set_ylabel("$\Phi$")
+ax.set_zlabel("y")
 
 plt.show()
 
@@ -131,9 +133,17 @@ ax = fig.add_subplot(111, projection='3d')
 
 ax.scatter(euler[ang_sel, 0], euler[ang_sel, 2], Y[ang_sel], c='b')
 
+ax.set_xlabel("$\phi_1$")
+ax.set_ylabel("$\phi_2$")
+ax.set_zlabel("y")
+
 fig = plt.figure(num=5, figsize=[10, 6])
 ax = fig.add_subplot(111, projection='3d')
 
 ax.scatter(euler[ang_sel, 0], euler[ang_sel, 2], Y_[ang_sel], c='r')
+
+ax.set_xlabel("$\phi_1$")
+ax.set_ylabel("$\phi_2$")
+ax.set_zlabel("y")
 
 plt.show()

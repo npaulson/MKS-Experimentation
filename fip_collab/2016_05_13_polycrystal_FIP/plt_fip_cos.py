@@ -44,25 +44,25 @@ if __name__ == '__main__':
         X[:, ii] = np.squeeze(np.cos((ii*np.pi*(xl-xlmin))/L_p))
         # X[:, ii] = np.squeeze(xl**ii)
 
-    # XhX = np.dot(X.T, X)
-    # Xhy = np.dot(X.T, y)
-    # coef = np.linalg.lstsq(XhX, Xhy)[0]
-    # print coef
-    # y_ = np.dot(coef, X.T)
+    XhX = np.dot(X.T, X)
+    Xhy = np.dot(X.T, y)
+    coef = np.linalg.lstsq(XhX, Xhy)[0]
+    print coef
+    y_ = np.dot(coef, X.T)
 
-    weights = (1e-7)*np.ones(x.size, dtype='float64')
-    weights[np.int16(.99*x.size):] = .01
-    weights[0] = 1
-    weights[-1] = 1
+    # weights = (1e-7)*np.ones(x.size, dtype='float64')
+    # weights[np.int16(.99*x.size):] = .01
+    # weights[0] = 1
+    # weights[-1] = 1
 
     # plt.figure(num=1)
     # plt.plot(xl, weights)
 
-    clf = linear_model.LinearRegression()
-    # clf.fit(X, y, sample_weight=weights)
-    clf.fit(X, y)
-    print clf.coef_
-    y_ = clf.predict(X)
+    # clf = linear_model.LinearRegression()
+    # # clf.fit(X, y, sample_weight=weights)
+    # clf.fit(X, y)
+    # print clf.coef_
+    # y_ = clf.predict(X)
 
     """plot the original data and the fits"""
 

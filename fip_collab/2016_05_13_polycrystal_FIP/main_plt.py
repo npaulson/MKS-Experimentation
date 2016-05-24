@@ -22,7 +22,7 @@ strt_val = C['strt_val']
 ns_val = C['ns_val']
 dir_val = C['dir_val']
 
-par = 'c2'
+par = 'c4'
 
 # """Plot an autocorrelation"""
 # sn = 0

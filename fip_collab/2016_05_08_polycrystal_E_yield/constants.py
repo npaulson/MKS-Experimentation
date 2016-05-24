@@ -27,7 +27,7 @@ def const():
 
     C['dir_resp'] = "response"
 
-    C['H'] = 4
+    C['H'] = 9
     C['el'] = 21
     C['n_pc_tot'] = 20
 

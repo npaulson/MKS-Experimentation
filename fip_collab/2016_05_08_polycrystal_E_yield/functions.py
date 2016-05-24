@@ -241,6 +241,10 @@ def regress(x_cal, x_val, y_cal, y_val, n_pc, n_poly):
     # coef = np.linalg.solve(XhX, XhY)
     coef = np.linalg.lstsq(XhX, XhY)[0]
 
+    if n_pc == 20 and n_poly == 4:
+        np.savetxt("coef.txt", coef, delimiter=',')
+        np.savetxt("xmat.txt", xmat, delimiter=',')
+
     """validate with the calibration data"""
 
     y_cal_predict = np.dot(coef, X_cal.T)

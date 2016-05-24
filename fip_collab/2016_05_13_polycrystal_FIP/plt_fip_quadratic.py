@@ -9,7 +9,7 @@ from sklearn import linear_model
 if __name__ == '__main__':
 
     newdir = 'cal'
-    pcnt = .998
+    pcnt = .99
 
     # nwd = os.getcwd() + '\\' + newdir
     nwd = os.getcwd() + '/' + newdir  # for unix

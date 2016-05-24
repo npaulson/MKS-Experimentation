@@ -23,7 +23,7 @@ ns_val = C['ns_val']
 dir_val = C['dir_val']
 
 bc = 'bc1'
-prop = 'stiffness'
+prop = 'yield'
 
 # """Plot an autocorrelation"""
 # sn = 0

@@ -60,11 +60,15 @@ def resp(ns, set_id):
     c0 = f2.create_dataset('c0_%s' % set_id, (ns,), dtype='float64')
     c1 = f2.create_dataset('c1_%s' % set_id, (ns,), dtype='float64')
     c2 = f2.create_dataset('c2_%s' % set_id, (ns,), dtype='float64')
+    c3 = f2.create_dataset('c3_%s' % set_id, (ns,), dtype='float64')
+    c4 = f2.create_dataset('c4_%s' % set_id, (ns,), dtype='float64')
 
-    n_p = 3
+    n_p = 5
 
     for sn in xrange(ns):
         x = np.sort(rawfip[sn, :])
+        # x = x[np.int64(C['pcnt']*x.size):, None]
+
         y = (np.arange(x.size)+1)/np.float32(x.size)
         xl = np.log(x)
 
@@ -76,6 +80,7 @@ def resp(ns, set_id):
 
         for ii in xrange(n_p):
             X[:, ii] = np.squeeze(np.cos((ii*np.pi*(xl-xlmin))/L_p))
+            # X[:, ii] = np.squeeze(xl)**ii
 
         # clf = linear_model.LinearRegression()
         # clf.fit(X, y)
@@ -88,9 +93,8 @@ def resp(ns, set_id):
         c0[sn] = coef[0]
         c1[sn] = coef[1]
         c2[sn] = coef[2]
-
-        # tmp = np.sort(rawfip[sn, :])
-        # c1[sn] = tmp[-43:].mean()
+        c3[sn] = coef[3]
+        c4[sn] = coef[4]
 
     f2.close()
     f1.close()

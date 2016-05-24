@@ -36,7 +36,7 @@ def fit_gamma_robust(tail):
 if __name__ == '__main__':
 
     newdir = 'cal'
-    pcnt = .99
+    pcnt = .995
 
     # nwd = os.getcwd() + '\\' + newdir
     nwd = os.getcwd() + '/' + newdir  # for unix
@@ -81,5 +81,8 @@ if __name__ == '__main__':
     ymax += 0.1*rng
 
     plt.ylim((ymin, ymax))
+
+    plt.xlabel("ln(FIP)")
+    plt.ylabel("CDF")
 
     plt.show()
