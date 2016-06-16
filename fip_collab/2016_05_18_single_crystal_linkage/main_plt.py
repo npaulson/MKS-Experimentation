@@ -2,7 +2,7 @@ import plot_correlation as pltcorr
 import plot_pc_map as pltmap
 import plot_linkage_check as plc
 import explained_variance as ev
-import plot_pc_vs_poly as pltpcpoly
+import plot_pc_vs_poly_alt as pltpcpoly
 import numpy as np
 from constants import const
 
@@ -21,13 +21,13 @@ set_id_val = C['set_id_val']
 ns_val = C['ns_val']
 dir_val = C['dir_val']
 
-par = 'strength'
+par = 'modulus'
 
-"""Plot an autocorrelation"""
-sn = 0
-iA = 1
-iB = 1
-pltcorr.pltcorr(ns_cal[0], set_id_cal[0], sn, iA, iB)
+# """Plot an autocorrelation"""
+# sn = 0
+# iA = 1
+# iB = 1
+# pltcorr.pltcorr(ns_cal[0], set_id_cal[0], sn, iA, iB)
 
 """Plot the percentage explained variance"""
 ns_tot = np.sum(ns_cal)
@@ -36,7 +36,7 @@ ev.variance(ns_tot)
 """Plot the microstructures in PC space"""
 pcA = 0
 pcB = 1
-pltmap.pltmap(ns_val, set_id_val, pcA, pcB)
+pltmap.pltmap(ns_cal, set_id_cal, pcA, pcB)
 
 """Plot the error in predicitons of calibration and validation data
 versus number of PCs and polynomial order"""

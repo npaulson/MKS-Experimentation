@@ -103,7 +103,7 @@ def read_vtk_scalar(filename):
 
     # print reader.GetScalarsNameInFile
 
-    Scalar = data.GetCellData().GetArray(reader.GetScalarsNameInFile(1))
+    Scalar = data.GetCellData().GetArray(reader.GetScalarsNameInFile(0))
 
     scalar_py = np.zeros([el_total])
 

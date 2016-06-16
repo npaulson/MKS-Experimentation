@@ -79,10 +79,9 @@ def pltpcpoly(prop, bc):
 
     f.close()
 
-    plt.show()
-
 
 if __name__ == '__main__':
     prop = "yield"
     bc = "bc1"
     pltpcpoly(prop, bc)
+    plt.show()

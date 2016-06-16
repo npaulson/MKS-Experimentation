@@ -27,12 +27,12 @@ def const():
 
     C['dir_resp'] = "response"
 
-    C['H'] = 9
+    C['H'] = 23
     C['el'] = 21
-    C['vmax'] = 7
-    C['n_pc_tot'] = 20
+    C['vmax'] = 21
+    C['n_pc_tot'] = 30
 
-    C['n_pc_max'] = 20
-    C['n_poly_max'] = 5
+    C['n_pc_max'] = 30
+    C['n_poly_max'] = 3
 
     return C

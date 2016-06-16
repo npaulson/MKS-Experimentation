@@ -51,7 +51,8 @@ def linkage(par):
 
     """perform the regressions"""
 
-    n_ii = C['n_pc_tot']
+    # n_ii = C['n_pc_tot']
+    n_ii = 50
     n_jj = 3
     coefmax = (n_ii+1)*(n_jj+2)
 

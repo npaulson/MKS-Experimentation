@@ -46,8 +46,8 @@ def new_space(ns_set, set_id_set):
     relative variances of the pc vectors. This may be desirable
     when using regression to find a linkage to reduce some
     numerical issues"""
-    # pca = PCA(n_components=C['n_pc_tot'], whiten=True)
-    pca = PCA(n_components=C['n_pc_tot'])
+    pca = PCA(n_components=C['n_pc_tot'], whiten=True)
+    # pca = PCA(n_components=C['n_pc_tot'])
     pca.fit(allcorr)
     ratios = 100*pca.explained_variance_ratio_
     f_master.create_dataset('ratios', data=ratios)

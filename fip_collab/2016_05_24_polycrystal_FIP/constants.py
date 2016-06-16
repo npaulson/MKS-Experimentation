@@ -27,7 +27,7 @@ def const():
 
     C['H'] = 9
     C['el'] = 21
-    C['n_pc_tot'] = 100
+    C['n_pc_tot'] = 50
 
     C['pcnt'] = .995
 

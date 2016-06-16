@@ -32,8 +32,6 @@ def pltcorr(ns, set_id, sn, iA, iB):
     plt.colorbar(ax)
     plt.title('ff: %s, %s' % (iA, iB))
 
-    plt.show()
-
 
 if __name__ == '__main__':
     ns = 10
@@ -44,3 +42,4 @@ if __name__ == '__main__':
     iB = 2
 
     pltcorr(ns, set_id, step, sn, iA, iB)
+    plt.show()

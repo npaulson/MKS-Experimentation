@@ -7,7 +7,7 @@ import sys
 
 def pltmap(ns_set, set_id_set, pcA, pcB):
 
-    plt.figure(num=3, figsize=[10, 8])
+    plt.figure(num=3, figsize=[8, 6])
 
     # colormat = np.random.rand(len(set_id_set), 3)
     colormat = np.array([[.3, .3, 1.],
@@ -41,8 +41,6 @@ def pltmap(ns_set, set_id_set, pcA, pcB):
 
     f_red.close()
 
-    plt.show()
-
 
 if __name__ == '__main__':
 
@@ -54,3 +52,4 @@ if __name__ == '__main__':
     pcB = np.int64(sys.argv[1])
 
     pltmap(ns_set, set_id_set, pcA, pcB)
+    plt.show()

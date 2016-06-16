@@ -24,6 +24,6 @@ def const():
 
     C['H'] = 23
     C['el'] = 3
-    C['n_pc_tot'] = 30
+    C['n_pc_tot'] = 150
 
     return C

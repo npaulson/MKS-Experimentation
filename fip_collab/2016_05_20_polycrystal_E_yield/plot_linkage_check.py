@@ -34,7 +34,7 @@ def plot_check(ns_set, names_set, prop, bc):
     Rpred = f_reg.get('Rpred_val_%s_%s' % (prop, bc))[indx, :]
 
     """plot the prediction equal to simulation line"""
-    plt.figure(num=7, figsize=[8, 7])
+    plt.figure(num=6, figsize=[8, 7])
 
     minval = np.min([Rsim, Rpred])
     maxval = np.max([Rsim, Rpred])
@@ -77,8 +77,6 @@ def plot_check(ns_set, names_set, prop, bc):
 
     f_reg.close()
 
-    plt.show()
-
 
 if __name__ == '__main__':
     el = 21
@@ -89,3 +87,4 @@ if __name__ == '__main__':
     resptyp = 'Eeff'
 
     plot_check(el, ns_val, set_id_val, resptyp)
+    plt.show()

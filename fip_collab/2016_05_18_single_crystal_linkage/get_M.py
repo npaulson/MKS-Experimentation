@@ -25,13 +25,21 @@ def get_M(ns, set_id):
 
     mf = np.zeros([ns, C['H'], C['el']**3], dtype='float64')
 
+    indxvec = gsh.gsh_basis_info()
+
     c = 0
+    # for h in [4, 5, 6, 7, 8]:
     for h in xrange(C['H']):
         tmp = gsh.gsh_eval(euler.swapaxes(1, 2), [h])
         tmp = np.squeeze(tmp)
-        mf[:, c, :] = tmp.real
+        mf[:, c, :] = tmp.real/(2*indxvec[h, 0]+1)
         c += 1
+        # mf[:, c, :] = tmp.real
         # mf[:, h, :] = (2*indxvec[h, 0]+1)*tmp # 2*l+1 included in maple generator
+
+    # tmp = [mf.min(), mf.mean(), mf.max()]
+    # msg = "min mean and max of mf: %s" % str(tmp)
+    # rr.WP(msg, C['wrt_file'])
 
     end = time.time()
     timeE = np.round((end - start), 3)

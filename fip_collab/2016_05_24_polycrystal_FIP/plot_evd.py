@@ -53,7 +53,7 @@ def pltevd(set_id_set):
     indx_c1 = f_reg.get('maxerr_val_c1')[...].argmin()
     indx_c2 = f_reg.get('maxerr_val_c2')[...].argmin()
 
-    plt.figure(6)
+    plt.figure(6, figsize=[7, 5])
 
     f = h5py.File("responses.hdf5", 'r')
 
@@ -77,20 +77,20 @@ def pltevd(set_id_set):
         # c2 = f.get('c2_%s' % set_id)[...]
 
         """plot the original data and the fits"""
-        plt.plot(np.log(x), y, '.', markersize=3, color=colormat[ii, :])
+        plt.plot(np.log(x), y, '.', markersize=1, color=colormat[ii, :])
 
         tmp = np.linspace(np.log(x).min(), np.log(x).max(), 100)
         x_ = np.exp(tmp)
 
         plt.plot(np.log(x_), ss.gamma.cdf(x_, c0, loc=c1, scale=c2),
-                 '-', color=colormat[ii, :], lw=2, label=set_id)
+                 '-', color=colormat[ii, :], lw=1, label=set_id)
 
     f.close()
     f_reg.close()
 
     plt.xlabel("ln(FIP)")
     plt.ylabel("CDF")
-    plt.legend(loc='upper left', shadow=True, fontsize='medium')
+    plt.legend(loc='lower right', shadow=True, fontsize='medium')
 
     ymin = y.min()
     ymax = y.max()

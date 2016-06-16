@@ -25,11 +25,13 @@ def get_M(ns, set_id):
 
     mf = np.zeros([ns, C['H'], C['el']**3], dtype='float64')
 
+    indxvec = gsh.gsh_basis_info()
+
     c = 0
     for h in xrange(C['H']):
         tmp = gsh.gsh_eval(euler.swapaxes(1, 2), [h])
         tmp = np.squeeze(tmp)
-        mf[:, c, :] = tmp.real
+        mf[:, c, :] = tmp.real/(2.*indxvec[h, 0]+1.)
         c += 1
         # mf[:, h, :] = (2*indxvec[h, 0]+1)*tmp # 2*l+1 included in maple generator
 
