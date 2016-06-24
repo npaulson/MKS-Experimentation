@@ -22,6 +22,7 @@ def pltmap(ns_max, set_id):
     plt.xlabel("number of SVEs")
     plt.ylabel("$\\alpha$")
     plt.axis([1., 500., .6, 1.0])
+    plt.grid(True)
 
     plt.subplot(412)
 
@@ -30,6 +31,7 @@ def pltmap(ns_max, set_id):
     plt.ylabel("$\mu_g$")
     # plt.axis([1., 500., 3.5e-7, 5.5e-7])
     plt.axis([1., 500., 2.5e-7, 4.5e-7])
+    plt.grid(True)
 
     plt.subplot(413)
 
@@ -38,6 +40,7 @@ def pltmap(ns_max, set_id):
     plt.ylabel("$\sigma_g$")
     # plt.axis([1., 500., 2.5e-7, 4.5e-7])
     plt.axis([1., 500., 1.5e-7, 3.5e-7])
+    plt.grid(True)
 
     plt.subplot(414)
 
@@ -45,7 +48,9 @@ def pltmap(ns_max, set_id):
     plt.xlabel("number of SVEs")
     plt.ylabel("$r^2$")
     plt.axis([1., 500., .985, 1.00])
-    plt
+    plt.grid(True)
+
+    plt.tight_layout()
 
 if __name__ == '__main__':
     ns_max = 500
