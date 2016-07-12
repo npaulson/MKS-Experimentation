@@ -17,9 +17,9 @@ def const():
     C['ns_cal'] = [30, 30, 30, 30, 30, 30, 30, 100]
     C['dir_cal'] = C['names_cal']
 
-    C['names_val'] = ['actual', 'basaltrans', 'dice', 'doubledonut',
+    C['names_val'] = ['actual', 'basaltrans', 'dice',
                       'innerdonut', 'outerdonut', 'random',
-                      'trans', 'single']
+                      'trans', 'doubledonut', 'single']
     C['set_id_val'] = [s + '_val' for s in C['names_val']]
     C['strt_val'] = [30, 30, 30, 30, 30, 30, 30, 30, 100]
     C['ns_val'] = [30, 30, 30, 30, 30, 30, 30, 30, 100]
@@ -27,7 +27,7 @@ def const():
 
     C['dir_resp'] = "response"
 
-    C['H'] = 9
+    C['H'] = 23
     C['el'] = 21
     C['vmax'] = 21
     C['n_pc_tot'] = 150

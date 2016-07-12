@@ -8,21 +8,36 @@ def pltpcpoly(par, n_pc_max):
 
     C = const()
 
-    colormat = np.array([[0, 0, .8],
-                         [0, .8, 0],
-                         [.8, 0, 0],
-                         [0., .7, .7],
-                         [.7, .0, .7],
-                         [.7, .7, .0],
-                         [.5, .3, .1],
-                         [.3, .5, .1],
-                         [.1, .3, .5]])
+    # colormat = np.array([[0, 0, 0],
+    #                      [.8, .8, .8],
+    #                      [.4, .4, .4]])
+
+    colormat = np.array([[0, 0, .9],
+                         [0, .7, .1],
+                         [.9, 0, 0]])
+
+    # colormat = np.array([[.35, .02, 1],
+    #                      [.63, .02, 1],
+    #                      [.92, .15, 0]])
+
+    # colormat = np.array([[.13, 0, .39],
+    #                      [.35, .02, 1],
+    #                      [.68, .52, 1],
+    #                      [.24, 0, .39],
+    #                      [.63, .02, 1],
+    #                      [.82, .52, 1],
+    #                      [.39, .07, 0],
+    #                      [.92, .15, 0],
+    #                      [1.0, .55, .46]])
 
     fig = plt.figure(figsize=[7, 5])
 
     H = [4, 9, 23]
+    # H = [4]
 
-    for ii in xrange(3):
+    errmax = 0
+
+    for ii in xrange(len(H)):
 
         f = h5py.File("regression_results_L%s.hdf5" % H[ii], 'r')
 
@@ -42,10 +57,12 @@ def pltpcpoly(par, n_pc_max):
         plotmat_ = plotmat.reshape((pc_range, poly_range, 3))
 
         err = 100*plotmat_[..., 0, 2]/n_fac
+        if err.max() > errmax:
+            errmax = err.max()
 
         plt.plot(np.arange(n_pc_max)+1, err[:n_pc_max],
-                 marker='', markersize=3, color=colormat[ii, :],
-                 linestyle='-', linewidth=1, label="calibration L=%s" % H[ii])
+                 marker='', markersize=8, color=colormat[ii, :], alpha=0.7,
+                 linestyle='--', linewidth=1, label="calibration L=%s" % H[ii])
 
         """plot the prediction error versus number of pc for
         validations data"""
@@ -60,10 +77,12 @@ def pltpcpoly(par, n_pc_max):
         plotmat_ = plotmat.reshape((pc_range, poly_range, 3))
 
         err = 100*plotmat_[..., 0, 2]/n_fac
+        if err.max() > errmax:
+            errmax = err.max()
 
         plt.plot(np.arange(n_pc_max)+1, err[:n_pc_max],
-                 marker='', markersize=3, color=colormat[ii, :],
-                 linestyle='--', linewidth=1, label="validation L=%s" % H[ii])
+                 marker='', markersize=8, color=colormat[ii, :], alpha=0.5,
+                 linestyle='-', linewidth=1, label="validation L=%s" % H[ii])
 
         """plot the prediction error versus number of pc for
         LOOCV data"""
@@ -78,23 +97,20 @@ def pltpcpoly(par, n_pc_max):
         plotmat_ = plotmat.reshape((pc_range, poly_range, 3))
 
         err = 100*plotmat_[..., 2]/n_fac
+        if err.max() > errmax:
+            errmax = err.max()
 
         plt.plot(np.arange(n_pc_max)+1, err[:n_pc_max],
-                 marker='', markersize=3, color=colormat[ii, :],
+                 marker='', markersize=7, color=colormat[ii, :], alpha=0.99,
                  linestyle=':', linewidth=1, label="LOOCV L=%s" % H[ii])
 
     spc = np.int16(np.ceil(n_pc_max/15.))
     plt.xticks(np.arange(0, n_pc_max+spc, spc))
 
-    plt.axis([0, n_pc_max, 0, 1.1*err.max()])
+    plt.axis([.5, n_pc_max+.5, 0, 1.1*errmax])
 
     # plt.grid(True)
     plt.legend(loc='upper right', shadow=True, fontsize='small', ncol=3)
-
-    # if typ == 'cal':
-    #     plt.title("mean prediction error with calibration data for %s" % par)
-    # elif typ == 'val':
-    #     plt.title("mean prediction error with validation data for %s" % par)
 
     plt.xlabel("number of PCs")
     plt.ylabel("mean error (%)")

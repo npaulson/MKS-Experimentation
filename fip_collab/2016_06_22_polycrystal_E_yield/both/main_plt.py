@@ -30,8 +30,8 @@ dir_val = C['dir_val']
 # iB = 1
 # pltcorr.pltcorr(ns_cal[0], set_id_cal[0], sn, iA, iB)
 
-"""Plot the distances between clusters"""
-pdi.pltdist()
+# """Plot the distances between clusters"""
+# pdi.pltdist()
 
 """Plot the percentage explained variance"""
 pev.variance()
@@ -39,17 +39,17 @@ pev.variance()
 """Plot the microstructures in PC space"""
 pcA = 0
 pcB = 1
-pltmap.pltmap(ns_cal, names_cal, set_id_cal, 'cal', pcA, pcB)
-pltmap.pltmap(ns_val, names_val, set_id_val, 'val', pcA, pcB)
+pltmap.pltmap(ns_cal, names_cal, set_id_cal, pcA, pcB)
+pltmap.pltmap(ns_val, names_val, set_id_val, pcA, pcB)
 
 """Plot a dendrogram"""
 pd.pltdend(ns_val, set_id_val, names_val)
 
 """Plot the errors versus number of PCs and polynomial order"""
-ppp.pltpcpoly('modulus', 15)
-ppp.pltpcpoly('strength', 15)
-ppp.pltpcpoly('modulus', 150)
-ppp.pltpcpoly('strength', 150)
+ppp.pltpcpoly('modulus')
+ppp.pltpcpoly('strength')
+ppp.pltpcpoly('modulus')
+ppp.pltpcpoly('strength')
 
 """Plot the predicted versus actual values of the property of interest"""
 n_poly = 2

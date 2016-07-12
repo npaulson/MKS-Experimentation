@@ -8,9 +8,9 @@ def variance(pltshape):
 
     C = const()
 
-    colormat = np.array([[0, 0, 1.],
-                         [0, 1., 0],
-                         [1., 0, 0]])
+    colormat = np.array([[0, 0, .9],
+                         [0, .8, 0],
+                         [.9, 0, 0]])
 
     H = [4, 9, 23]
 
@@ -26,7 +26,7 @@ def variance(pltshape):
         data[1:] = np.cumsum(ratios)
 
         plt.plot(np.arange(data.size), data, color=colormat[ii, :],
-                 linestyle='-', marker='', markersize=3, label='L=%s' % H[ii])
+                 linestyle='-', marker='x', markersize=6, label='L=%s' % H[ii])
 
     tc = np.int16(np.ceil(pltshape[1]/15.))
     plt.xticks(np.arange(0, pltshape[1]+tc, tc))

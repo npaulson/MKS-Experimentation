@@ -9,7 +9,7 @@ def pltdend(ns_set, set_id_set, names_set, H):
 
     C = const()
 
-    fig = plt.figure(figsize=[6, 4])
+    fig = plt.figure(figsize=[5, 5])
 
     y = np.zeros([len(set_id_set), C['n_pc_tot']])
     # y = np.zeros([len(set_id_set), 2])

@@ -6,11 +6,11 @@ import h5py
 import sys
 
 
-def pltmap(ns_set, names_set, set_id_set, pcA, pcB):
+def pltmap(H, pcA, pcB):
 
     C = const()
 
-    fig = plt.figure(figsize=[8, 5])
+    fig = plt.figure(figsize=[9, 5])
 
     colormat = np.array([[.3, .3, 1.],
                          [.3, 1., .3],
@@ -22,21 +22,19 @@ def pltmap(ns_set, names_set, set_id_set, pcA, pcB):
                          [.3, .5, .1],
                          [.1, .3, .5]])
 
-    f_red = h5py.File("spatial_reduced_L%s.hdf5" % C['H'], 'r')
+    f_red = h5py.File("spatial_reduced_L%s.hdf5" % H, 'r')
 
-    for ii in xrange(len(set_id_set)):
+    """plot SVE sets for cal"""
 
-        set_id = set_id_set[ii]
+    for ii in xrange(len(C['set_id_cal'])):
+
+        set_id = C['set_id_cal'][ii]
 
         reduced = f_red.get('reduced_%s' % set_id)[...]
 
         plt.plot(reduced[:, pcA], reduced[:, pcB],
-                 marker='o', markersize=7, color=colormat[ii, :], alpha=0.5,
-                 linestyle='', label=names_set[ii])
-
-        plt.plot(reduced[:, pcA].mean(), reduced[:, pcB].mean(), alpha=0.5,
-                 marker='D', markersize=8, color=colormat[ii, :],
-                 linestyle='')
+                 marker='s', markersize=6, color=colormat[ii, :], alpha=0.4,
+                 linestyle='', label="%s (calibration)" % C['names_cal'][ii])
 
         varmat = np.var(reduced, axis=0)
 
@@ -47,6 +45,51 @@ def pltmap(ns_set, names_set, set_id_set, pcA, pcB):
         # msg = "variance for %s in PC%s: %s" % (set_id, str(pcB+1), varmat[1])
         # rr.WP(msg, C['wrt_file'])
 
+    """plot SVE sets for val"""
+
+    for ii in xrange(len(C['set_id_val'])):
+
+        set_id = C['set_id_val'][ii]
+
+        reduced = f_red.get('reduced_%s' % set_id)[...]
+
+        plt.plot(reduced[:, pcA], reduced[:, pcB],
+                 marker='o', markersize=6, color=colormat[ii, :], alpha=0.4,
+                 linestyle='', label="%s (validation)" % C['names_val'][ii])
+
+        varmat = np.var(reduced, axis=0)
+
+        msg = "total variance for %s: %s" % (set_id, varmat.sum())
+        rr.WP(msg, C['wrt_file'])
+        # msg = "variance for %s in PC%s: %s" % (set_id, str(pcA+1), varmat[0])
+        # rr.WP(msg, C['wrt_file'])
+        # msg = "variance for %s in PC%s: %s" % (set_id, str(pcB+1), varmat[1])
+        # rr.WP(msg, C['wrt_file'])
+
+    """plot centers of SVE sets for cal"""
+
+    for ii in xrange(len(C['set_id_cal'])):
+
+        set_id = C['set_id_cal'][ii]
+
+        reduced = f_red.get('reduced_%s' % set_id)[...]
+
+        plt.plot(reduced[:, pcA].mean(), reduced[:, pcB].mean(), alpha=0.99,
+                 marker='s', markersize=8, color=colormat[ii, :],
+                 linestyle='')
+
+    """plot centers of SVE sets for val"""
+
+    for ii in xrange(len(C['set_id_val'])):
+
+        set_id = C['set_id_val'][ii]
+
+        reduced = f_red.get('reduced_%s' % set_id)[...]
+
+        plt.plot(reduced[:, pcA].mean(), reduced[:, pcB].mean(), alpha=0.99,
+                 marker='o', markersize=8, color=colormat[ii, :],
+                 linestyle='')
+
     plt.margins(.1)
 
     plt.xlabel("PC%s" % str(pcA+1))
@@ -56,11 +99,11 @@ def pltmap(ns_set, names_set, set_id_set, pcA, pcB):
 
     plt.legend(bbox_to_anchor=(1.02, 1), loc=2, shadow=True, fontsize='medium')
 
-    fig.tight_layout(rect=(0, 0, .75, 1))
+    fig.tight_layout(rect=(0, 0, .6, 1))
 
     f_red.close()
 
-    fig_name = 'pc%s_pc%s_L%s.png' % (pcA+1, pcB+1, C['H'])
+    fig_name = 'pc%s_pc%s_L%s.png' % (pcA+1, pcB+1, H)
     fig.canvas.set_window_title(fig_name)
     plt.savefig(fig_name)
 
@@ -68,12 +111,12 @@ def pltmap(ns_set, names_set, set_id_set, pcA, pcB):
 if __name__ == '__main__':
 
     C = const()
-    ns_set = C['ns_cal']
-    set_id_set = C['set_id_cal']
+
+    H = C['H']
 
     pcA = np.int64(sys.argv[1])
     pcB = np.int64(sys.argv[2])
 
-    pltmap(ns_set, set_id_set, pcA, pcB)
+    pltmap(H, pcA, pcB)
 
     plt.show()

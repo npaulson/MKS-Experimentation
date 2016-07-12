@@ -1,10 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import functions as rr
 from constants import const
 import h5py
 
 
-def plot_check(ns_set, names_set, par, n_poly, plt_num):
+def plot_check(par, n_pc, n_poly, H):
 
     C = const()
 
@@ -19,12 +20,15 @@ def plot_check(ns_set, names_set, par, n_poly, plt_num):
                          [.3, .5, .1],
                          [.1, .3, .5]])
 
-    f_reg = h5py.File("regression_results.hdf5", 'r')
+    f_reg = h5py.File("regression_results_L%s.hdf5" % H, 'r')
     order = f_reg.get('order_%s' % par)[...]
 
-    # """calculate # PCs required to reach desired explained variance"""
+    """explicitly define #PCs"""
+    tmp = (order[:, 0] == n_pc)*(order[:, 1] == n_poly)
+    indx = np.arange(order.shape[0])[tmp]
 
-    # f_pc = h5py.File("pca_data.hdf5", 'r')
+    # """calculate # PCs required to reach desired explained variance"""
+    # f_pc = h5py.File("pca_data_L%s.hdf5" % H, 'r')
     # ratios = f_pc.get('ratios')[...]
     # f_pc.close()
 
@@ -39,71 +43,107 @@ def plot_check(ns_set, names_set, par, n_poly, plt_num):
 
     # indx = np.arange(order.shape[0])[tmp]
 
-    """calculate # PCs to minimize LOOCV mean error"""
+    # """calculate # PCs to minimize LOOCV mean error"""
+    # indx = np.argmin(f_reg.get('loocv_err_%s' % par))
+    # n_pc = order[indx, 0]
 
-    tmp = f_reg.get('loocv_err_%s' % par)[4:]
-    # tmp = f_reg.get('meanerr_val_%s' % par)[4:]
-
-    indx = np.argmin(tmp)+4
-
-    print par
-    print "n_pc, n_poly: %s" % str(order[indx, :])
+    msg = par
+    rr.WP(msg, C['wrt_file'])
+    msg = "n_pc, n_poly: %s" % str(order[indx, :])
+    rr.WP(msg, C['wrt_file'])
 
     """find the results associated with the desired n_pc, n_poly"""
 
     """load the simulated and predicted responses"""
-    Rsim = f_reg.get('Rsim_val_%s' % par)[...]
-    Rpred = f_reg.get('Rpred_val_%s' % par)[indx, :]
+
+    if par == 'modulus':
+        RsimC = f_reg.get('Rsim_cal_%s' % par)[...]*(1e-3)
+        RpredC = f_reg.get('Rpred_cal_%s' % par)[indx, :]*(1e-3)
+        RsimV = f_reg.get('Rsim_val_%s' % par)[...]*(1e-3)
+        RpredV = f_reg.get('Rpred_val_%s' % par)[indx, :]*(1e-3)
+    else:
+        RsimC = f_reg.get('Rsim_cal_%s' % par)[...]
+        RpredC = f_reg.get('Rpred_cal_%s' % par)[indx, :]
+        RsimV = f_reg.get('Rsim_val_%s' % par)[...]
+        RpredV = f_reg.get('Rpred_val_%s' % par)[indx, :]
 
     """write out the associated error"""
-    err = np.abs(Rpred-Rsim)
-    print "mean error: %s" % err.mean()
-    print "max error: %s" % err.max()
+    errC = 100.*np.abs(RpredC-RsimC)/RsimC.mean()
+    msg = "mean %% error for cal: %s" % errC.mean()
+    rr.WP(msg, C['wrt_file'])
+    msg = "max %% error for cal: %s" % errC.max()
+    rr.WP(msg, C['wrt_file'])
+
+    errV = 100.*np.abs(RpredV-RsimV)/RsimV.mean()
+    msg = "mean %% error for val: %s" % errV.mean()
+    rr.WP(msg, C['wrt_file'])
+    msg = "max %% error for val: %s" % errV.max()
+    rr.WP(msg, C['wrt_file'])
 
     """plot the prediction equal to simulation line"""
-    plt.figure(num=plt_num, figsize=[6, 5.75])
+    fig = plt.figure(figsize=[8, 5])
 
-    minval = np.min([Rsim, Rpred])
-    maxval = np.max([Rsim, Rpred])
+    minval = np.min([np.min([RsimC, RpredC]), np.min([RsimV, RpredV])])
+    maxval = np.max([np.max([RsimC, RpredC]), np.max([RsimV, RpredV])])
 
     valrange = maxval-minval
-    minval += -0.5*valrange
-    maxval += 0.5*valrange
-    line = np.array([minval, maxval])
+    minln = minval - 0.5*valrange
+    maxln = maxval + 0.5*valrange
+    line = np.array([minln, maxln])
 
     plt.plot(line, line, 'k-')
 
-    for ii in xrange(len(ns_set)):
+    c = 0
+    for ii in xrange(len(C['ns_cal'])):
 
-        name = names_set[ii]
-        Rsim_tmp = Rsim[ii]
-        Rpred_tmp = Rpred[ii]
+        c_ = c + C['ns_cal'][ii]
+        name = C['names_cal'][ii]
+        Rsim_tmp = RsimC[c:c_]
+        Rpred_tmp = RpredC[c:c_]
+        c = c_
 
         plt.plot(Rsim_tmp, Rpred_tmp,
-                 marker='o', markersize=7, color=colormat[ii, :],
-                 linestyle='', label=name)
+                 marker='o', markersize=7, color=colormat[ii, :], alpha=0.4,
+                 linestyle='', label="%s (calibration)" % name)
 
-    plt.title("predicted versus simulated %s" % par)
-    plt.xlabel("simulation")
-    plt.ylabel("prediction")
-    plt.legend(loc='upper left', shadow=True, fontsize='medium')
+    c = 0
+    for ii in xrange(len(C['ns_val'])):
 
-    plt.xticks(rotation=20)
-    plt.yticks(rotation=20)
+        c_ = c + C['ns_val'][ii]
+        name = C['names_val'][ii]
+        Rsim_tmp = RsimV[c:c_]
+        Rpred_tmp = RpredV[c:c_]
+        c = c_
 
-    minval = np.min([Rsim, Rpred])
-    maxval = np.max([Rsim, Rpred])
-    valrange = maxval-minval
-    minval += -0.1*valrange
-    maxval += 0.1*valrange
+        plt.plot(Rsim_tmp, Rpred_tmp,
+                 marker='s', markersize=7, color=colormat[ii, :], alpha=0.4,
+                 linestyle='', label="%s (validation)" % name)
 
-    plt.axis([minval, maxval, minval, maxval])
+    minbnd = minval - 0.1*valrange
+    maxbnd = maxval + 0.1*valrange
 
-    plt.tight_layout()
+    plt.axis([minbnd, maxbnd, minbnd, maxbnd])
+    plt.axes().set_aspect('equal')
+
+    if par == 'modulus':
+        plt.xlabel("simulation (GPa)")
+        plt.ylabel("prediction (GPa)")
+    else:
+        plt.xlabel("simulation (MPa)")
+        plt.ylabel("prediction (MPa)")
+
+    # plt.xticks(rotation=20)
+    # plt.yticks(rotation=20)
+
+    # plt.legend(loc='upper left', shadow=True, fontsize='medium')
+    plt.legend(bbox_to_anchor=(1.02, 1), loc=2, shadow=True, fontsize='medium')
+    fig.tight_layout(rect=(0, 0, .75, 1))
+
+    fig_name = 'prediction_%s_npc%s_npoly%s_L%s.png' % (par, n_pc, n_poly, H)
+    fig.canvas.set_window_title(fig_name)
+    plt.savefig(fig_name)
 
     f_reg.close()
-
-    return indx
 
 
 if __name__ == '__main__':

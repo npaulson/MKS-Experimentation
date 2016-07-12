@@ -5,16 +5,16 @@ from constants import const
 import h5py
 
 
-def pltdend(ns_set, set_id_set, names_set):
+def pltdend(ns_set, set_id_set, names_set, H):
 
     C = const()
 
-    plt.figure(num=4, figsize=[7, 5])
+    fig = plt.figure(figsize=[5, 5])
 
     y = np.zeros([len(set_id_set), C['n_pc_tot']])
     # y = np.zeros([len(set_id_set), 2])
 
-    f_red = h5py.File("spatial_reduced.hdf5", 'r')
+    f_red = h5py.File("spatial_reduced_L%s.hdf5" % H, 'r')
 
     for ii in xrange(len(set_id_set)):
 
@@ -37,6 +37,10 @@ def pltdend(ns_set, set_id_set, names_set):
     plt.xlabel('Euclidean distance')
 
     plt.tight_layout()
+
+    fig_name = 'dendrogram_L%s.png' % H
+    fig.canvas.set_window_title(fig_name)
+    plt.savefig(fig_name)
 
 
 if __name__ == '__main__':

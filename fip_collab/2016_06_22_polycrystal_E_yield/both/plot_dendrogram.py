@@ -5,7 +5,7 @@ from constants import const
 import h5py
 
 
-def pltdend(ns_set, set_id_set, names_set):
+def pltdend(ns_set, set_id_set, names_set, H):
 
     C = const()
 
@@ -14,7 +14,7 @@ def pltdend(ns_set, set_id_set, names_set):
     y = np.zeros([len(set_id_set), C['n_pc_tot']])
     # y = np.zeros([len(set_id_set), 2])
 
-    f_red = h5py.File("spatial_reduced_L%s.hdf5" % C['H'], 'r')
+    f_red = h5py.File("spatial_reduced_L%s.hdf5" % H, 'r')
 
     for ii in xrange(len(set_id_set)):
 
@@ -38,7 +38,7 @@ def pltdend(ns_set, set_id_set, names_set):
 
     plt.tight_layout()
 
-    fig_name = 'dendrogram_L%s.png' % C['H']
+    fig_name = 'dendrogram_L%s.png' % H
     fig.canvas.set_window_title(fig_name)
     plt.savefig(fig_name)
 

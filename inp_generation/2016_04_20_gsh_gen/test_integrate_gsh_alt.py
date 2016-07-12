@@ -1,7 +1,7 @@
 import numpy as np
-import gsh_cub_tri_L0_40 as gsh_old
-# import hex_0_8_real as gsh_new
-import gsh_cub_tri_L0_40 as gsh_new
+import gsh_hex_tri_L0_16 as gsh_old
+#import hex_0_8_real as gsh_new
+import gsh_hex_tri_L0_16 as gsh_new
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
@@ -42,9 +42,9 @@ def euler_grid_center(inc, phi1max, phimax, phi2max):
 
 phi1max = 360.  # max phi1 angle (deg) for integration domain
 phimax = 90.  # max phi angle (deg) for integration domain
-phi2max = 90.  # max phi2 angle (deg) for integration domain
+phi2max = 60.  # max phi2 angle (deg) for integration domain
 inc = 3.  # degree increment for euler angle generation
-L_trunc = 28  # truncation level in the l index for the GSH
+L_trunc = 6  # truncation level in the l index for the GSH
 
 indxvec_old = gsh_old.gsh_basis_info()
 N_L_old = np.sum(indxvec_old[:, 0] <= L_trunc)

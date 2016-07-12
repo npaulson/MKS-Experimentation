@@ -84,16 +84,16 @@ if __name__ == '__main__':
 
     """plot the original data and the fits"""
 
-    plt.figure()
+    plt.figure(figsize=(3, 2.5))
 
-    plt.plot(np.log(x), y, 'b.', markersize=3)
+    # plt.plot(np.log(x), y, 'b.', markersize=3)
 
     shape = gamma_stats[0]
     # shape = .9
-    # loc = gamma_stats[1]
-    loc = np.exp(-14)
-    # scale = gamma_stats[2]
-    scale = np.exp(-14.1)
+    loc = gamma_stats[1]
+    # loc = np.exp(-14)
+    scale = gamma_stats[2]
+    # scale = np.exp(-14.1)
 
     x_ = np.linspace(x.min(), x.max(), 1000)
 
@@ -110,5 +110,7 @@ if __name__ == '__main__':
 
     plt.xlabel("ln(FIP)")
     plt.ylabel("CDF")
+
+    plt.tight_layout()
 
     plt.show()
