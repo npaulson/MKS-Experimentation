@@ -22,7 +22,7 @@ dir_val = C['dir_val']
 f = h5py.File("responses.hdf5", 'w')
 f.close()
 
-bc = 'bc3'
+bc = 'bc1'
 
 for ii in xrange(len(set_id_cal)):
     gr.resp(ns_cal[ii], strt_cal[ii], names_cal[ii],

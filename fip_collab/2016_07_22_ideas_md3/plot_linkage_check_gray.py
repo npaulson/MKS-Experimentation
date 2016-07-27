@@ -1,17 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-import functions as rr
 from constants import const
 import h5py
 
 
-def plot_check(par, n_pc, n_poly, H):
+def plot_check(C, par, n_pc, n_poly, H, erv):
 
-    C = const()
-
-    colormat = cm.rainbow(np.linspace(0, 1, 5))
-    # colormat = cm.Set1(np.linspace(0, 1, len(C['set_id_val'])))
+    """define the colors of interest"""
+    n_col = len(C['set_id_val'])-len(C['set_id_cal'])
+    colormat = cm.rainbow(np.linspace(0, 1, n_col))
     gray = [.7, .7, .7]
 
     f_reg = h5py.File("regression_results_L%s.hdf5" % H, 'r')
@@ -41,10 +39,8 @@ def plot_check(par, n_pc, n_poly, H):
     # indx = np.argmin(f_reg.get('loocv_err_%s' % par))
     # n_pc = order[indx, 0]
 
-    msg = par
-    rr.WP(msg, C['wrt_file'])
-    msg = "n_pc, n_poly: %s" % str(order[indx, :])
-    rr.WP(msg, C['wrt_file'])
+    print par
+    print "n_pc, n_poly: %s" % str(order[indx, :])
 
     """find the results associated with the desired n_pc, n_poly"""
 
@@ -61,22 +57,15 @@ def plot_check(par, n_pc, n_poly, H):
         RsimV = f_reg.get('Rsim_val_%s' % par)[...]
         RpredV = f_reg.get('Rpred_val_%s' % par)[indx, :]
 
-
-
     """write out the associated error"""
     n_fac = RsimC.mean()
 
     errC = 100.*np.abs(RpredC-RsimC)/n_fac
-    msg = "mean %% error for cal: %s" % errC.mean()
-    rr.WP(msg, C['wrt_file'])
-    msg = "max %% error for cal: %s" % errC.max()
-    rr.WP(msg, C['wrt_file'])
-
+    print "mean %% error for cal: %s" % errC.mean()
+    print "max %% error for cal: %s" % errC.max()
     errV = 100.*np.abs(RpredV-RsimV)/n_fac
-    msg = "mean %% error for val: %s" % errV.mean()
-    rr.WP(msg, C['wrt_file'])
-    msg = "max %% error for val: %s" % errV.max()
-    rr.WP(msg, C['wrt_file'])
+    print "mean %% error for val: %s" % errV.mean()
+    print "max %% error for val: %s" % errV.max()
 
     """plot the prediction equal to simulation line"""
     fig = plt.figure(figsize=[6, 5.75])
@@ -92,13 +81,6 @@ def plot_check(par, n_pc, n_poly, H):
     plt.plot(line, line, 'k-')
 
     """plot the % error lines"""
-    if par == 'modulus':
-        erv = 1
-    elif par == 'strength':
-        erv = 5
-    else:
-        erv = 5
-
     offs = 0.01*erv*n_fac
 
     plt.plot(line+offs, line, 'k--',
@@ -114,17 +96,22 @@ def plot_check(par, n_pc, n_poly, H):
         Rpred_tmp = RpredC[c:c_]
         c = c_
 
-        if ii == 0:
-            plt.plot(Rsim_tmp, Rpred_tmp,
-                     marker='o', markersize=7, color=gray,
-                     alpha=0.3, linestyle='',
-                     label="calibration data")
-        else:
-            plt.plot(Rsim_tmp, Rpred_tmp,
-                     marker='o', markersize=7, color=gray,
-                     alpha=0.3, linestyle='')
+        # if ii == 0:
+        #     plt.plot(Rsim_tmp, Rpred_tmp,
+        #              marker='o', markersize=7, color=gray,
+        #              alpha=0.3, linestyle='',
+        #              label="calibration data")
+        # else:
+        #     plt.plot(Rsim_tmp, Rpred_tmp,
+        #              marker='o', markersize=7, color=gray,
+        #              alpha=0.3, linestyle='')
+
+        plt.plot(Rsim_tmp, Rpred_tmp,
+                 marker='s', markersize=7, color=gray,
+                 alpha=0.3, linestyle='')
 
     c = 0
+    d = 0
     for ii in xrange(len(C['ns_val'])):
 
         c_ = c + C['ns_val'][ii]
@@ -133,20 +120,30 @@ def plot_check(par, n_pc, n_poly, H):
         Rpred_tmp = RpredV[c:c_]
         c = c_
 
-        if ii == 0:
+        # if ii == 0:
+        #     plt.plot(Rsim_tmp, Rpred_tmp,
+        #              marker='s', markersize=7, color=gray,
+        #              alpha=0.3, linestyle='',
+        #              label="validation data")
+        # elif ii <= 6:
+        #     plt.plot(Rsim_tmp, Rpred_tmp,
+        #              marker='s', markersize=7, color=gray,
+        #              alpha=0.3, linestyle='')
+        # else:
+        #     plt.plot(Rsim_tmp, Rpred_tmp,
+        #              marker='s', markersize=7, color=colormat[ii-7, :],
+        #              alpha=0.5, linestyle='',
+        #              label=name)
+
+        if np.any(np.array(C['names_cal']) == name):
             plt.plot(Rsim_tmp, Rpred_tmp,
-                     marker='s', markersize=7, color=gray,
-                     alpha=0.3, linestyle='',
-                     label="validation data")
-        elif ii <= 6:
-            plt.plot(Rsim_tmp, Rpred_tmp,
-                     marker='s', markersize=7, color=gray,
+                     marker='o', markersize=7, color=gray,
                      alpha=0.3, linestyle='')
         else:
             plt.plot(Rsim_tmp, Rpred_tmp,
-                     marker='s', markersize=7, color=colormat[ii-7, :],
-                     alpha=0.5, linestyle='',
-                     label=name)
+                     marker='o', markersize=7, color=colormat[d, :],
+                     alpha=0.5, linestyle='', label=name)
+            d += 1
 
     minbnd = minval - 0.1*valrange
     maxbnd = maxval + 0.1*valrange
@@ -161,15 +158,21 @@ def plot_check(par, n_pc, n_poly, H):
         plt.xlabel("simulation (MPa)")
         plt.ylabel("prediction (MPa)")
 
-    plt.legend(loc='upper left', shadow=True, fontsize='medium')
+    # plt.legend(loc='upper left', shadow=True, fontsize='medium')
+
+    """create a legend based on points not plotted"""
+    p1 = plt.plot(0, 0, marker='s', markersize=6,
+                  color=gray, linestyle='', label='calibration')
+    p2 = plt.plot(0, 0, marker='o', markersize=6,
+                  color=gray, linestyle='', label='validation')
+    plt.legend(loc='upper left', shadow=True, fontsize='medium', ncol=1)
+    p1[0].remove()
+    p2[0].remove()
+
     fig.tight_layout()
 
     # plt.legend(bbox_to_anchor=(1.02, 1), loc=2, shadow=True, fontsize='medium')
     # fig.tight_layout(rect=(0, 0, .8, 1))
-
-    fig_name = 'prediction_%s_npc%s_npoly%s_L%s.png' % (par, n_pc, n_poly, H)
-    fig.canvas.set_window_title(fig_name)
-    plt.savefig(fig_name)
 
     f_reg.close()
 
@@ -179,6 +182,6 @@ if __name__ == '__main__':
     par = "strength"
     n_pc = 6
     n_poly = 2
-    H = 41
-    plot_check(par, n_pc, n_poly, H)
+    H = 90
+    plot_check(C, par, n_pc, n_poly, H)
     plt.show()

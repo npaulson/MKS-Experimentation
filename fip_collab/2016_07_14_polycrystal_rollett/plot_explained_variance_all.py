@@ -19,13 +19,14 @@ def variance(pltshape, Hvec):
 
     for ii in xrange(len(Hvec)):
 
-        f = h5py.File("pca_data_L%s.hdf5" % Hvec[ii], 'r')
+        f = h5py.File("ratios_L%s.hdf5" % Hvec[ii], 'r')
         ratios = f.get('ratios')[...]
         f.close()
 
-        data = np.cumsum(ratios)
+        data = np.zeros((ratios.size+1,))
+        data[1:] = np.cumsum(ratios)
 
-        plt.plot(np.arange(data.size)+1, data, color=colormat[ii, :],
+        plt.plot(np.arange(data.size), data, color=colormat[ii, :],
                  marker='D', markersize=5,
                  linewidth=2, linestyle='-',
                  alpha=.7,
@@ -52,7 +53,7 @@ def variance(pltshape, Hvec):
 
 
 if __name__ == '__main__':
-    pltshape = [.5, 15, 40, 105]
+    pltshape = [0, 15, 40, 105]
     Hvec = [6, 15, 41, 90]
     variance(pltshape, Hvec)
     plt.show()

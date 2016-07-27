@@ -64,13 +64,13 @@ def pltmap(H, pcA, pcB):
         meanA = reduced[:, pcA].mean()
         meanB = reduced[:, pcB].mean()
 
-        # plt.text(meanA, meanB+8, C['names_val'][ii],
-        #          horizontalalignment='center',
-        #          verticalalignment='center')
-
-        plt.text(txtm[ii, 0], txtm[ii, 1], C['names_val'][ii],
+        plt.text(meanA, meanB+8, C['names_val'][ii],
                  horizontalalignment='center',
                  verticalalignment='center')
+
+        # plt.text(txtm[ii, 0], txtm[ii, 1], C['names_val'][ii],
+        #          horizontalalignment='center',
+        #          verticalalignment='center')
 
         if ii == 0:
             plt.plot(reduced[:, pcA], reduced[:, pcB],
@@ -105,7 +105,7 @@ def pltmap(H, pcA, pcB):
 
     plt.grid(linestyle='-', alpha=0.15)
 
-    plt.legend(shadow=True, fontsize='medium')
+    # plt.legend(shadow=True, fontsize='medium')
     fig.tight_layout()
 
     # plt.legend(bbox_to_anchor=(1.02, 1), loc=2, shadow=True, fontsize='medium')

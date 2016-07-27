@@ -1,16 +1,10 @@
 import numpy as np
-import functions as rr
-import reg_functions as rf
 from constants import const
+import reg_functions as rf
 import h5py
-import time
 
 
-def linkage(par):
-
-    st = time.time()
-
-    C = const()
+def linkage(C, par):
 
     f_red = h5py.File("spatial_reduced_L%s.hdf5" % C['H'], 'r')
     f_link = h5py.File("responses.hdf5", 'r')
@@ -53,7 +47,8 @@ def linkage(par):
     """perform the regressions"""
 
     n_ii = C['n_pc_max']
-    n_jj = C['n_poly_max']
+    n_jj = 1
+    # n_jj = C['n_poly_max']
 
     f_reg = h5py.File("regression_results_L%s.hdf5" % C['H'], 'a')
 
@@ -99,10 +94,10 @@ def linkage(par):
             n_pc = ii+1
             n_poly = jj+2
 
-            msg = "number of PCs: %s" % n_pc
-            rr.WP(msg, C['wrt_file'])
-            msg = "degree of polynomial: %s" % str(n_poly-1)
-            rr.WP(msg, C['wrt_file'])
+            # msg = "number of PCs: %s" % n_pc
+            # rr.WP(msg, C['wrt_file'])
+            # msg = "degree of polynomial: %s" % str(n_poly-1)
+            # rr.WP(msg, C['wrt_file'])
 
             tmp = rf.standard(reduced_cal_tot, reduced_val_tot,
                               response_cal_tot, response_val_tot,
@@ -125,7 +120,7 @@ def linkage(par):
             maxerr_cal_set[c] = maxerr_cal
             maxerr_val_set[c] = maxerr_val
             loocv_err[c] = loocv_mean
-            print "loocv.mean(): %s" % loocv_mean
+            # print "loocv.mean(): %s" % loocv_mean
 
             Rpred_cal_set[c, :] = Rpred_cal
             Rpred_val_set[c, :] = Rpred_val
@@ -137,12 +132,9 @@ def linkage(par):
 
     f_reg.close()
 
-    timeE = np.round(time.time()-st, 1)
-    msg = "regressions and cross-validations completed: %s s" % timeE
-    rr.WP(msg, C['wrt_file'])
-
 
 if __name__ == '__main__':
-    par = 'c0'
 
-    linkage(par)
+    C = const()
+    par = 'modulus'
+    linkage(C, par)

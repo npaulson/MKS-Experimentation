@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from constants import const
 from sklearn.preprocessing import PolynomialFeatures
 
 
@@ -53,8 +52,6 @@ def loocv(x, y, n_pc, n_poly):
 
 def standard(x_cal, x_val, y_cal, y_val, n_pc, n_poly):
 
-    C = const()
-
     coef = regression(x_cal, y_cal, n_pc, n_poly)
 
     y_cal_predict = prediction(x_cal, coef, n_pc, n_poly)
@@ -64,29 +61,29 @@ def standard(x_cal, x_val, y_cal, y_val, n_pc, n_poly):
     meanerr_cal = err.mean()
     maxerr_cal = err.max()
 
-    tmp = str([meanerr_cal, maxerr_cal])
-    msg = "y_cal mean and max error: %s" % tmp
-    WP(msg, C['wrt_file'])
-    tmp = str([y_cal.min(), y_cal.mean(), y_cal.max()])
-    msg = "y_cal min mean and max: %s" % tmp
-    WP(msg, C['wrt_file'])
-    tmp = str([y_cal_predict.min(), y_cal_predict.mean(), y_cal_predict.max()])
-    msg = "y_cal_predict min mean and max: %s" % tmp
-    WP(msg, C['wrt_file'])
+    # tmp = str([meanerr_cal, maxerr_cal])
+    # msg = "y_cal mean and max error: %s" % tmp
+    # WP(msg, C['wrt_file'])
+    # tmp = str([y_cal.min(), y_cal.mean(), y_cal.max()])
+    # msg = "y_cal min mean and max: %s" % tmp
+    # WP(msg, C['wrt_file'])
+    # tmp = str([y_cal_predict.min(), y_cal_predict.mean(), y_cal_predict.max()])
+    # msg = "y_cal_predict min mean and max: %s" % tmp
+    # WP(msg, C['wrt_file'])
 
     err = np.abs(y_val-y_val_predict)
     meanerr_val = err.mean()
     maxerr_val = err.max()
 
-    tmp = str([meanerr_val, maxerr_val])
-    msg = "y_val mean and max error: %s" % tmp
-    WP(msg, C['wrt_file'])
-    tmp = str([y_cal.min(), y_val.mean(), y_val.max()])
-    msg = "y_val min mean and max: %s" % tmp
-    WP(msg, C['wrt_file'])
-    tmp = str([y_val_predict.min(), y_val_predict.mean(), y_val_predict.max()])
-    msg = "y_val_predict min mean and max: %s" % tmp
-    WP(msg, C['wrt_file'])
+    # tmp = str([meanerr_val, maxerr_val])
+    # msg = "y_val mean and max error: %s" % tmp
+    # WP(msg, C['wrt_file'])
+    # tmp = str([y_cal.min(), y_val.mean(), y_val.max()])
+    # msg = "y_val min mean and max: %s" % tmp
+    # WP(msg, C['wrt_file'])
+    # tmp = str([y_val_predict.min(), y_val_predict.mean(), y_val_predict.max()])
+    # msg = "y_val_predict min mean and max: %s" % tmp
+    # WP(msg, C['wrt_file'])
 
     return [y_cal_predict, y_val_predict,
             meanerr_cal, meanerr_val,

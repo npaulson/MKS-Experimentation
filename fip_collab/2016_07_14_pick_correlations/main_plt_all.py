@@ -25,8 +25,8 @@ strt_val = C['strt_val']
 ns_val = C['ns_val']
 dir_val = C['dir_val']
 
-Hvec = [6, 15, 41, 90]
-# Hvec = [15]
+# Hvec = [6, 15, 41, 90]
+Hvec = [6]
 
 # """Plot an autocorrelation"""
 # sn = 0
@@ -40,28 +40,24 @@ Hvec = [6, 15, 41, 90]
 # pdi.pltdist(23)
 
 """Plot the percentage explained variance"""
-pev.variance([.5, 15, 40, 105], Hvec)
+pev.variance([0, 15, 40, 105], Hvec)
 
 """Plot the microstructures in PC space"""
 pcA = 0
 pcB = 1
 pcC = 2
-pltmap.pltmap(15, pcA, pcB)
-pltmap3d.pltmap(15, pcA, pcB, pcC)
+pltmap.pltmap(6, pcA, pcB)
+# pltmap3d.pltmap(6, pcA, pcB, pcC)
 
 """Plot a dendrogram"""
-pd.pltdend(ns_val, set_id_val, names_val, 15)
+pd.pltdend(ns_val, set_id_val, names_val, 6)
 
 """Plot the errors versus number of PCs and polynomial order"""
-pevp.plterr('modulus', 60, 1, ['cal'], Hvec)
-pevp.plterr('modulus', 60, 1, ['LOOCV'], Hvec)
-pevp.plterr('modulus', 60, 1, ['val'], Hvec)
-pevp.plterr('strength', 60, 5, ['cal'], Hvec)
-pevp.plterr('strength', 60, 5, ['LOOCV'], Hvec)
-pevp.plterr('strength', 60, 5, ['val'], Hvec)
+pevp.plterr('modulus', 60, 1, ['cal', 'LOOCV', 'val'], Hvec)
+pevp.plterr('strength', 60, 3, ['cal', 'LOOCV', 'val'], Hvec)
 
-"""Plot the predicted versus actual values of the property of interest"""
-plc.plot_check('modulus', n_pc=3, n_poly=2, H=15)
-plc.plot_check('strength', n_pc=6, n_poly=2, H=90)
+# """Plot the predicted versus actual values of the property of interest"""
+# plc.plot_check('modulus', n_pc=3, n_poly=2, H=6)
+# plc.plot_check('strength', n_pc=3, n_poly=2, H=6)
 
 plt.show()

@@ -3,14 +3,11 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from mpl_toolkits.mplot3d import Axes3D
 from constants import const
-import functions as rr
 import h5py
 import sys
 
 
-def pltmap(H, pcA, pcB, pcC):
-
-    C = const()
+def pltmap(C, H, pcA, pcB, pcC):
 
     fig = plt.figure(figsize=[9, 5.5])
     ax = fig.add_subplot(111, projection='3d')
@@ -18,7 +15,7 @@ def pltmap(H, pcA, pcB, pcC):
     # colormat = cm.rainbow(np.linspace(0, 1, len(C['set_id_val'])))
     colormat = cm.Set1(np.linspace(0, 1, len(C['set_id_val'])))
 
-    f_red = h5py.File("spatial_reduced_L%s.hdf5" % H, 'r')
+    f_red = h5py.File("spatial_reduced_L%s.hdf5" % C['H'], 'r')
 
     """plot SVE sets for cal"""
 
@@ -74,10 +71,6 @@ def pltmap(H, pcA, pcB, pcC):
 
     f_red.close()
 
-    fig_name = 'pc%s_pc%s_pc%s_L%s.png' % (pcA+1, pcB+1, pcC+1, H)
-    fig.canvas.set_window_title(fig_name)
-    plt.savefig(fig_name)
-
 
 if __name__ == '__main__':
 
@@ -87,5 +80,5 @@ if __name__ == '__main__':
     pcA = np.int64(sys.argv[2])
     pcB = np.int64(sys.argv[3])
     pcC = np.int64(sys.argv[4])
-    pltmap(H, pcA, pcB, pcC)
+    pltmap(C, H, pcA, pcB, pcC)
     plt.show()

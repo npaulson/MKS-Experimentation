@@ -179,6 +179,6 @@ if __name__ == '__main__':
     par = "strength"
     n_pc = 6
     n_poly = 2
-    H = 41
+    H = 90
     plot_check(par, n_pc, n_poly, H)
     plt.show()
