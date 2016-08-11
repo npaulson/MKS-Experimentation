@@ -36,6 +36,10 @@ def new_space(C, ns_set, set_id_set):
     numerical issues"""
     pca = PCA(n_components=C['n_pc_tot'])
     pca.fit(allcorr)
+
+    f_master.create_dataset('components', data=pca.components_)
+    f_master.create_dataset('mean', data=pca.mean_)
+
     ratios = 100*pca.explained_variance_ratio_
     f_master.create_dataset('ratios', data=ratios)
     ratios = np.round(ratios, 1)

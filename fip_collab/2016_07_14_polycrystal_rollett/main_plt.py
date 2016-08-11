@@ -15,22 +15,24 @@ set_id = C['set_id']
 # """Plot a correlation"""
 # pcs.pltcorr()
 
+H = 64
+
 """Plot the percentage explained variance"""
-pev.variance([0, 11, 95, 101], [25])
+pev.variance([0, 11, 95, 101], [H])
 
 """Plot the microstructures in PC space"""
 
-pltmap.pltmap(25, 0, 1)
-pltmap.pltmap(25, 0, 2)
-pltmap.pltmap(25, 0, 3)
-pltmap.pltmap(25, 1, 2)
-pltmap.pltmap(25, 1, 3)
-pltmap.pltmap(25, 2, 3)
+pltmap.pltmap(H, 0, 1)
+pltmap.pltmap(H, 0, 2)
+pltmap.pltmap(H, 0, 3)
+pltmap.pltmap(H, 1, 2)
+pltmap.pltmap(H, 1, 3)
+pltmap.pltmap(H, 2, 3)
 
-pltmap3d.pltmap(25, 0, 1, 3)
-pltmap3d.pltmap(25, 1, 2, 3)
+pltmap3d.pltmap(H, 0, 1, 3)
+pltmap3d.pltmap(H, 1, 2, 3)
 
 """Plot a dendrogram"""
-pd.pltdend(set_id, names, 25)
+pd.pltdend(set_id, names, H)
 
 plt.show()

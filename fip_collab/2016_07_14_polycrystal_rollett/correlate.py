@@ -47,11 +47,17 @@ def get_M(set_id):
     for h in xrange(C['H_hex']):
         tmp = gsh_h.gsh_eval(euler_h, [h])
         tmp = np.squeeze(tmp)
+
         if indxvec_h[h, 1] < 0:
             mf[c, vec_h] = tmp.imag/(2.*indxvec_h[h, 0]+1.)
         else:
             mf[c, vec_h] = tmp.real/(2.*indxvec_h[h, 0]+1.)
         c += 1
+
+    msg = "min of mf: %s" % str(np.min(mf, axis=1))
+    rr.WP(msg, C['wrt_file'])
+    msg = "max of mf: %s" % str(np.max(mf, axis=1))
+    rr.WP(msg, C['wrt_file'])
 
     del vec_h, euler_h
 

@@ -12,39 +12,37 @@ set_id = C['set_id']
 dir_micr = C['dir_micr']
 logfile = "eulerlog.txt"
 
-"""load the equi and rollx microstructures"""
+# """load the equi and rollx microstructures"""
 
-af.job_submit(njobs=C['read_njobs'],
-              mem=C['read_mem'],
-              walltime=C['read_walltime'],
-              path=C['path'],
-              scriptname=C['read_scriptname'])
+# af.job_submit(njobs=C['read_njobs'],
+#               mem=C['read_mem'],
+#               walltime=C['read_walltime'],
+#               scriptname=C['read_scriptname'])
 
-af.job_check(njobs=C['read_njobs'],
-             walltime=C['read_walltime'],
-             scriptname=C['read_scriptname'],
-             logfile=logfile)
+# af.job_check(njobs=C['read_njobs'],
+#              walltime=C['read_walltime'],
+#              scriptname=C['read_scriptname'],
+#              logfile=logfile)
 
-"""Rotate the rolled microstructures 90 degrees
-CCW in the X-Z plane, creating rollz microstructures"""
+# """Rotate the rolled microstructures 90 degrees
+# CCW in the X-Z plane, creating rollz microstructures"""
 
-af.job_submit(njobs=C['rotate_njobs'],
-              mem=C['rotate_mem'],
-              walltime=C['rotate_walltime'],
-              path=C['path'],
-              scriptname=C['rotate_scriptname'])
+# af.job_submit(njobs=C['rotate_njobs'],
+#               mem=C['rotate_mem'],
+#               walltime=C['rotate_walltime'],
+#               scriptname=C['rotate_scriptname'])
 
-af.job_check(njobs=C['rotate_njobs'],
-             walltime=C['rotate_walltime'],
-             scriptname=C['rotate_scriptname'],
-             logfile=logfile)
+# af.job_check(njobs=C['rotate_njobs'],
+#              walltime=C['rotate_walltime'],
+#              scriptname=C['rotate_scriptname'],
+#              logfile=logfile)
 
-"""load all microstructures into same file"""
+# """load all microstructures into same file"""
 
-f = h5py.File("euler_L%s.hdf5" % C['H'], 'w')
-f.close()
+# f = h5py.File("euler_L%s.hdf5" % C['H'], 'w')
+# f.close()
 
-ce.collect()
+# ce.collect()
 
 """Compute GSH coefficients to create microstructure function in real and
 fourier space, Compute the periodic statistics for the microstructures"""
@@ -52,7 +50,6 @@ fourier space, Compute the periodic statistics for the microstructures"""
 af.job_submit(njobs=C['corr_njobs'],
               mem=C['corr_mem'],
               walltime=C['corr_walltime'],
-              path=C['path'],
               scriptname=C['corr_scriptname'])
 
 af.job_check(njobs=C['corr_njobs'],
@@ -60,21 +57,21 @@ af.job_check(njobs=C['corr_njobs'],
              scriptname=C['corr_scriptname'],
              logfile=logfile)
 
-"""load all correlations onto the same file"""
+# """load all correlations onto the same file"""
 
-f = h5py.File("spatial_L%s.hdf5" % C['H'], 'w')
-f.close()
+# f = h5py.File("spatial_L%s.hdf5" % C['H'], 'w')
+# f.close()
 
-cs.collect()
+# cs.collect()
 
-"""Perform PCA on correlations"""
+# """Perform PCA on correlations"""
 
-pca = gns.new_space(set_id)
+# pca = gns.new_space(set_id)
 
-"""transform statistics to reduced dimensionality space"""
+# """transform statistics to reduced dimensionality space"""
 
-f = h5py.File("spatial_reduced_L%s.hdf5" % C['H'], 'w')
-f.close()
+# f = h5py.File("spatial_reduced_L%s.hdf5" % C['H'], 'w')
+# f.close()
 
-for sid in set_id:
-    tf.transform(sid, pca)
+# for sid in set_id:
+#     tf.transform(sid, pca)

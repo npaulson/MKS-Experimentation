@@ -33,7 +33,7 @@ def job_check(njobs, walltime, scriptname, logfile):
     rr.WP('all jobs completed', logfile)
 
 
-def job_submit(njobs, mem, walltime, path, scriptname):
+def job_submit(njobs, mem, walltime, scriptname):
 
     for ii in xrange(njobs):
 
@@ -42,13 +42,12 @@ def job_submit(njobs, mem, walltime, path, scriptname):
         writefile(filename,
                   mem,
                   walltime,
-                  path,
                   '%s %s' % (scriptname, ii))
 
-        sp.call('qsub %s' % filename, shell=True)
+        sp.call('msub %s' % filename, shell=True)
 
 
-def writefile(filename, mem, walltime, path, script_etc):
+def writefile(filename, mem, walltime, script_etc):
 
     f = open(filename, 'w')
     f.write('#PBS -N calfem\n')
@@ -58,7 +57,7 @@ def writefile(filename, mem, walltime, path, script_etc):
     f.write('#PBS -l walltime=%s:00:00\n' % str(walltime).zfill(2))
     f.write('#PBS -j oe\n')
     f.write('#PBS -o out.$PBS_JOBID\n\n')
-    f.write('cd %s\n' % path)
+    f.write('cd $PBS_O_WORKDIR\n')
     f.write('module purge\n')
     f.write('module load anaconda2\n')
     f.write('python %s' % script_etc)
