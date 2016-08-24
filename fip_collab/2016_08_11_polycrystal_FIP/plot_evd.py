@@ -6,7 +6,7 @@ import h5py
 import sys
 
 
-def pltevd(set_id_set, indx, pltnum):
+def pltevd(set_id_set):
 
     C = const()
 
@@ -22,7 +22,7 @@ def pltevd(set_id_set, indx, pltnum):
 
     f_reg = h5py.File("regression_results.hdf5", 'r')
 
-    plt.figure(pltnum, figsize=[5.5, 4])
+    plt.figure(figsize=[5.5, 4])
 
     f = h5py.File("responses.hdf5", 'r')
 

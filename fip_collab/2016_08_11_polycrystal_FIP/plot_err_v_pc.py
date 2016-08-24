@@ -6,7 +6,9 @@ from matplotlib.ticker import AutoMinorLocator
 import h5py
 
 
-def plterr(C, par, n_pc_max, upbnd, Tvec, Hvec):
+def plterr(par, n_pc_max, upbnd, Tvec, Hvec):
+
+    C = const()
 
     colormat = cm.plasma(np.linspace(0, .8, len(Hvec)))
     # colormat = cm.rainbow(np.linspace(0, .9, len(Hvec)))
@@ -70,7 +72,6 @@ def plterr(C, par, n_pc_max, upbnd, Tvec, Hvec):
 
 
 if __name__ == '__main__':
-    C = const()
     par = "strength"
     n_pc_max = 50
     upbnd = 3

@@ -1,8 +1,15 @@
+import functions as rr
 import numpy as np
+from constants import const
+import time
 import h5py
 
 
-def correlate(C, ns, set_id):
+def correlate(ns, set_id):
+
+    st = time.time()
+
+    C = const()
 
     f = h5py.File("spatial_L%s.hdf5" % C['H'], 'a')
     M = f.get('M_%s' % set_id)[...]
@@ -16,6 +23,8 @@ def correlate(C, ns, set_id):
     for c in xrange(C['cmax']):
 
         ii, jj = C['cmat'][c, :]
+        if np.mod(c, 20) == 0:
+            print str([ii, jj])
 
         M1 = M[:, ii, ...]
         mag1 = np.abs(M1)
@@ -48,7 +57,17 @@ def correlate(C, ns, set_id):
         # tmp = np.fft.ifftn(FFtmp, [C['el'], C['el'], C['el']], [1, 2, 3])
         # ff[:, ii, jj, ...] = tmp.real
 
+        if c == 0:
+            szgb = np.round(C['cmax']*FFtmp.nbytes/(1e9), 3)
+            msg = "ff = %s gb" % szgb
+            rr.WP(msg, C['wrt_file'])
+
     f.close()
+
+    timeE = np.round(time.time()-st, 5)
+
+    msg = "correlations computed for %s: %ss" % (set_id, timeE)
+    rr.WP(msg, C['wrt_file'])
 
 
 if __name__ == '__main__':

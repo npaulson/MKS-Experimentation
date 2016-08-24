@@ -9,14 +9,18 @@ import h5py
 C = const()
 
 set_id_cal = C['set_id_cal']
+dir_cal = C['dir_cal']
+names_cal = C['names_cal']
+set_id_cal = C['set_id_cal']
 strt_cal = C['strt_cal']
 ns_cal = C['ns_cal']
-dir_cal = C['dir_cal']
 
+set_id_val = C['set_id_val']
+dir_val = C['dir_val']
+names_val = C['names_val']
 set_id_val = C['set_id_val']
 strt_val = C['strt_val']
 ns_val = C['ns_val']
-dir_val = C['dir_val']
 
 f = h5py.File("euler.hdf5" % C['H'], 'w')
 f.close()
@@ -24,10 +28,10 @@ f.close()
 """Gather data from vtk files"""
 for ii in xrange(len(set_id_cal)):
     vtk.read_euler(strt_cal[ii], ns_cal[ii], set_id_cal[ii],
-                   dir_cal[ii], 0)
+                   dir_cal[ii], 1)
 for ii in xrange(len(set_id_val)):
     vtk.read_euler(strt_val[ii], ns_val[ii], set_id_val[ii],
-                   dir_val[ii], 0)
+                   dir_val[ii], 1)
 
 f = h5py.File("spatial_L%s.hdf5" % C['H'], 'w')
 f.close()

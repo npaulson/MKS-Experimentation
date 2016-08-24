@@ -1,63 +1,67 @@
 import numpy as np
-from constants import const
+import functions as rr
 import reg_functions as rf
+from constants import const
 import h5py
+import time
 
 
-def linkage(C, par):
+def linkage(par):
+
+    st = time.time()
+
+    C = const()
 
     f_red = h5py.File("spatial_reduced_L%s.hdf5" % C['H'], 'r')
     f_link = h5py.File("responses.hdf5", 'r')
 
     """gather the calibration data"""
 
-    ns_cal_tot = np.sum(C['ns_cal'])
+    n_cal_tot = len(C['set_id_cal'])
 
-    response_cal_tot = np.zeros(ns_cal_tot, dtype='float64')
-    reduced_cal_tot = np.zeros((ns_cal_tot, C['n_pc_tot']), dtype='float64')
+    response_cal_tot = np.zeros(n_cal_tot, dtype='float64')
+    reduced_cal_tot = np.zeros((n_cal_tot, C['n_pc_tot']), dtype='float64')
 
-    c = 0
-    for ii in xrange(len(C['ns_cal'])):
-        c_ = c + C['ns_cal'][ii]
+    for ii in xrange(n_cal_tot):
         set_id = C['set_id_cal'][ii]
         dset_name = "%s_%s" % (par, set_id)
-        response_cal_tot[c:c_] = f_link.get(dset_name)[...]
-        reduced_cal_tot[c:c_, :] = f_red.get('reduced_%s' % set_id)[...]
-        c = c_
+        response_cal_tot[ii] = f_link.get(dset_name)[...]
+
+        tmp = f_red.get('reduced_%s' % set_id)[...]
+        tmp = np.mean(tmp, axis=0)
+        reduced_cal_tot[ii, :] = tmp
 
     """gather the validation data"""
 
-    ns_val_tot = np.sum(C['ns_val'])
+    n_val_tot = len(C['set_id_val'])
 
-    response_val_tot = np.zeros(ns_val_tot, dtype='float64')
-    reduced_val_tot = np.zeros((ns_val_tot, C['n_pc_tot']), dtype='float64')
+    response_val_tot = np.zeros(n_val_tot, dtype='float64')
+    reduced_val_tot = np.zeros((n_val_tot, C['n_pc_tot']), dtype='float64')
 
-    c = 0
-    for ii in xrange(len(C['ns_val'])):
-        c_ = c + C['ns_val'][ii]
+    for ii in xrange(n_val_tot):
         set_id = C['set_id_val'][ii]
         dset_name = "%s_%s" % (par, set_id)
-        response_val_tot[c:c_] = f_link.get(dset_name)[...]
-        reduced_val_tot[c:c_, :] = f_red.get('reduced_%s' % set_id)[...]
-        c = c_
+        response_val_tot[ii] = f_link.get(dset_name)[...]
+
+        tmp = f_red.get('reduced_%s' % set_id)[...]
+        tmp = np.mean(tmp, axis=0)
+        reduced_val_tot[ii, :] = tmp
 
     f_red.close()
     f_link.close()
 
     """perform the regressions"""
-
     n_ii = C['n_pc_max']
-    n_jj = 1
-    # n_jj = C['n_poly_max']
+    n_jj = C['n_poly_max']
 
     f_reg = h5py.File("regression_results_L%s.hdf5" % C['H'], 'a')
 
     Rpred_cal_set = f_reg.create_dataset('Rpred_cal_%s' % par,
-                                         (n_ii*n_jj, ns_cal_tot),
+                                         (n_ii*n_jj, n_cal_tot),
                                          dtype='float64')
 
     Rpred_val_set = f_reg.create_dataset('Rpred_val_%s' % par,
-                                         (n_ii*n_jj, ns_val_tot),
+                                         (n_ii*n_jj, n_val_tot),
                                          dtype='float64')
 
     f_reg.create_dataset('Rsim_cal_%s' % par, data=response_cal_tot)
@@ -88,16 +92,20 @@ def linkage(C, par):
                                      (n_ii*n_jj,),
                                      dtype='float64')
 
+    # coef_set = f_reg.create_dataset('coef_%s' % par,
+    #                                 (n_ii*n_jj, coefmax),
+    #                                 dtype='float64')
+
     c = 0
     for ii in xrange(n_ii):
         for jj in xrange(n_jj):
             n_pc = ii+1
             n_poly = jj+2
 
-            # msg = "number of PCs: %s" % n_pc
-            # rr.WP(msg, C['wrt_file'])
-            # msg = "degree of polynomial: %s" % str(n_poly-1)
-            # rr.WP(msg, C['wrt_file'])
+            msg = "number of PCs: %s" % n_pc
+            rr.WP(msg, C['wrt_file'])
+            msg = "degree of polynomial: %s" % str(n_poly-1)
+            rr.WP(msg, C['wrt_file'])
 
             tmp = rf.standard(reduced_cal_tot, reduced_val_tot,
                               response_cal_tot, response_val_tot,
@@ -120,7 +128,7 @@ def linkage(C, par):
             maxerr_cal_set[c] = maxerr_cal
             maxerr_val_set[c] = maxerr_val
             loocv_err[c] = loocv_mean
-            # print "loocv.mean(): %s" % loocv_mean
+            print "loocv.mean(): %s" % loocv_mean
 
             Rpred_cal_set[c, :] = Rpred_cal
             Rpred_val_set[c, :] = Rpred_val
@@ -132,9 +140,12 @@ def linkage(C, par):
 
     f_reg.close()
 
+    timeE = np.round(time.time()-st, 1)
+    msg = "regressions and cross-validations completed: %s s" % timeE
+    rr.WP(msg, C['wrt_file'])
+
 
 if __name__ == '__main__':
+    par = 'c0'
 
-    C = const()
-    par = 'modulus'
-    linkage(C, par)
+    linkage(par)

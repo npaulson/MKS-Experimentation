@@ -1,9 +1,26 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.stats as ss
+import sklearn.metrics as sm
 from constants import const
 import h5py
 import sys
+
+
+def fit_gamma_robust(tail):
+    s_f = 0.8
+
+    # fit 4 (alternate)
+    stats = ss.gamma.fit(tail, fa=s_f, floc=np.min(tail)*.99999)
+
+    # calculate the r**2 for the CDF fit
+    cdf = (np.arange(len(tail)) + 1) / float(len(tail))
+    pred_ys = ss.gamma.cdf(tail, *stats)
+    r2 = sm.r2_score(pred_ys, cdf)
+
+    # otherwise return the second set of parameters
+    return stats, r2
 
 
 def pltevd(set_id_set, indx, pltnum):
@@ -39,14 +56,31 @@ def pltevd(set_id_set, indx, pltnum):
         else:
             xmin = np.min([xmin, np.log(x).min()])
             xmax = np.max([xmax, np.log(x).max()])
+        xrng = np.abs(xmax - xmin)
 
         y = (np.arange(x.size)+1)/np.float32(x.size)
 
-        """plot the original data and the fits"""
-        # plt.plot(np.log(x), y, '.', markersize=2, color=colormat[ii, :],
-        #          label=set_id)
-        plt.plot(np.log(x), y, '-', color=colormat[ii, :],
-                 label=set_id)
+        """retrieve the predicted coefficients"""
+        mu = f_reg.get('Rpred_val_mu')[indx, ii]
+        sigma = f_reg.get('Rpred_val_sigma')[indx, ii]
+
+        # """retrieve the coefficients for validation"""
+        # mu = f.get('mu_%s' % set_id)[...]
+        # sigma = f.get('sigma_%s' % set_id)[...]
+
+        # """plot the original data and the fits"""
+        # plt.plot(np.log(x), y, '.', markersize=1, color=colormat[ii, :])
+
+        tmp = np.linspace(xmin-.5*xrng, xmax+.5*xrng, 200)
+        x_ = np.exp(tmp)
+        y_ = ss.gamma.cdf(x_, 0.8, loc=mu, scale=sigma)
+
+        tmp = y_ > 0
+        x_ = x_[tmp]
+        y_ = y_[tmp]
+
+        plt.plot(np.log(x_), y_,
+                 '-', color=colormat[ii, :], lw=1, label=set_id)
 
     f.close()
     f_reg.close()
@@ -55,9 +89,8 @@ def pltevd(set_id_set, indx, pltnum):
     plt.ylabel("CDF")
     plt.legend(loc='lower right', shadow=True, fontsize='small')
 
-    rng = np.abs(xmax - xmin)
-    xmin += -0.01*rng
-    xmax += 0.01*rng
+    xmin += -0.01*xrng
+    xmax += 0.01*xrng
     plt.xlim((xmin, xmax))
 
     ymin = y.min()

@@ -5,7 +5,9 @@ from constants import const
 import h5py
 
 
-def plot_check(C, par, n_pc, n_poly, H, erv):
+def plot_check(par, n_pc, n_poly, H, erv):
+
+    C = const()
 
     """define the colors of interest"""
     n_col = len(C['set_id_val'])-len(C['set_id_cal'])
@@ -178,10 +180,9 @@ def plot_check(C, par, n_pc, n_poly, H, erv):
 
 
 if __name__ == '__main__':
-    C = const()
     par = "strength"
     n_pc = 6
     n_poly = 2
     H = 90
-    plot_check(C, par, n_pc, n_poly, H)
+    plot_check(par, n_pc, n_poly, H)
     plt.show()

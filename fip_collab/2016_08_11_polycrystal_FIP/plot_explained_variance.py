@@ -5,7 +5,9 @@ from constants import const
 import h5py
 
 
-def variance(C, pltshape, Hvec):
+def variance(pltshape, Hvec):
+
+    C = const()
 
     colormat = cm.plasma(np.linspace(0, .8, len(Hvec)))
 
@@ -42,8 +44,7 @@ def variance(C, pltshape, Hvec):
 
 
 if __name__ == '__main__':
-    C = const()
     pltshape = [0, 15, 40, 105]
     Hvec = [6, 15, 41, 90]
-    variance(C, pltshape, Hvec)
+    variance(pltshape, Hvec)
     plt.show()

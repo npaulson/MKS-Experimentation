@@ -4,6 +4,7 @@ import plot_linkage_check as plc
 import plot_explained_variance as pev
 import plot_pc_vs_poly as ppvp
 import plot_evd as pe
+import plot_evd_predicted as pep
 from constants import const
 import matplotlib.pyplot as plt
 
@@ -46,5 +47,6 @@ indx = plc.plot_check(ns_val, names_val, 'sigma', n_poly, 7)
 
 """Plot the FIP EVDs versus the predicted FIP EVDs"""
 pe.pltevd(set_id_val, indx, 8)
+pep.pltevd(set_id_val, indx, 9)
 
 plt.show()

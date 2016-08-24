@@ -103,7 +103,7 @@ def read_vtk_scalar(filename):
 
     # print reader.GetScalarsNameInFile
 
-    Scalar = data.GetCellData().GetArray(reader.GetScalarsNameInFile(1))
+    Scalar = data.GetCellData().GetArray(reader.GetScalarsNameInFile(5))
 
     scalar_py = np.zeros([el_total])
 
@@ -136,14 +136,11 @@ def read_vtk_vector(filename):
 
     el = vec[0]
 
-    # Calculate the total number of elements
-    el_total = el**3
+    Euler = data.GetCellData().GetArray(reader.GetVectorsNameInFile(0))
 
-    Euler = data.GetCellData().GetArray(reader.GetScalarsNameInFile(0))
+    euler_py = np.zeros([3, el**3])
 
-    euler_py = np.zeros([3, el_total])
-
-    for ii in xrange(el_total):
+    for ii in xrange(el**3):
         euler_py[0, ii] = Euler.GetValue(ii*3 + 0)
         euler_py[1, ii] = Euler.GetValue(ii*3 + 1)
         euler_py[2, ii] = Euler.GetValue(ii*3 + 2)
@@ -155,110 +152,25 @@ def regress(x_cal, x_val, y_cal, y_val, n_pc, n_poly):
 
     C = const()
 
-    # """calculate the indices for the regression bases"""
-
-    # xmax = n_pc*n_poly
-    # xmat = np.unravel_index(np.arange(xmax), (n_pc, n_poly))
-    # xmat = np.array(xmat).T
-    # remove = (xmat[:, 0] != 0)*(xmat[:, 1] == 0)
-    # keep = np.ones(remove.shape, dtype='bool') - remove
-    # xmat = xmat[keep, :]
-    # xmax = xmat.shape[0]
-
-    # """calculate the X matrix for calibration"""
-
-    # n_samp = x_cal.shape[0]
-
-    # X_cal = np.zeros((n_samp, xmax), dtype='float64')
-
-    # for xx in xrange(xmax):
-    #     pc, deg = xmat[xx, :]
-
-    #     # print pc, deg
-
-    #     X_cal[:, xx] = x_cal[:, pc]**deg
-
-    # """calculate the X matrix for validation"""
-
-    # n_samp = x_val.shape[0]
-
-    # X_val = np.zeros((n_samp, xmax), dtype='float64')
-
-    # for xx in xrange(xmax):
-    #     pc, deg = xmat[xx, :]
-
-    #     X_val[:, xx] = x_val[:, pc]**deg
-
-    # """calculate the XhX matrix"""
-
-    # XhX = np.zeros((xmax, xmax), dtype='float64')
-
-    # tmp = it.combinations_with_replacement(np.arange(xmax), 2)
-    # Imat = np.array(list(tmp))
-    # ImatL = Imat.shape[0]
-
-    # # print Imat
-
-    # for I in xrange(ImatL):
-
-    #     ii, jj = Imat[I, :]
-
-    #     dotvec = np.dot(X_cal[:, ii], X_cal[:, jj])
-
-    #     if ii == jj:
-    #         XhX[ii, ii] = dotvec
-    #     else:
-    #         XhX[ii, jj] = dotvec
-    #         XhX[jj, ii] = dotvec
-
-    # # if (n_pc == 1)*(n_poly == 5):
-
-    # #     print XhX.min()
-    # #     print XhX.mean()
-    # #     print XhX.max()
-
-    # #     import matplotlib.pyplot as plt
-
-    # #     ax = plt.imshow(XhX, origin='lower',
-    # #                     interpolation='none', cmap='viridis')
-    # #     plt.colorbar(ax)
-    # #     plt.show()
-
-    # msg = "shape(XhX): %s" % str(XhX.shape)
-    # WP(msg, C['wrt_file'])
-
-    # if np.linalg.matrix_rank(XhX) != xmax:
-    #     msg = "WARNING: XhX is rank deficient"
-    #     WP(msg, C['wrt_file'])
-
-    # """calculate XhY"""
-
-    # XhY = np.zeros(xmax, dtype='float64')
-
-    # for ii in xrange(xmax):
-    #     XhY[ii] = np.dot(X_cal[:, ii], y_cal)
-
-    # """perform the regression"""
-
-    # # coef = np.linalg.solve(XhX, XhY)
-    # coef = np.linalg.lstsq(XhX, XhY)[0]
-
+    """compute the data matrices with dimensions
+    n_samp x n_feat where the features contain all polynomial terms
+    up to the specified degree"""
     poly = PolynomialFeatures(degree=(n_poly-1))
     X_cal = poly.fit_transform(x_cal[:, :n_pc])
     X_val = poly.fit_transform(x_val[:, :n_pc])
+
+    """set up the regression model"""
     clf = linear_model.LinearRegression(normalize=False)
+    """fit the regression model"""
     clf.fit(X_cal, y_cal)
     coef = clf.coef_
-    y_cal_predict = clf.predict(X_cal)
-    y_val_predict = clf.predict(X_val)
 
     # if n_pc == 20 and n_poly == 4:
     #     np.savetxt("coef.txt", coef, delimiter=',')
     #     np.savetxt("xmat.txt", xmat, delimiter=',')
 
     """validate with the calibration data"""
-
-    # y_cal_predict = np.dot(coef, X_cal.T)
+    y_cal_predict = clf.predict(X_cal)
 
     err = np.abs(y_cal-y_cal_predict)
     meanerr_cal = err.mean()
@@ -275,8 +187,7 @@ def regress(x_cal, x_val, y_cal, y_val, n_pc, n_poly):
     WP(msg, C['wrt_file'])
 
     """cross-validate with the validation data"""
-
-    # y_val_predict = np.dot(coef, X_val.T)
+    y_val_predict = clf.predict(X_val)
 
     err = np.abs(y_val-y_val_predict)
     meanerr_val = err.mean()

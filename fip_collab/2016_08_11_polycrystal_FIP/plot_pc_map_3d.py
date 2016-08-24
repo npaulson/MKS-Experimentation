@@ -7,7 +7,9 @@ import h5py
 import sys
 
 
-def pltmap(C, H, pcA, pcB, pcC):
+def pltmap(H, pcA, pcB, pcC):
+
+    C = const()
 
     fig = plt.figure(figsize=[9, 5.5])
     ax = fig.add_subplot(111, projection='3d')
@@ -73,12 +75,9 @@ def pltmap(C, H, pcA, pcB, pcC):
 
 
 if __name__ == '__main__':
-
-    C = const()
-
     H = np.int64(sys.argv[1])
     pcA = np.int64(sys.argv[2])
     pcB = np.int64(sys.argv[3])
     pcC = np.int64(sys.argv[4])
-    pltmap(C, H, pcA, pcB, pcC)
+    pltmap(H, pcA, pcB, pcC)
     plt.show()

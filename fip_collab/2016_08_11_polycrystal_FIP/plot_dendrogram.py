@@ -5,7 +5,9 @@ from constants import const
 import h5py
 
 
-def pltdend(C, ns_set, set_id_set, names_set, H):
+def pltdend(ns_set, set_id_set, names_set, H):
+
+    C = const()
 
     plt.figure(figsize=[5, 5])
 
@@ -33,12 +35,11 @@ def pltdend(C, ns_set, set_id_set, names_set, H):
 
 
 if __name__ == '__main__':
-
     C = const()
     ns_set = C['ns_val']
     set_id_set = C['set_id_val']
     names_set = C['names_val']
 
-    pltdend(C, ns_set, set_id_set, names_set)
+    pltdend(ns_set, set_id_set, names_set)
 
     plt.show()
