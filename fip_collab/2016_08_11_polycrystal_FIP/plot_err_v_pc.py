@@ -70,6 +70,11 @@ def plterr(par, n_pc_max, upbnd, Tvec, Hvec):
 
     plt.tight_layout()
 
+    typs = ''.join(Tvec)
+    fig_name = 'selection_%s_%s_npc%s.png' % (typs, par, n_pc_max)
+    fig.canvas.set_window_title(fig_name)
+    plt.savefig(fig_name)
+
 
 if __name__ == '__main__':
     par = "strength"

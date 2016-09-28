@@ -14,12 +14,15 @@ def pltmap(H, pcA, pcB, pcC):
     fig = plt.figure(figsize=[9, 5.5])
     ax = fig.add_subplot(111, projection='3d')
 
-    # colormat = cm.rainbow(np.linspace(0, 1, len(C['set_id_val'])))
-    colormat = cm.Set1(np.linspace(0, 1, len(C['set_id_val'])))
+    n_col = len(C['set_id_cal'] + C['set_id_val'])
+    colormat = cm.rainbow(np.linspace(0, 1, n_col))
+    gray = [.7, .7, .7]
 
     f_red = h5py.File("spatial_reduced_L%s.hdf5" % C['H'], 'r')
 
     """plot SVE sets for cal"""
+
+    c = 0
 
     for ii in xrange(len(C['set_id_cal'])):
 
@@ -28,12 +31,14 @@ def pltmap(H, pcA, pcB, pcC):
         reduced = f_red.get('reduced_%s' % set_id)[...]
 
         ax.scatter(reduced[:, pcA], reduced[:, pcB], reduced[:, pcC],
-                   c=colormat[ii, :], marker='o', s=40, alpha=.4,
+                   c=colormat[c, :], marker='o', s=40, alpha=.4,
                    label="%s (calibration)" % C['names_cal'][ii])
 
         # varmat = np.var(reduced, axis=0)
         # msg = "total variance for %s: %s" % (set_id, varmat.sum())
         # rr.WP(msg, C['wrt_file'])
+
+        c += 1
 
     """plot SVE sets for val"""
 
@@ -44,7 +49,7 @@ def pltmap(H, pcA, pcB, pcC):
         reduced = f_red.get('reduced_%s' % set_id)[...]
 
         ax.scatter(reduced[:, pcA], reduced[:, pcB], reduced[:, pcC],
-                   c=colormat[ii, :], marker='^', s=40, alpha=.4,
+                   c=colormat[c, :], marker='^', s=40, alpha=.4,
                    label="%s (validation)" % C['names_val'][ii])
 
         # meanA = reduced[:, pcA].mean()
@@ -59,6 +64,8 @@ def pltmap(H, pcA, pcB, pcC):
         # msg = "total variance for %s: %s" % (set_id, varmat.sum())
         # rr.WP(msg, C['wrt_file'])
 
+        c += 1
+
     plt.margins(.1)
 
     ax.set_xlabel("PC%s" % str(pcA+1))
@@ -72,6 +79,10 @@ def pltmap(H, pcA, pcB, pcC):
     fig.tight_layout(rect=(0, 0, .7, 1))
 
     f_red.close()
+
+    fig_name = 'pc%s_pc%s_pc%s_L%s.png' % (pcA+1, pcB+1, pcC+1, H)
+    fig.canvas.set_window_title(fig_name)
+    plt.savefig(fig_name)
 
 
 if __name__ == '__main__':

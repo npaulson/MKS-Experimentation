@@ -17,13 +17,13 @@ def pltcorr(el, ns, set_id, step, sn, iA, iB):
 
     plt.subplot(121)
     ax = plt.imshow(sves[10, :, :], origin='lower',
-                    interpolation='none', cmap='magma')
+                    interpolation='none', cmap='jet')
     plt.colorbar(ax)
     plt.title('phi1 field')
 
     plt.subplot(122)
     ax = plt.imshow(corr_centered[10, :, :], origin='lower',
-                    interpolation='none', cmap='viridis')
+                    interpolation='none', cmap='jet')
     plt.colorbar(ax)
     plt.title('ff: %s, %s' % (iA, iB))
 

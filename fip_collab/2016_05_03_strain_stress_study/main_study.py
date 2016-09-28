@@ -15,8 +15,10 @@ set_id_cal = 'cal'
 dir_cal = 'cal'
 
 ns_val_list = [500, 500, 500, 500]
-set_id_val_list = ['val_dice', 'val_doubledonut', 'val_innerdonut', 'val_outerdonut']
-dir_val_list = ['dice', 'doubledonut', 'innerdonut', 'outerdonut']
+set_id_val_list = ['val_BaTrTr', 'val_DdTr', 'val_DiTr', 'val_OdTr']
+dir_val_list = ['BaTrTr', 'DdTr', 'DiTr', 'OdTr']
+# set_id_val_list = ['val_dice', 'val_doubledonut', 'val_innerdonut', 'val_outerdonut']
+# dir_val_list = ['dice', 'doubledonut', 'innerdonut', 'outerdonut']
 # set_id_val_list = ['val_actual', 'val_random', 'val_basaltrans', 'val_trans']
 # dir_val_list = ['actual', 'random', 'basaltrans', 'trans']
 

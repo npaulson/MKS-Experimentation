@@ -30,7 +30,7 @@ if tensorID == 1, we read the strain tensor
 if tensorID == 2, we read the plastic strain tensor
 """
 
-# """Generate microstructures"""
+"""Generate microstructures"""
 
 # f = h5py.File("spatial_stats.hdf5", 'w')
 # f.close()
@@ -44,17 +44,15 @@ if tensorID == 2, we read the plastic strain tensor
 # vfrac = [.125, .075]
 # gen.inclusion_red(el, ns_cal[2], H, set_id_cal[2], step, wrt_file, vfrac)
 
-# # raxis = 0
-# # gen.rod(el, ns_cal[0], H, set_id_cal[0], step, wrt_file, raxis)
-# # raxis = 1
-# # gen.rod(el, ns_cal[1], H, set_id_cal[1], step, wrt_file, raxis)
-# # raxis = 2
-# # gen.rod(el, ns_cal[2], H, set_id_cal[2], step, wrt_file, raxis)
+# # # raxis = 0
+# # # gen.rod(el, ns_cal[0], H, set_id_cal[0], step, wrt_file, raxis)
+# # # raxis = 1
+# # # gen.rod(el, ns_cal[1], H, set_id_cal[1], step, wrt_file, raxis)
+# # # raxis = 2
+# # # gen.rod(el, ns_cal[2], H, set_id_cal[2], step, wrt_file, raxis)
 
-
-# # gen.bicrystal_orthog(el, ns_cal[4], H, set_id_cal[4], step, wrt_file)
-# # gen.improcess(el, ns_cal[5], H, set_id_cal[5], step, wrt_file)
-
+# # # gen.bicrystal_orthog(el, ns_cal[4], H, set_id_cal[4], step, wrt_file)
+# # # gen.improcess(el, ns_cal[5], H, set_id_cal[5], step, wrt_file)
 
 # """Generate the fourier space microstructure functions"""
 
@@ -65,14 +63,14 @@ if tensorID == 2, we read the plastic strain tensor
 # for ii in xrange(len(set_id_cal)):
 #     corr.correlate(el, ns_cal[ii], H, set_id_cal[ii], step, wrt_file)
 
-"""Perform PCA on autocorrelations"""
-pcaC.doPCA(el, ns_cal, H, set_id_cal, step, wrt_file)
+# """Perform PCA on autocorrelations"""
+# pcaC.doPCA(el, ns_cal, H, set_id_cal, step, wrt_file)
 
-# """Plot an autocorrelation"""
-# sn = 0
-# iA = 0
-# iB = 0
-# pltcorr.pltcorr(el, ns_cal[2], set_id_cal[2], step, sn, iA, iB)
+"""Plot an autocorrelation"""
+sn = 6
+iA = 0
+iB = 0
+pltcorr.pltcorr(el, ns_cal[0], set_id_cal[0], step, sn, iA, iB)
 
 """Plot the microstructures in PC space"""
 pcA = 0

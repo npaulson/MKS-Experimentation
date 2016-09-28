@@ -52,7 +52,7 @@ def linkage(par):
 
     """perform the regressions"""
     n_ii = C['n_pc_max']
-    n_jj = C['n_poly_max']
+    n_jj = C['deg_max']
 
     f_reg = h5py.File("regression_results_L%s.hdf5" % C['H'], 'a')
 

@@ -10,7 +10,7 @@ def plot_check(par, n_pc, n_poly, H, erv):
     C = const()
 
     """define the colors of interest"""
-    n_col = len(C['set_id_val'])-len(C['set_id_cal'])
+    n_col = len(C['set_id_cal'] + C['set_id_val'])
     colormat = cm.rainbow(np.linspace(0, 1, n_col))
     gray = [.7, .7, .7]
 
@@ -93,59 +93,43 @@ def plot_check(par, n_pc, n_poly, H, erv):
     c = 0
     for ii in xrange(len(C['ns_cal'])):
 
-        c_ = c + C['ns_cal'][ii]
-        Rsim_tmp = RsimC[c:c_]
-        Rpred_tmp = RpredC[c:c_]
-        c = c_
+        # name = C['names_cal'][ii]
+        Rsim_tmp = RsimC[ii]
+        Rpred_tmp = RpredC[ii]
 
-        # if ii == 0:
-        #     plt.plot(Rsim_tmp, Rpred_tmp,
-        #              marker='o', markersize=7, color=gray,
-        #              alpha=0.3, linestyle='',
-        #              label="calibration data")
-        # else:
-        #     plt.plot(Rsim_tmp, Rpred_tmp,
-        #              marker='o', markersize=7, color=gray,
-        #              alpha=0.3, linestyle='')
+        plt.text(Rsim_tmp, Rpred_tmp+0.05*valrange, C['names_cal'][ii],
+                 horizontalalignment='center',
+                 verticalalignment='center')
+
+        # plt.plot(Rsim_tmp, Rpred_tmp,
+        #          marker='s', markersize=7, color=colormat[c, :],
+        #          alpha=0.3, linestyle='', label=name)
 
         plt.plot(Rsim_tmp, Rpred_tmp,
-                 marker='s', markersize=7, color=gray,
-                 alpha=0.3, linestyle='')
+                 marker='s', markersize=7, color=colormat[c, :],
+                 alpha=0.7, linestyle='')
 
-    c = 0
-    d = 0
+        c += 1
+
     for ii in xrange(len(C['ns_val'])):
 
-        c_ = c + C['ns_val'][ii]
-        name = C['names_val'][ii]
-        Rsim_tmp = RsimV[c:c_]
-        Rpred_tmp = RpredV[c:c_]
-        c = c_
+        # name = C['names_val'][ii]
+        Rsim_tmp = RsimV[ii]
+        Rpred_tmp = RpredV[ii]
 
-        # if ii == 0:
-        #     plt.plot(Rsim_tmp, Rpred_tmp,
-        #              marker='s', markersize=7, color=gray,
-        #              alpha=0.3, linestyle='',
-        #              label="validation data")
-        # elif ii <= 6:
-        #     plt.plot(Rsim_tmp, Rpred_tmp,
-        #              marker='s', markersize=7, color=gray,
-        #              alpha=0.3, linestyle='')
-        # else:
-        #     plt.plot(Rsim_tmp, Rpred_tmp,
-        #              marker='s', markersize=7, color=colormat[ii-7, :],
-        #              alpha=0.5, linestyle='',
-        #              label=name)
+        plt.text(Rsim_tmp, Rpred_tmp+0.05*valrange, C['names_val'][ii],
+                 horizontalalignment='center',
+                 verticalalignment='center')
 
-        if np.any(np.array(C['names_cal']) == name):
-            plt.plot(Rsim_tmp, Rpred_tmp,
-                     marker='o', markersize=7, color=gray,
-                     alpha=0.3, linestyle='')
-        else:
-            plt.plot(Rsim_tmp, Rpred_tmp,
-                     marker='o', markersize=7, color=colormat[d, :],
-                     alpha=0.5, linestyle='', label=name)
-            d += 1
+        # plt.plot(Rsim_tmp, Rpred_tmp,
+        #          marker='o', markersize=7, color=colormat[c, :],
+        #          alpha=0.5, linestyle='', label=name)
+
+        plt.plot(Rsim_tmp, Rpred_tmp,
+                 marker='o', markersize=7, color=colormat[c, :],
+                 alpha=0.7, linestyle='')
+
+        c += 1
 
     minbnd = minval - 0.1*valrange
     maxbnd = maxval + 0.1*valrange
@@ -177,6 +161,12 @@ def plot_check(par, n_pc, n_poly, H, erv):
     # fig.tight_layout(rect=(0, 0, .8, 1))
 
     f_reg.close()
+
+    fig_name = 'prediction_%s_npc%s_npoly%s_L%s.png' % (par, n_pc, n_poly, H)
+    fig.canvas.set_window_title(fig_name)
+    plt.savefig(fig_name)
+
+    return indx
 
 
 if __name__ == '__main__':

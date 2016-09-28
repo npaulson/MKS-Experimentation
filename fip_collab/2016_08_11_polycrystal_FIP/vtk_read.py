@@ -26,8 +26,8 @@ def read_euler(strt, ns, name, set_id, newdir, funit):
     os.chdir(nwd)
 
     for ii in xrange(ns):
-        sn = strt + ii + 1
-        filename = "Results_Ti64_Dream3D_XdirLoad_210microns_9261el_AbqInp_PowerLaw_LCF_%s_data_v2_05.vtk" % sn
+        sn = strt + ii
+        filename = "mks_alphaTi_Xdir_IDval_%s_sn%s_step1.vtk" % (name, sn)
         euler[ii, :, :] = rr.read_vtk_vector(filename=filename)
 
     if funit == 1:
@@ -62,8 +62,8 @@ def read_fip(strt, ns, name, set_id, newdir):
     os.chdir(nwd)
 
     for ii in xrange(ns):
-        sn = strt + ii + 1
-        filename = "Results_Ti64_Dream3D_XdirLoad_210microns_9261el_AbqInp_PowerLaw_LCF_%s_data_v2_05.vtk" % sn
+        sn = strt + ii
+        filename = "mks_alphaTi_Xdir_IDval_%s_sn%s_Estimated_step6.vtk" % (name, sn)
         fip[ii, :] = rr.read_vtk_scalar(filename=filename)
 
     """return to the original directory"""

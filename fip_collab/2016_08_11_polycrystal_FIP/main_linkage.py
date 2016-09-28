@@ -7,46 +7,44 @@ import h5py
 C = const()
 
 set_id_cal = C['set_id_cal']
-dir_cal = C['dir_cal']
-names_cal = C['names_cal']
+names_cal_alt = C['names_cal_alt']
 set_id_cal = C['set_id_cal']
 strt_cal = C['strt_cal']
 ns_cal = C['ns_cal']
 
 set_id_val = C['set_id_val']
-dir_val = C['dir_val']
-names_val = C['names_val']
+names_val_alt = C['names_val_alt']
 set_id_val = C['set_id_val']
 strt_val = C['strt_val']
 ns_val = C['ns_val']
 
-"""get the data for the linkage"""
+# """get the data for the linkage"""
 
-f = h5py.File("raw_responses.hdf5", 'w')
-f.close()
+# f = h5py.File("raw_responses.hdf5", 'w')
+# f.close()
 
-"""Gather data from vtk files"""
-dir_fip = 'fip'
+# """Gather data from vtk files"""
+# dir_fip = 'fip'
 
-for ii in xrange(len(set_id_cal)):
-    vtk.read_fip(strt_cal[ii], ns_cal[ii], names_cal[ii], set_id_cal[ii],
-                 dir_fip)
-for ii in xrange(len(set_id_val)):
-    vtk.read_fip(strt_val[ii], ns_val[ii], names_val[ii], set_id_val[ii],
-                 dir_fip)
+# for ii in xrange(len(set_id_cal)):
+#     vtk.read_fip(strt_cal[ii], ns_cal[ii], names_cal_alt[ii], set_id_cal[ii],
+#                  dir_fip)
+# for ii in xrange(len(set_id_val)):
+#     vtk.read_fip(strt_val[ii], ns_val[ii], names_val_alt[ii], set_id_val[ii],
+#                  dir_fip)
 
-f = h5py.File("responses.hdf5", 'w')
-f.close()
+# f = h5py.File("responses.hdf5", 'w')
+# f.close()
 
-"""get the fitting coefficients for the linkage"""
-for ii in xrange(len(set_id_cal)):
-    gr.resp(ns_cal[ii], set_id_cal[ii])
-for ii in xrange(len(set_id_val)):
-    gr.resp(ns_val[ii], set_id_val[ii])
+# """get the fitting coefficients for the linkage"""
+# for ii in xrange(len(set_id_cal)):
+#     gr.resp(ns_cal[ii], set_id_cal[ii])
+# for ii in xrange(len(set_id_val)):
+#     gr.resp(ns_val[ii], set_id_val[ii])
 
 """create the specified array of linkages and cross validate"""
 
-f = h5py.File("regression_results.hdf5", 'w')
+f = h5py.File("regression_results_L%s.hdf5" % C['H'], 'w')
 f.close()
 
 par = 'mu'

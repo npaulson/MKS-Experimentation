@@ -9,7 +9,7 @@ def pltdend(ns_set, set_id_set, names_set, H):
 
     C = const()
 
-    plt.figure(figsize=[5, 5])
+    fig = plt.figure(figsize=[5, 5])
 
     y = np.zeros([len(set_id_set), C['n_pc_tot']])
     # y = np.zeros([len(set_id_set), 2])
@@ -32,6 +32,10 @@ def pltdend(ns_set, set_id_set, names_set, H):
     plt.xlabel('Euclidean distance')
 
     plt.tight_layout()
+
+    fig_name = 'dendrogram_L%s.png' % H
+    fig.canvas.set_window_title(fig_name)
+    plt.savefig(fig_name)
 
 
 if __name__ == '__main__':

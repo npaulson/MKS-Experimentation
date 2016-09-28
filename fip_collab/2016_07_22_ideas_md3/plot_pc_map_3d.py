@@ -12,8 +12,9 @@ def pltmap(C, H, pcA, pcB, pcC):
     fig = plt.figure(figsize=[9, 5.5])
     ax = fig.add_subplot(111, projection='3d')
 
-    # colormat = cm.rainbow(np.linspace(0, 1, len(C['set_id_val'])))
-    colormat = cm.Set1(np.linspace(0, 1, len(C['set_id_val'])))
+    n_col = np.max([len(C['set_id_cal']), len(C['set_id_val'])])
+    print n_col
+    colormat = cm.rainbow(np.linspace(0, 1, n_col))
 
     f_red = h5py.File("spatial_reduced_L%s.hdf5" % C['H'], 'r')
 

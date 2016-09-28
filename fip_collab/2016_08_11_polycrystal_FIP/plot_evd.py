@@ -1,33 +1,29 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 from constants import const
 import h5py
 import sys
 
 
-def pltevd(set_id_set):
+def pltevd(H):
 
     C = const()
 
-    colormat = np.array([[.3, .3, 1.],
-                         [.3, 1., .3],
-                         [1., .2, .2],
-                         [0., .7, .7],
-                         [.7, .0, .7],
-                         [.7, .7, .0],
-                         [.5, .3, .1],
-                         [.3, .5, .1],
-                         [.1, .3, .5]])
+    """define the colors of interest"""
+    n_col = len(C['set_id_cal'] + C['set_id_val'])
+    colormat = cm.rainbow(np.linspace(0, 1, n_col))
+    gray = [.7, .7, .7]
 
-    f_reg = h5py.File("regression_results.hdf5", 'r')
+    f_reg = h5py.File("regression_results_L%s.hdf5" % H, 'r')
 
-    plt.figure(figsize=[5.5, 4])
+    fig = plt.figure(figsize=[5.5, 4])
 
     f = h5py.File("responses.hdf5", 'r')
 
-    for ii in xrange(len(set_id_set)):
-        set_id = set_id_set[ii]
+    for ii in xrange(n_col):
+        set_id = (C['set_id_cal']+C['set_id_val'])[ii]
 
         """get the x, y data for plotting the evd"""
 
@@ -68,6 +64,10 @@ def pltevd(set_id_set):
     plt.ylim((ymin, ymax))
 
     plt.tight_layout()
+
+    fig_name = 'evd_orig_L%s.png' % H
+    fig.canvas.set_window_title(fig_name)
+    plt.savefig(fig_name)
 
 
 if __name__ == '__main__':

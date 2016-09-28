@@ -10,24 +10,30 @@ def const():
     C['path'] = '/gpfs/scratch1/3/nhpnp3/4_28_neig'
     C['wrt_file'] = 'log_%s.txt' % (time.strftime("%Y-%m-%d_h%H"))
 
-    C['names'] = ['Ac', 'BaTr', 'Di', 'Id', 'Od', 'Ra', 'Tr',
-                  'BaTrTr', 'Dd', 'DdTr', 'DiTr', 'OdTr']
+    C['names'] = ['Ac', 'BaTr', 'Di', 'Dd', 'Id', 'Od',
+                  'Ra', 'Tr', 'BaTrTr', 'DdTr', 'DiTr', 'OdTr']
+    C['names_alt'] = ['actual', 'basaltrans', 'dice', 'doubledonut',
+                      'innerdonut', 'outerdonut', 'random', 'trans',
+                      'BaTrTr', 'DdTr', 'DiTr', 'OdTr']
 
-    C['names_cal'] = ['Ac', 'BaTr', 'Di', 'Id', 'Od', 'Ra', 'Tr']
+    C['names_cal_alt'] = ['actual', 'basaltrans', 'dice',
+                          'innerdonut', 'outerdonut', 'random', 'trans',
+                          'BaTrTr', 'DdTr', 'DiTr', 'OdTr']
+    C['names_cal'] = ['Ac', 'BaTr', 'Di', 'Id', 'Od',
+                      'Ra', 'Tr', 'BaTrTr', 'DdTr', 'DiTr', 'OdTr']
     C['set_id_cal'] = [s + '_cal' for s in C['names_cal']]
     C['strt_cal'] = list(np.zeros(len(C['names_cal']), dtype='int16'))
-    C['ns_cal'] = list(10*np.ones(len(C['names_cal']), dtype='int16'))
-    C['dir_cal'] = C['names_cal']
+    C['ns_cal'] = list(100*np.ones(len(C['names_cal']), dtype='int16'))
 
-    C['names_val'] = ['BaTrTr', 'Dd', 'DdTr', 'DiTr', 'OdTr']
+    C['names_val_alt'] = ['doubledonut']
+    C['names_val'] = ['Dd']
     C['set_id_val'] = [s + '_val' for s in C['names_val']]
-    C['strt_val'] = list(10*np.ones(len(C['names_val']), dtype='int16'))
-    C['ns_val'] = list(10*np.ones(len(C['names_val']), dtype='int16'))
-    C['dir_val'] = C['names_val']
+    C['strt_val'] = list(np.zeros(len(C['names_val']), dtype='int16'))
+    C['ns_val'] = list(100*np.ones(len(C['names_val']), dtype='int16'))
 
     C['dir_resp'] = "response"
 
-    C['H'] = 6  # max number of gsh functions
+    C['H'] = 15  # max number of gsh functions
 
     # """set 1"""
     # H1 = C['H']  # ff.shape[0] = H1
@@ -73,8 +79,7 @@ def const():
 
     C['pcnt'] = .995
 
-
-    C['n_pc_max'] = 150
-    C['n_poly_max'] = 1
+    C['n_pc_max'] = len(C['set_id_cal'])-1
+    C['deg_max'] = 1
 
     return C

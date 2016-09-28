@@ -6,7 +6,7 @@ Created on Tue Jul 15 11:45:46 2014
 """
 
 import numpy as np
-import hex_0_6_real as gsh
+import gsh_hex_tri_L0_16 as gsh
 import functions as rr
 from constants import const
 import time
