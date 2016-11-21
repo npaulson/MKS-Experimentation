@@ -19,7 +19,7 @@ def variance(pltshape, Hvec):
 
     for ii in xrange(len(Hvec)):
 
-        f = h5py.File("pca_data_L%s.hdf5" % Hvec[ii], 'r')
+        f = h5py.File("ratios_L%s.hdf5" % Hvec[ii], 'r')
         ratios = f.get('ratios')[...]
         f.close()
 
@@ -29,7 +29,7 @@ def variance(pltshape, Hvec):
                  marker='D', markersize=5,
                  linewidth=2, linestyle='-',
                  alpha=.7,
-                 label=r'$\tilde{L}=%s$' % Hvec[ii])
+                 label='L=%s' % Hvec[ii])
 
     tc = np.int16(np.ceil(pltshape[1]/15.))
     plt.xticks(np.arange(0, pltshape[1]+tc, tc))
@@ -37,7 +37,7 @@ def variance(pltshape, Hvec):
 
     plt.axis(pltshape)
 
-    plt.xlabel(r'$\tilde{R}$')
+    plt.xlabel('pc number')
     plt.ylabel('pca cumulative explained variance (%)')
     # plt.title('pca cumulative explained variance plot')
 

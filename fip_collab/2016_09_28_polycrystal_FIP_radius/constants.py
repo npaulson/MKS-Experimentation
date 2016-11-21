@@ -10,25 +10,22 @@ def const():
     C['path'] = '/gpfs/scratch1/3/nhpnp3/4_28_neig'
     C['wrt_file'] = 'log_%s.txt' % (time.strftime("%Y-%m-%d_h%H"))
 
-    C['names_cal'] = ['Ac', 'BaTr', 'Di', 'Id', 'Od', 'Ra', 'Tr']
-    C['names_plt_cal'] = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-    C['set_id_cal'] = [s + '_cal' for s in C['names_cal']]
-    C['strt_cal'] = [0, 0, 0, 0, 0, 0, 0]
-    C['ns_cal'] = [30, 30, 30, 30, 30, 30, 30]
-    C['dir_cal'] = C['names_cal']
+    C['sid'] = ['Ac', 'BaTr', 'Di', 'Dd', 'Id', 'Od',
+                'Ra', 'Tr', 'BaTrTr', 'DdTr', 'DiTr', 'OdTr']
+    C['sid_cal'] = ['Ac', 'BaTr', 'Di', 'Dd', 'Id', 'Od',
+                    'Ra', 'Tr', 'BaTrTr', 'DiTr', 'OdTr']
+    C['sid_val'] = ['DdTr']
+    C['names'] = ['actual', 'basaltrans', 'dice', 'doubledonut',
+                  'innerdonut', 'outerdonut', 'random', 'trans',
+                  'BaTrTr', 'DdTr', 'DiTr', 'OdTr']
 
-    C['names_val'] = ['Ac', 'BaTr', 'Di', 'Id', 'Od', 'Ra', 'Tr',
-                      'Dd', 'BaTrTr', 'DdTr', 'DiTr', 'OdTr']
-    C['names_plt_val'] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-                          'I', 'J', 'K', 'L']
-    C['set_id_val'] = [s + '_val' for s in C['names_val']]
-    C['strt_val'] = [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30]
-    C['ns_val'] = [30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30]
-    C['dir_val'] = C['names_val']
+    C['strt'] = list(np.zeros(len(C['sid']), dtype='int16'))
+    C['ns'] = list(200*np.ones(len(C['sid']), dtype='int16'))
+    C['ns_cal'] = list(200*np.ones(len(C['sid_cal']), dtype='int16'))
 
     C['dir_resp'] = "response"
 
-    C['H'] = 6  # max number of gsh functions
+    C['H'] = 15  # max number of gsh functions
 
     # """set 1"""
     # H1 = C['H']  # ff.shape[0] = H1
@@ -70,10 +67,17 @@ def const():
 
     C['el'] = 21
     C['vmax'] = 21
-    C['n_pc_tot'] = 150
-    C['ev_lvl'] = 99.5
+    C['n_pc_tot'] = np.sum(C['ns_cal'])
 
-    C['n_pc_max'] = 150
-    C['n_poly_max'] = 1
+    """ number of dimensions to use when picking the extreme bounds of each
+    cluster"""
+    C['n_pc_samp'] = 5
+    C['n_samp'] = 100
+
+    C['pcnt'] = .995
+
+    # C['n_pc_max'] = len(C['sid'])*2*C['n_pc_samp']-1
+    C['n_pc_max'] = 10
+    C['deg_max'] = 3
 
     return C

@@ -41,11 +41,10 @@ def plterr(par, n_pc_max, upbnd, Tvec, Hvec):
 
         f.close()
 
-    spc = np.int16(np.ceil(n_pc_max/10.))
-    plt.xticks(np.arange(0, n_pc_max+spc, spc), fontsize='small')
-    plt.yticks(fontsize='small')
+    spc = np.int16(np.ceil(n_pc_max/15.))
+    plt.xticks(np.arange(0, n_pc_max+spc, spc))
 
-    minor_locator = AutoMinorLocator(3)
+    minor_locator = AutoMinorLocator(2)
     ax.xaxis.set_minor_locator(minor_locator)
     plt.grid(linestyle='-', alpha=0.15)
     plt.grid(which='minor', linestyle='-', alpha=0.2)
@@ -54,24 +53,8 @@ def plterr(par, n_pc_max, upbnd, Tvec, Hvec):
 
     plt.legend(loc='upper right', shadow=True, fontsize='small', ncol=2)
 
-    plt.xlabel(r'$\tilde{R}$', fontsize='medium')
-    plt.ylabel("mean error (%)", fontsize='small')
-
-    if Tvec[0] == 'cal':
-        etype = 'Calibration'
-    elif Tvec[0] == 'LOOCV':
-        etype = 'LOOCV'
-    elif Tvec[0] == 'val':
-        etype = 'Validation'
-    else:
-        etype = 'Unknown'
-
-    if par == 'modulus':
-        par_s = 'elastic stiffness'
-    if par == 'strength':
-        par_s = 'yield strength'
-
-    plt.title('%s error, %s prediction' % (etype, par_s), fontsize='small')
+    plt.xlabel(r'$R^*$')
+    plt.ylabel("mean error (%)")
 
     plt.tight_layout()
 

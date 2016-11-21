@@ -106,29 +106,29 @@ def plot_check(par, n_pc, n_poly, H):
     plt.plot(line, line+offs, 'k--',
              alpha=.5)
 
-    c = 0
-    for ii in xrange(len(C['ns_cal'])):
+    # c = 0
+    # for ii in xrange(len(C['ns_cal'])):
 
-        c_ = c + C['ns_cal'][ii]
-        Rsim_tmp = RsimC[c:c_]
-        Rpred_tmp = RpredC[c:c_]
-        c = c_
+    #     c_ = c + C['ns_cal'][ii]
+    #     Rsim_tmp = RsimC[c:c_]
+    #     Rpred_tmp = RpredC[c:c_]
+    #     c = c_
 
-        if ii == 0:
-            plt.plot(Rsim_tmp, Rpred_tmp,
-                     marker='o', markersize=7, color=gray,
-                     alpha=0.3, linestyle='',
-                     label="calibration data")
-        else:
-            plt.plot(Rsim_tmp, Rpred_tmp,
-                     marker='o', markersize=7, color=gray,
-                     alpha=0.3, linestyle='')
+    #     if ii == 0:
+    #         plt.plot(Rsim_tmp, Rpred_tmp,
+    #                  marker='o', markersize=7, color=gray,
+    #                  alpha=0.3, linestyle='',
+    #                  label="calibration data")
+    #     else:
+    #         plt.plot(Rsim_tmp, Rpred_tmp,
+    #                  marker='o', markersize=7, color=gray,
+    #                  alpha=0.3, linestyle='')
 
     c = 0
     for ii in xrange(len(C['ns_val'])):
 
         c_ = c + C['ns_val'][ii]
-        name = C['names_val'][ii]
+        name = C['names_plt_val'][ii]
         Rsim_tmp = RsimV[c:c_]
         Rpred_tmp = RpredV[c:c_]
         c = c_
@@ -136,8 +136,11 @@ def plot_check(par, n_pc, n_poly, H):
         if ii == 0:
             plt.plot(Rsim_tmp, Rpred_tmp,
                      marker='s', markersize=7, color=gray,
-                     alpha=0.3, linestyle='',
-                     label="validation data")
+                     alpha=0.3, linestyle='')
+            # plt.plot(Rsim_tmp, Rpred_tmp,
+            #          marker='s', markersize=7, color=gray,
+            #          alpha=0.3, linestyle='',
+            #          label="validation data")
         elif ii <= 6:
             plt.plot(Rsim_tmp, Rpred_tmp,
                      marker='s', markersize=7, color=gray,
