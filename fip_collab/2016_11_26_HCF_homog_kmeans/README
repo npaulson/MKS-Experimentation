@@ -1,0 +1,17 @@
+In this version:
+
+* get microstructure functions
+	- normalize between -1 and 1
+* get full set of spatial statistics
+* dimensionality reduction
+	- don't take average of pc scores for each texture
+* read FIP fields
+	- volume averaged fips
+* calculate parameters for gamma distribution
+	- input is all FIPs for all SVEs per texture
+	- use only 99.5 percentile of FIP values
+	- specify alpha = .8
+	- specify location as .99999*np.min(tail)
+* generate structure-parameter linkages for gamma distribution parameters
+* predict gamma distribution parameters for validation textures
+* plot predicted EVDs versus experimental EVDs of FIP distribution

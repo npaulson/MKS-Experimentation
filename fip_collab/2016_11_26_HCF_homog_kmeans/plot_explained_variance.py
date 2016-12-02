@@ -15,11 +15,11 @@ def variance(pltshape, Hvec):
     #                      [0, .8, 0],
     #                      [.9, 0, 0]])
 
-    fig = plt.figure(figsize=[6.5, 4.5])
+    fig = plt.figure(figsize=[6, 4])
 
     for ii in xrange(len(Hvec)):
 
-        f = h5py.File("pca_data_L%s.hdf5" % Hvec[ii], 'r')
+        f = h5py.File("ratios_L%s.hdf5" % Hvec[ii], 'r')
         ratios = f.get('ratios')[...]
         f.close()
 
@@ -29,21 +29,20 @@ def variance(pltshape, Hvec):
                  marker='D', markersize=5,
                  linewidth=2, linestyle='-',
                  alpha=.7,
-                 label=r'$\tilde{L}=%s$' % Hvec[ii])
+                 label='L=%s' % Hvec[ii])
 
     tc = np.int16(np.ceil(pltshape[1]/15.))
-    plt.xticks(np.arange(0, pltshape[1]+tc, tc), fontsize='large')
-    plt.yticks(fontsize='large')
+    plt.xticks(np.arange(0, pltshape[1]+tc, tc))
     # plt.axis([0, ratios.size, 98, 100.1])
 
     plt.axis(pltshape)
 
-    plt.xlabel(r'$\tilde{R}$', fontsize='large')
-    plt.ylabel('pca cumulative \nexplained variance (%)', fontsize='large')
+    plt.xlabel('pc number')
+    plt.ylabel('pca cumulative explained variance (%)')
     # plt.title('pca cumulative explained variance plot')
 
     plt.grid(linestyle='-', alpha=0.15)
-    plt.legend(loc='lower right', shadow=True, fontsize='large')
+    plt.legend(loc='lower right', shadow=True, fontsize='medium')
 
     plt.tight_layout()
 
