@@ -16,13 +16,13 @@ ns = C['ns']
 ns_cal = C['ns_cal']
 
 
-f = h5py.File("euler.hdf5", 'w')
-f.close()
+# f = h5py.File("euler.hdf5", 'w')
+# f.close()
 
-"""Gather data from vtk files"""
-for ii in xrange(len(sid)):
-    vtk.read_euler(strt[ii], ns[ii], names[ii], sid[ii],
-                   'euler', 0)
+# """Gather data from vtk files"""
+# for ii in xrange(len(sid)):
+#     vtk.read_euler(strt[ii], ns[ii], names[ii], sid[ii],
+#                    'euler', 0)
 
 f = h5py.File("spatial_L%s.hdf5" % C['H'], 'w')
 f.close()

@@ -29,6 +29,6 @@ def const():
     C['el'] = 21
     C['n_pc_tot'] = 50
 
-    C['pcnt'] = .995
+    C['pcnt'] = .9999
 
     return C

@@ -63,6 +63,8 @@ def findRVE(one_v_two, n_samp):
         """find the fip evd and parameters for samp1"""
         evd, mu_, sigma_, r2_ = resp(fip[tmp[:ii], :], ii)
 
+        print ii
+
         mu[ii-10] = mu_
         sigma[ii-10] = sigma_
         r2[ii-10] = r2_

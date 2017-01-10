@@ -1,6 +1,6 @@
 #PBS -N calfem
 #PBS -l nodes=1:ppn=1
-#PBS -l mem=20gb
+#PBS -l mem=40gb
 #PBS -q granulous
 #PBS -l walltime=5:00:00
 #PBS -j oe
@@ -8,5 +8,5 @@
 
 cd $PBS_O_WORKDIR
 module purge
-module load anaconda2
+module load anaconda2/2.1.0
 python main_rep.py

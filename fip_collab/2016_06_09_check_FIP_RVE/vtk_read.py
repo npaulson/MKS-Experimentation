@@ -64,6 +64,7 @@ def read_fip(strt, ns, name, set_id, newdir):
     for ii in xrange(ns):
         sn = strt + ii
         filename = "mks_alphaTi_Xdir_IDval_%s_sn%s_Estimated_step6.vtk" % (name, sn)
+	print filename
         fip[ii, :] = rr.read_vtk_scalar(filename=filename)
 
     """return to the original directory"""

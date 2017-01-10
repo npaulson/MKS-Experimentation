@@ -1,0 +1,167 @@
+---------------------------------------
+Begin PBS Prologue Fri Dec  9 10:44:26 EST 2016
+Job ID:     1889444.dedicated-sched.pace.gatech.edu
+User ID:    nhpnp3
+Job name:   calfem
+Queue:      granulous
+End PBS Prologue Fri Dec  9 10:44:26 EST 2016
+---------------------------------------
+ =========================================================================
+|                                                                         |
+|       A note about all current anaconda modules:                        |
+|       Anaconda doesn’t play well with modules - once you load the       |
+|       anaconda module, module commands no longer work (not even         |
+|       module purge) unless you log out and back in again.               |
+|                                                                         |
+|       We’re working with Continuum to find a solution, but for now,     |
+|       we recommend you load the anaconda modules last if at all         |
+|       possible. Thanks!                                                 |
+|                                                                         |
+ =========================================================================
+Conversion from Euler angles to GSH coefficients completed: 34.225 seconds
+FFT3 conversion of mf to M for Ac: 66.044 seconds
+Size of M: 1.2150432 gb
+Conversion from Euler angles to GSH coefficients completed: 35.709 seconds
+FFT3 conversion of mf to M for BaTr: 67.928 seconds
+Size of M: 1.2150432 gb
+Conversion from Euler angles to GSH coefficients completed: 34.639 seconds
+FFT3 conversion of mf to M for Di: 66.546 seconds
+Size of M: 1.2150432 gb
+Conversion from Euler angles to GSH coefficients completed: 35.872 seconds
+FFT3 conversion of mf to M for Dd: 66.136 seconds
+Size of M: 1.2150432 gb
+Conversion from Euler angles to GSH coefficients completed: 35.135 seconds
+FFT3 conversion of mf to M for Id: 67.616 seconds
+Size of M: 1.2150432 gb
+Conversion from Euler angles to GSH coefficients completed: 35.436 seconds
+FFT3 conversion of mf to M for Od: 66.552 seconds
+Size of M: 1.2150432 gb
+Conversion from Euler angles to GSH coefficients completed: 35.572 seconds
+FFT3 conversion of mf to M for Ra: 68.862 seconds
+Size of M: 1.2150432 gb
+Conversion from Euler angles to GSH coefficients completed: 35.615 seconds
+FFT3 conversion of mf to M for Tr: 66.626 seconds
+Size of M: 1.2150432 gb
+Conversion from Euler angles to GSH coefficients completed: 35.659 seconds
+FFT3 conversion of mf to M for BaTrTr: 66.872 seconds
+Size of M: 1.2150432 gb
+Conversion from Euler angles to GSH coefficients completed: 35.731 seconds
+FFT3 conversion of mf to M for DdTr: 68.697 seconds
+Size of M: 1.2150432 gb
+Conversion from Euler angles to GSH coefficients completed: 34.882 seconds
+FFT3 conversion of mf to M for DiTr: 68.938 seconds
+Size of M: 1.2150432 gb
+Conversion from Euler angles to GSH coefficients completed: 34.797 seconds
+FFT3 conversion of mf to M for OdTr: 67.455 seconds
+Size of M: 1.2150432 gb
+[0, 0]
+ff = 2.4 gb
+[0, 20]
+[0, 40]
+[1, 20]
+[1, 40]
+correlations computed for Ac: 346.59544s
+[0, 0]
+ff = 2.4 gb
+[0, 20]
+[0, 40]
+[1, 20]
+[1, 40]
+correlations computed for BaTr: 455.13008s
+[0, 0]
+ff = 2.4 gb
+[0, 20]
+[0, 40]
+[1, 20]
+[1, 40]
+correlations computed for Di: 456.16266s
+[0, 0]
+ff = 2.4 gb
+[0, 20]
+[0, 40]
+[1, 20]
+[1, 40]
+correlations computed for Dd: 483.58815s
+[0, 0]
+ff = 2.4 gb
+[0, 20]
+[0, 40]
+[1, 20]
+[1, 40]
+correlations computed for Id: 448.54463s
+[0, 0]
+ff = 2.4 gb
+[0, 20]
+[0, 40]
+[1, 20]
+[1, 40]
+correlations computed for Od: 465.08251s
+[0, 0]
+ff = 2.4 gb
+[0, 20]
+[0, 40]
+[1, 20]
+[1, 40]
+correlations computed for Ra: 452.75222s
+[0, 0]
+ff = 2.4 gb
+[0, 20]
+[0, 40]
+[1, 20]
+[1, 40]
+correlations computed for Tr: 470.51164s
+[0, 0]
+ff = 2.4 gb
+[0, 20]
+[0, 40]
+[1, 20]
+[1, 40]
+correlations computed for BaTrTr: 457.81168s
+[0, 0]
+ff = 2.4 gb
+[0, 20]
+[0, 40]
+[1, 20]
+[1, 40]
+correlations computed for DdTr: 454.30702s
+[0, 0]
+ff = 2.4 gb
+[0, 20]
+[0, 40]
+[1, 20]
+[1, 40]
+correlations computed for DiTr: 436.91401s
+[0, 0]
+ff = 2.4 gb
+[0, 20]
+[0, 40]
+[1, 20]
+[1, 40]
+correlations computed for OdTr: 423.31802s
+correlations combined
+pca explained variance: [ 54.7  18.3  12.8 ...,   0.    0.    0. ]%
+PCA completed: 4596.5739s
+transform to low dimensional space, Ac: 83.09 s
+transform to low dimensional space, BaTr: 82.98 s
+transform to low dimensional space, Di: 82.85 s
+transform to low dimensional space, Dd: 82.79 s
+transform to low dimensional space, Id: 82.72 s
+transform to low dimensional space, Od: 82.49 s
+transform to low dimensional space, Ra: 82.26 s
+transform to low dimensional space, Tr: 82.92 s
+transform to low dimensional space, BaTrTr: 82.13 s
+transform to low dimensional space, DdTr: 82.5 s
+transform to low dimensional space, DiTr: 82.7 s
+transform to low dimensional space, OdTr: 81.89 s
+---------------------------------------
+Begin PBS Epilogue Fri Dec  9 14:07:20 EST 2016
+Job ID:     1889444.dedicated-sched.pace.gatech.edu
+User ID:    nhpnp3
+Job name:   calfem
+Resources:  mem=40gb,neednodes=1:ppn=1,nodes=1:ppn=1,walltime=05:00:00
+Rsrc Used:  cput=02:41:24,energy_used=0,mem=48350448kb,vmem=53019352kb,walltime=03:22:54
+Queue:      granulous
+Nodes:     
+iw-c29-30.pace.gatech.edu
+End PBS Epilogue Fri Dec  9 14:07:20 EST 2016
+---------------------------------------

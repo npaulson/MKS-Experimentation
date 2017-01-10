@@ -12,9 +12,9 @@ def const():
 
     C['sid'] = ['Ac', 'BaTr', 'Di', 'Dd', 'Id', 'Od',
                 'Ra', 'Tr', 'BaTrTr', 'DdTr', 'DiTr', 'OdTr']
-    C['sid_cal'] = ['Ac', 'BaTr', 'Di', 'Id', 'Od',
+    C['sid_cal'] = ['Ac', 'BaTr', 'Di', 'Dd', 'Id', 'Od',
                     'Ra', 'Tr', 'BaTrTr', 'DiTr', 'OdTr']
-    C['sid_val'] = ['Dd', 'DdTr']
+    C['sid_val'] = ['DdTr']
     C['names'] = ['actual', 'basaltrans', 'dice', 'doubledonut',
                   'innerdonut', 'outerdonut', 'random', 'trans',
                   'BaTrTr', 'DdTr', 'DiTr', 'OdTr']
@@ -70,14 +70,14 @@ def const():
     C['n_pc_tot'] = np.sum(C['ns_cal'])
 
     """number of subclusters to select"""
-    C['n_sc'] = 20
+    C['n_sc'] = 10
     """number of points to sample for each subcluster"""
     C['n_samp'] = 100
 
     C['pcnt'] = .99
 
     # C['n_pc_max'] = len(C['sid'])*2*C['n_pc_samp']-1
-    C['n_pc_max'] = 40
-    C['deg_max'] = 1
+    C['n_pc_max'] = 10
+    C['deg_max'] = 3
 
     return C

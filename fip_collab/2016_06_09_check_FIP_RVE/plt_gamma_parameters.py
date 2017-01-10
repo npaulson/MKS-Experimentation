@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import h5py
 
 
-def pltmap(ns_max, set_id):
+def pltmap(ns_max, step):
 
     plt.figure(num=1, figsize=[10, 8])
 
@@ -11,14 +11,16 @@ def pltmap(ns_max, set_id):
     coefs = f.get('gamma_coefs')[...]
     f.close()
 
-    shape = coefs[:, 0]  # alpha
-    loc = coefs[:, 1]  # mu-sub-g
-    scale = coefs[:, 2]  # sigma-sub-g
-    r2 = coefs[:, 3]
+    shape = coefs[(step-2)::step, 0]  # alpha
+    loc = coefs[(step-2)::step, 1]  # mu-sub-g
+    scale = coefs[(step-2)::step, 2]  # sigma-sub-g
+    r2 = coefs[(step-2)::step, 3]
+
+    fipax = np.arange(step-1, ns_max+1, step)
 
     plt.subplot(411)
 
-    plt.plot(np.arange(1, ns_max+1), shape, 'b-')
+    plt.plot(fipax, shape, 'k.-')
     plt.xlabel("number of SVEs")
     plt.ylabel("$\\alpha$")
     plt.axis([1., 500., .6, 1.0])
@@ -26,34 +28,32 @@ def pltmap(ns_max, set_id):
 
     plt.subplot(412)
 
-    plt.plot(np.arange(1, ns_max+1), loc, 'b-')
+    plt.plot(fipax, np.log(loc), 'k.-')
     plt.xlabel("number of SVEs")
-    plt.ylabel("$\mu_g$")
-    # plt.axis([1., 500., 3.5e-7, 5.5e-7])
-    plt.axis([1., 500., 2.5e-7, 4.5e-7])
+    plt.ylabel("$ln(\mu_g)$")
+    plt.axis([1., 500., -15, -14])
     plt.grid(True)
 
     plt.subplot(413)
 
-    plt.plot(np.arange(1, ns_max+1), scale, 'b-')
+    plt.plot(fipax, np.log(scale), 'k.-')
     plt.xlabel("number of SVEs")
-    plt.ylabel("$\sigma_g$")
-    # plt.axis([1., 500., 2.5e-7, 4.5e-7])
-    plt.axis([1., 500., 1.5e-7, 3.5e-7])
+    plt.ylabel("$ln(\sigma_g)$")
+    plt.axis([1., 500., -15, -14])
     plt.grid(True)
 
     plt.subplot(414)
 
-    plt.plot(np.arange(1, ns_max+1), r2, 'b-')
+    plt.plot(fipax, r2, 'k.-')
     plt.xlabel("number of SVEs")
     plt.ylabel("$r^2$")
-    plt.axis([1., 500., .985, 1.00])
+    # plt.axis([1., 500., .985, 1.00])
     plt.grid(True)
 
     plt.tight_layout()
 
 if __name__ == '__main__':
     ns_max = 500
-    set_id = "random_cal"
-    pltmap(ns_max, set_id)
+    step = 20
+    pltmap(ns_max, step)
     plt.show()

@@ -1,0 +1,150 @@
+---------------------------------------
+Begin PBS Prologue Fri Dec  9 14:22:01 EST 2016
+Job ID:     1890015.dedicated-sched.pace.gatech.edu
+User ID:    nhpnp3
+Job name:   calfem
+Queue:      granulous
+End PBS Prologue Fri Dec  9 14:22:01 EST 2016
+---------------------------------------
+ =========================================================================
+|                                                                         |
+|       A note about all current anaconda modules:                        |
+|       Anaconda doesn’t play well with modules - once you load the       |
+|       anaconda module, module commands no longer work (not even         |
+|       module purge) unless you log out and back in again.               |
+|                                                                         |
+|       We’re working with Continuum to find a solution, but for now,     |
+|       we recommend you load the anaconda modules last if at all         |
+|       possible. Thanks!                                                 |
+|                                                                         |
+ =========================================================================
+186
+fips processed for Ac: 1.001 seconds
+186
+fips processed for BaTr: 0.5 seconds
+186
+fips processed for Di: 0.377 seconds
+186
+fips processed for Dd: 0.374 seconds
+186
+fips processed for Id: 0.364 seconds
+186
+fips processed for Od: 0.406 seconds
+186
+fips processed for Ra: 0.415 seconds
+186
+fips processed for Tr: 0.337 seconds
+186
+fips processed for BaTrTr: 0.359 seconds
+186
+fips processed for DdTr: 0.368 seconds
+186
+fips processed for DiTr: 0.36 seconds
+186
+fips processed for OdTr: 0.352 seconds
+samples extracted for Ac: 4.692 seconds
+samples extracted for BaTr: 4.91 seconds
+samples extracted for Di: 4.781 seconds
+samples extracted for Dd: 4.692 seconds
+samples extracted for Id: 4.774 seconds
+samples extracted for Od: 4.708 seconds
+samples extracted for Ra: 4.818 seconds
+samples extracted for Tr: 4.449 seconds
+samples extracted for BaTrTr: 4.53 seconds
+samples extracted for DdTr: 4.695 seconds
+samples extracted for DiTr: 5.096 seconds
+samples extracted for OdTr: 4.819 seconds
+[deg, #PCs]: [1 1] complete
+[deg, #PCs]: [1 2] complete
+[deg, #PCs]: [1 3] complete
+[deg, #PCs]: [1 4] complete
+[deg, #PCs]: [1 5] complete
+[deg, #PCs]: [1 6] complete
+[deg, #PCs]: [1 7] complete
+[deg, #PCs]: [1 8] complete
+[deg, #PCs]: [1 9] complete
+[deg, #PCs]: [ 1 10] complete
+[deg, #PCs]: [ 1 11] complete
+[deg, #PCs]: [ 1 12] complete
+[deg, #PCs]: [ 1 13] complete
+[deg, #PCs]: [ 1 14] complete
+[deg, #PCs]: [ 1 15] complete
+[deg, #PCs]: [ 1 16] complete
+[deg, #PCs]: [ 1 17] complete
+[deg, #PCs]: [ 1 18] complete
+[deg, #PCs]: [ 1 19] complete
+[deg, #PCs]: [ 1 20] complete
+[deg, #PCs]: [2 1] complete
+[deg, #PCs]: [2 2] complete
+[deg, #PCs]: [2 3] complete
+[deg, #PCs]: [2 4] complete
+[deg, #PCs]: [2 5] complete
+[deg, #PCs]: [2 6] complete
+[deg, #PCs]: [2 7] complete
+[deg, #PCs]: [2 8] complete
+[deg, #PCs]: [2 9] complete
+[deg, #PCs]: [ 2 10] complete
+[deg, #PCs]: [ 2 11] complete
+[deg, #PCs]: [ 2 12] complete
+[deg, #PCs]: [ 2 13] complete
+[deg, #PCs]: [ 2 14] complete
+[deg, #PCs]: [ 2 15] complete
+[deg, #PCs]: [ 2 16] complete
+[deg, #PCs]: [ 2 17] complete
+[deg, #PCs]: [ 2 18] complete
+[deg, #PCs]: [ 2 19] complete
+[deg, #PCs]: [ 2 20] complete
+regressions and cross-validations completed: 49.4 s
+[deg, #PCs]: [1 1] complete
+[deg, #PCs]: [1 2] complete
+[deg, #PCs]: [1 3] complete
+[deg, #PCs]: [1 4] complete
+[deg, #PCs]: [1 5] complete
+[deg, #PCs]: [1 6] complete
+[deg, #PCs]: [1 7] complete
+[deg, #PCs]: [1 8] complete
+[deg, #PCs]: [1 9] complete
+[deg, #PCs]: [ 1 10] complete
+[deg, #PCs]: [ 1 11] complete
+[deg, #PCs]: [ 1 12] complete
+[deg, #PCs]: [ 1 13] complete
+[deg, #PCs]: [ 1 14] complete
+[deg, #PCs]: [ 1 15] complete
+[deg, #PCs]: [ 1 16] complete
+[deg, #PCs]: [ 1 17] complete
+[deg, #PCs]: [ 1 18] complete
+[deg, #PCs]: [ 1 19] complete
+[deg, #PCs]: [ 1 20] complete
+[deg, #PCs]: [2 1] complete
+[deg, #PCs]: [2 2] complete
+[deg, #PCs]: [2 3] complete
+[deg, #PCs]: [2 4] complete
+[deg, #PCs]: [2 5] complete
+[deg, #PCs]: [2 6] complete
+[deg, #PCs]: [2 7] complete
+[deg, #PCs]: [2 8] complete
+[deg, #PCs]: [2 9] complete
+[deg, #PCs]: [ 2 10] complete
+[deg, #PCs]: [ 2 11] complete
+[deg, #PCs]: [ 2 12] complete
+[deg, #PCs]: [ 2 13] complete
+[deg, #PCs]: [ 2 14] complete
+[deg, #PCs]: [ 2 15] complete
+[deg, #PCs]: [ 2 16] complete
+[deg, #PCs]: [ 2 17] complete
+[deg, #PCs]: [ 2 18] complete
+[deg, #PCs]: [ 2 19] complete
+[deg, #PCs]: [ 2 20] complete
+regressions and cross-validations completed: 49.4 s
+---------------------------------------
+Begin PBS Epilogue Fri Dec  9 14:24:45 EST 2016
+Job ID:     1890015.dedicated-sched.pace.gatech.edu
+User ID:    nhpnp3
+Job name:   calfem
+Resources:  mem=10gb,neednodes=1:ppn=1,nodes=1:ppn=1,walltime=03:00:00
+Rsrc Used:  cput=00:02:27,energy_used=0,mem=174364kb,vmem=1179968kb,walltime=00:02:44
+Queue:      granulous
+Nodes:     
+iw-c29-30.pace.gatech.edu
+End PBS Epilogue Fri Dec  9 14:24:45 EST 2016
+---------------------------------------
