@@ -39,11 +39,11 @@ def resp(ns, sid):
     x = x[np.int64(C['pcnt']*x.size):, None]
     f2.create_dataset('evd_%s' % sid, data=x)
 
-    thresh = x[np.int64(C['pcnt']*x.size)]
+    thresh = x.min()
     tmp = fip >= thresh
     ev_count = np.sum(tmp, 1)
 
-    if np.sum(ev_count) != np.int64((1-C['pcnt'])*x.size):
+    if np.sum(ev_count) != np.int64(x.size):
         print np.sum(ev_count)
     f2.create_dataset("ev_count_%s" % sid, data=ev_count)
 

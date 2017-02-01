@@ -12,9 +12,9 @@ def const():
 
     C['sid'] = ['Ac', 'BaTr', 'Di', 'Dd', 'Id', 'Od',
                 'Ra', 'Tr', 'BaTrTr', 'DdTr', 'DiTr', 'OdTr']
-    C['sid_cal'] = ['Ac', 'BaTr', 'Di', 'Dd', 'Id', 'Od',
+    C['sid_cal'] = ['Ac', 'BaTr', 'Di', 'Id', 'Od',
                     'Ra', 'Tr', 'BaTrTr', 'DiTr', 'OdTr']
-    C['sid_val'] = ['DdTr']
+    C['sid_val'] = ['Dd', 'DdTr']
     C['names'] = ['actual', 'basaltrans', 'dice', 'doubledonut',
                   'innerdonut', 'outerdonut', 'random', 'trans',
                   'BaTrTr', 'DdTr', 'DiTr', 'OdTr']
@@ -23,7 +23,7 @@ def const():
     C['ns'] = list(200*np.ones(len(C['sid']), dtype='int16'))
     C['ns_cal'] = list(200*np.ones(len(C['sid_cal']), dtype='int16'))
 
-    C['dir_resp'] = "response"
+    C['direc'] = C['sid']
 
     C['H'] = 15  # max number of gsh functions
 
@@ -70,7 +70,7 @@ def const():
     C['n_pc_tot'] = np.sum(C['ns_cal'])
 
     """number of subclusters to select"""
-    C['n_sc'] = 10
+    C['n_sc'] = 20
     """number of points to sample for each subcluster"""
     C['n_samp'] = 100
 

@@ -19,9 +19,9 @@ sid = C['sid']
 ns = C['ns']
 
 # Hvec = [6, 15, 41, 90]
-Hvec = [15, 41]
-H = 41
-deg = 1
+Hvec = [15]
+H = 15
+deg = 3
 
 # """Plot an autocorrelation"""
 # sn = 0
@@ -39,8 +39,8 @@ pcC = 2
 pltmap.pltmap(H, pcA, pcB)
 pltmap3d.pltmap(H, pcA, pcB, pcC)
 
-# """Plot the EV count in each SVE"""
-# pltcount.pltcount(H, pcA, pcB)
+"""Plot the EV count in each SVE"""
+pltcount.pltcount(H, pcA, pcB)
 
 """Plot a dendrogram"""
 pd.pltdend(ns, sid, H)
@@ -55,8 +55,8 @@ pevp.plterr('sigma', emax, deg, ['val'], Hvec)
 pevp.plterr('sigma', emax, deg, ['loocv'], Hvec)
 
 """Plot the predicted versus actual values of the property of interest"""
-indx1 = plc.plot_check('mu', n_pc=34, deg=deg, H=H, erv=2)
-indx2 = plc.plot_check('sigma', n_pc=34, deg=deg, H=H, erv=2)
+indx1 = plc.plot_check('mu', n_pc=4, deg=deg, H=H, erv=2)
+indx2 = plc.plot_check('sigma', n_pc=4, deg=deg, H=H, erv=2)
 
 """Plot the FIP EVDs versus the predicted FIP EVDs"""
 pe.pltevd(H)

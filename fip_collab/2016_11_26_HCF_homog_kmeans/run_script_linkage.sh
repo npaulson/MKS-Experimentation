@@ -8,5 +8,5 @@
 
 cd $PBS_O_WORKDIR
 module purge
-module load anaconda2/2.1.0
+module load anaconda2
 python main_linkage.py

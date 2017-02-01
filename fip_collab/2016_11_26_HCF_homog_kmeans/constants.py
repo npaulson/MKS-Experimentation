@@ -77,7 +77,7 @@ def const():
     C['pcnt'] = .99
 
     # C['n_pc_max'] = len(C['sid'])*2*C['n_pc_samp']-1
-    C['n_pc_max'] = 40
-    C['deg_max'] = 1
+    C['n_pc_max'] = 10
+    C['deg_max'] = 3
 
     return C

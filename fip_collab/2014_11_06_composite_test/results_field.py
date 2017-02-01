@@ -41,7 +41,10 @@ def results(el,ns,set_id,typ):
     print np.mean(resp)
     print np.std(mks_R)
     print np.std(resp)
+
+    plt.show()	
     
+
 if __name__ == '__main__':
     results(25,5,'val25el','sigma')
  
