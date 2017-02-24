@@ -6,7 +6,15 @@ import sklearn.metrics as sm
 from sklearn.decomposition import PCA
 import h5py
 import time
-from numpy.random import multivariate_normal as mn
+from scipy.stats import multivariate_normal as mnP
+from numpy.random import multivariate_normal as mnR
+from sklearn.neighbors.kde import KernelDensity
+
+
+def getdensKDE(X, X_, bw):
+    kde = KernelDensity(kernel='gaussian', bandwidth=bw).fit(X)
+    Adens = np.exp(kde.score_samples(X_))
+    return Adens
 
 
 def fit_gamma_robust(tail):
@@ -68,7 +76,8 @@ def sample(ns, sid):
         """extract indices of selected subsample"""
         indxv = select_sample(reduced)
 
-        """idenfify closest n_cluster points to seed"""
+        """extract the locations of the points and assocated responses
+        for the subsample"""
         samp_ = reduced[indxv, :]
         fip_ = allfip[indxv, :]
 
@@ -82,6 +91,8 @@ def sample(ns, sid):
         samp[sc, ...] = samp_
         f2.create_dataset('evd%s_%s' % (sc, sid),
                           data=evd_)
+
+        print sc
 
     f2.close()
 
@@ -99,72 +110,83 @@ def select_sample(reduced):
 
     """perform PCA on the original point cloud to find the directions of
     maximum variance"""
-    n_components = 5
-    pca = PCA(n_components=n_components)
-    red = pca.fit_transform(reduced)
+    dof = 3
+    pca = PCA(n_components=dof)
+    Xorig = pca.fit_transform(reduced)
 
     """find the std. dev. of the original point cloud in each dimension
     the means are all zero due to the PCA algorithm"""
-    sig = np.std(red, 0)
+    sig = np.std(Xorig, 0)
 
-    err_std = 100*np.ones((5,))
-    while np.any(err_std > 0.5):
+    err = 100*np.ones((dof*2,))
+    while np.any(err > 10):
+
+        sel = Xorig
+        indxv = np.arange(C['ncld'])
 
         """randomly select the mean and std. dev. of the new point cloud."""
-        # mu_ = (2*np.random.rand(n_components)-1)*sig
-        # sig_ = 0.5*(sig+np.random.rand(n_components)*(sig-np.abs(mu_)))
+        # mu_ = (2*np.random.rand(dof)-1)*sig
+        # sig_ = 0.5*sig+0.5*np.random.rand(dof)*(sig-np.abs(mu_))
 
-        mu_ = (2*np.random.rand(n_components)-1)*sig
-        sig_ = 0.6*sig+0.4*np.random.rand(n_components)*(sig-np.abs(mu_))
+        mu_ = (2*np.random.rand(dof)-1)*sig
+        sig_ = 0.5*sig + 0.5*np.random.rand(dof)*(sig-np.abs(mu_))
 
-        # mu_ = 1.2*(2*np.random.rand(n_components)-1)*sig
-        # sig_ = 0.3*sig + 0.7*np.random.rand(n_components)*(sig-np.abs(mu_))
+        for ii in xrange(C['ncld']-C['n_samp']):
 
-        """generate the new point cloud"""
-        target = mn(mean=mu_, cov=np.diag(sig_**2), size=C['n_samp'])
+            """calculate the kernel bandwidth for KDE based on Silverman's
+            rule of thumb"""
+            bw = sel.std()*(0.25*indxv.size*(dof+2.))**(-1./(dof+4.))
+            """randomize the bandwidth to avoid formation of patterns in
+            selected points"""
+            bw = bw*np.random.uniform(0.05, 0.5)
+            """train the KDE model with the selected points"""
+            kde = KernelDensity(kernel='gaussian', bandwidth=bw).fit(sel)
+            """obtain the estimated probability density at selected
+            points"""
+            Adens = np.exp(kde.score_samples(sel))
+            """find the desired probability density at selected points"""
+            target_d = mnP.pdf(sel, mean=mu_, cov=np.diag(sig_**2))
+            """evaluate the error between the desired and actual probability
+            densities at selected points"""
+            err = Adens - target_d
+            """remove point in sel closest to location of max positive error"""
+            sel = np.delete(sel, np.argmax(err), axis=0)
+            indxv = np.delete(indxv, np.argmax(err))
 
-        """identify closest original points to each target point
-        each time an original point is selected remove it from the pool so
-        that points are not double counted. Randomly selelect target points
-        so that there is no bias."""
+        des = np.concatenate((np.mean(sel, 0), np.std(sel, 0)))
+        tru = np.concatenate((mu_, sig_))
+        nor = np.concatenate((sig_, sig_))
+        err = np.abs(tru-des)/nor
 
-        red_ = red
-        indxv = np.arange(C['n_samp'])
-        inxorig = np.arange(reduced.shape[0])
+        # print sig
+        # print tru
+        # print des
+        # print err
 
-        for ii in xrange(C['n_samp']):
-            dist = np.sum((red_-target[ii, :])**2, 1)
-            indx = np.argmin(dist)
-
-            indxv[ii] = inxorig[indx]
-
-            red_ = np.delete(red_, indx, axis=0)
-            inxorig = np.delete(inxorig, indx, axis=0)
-
-        samp_ = red[indxv, :]
-
-        tmps = np.std(samp_[:5, :], 0)
-        tmpt = np.std(target[:5, :], 0)
-        err_std = np.abs(tmps-tmpt)/tmpt
-        # print err_std
+    # """plot the distribution of points in pc one versus the
+    # associated normal distribution"""
+    # import matplotlib.pyplot as plt
+    # tmp = np.sort(Xorig[:, 0])
+    # bw = sel.std()*(0.25*tmp.size*(dof+2.))**(-1./(dof+4.))
+    # kde = KernelDensity(kernel='gaussian', bandwidth=0.5*bw).fit(tmp[:, None])
+    # Adens = np.exp(kde.score_samples(tmp[:, None]))
+    # plt.plot(tmp, Adens, 'b-')
+    # plt.plot(tmp, ss.norm.pdf(tmp, loc=tmp.mean(), scale=tmp.std()), 'k-')
+    # plt.show()
 
     # """plot the subclustering if desired"""
     # import matplotlib.pyplot as plt
 
-    # plt.scatter(red[:, 0], red[:, 1],
+    # plt.scatter(Xorig[:, 0], Xorig[:, 1],
     #             marker='o', s=20,
     #             color='k', linewidths=0.0, edgecolors=None, alpha=.3)
 
+    # target = mnR(mean=mu_, cov=np.diag(sig_**2), size=C['n_samp'])
     # plt.scatter(target[:, 0], target[:, 1],
     #             marker='s', s=15,
     #             color='b', linewidths=0.0, edgecolors=None, alpha=.5)
 
-    # for ii in xrange(C['n_samp']):
-    #     x = np.array([target[ii, 0], samp_[ii, 0]])
-    #     y = np.array([target[ii, 1], samp_[ii, 1]])
-    #     plt.plot(x, y, 'r:')
-
-    # plt.scatter(samp_[:, 0], samp_[:, 1],
+    # plt.scatter(Xorig[indxv, 0], Xorig[indxv, 1],
     #             marker='x', s=40, c='r', edgecolors=None,
     #             linewidths=1.0, alpha=0.5,
     #             label='selected')
@@ -178,8 +200,9 @@ def select_sample(reduced):
 
 if __name__ == '__main__':
     C = const()
-    ns = C['ns'][0]
-    sid = C['sid'][0]
+    setnum = 0
+    ns = C['ns'][setnum]
+    sid = C['sid'][setnum]
 
     f2 = h5py.File("sample_L%s.hdf5" % C['H'], 'w')
     f2.close()

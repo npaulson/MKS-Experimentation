@@ -22,7 +22,6 @@ ns = C['ns']
 # Hvec = [6, 15, 41, 90]
 Hvec = [15]
 H = 15
-deg = 3
 
 # """Plot an autocorrelation"""
 # sn = 0
@@ -30,36 +29,37 @@ deg = 3
 # iB = 1
 # pltcorr.pltcorr(ns_cal[0], sid_cal[0], sn, iA, iB)
 
-"""Plot the percentage explained variance"""
-pev.variance([.5, 15, 40, 105], Hvec)
+# """Plot the percentage explained variance"""
+# pev.variance([.5, 15, 40, 105], Hvec)
 
-"""Plot the microstructures in PC space"""
-pcA = 0
-pcB = 1
-pcC = 2
-pltmap.pltmap(H, pcA, pcB)
-pltmap3d.pltmap(H, pcA, pcB, pcC)
+# """Plot the microstructures in PC space"""
+# pcA = 0
+# pcB = 1
+# pcC = 2
+# pltmap.pltmap(H, pcA, pcB)
+# pltmap3d.pltmap(H, pcA, pcB, pcC)
 
-# """Plot the EV count in each SVE"""
-pltcount.pltcount(H, pcA, pcB)
+# # """Plot the EV count in each SVE"""
+# pltcount.pltcount(H, pcA, pcB)
 
-"""Plot a dendrogram"""
-pd.pltdend(ns, sid, H)
+# """Plot a dendrogram"""
+# pd.pltdend(ns, sid, H)
 
 """Plot the errors versus number of PCs and polynomial order"""
-emax = 5
-pevp.plterr('mu', emax, deg, ['cal'], Hvec)
-pevp.plterr('mu', emax, deg, ['val'], Hvec)
-pevp.plterr('mu', emax, deg, ['loocv'], Hvec)
-pevp.plterr('sigma', emax, deg, ['cal'], Hvec)
-pevp.plterr('sigma', emax, deg, ['val'], Hvec)
-pevp.plterr('sigma', emax, deg, ['loocv'], Hvec)
+for ii in xrange(3):
+    deg = ii + 1
+    pevp.plterr('mu', 2, deg, ['cal'], Hvec)
+    pevp.plterr('mu', 7, deg, ['val'], Hvec)
+    pevp.plterr('mu', 2, deg, ['loocv'], Hvec)
+    pevp.plterr('sigma', 2, deg, ['cal'], Hvec)
+    pevp.plterr('sigma', 7, deg, ['val'], Hvec)
+    pevp.plterr('sigma', 2, deg, ['loocv'], Hvec)
 
 """Plot the predicted versus actual values of the property of interest"""
-n_pc_mu = 5
-deg_mu = 3
-n_pc_sigma = 5
-deg_sigma = 3
+deg_mu = 2
+n_pc_mu = 8
+deg_sigma = 2
+n_pc_sigma = 8
 
 indx1 = plc.plot_check('mu', n_pc=n_pc_mu, deg=deg_mu, H=H, erv=2)
 indx2 = plc.plot_check('sigma', n_pc=n_pc_sigma, deg=deg_sigma, H=H, erv=2)

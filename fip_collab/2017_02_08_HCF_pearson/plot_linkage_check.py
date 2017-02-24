@@ -5,7 +5,7 @@ from constants import const
 import h5py
 
 
-def plot_check(par, n_pc, deg, H, erv):
+def plot_check(par, flvl, H, erv):
 
     C = const()
 
@@ -15,18 +15,14 @@ def plot_check(par, n_pc, deg, H, erv):
 
     f_reg = h5py.File("regression_results_L%s.hdf5" % H, 'r')
 
-    """explicitly define #PCs"""
-    tmp = (C['pcdeg'][:, 0] == n_pc)*(C['pcdeg'][:, 1] == deg)
-    indx = np.arange(C['pcdeg'].shape[0])[tmp]
-
     print par
-    print "PCc, deg: %s" % str(C['pcdeg'][indx, :])
+    print "flvl: %s" % flvl
 
     """find the results associated with the desired n_pc, deg"""
 
     """load the simulated and predicted responses"""
     Rsim = f_reg.get('Rsim_%s' % par)[...]
-    Rpred = f_reg.get('Rpred_%s' % par)[indx, :]
+    Rpred = f_reg.get('Rpred_%s' % par)[flvl, :]
 
     """write out the associated error"""
     n_fac = Rsim.mean()
@@ -97,11 +93,9 @@ def plot_check(par, n_pc, deg, H, erv):
 
     f_reg.close()
 
-    fig_name = 'prediction_%s_npc%s_deg%s_L%s.png' % (par, n_pc, deg, H)
+    fig_name = 'prediction_%s_flvl%s_L%s.png' % (par, flvl, H)
     fig.canvas.set_window_title(fig_name)
     plt.savefig(fig_name)
-
-    return indx
 
 
 if __name__ == '__main__':

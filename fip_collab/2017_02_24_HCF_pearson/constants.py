@@ -7,22 +7,28 @@ def const():
     C = {}
 
     """general constants"""
+    C['ncld'] = 200
+
     C['wrt_file'] = 'log_%s.txt' % (time.strftime("%Y-%m-%d_h%H"))
 
     C['sid'] = ['Ac', 'BaTr', 'Di', 'Dd', 'Id', 'Od',
                 'Ra', 'Tr', 'BaTrTr', 'DdTr', 'DiTr', 'OdTr']
-    C['sid_cal'] = ['Ac', 'BaTr', 'Di', 'Id', 'Od',
+
+    C['names_plt'] = ['A', 'B', 'C', 'H', 'D',
+                      'E', 'F', 'G', 'I', 'J', 'K', 'L']
+    C['sid_cal'] = ['Ac', 'BaTr', 'Di', 'Dd', 'Id', 'Od',
                     'Ra', 'Tr', 'BaTrTr', 'DiTr', 'OdTr']
-    C['sid_val'] = ['Dd', 'DdTr']
+    C['sid_val'] = ['DdTr']
     C['names'] = ['actual', 'basaltrans', 'dice', 'doubledonut',
                   'innerdonut', 'outerdonut', 'random', 'trans',
                   'BaTrTr', 'DdTr', 'DiTr', 'OdTr']
 
     C['strt'] = list(np.zeros(len(C['sid']), dtype='int16'))
-    C['ns'] = list(200*np.ones(len(C['sid']), dtype='int16'))
-    C['ns_cal'] = list(200*np.ones(len(C['sid_cal']), dtype='int16'))
+    C['ns'] = list(C['ncld']*np.ones(len(C['sid']), dtype='int16'))
+    C['ns_cal'] = list(C['ncld']*np.ones(len(C['sid_cal']), dtype='int16'))
 
-    C['direc'] = C['sid']
+    C['deuler'] = 'euler'
+    C['dfip'] = 'fip'
 
     C['H'] = 15  # max number of gsh functions
 
@@ -42,40 +48,14 @@ def const():
     C['n_pc_tot'] = np.sum(C['ns_cal'])
 
     """number of subclusters to select"""
-    C['n_sc'] = 40
+    C['n_sc'] = 20
     """number of points to sample for each subcluster"""
     C['n_samp'] = 100
 
     C['pcnt'] = .999
 
-    # """make a set of #s of PC and deg"""
-    # pcdeg = []
-    # for ii in xrange(1, 181):
-    #     pcdeg.append([ii, 1])
-    # for ii in xrange(1, 19):
-    #     pcdeg.append([ii, 2])
-    # for ii in xrange(1, 9):
-    #     pcdeg.append([ii, 3])
-    # C['pcdeg'] = np.array(pcdeg)
-
-    """make a set of #s of PC and deg"""
-    pcdeg = []
-    for ii in xrange(1, 121):
-        pcdeg.append([ii, 1])
-    for ii in xrange(1, 19):
-        pcdeg.append([ii, 2])
-    for ii in xrange(1, 13):
-        pcdeg.append([ii, 3])
-    C['pcdeg'] = np.array(pcdeg)
-
-    # """make a set of #s of PC and deg"""
-    # pcdeg = []
-    # for ii in xrange(1, 91):
-    #     pcdeg.append([ii, 1])
-    # for ii in xrange(1, 19):
-    #     pcdeg.append([ii, 2])
-    # for ii in xrange(1, 9):
-    #     pcdeg.append([ii, 3])
-    # C['pcdeg'] = np.array(pcdeg)
+    C['fmax'] = 200
+    C['n_pc_max'] = 10
+    C['deg_max'] = 2
 
     return C

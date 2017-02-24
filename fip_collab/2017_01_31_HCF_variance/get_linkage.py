@@ -9,6 +9,8 @@ from sklearn.preprocessing import PolynomialFeatures
 
 def prepare(par):
 
+    np.random.seed(0)
+
     C = const()
     p = C['n_sc']
 
@@ -54,20 +56,26 @@ def prepare(par):
 def preanalysis(n_pc, deg, loc_tot, var_tot):
 
     poly = PolynomialFeatures(deg)
-    tmp = poly.fit_transform(loc_tot[:, :n_pc])
+    tmpl = poly.fit_transform(loc_tot[:, :n_pc])
+    tmpv = poly.fit_transform(var_tot[:, :n_pc])
 
     # """include variances"""
-    # red = np.zeros((tmp.shape[0], tmp.shape[1]+1))
-    # red[:, 0] = np.sum(var_tot, 1)
-    # red[:, 1:] = tmp
+    # X = np.zeros((tmpl.shape[0], tmpl.shape[1]+1))
+    # X[:, 0] = np.sum(var_tot, 1)
+    # X[:, 1:] = tmpl
 
-    """include standard deviations"""
-    X = np.zeros((tmp.shape[0], tmp.shape[1]+n_pc))
-    X[:, :tmp.shape[1]] = tmp
-    X[:, tmp.shape[1]:] = var_tot[:, :n_pc]
+    """include standard deviations with polynomial order"""
+    X = np.zeros((tmpl.shape[0], tmpl.shape[1]+tmpv.shape[1]))
+    X[:, :tmpl.shape[1]] = tmpl
+    X[:, tmpl.shape[1]:] = tmpv
+
+    # """include standard deviations with linear dependence"""
+    # X = np.zeros((tmpl.shape[0], tmpl.shape[1]+n_pc))
+    # X[:, :tmpl.shape[1]] = tmpl
+    # X[:, tmpl.shape[1]:] = var_tot[:, :n_pc]
 
     # """don't include variances"""
-    # red = tmp
+    # X = tmpl
 
     return X
 
@@ -109,47 +117,37 @@ def linkage(par):
     iscal = precursors[4]
 
     """perform the regressions"""
-    n_ii = C['deg_max']
-    n_jj = C['n_pc_max']
-
     f_reg = h5py.File("regression_results_L%s.hdf5" % C['H'], 'a')
-
-    order_set = f_reg.create_dataset('order_%s' % par,
-                                     (n_ii*n_jj, 2),
-                                     dtype='int64')
 
     f_reg.create_dataset('Rsim_%s' % par, data=response_tot)
 
     f_reg.create_dataset('iscal_%s' % par, data=iscal)
 
     Rpred_set = f_reg.create_dataset('Rpred_%s' % par,
-                                     (n_ii*n_jj, ns_tot),
+                                     (C['pcdeg'].shape[0], ns_tot),
                                      dtype='float64')
 
     RpredCV_set = f_reg.create_dataset('RpredCV_%s' % par,
-                                       (n_ii*n_jj, p*len(C['sid_cal'])),
+                                       (C['pcdeg'].shape[0],
+                                        p*len(C['sid_cal'])),
                                        dtype='float64')
 
     # meanc = response_tot[iscal].mean()
-    c = 0
-    for ii in xrange(n_ii):
-        for jj in xrange(n_jj):
-            deg = ii+1
-            n_pc = jj+1
 
-            ords = np.array([deg, n_pc])
-            order_set[c, :] = ords
+    for ii in xrange(C['pcdeg'].shape[0]):
 
-            coef, RpredCV, Rpred = analysis(n_pc, deg, precursors)
+        n_pc = C['pcdeg'][ii, 0]
+        deg = C['pcdeg'][ii, 1]
 
-            RpredCV_set[c, :] = RpredCV
-            Rpred_set[c, :] = Rpred
+        coef, RpredCV, Rpred = analysis(n_pc, deg, precursors)
 
-            msg = "[deg, #PCs]: %s complete" % str(ords)
-            rr.WP(msg, C['wrt_file'])
-            # print "cv.mean(): %s" % str(np.mean(np.abs(RpredCV - response_tot[iscal]))/meanc)
+        RpredCV_set[ii, :] = RpredCV
+        Rpred_set[ii, :] = Rpred
 
-            c += 1
+        msg = "[deg, #PCs]: " + str(deg) + ", " + str(n_pc) + " complete"
+        rr.WP(msg, C['wrt_file'])
+        # print "cv.mean(): %s" % str(np.mean(np.abs(RpredCV -
+        #                                            response_tot[iscal]))/meanc)
 
     f_reg.close()
 

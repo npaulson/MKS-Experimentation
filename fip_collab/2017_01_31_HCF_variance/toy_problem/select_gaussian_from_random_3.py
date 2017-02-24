@@ -7,7 +7,7 @@ np.random.seed(6)
 """initialize randomly distributed points in square"""
 sl = 2  # side length of square
 rawdata = sl*np.random.random((1000, 2))-np.array([[sl/2., sl/2.]])
-n_pts = 500
+n_pts = 400
 rawdata = rawdata[:n_pts, :]
 
 """plot intial points"""
