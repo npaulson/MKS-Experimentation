@@ -22,6 +22,7 @@ ns = C['ns']
 # Hvec = [6, 15, 41, 90]
 Hvec = [6, 15, 41]
 H = 15
+deg = 3
 
 # """Plot an autocorrelation"""
 # sn = 0
@@ -45,22 +46,22 @@ pltmap.pltmap(H, pcA, pcB)
 # """Plot a dendrogram"""
 # pd.pltdend(ns, sid, H)
 
-# """Plot the errors versus number of PCs and polynomial order"""
-# pevp.plterr('mu', 0, 4, ['cal'], Hvec)
-# pevp.plterr('mu', 0, 7, ['val'], Hvec)
-# pevp.plterr('mu', 0, 4, ['loocv'], Hvec)
-# pevp.plterr('sigma', 0, 4, ['cal'], Hvec)
-# pevp.plterr('sigma', 0, 7, ['val'], Hvec)
-# pevp.plterr('sigma', 0, 4, ['loocv'], Hvec)
+"""Plot the errors versus number of PCs and polynomial order"""
+pevp.plterr('mu', 0, 4, ['cal'], Hvec)
+pevp.plterr('mu', 0, 7, ['val'], Hvec)
+pevp.plterr('mu', 0, 4, ['loocv'], Hvec)
+pevp.plterr('sigma', 0, 4, ['cal'], Hvec)
+pevp.plterr('sigma', 0, 7, ['val'], Hvec)
+pevp.plterr('sigma', 0, 4, ['loocv'], Hvec)
 
 """Plot the predicted versus actual values of the property of interest"""
-flvl_mu = 102
+flvl_mu = 72
 L_mu = 41
-flvl_sigma = 73
+flvl_sigma = 80
 L_sigma = 41
 
-plc.plot_check('mu', flvl=flvl_mu, H=L_mu, erv=2)
-plc.plot_check('sigma', flvl=flvl_sigma, H=L_sigma, erv=2)
+plc.plot_check('mu', flvl=flvl_mu, H=L_mu, erv=1)
+plc.plot_check('sigma', flvl=flvl_sigma, H=L_sigma, erv=1)
 
 """Plot the FIP EVDs versus the predicted FIP EVDs"""
 pe.pltevd()

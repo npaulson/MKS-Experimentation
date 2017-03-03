@@ -1,5 +1,5 @@
 import vtk_read as vtk
-import get_linkage_cov as gl
+import get_linkage_alt as gl
 import sub_sample as ss
 import get_response as gr
 from constants import const

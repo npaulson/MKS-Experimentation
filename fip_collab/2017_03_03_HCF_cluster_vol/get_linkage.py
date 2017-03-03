@@ -36,64 +36,30 @@ def pearson_eval(X, y):
 
     return pvec
 
-# def pearson_eval(X, y):
 
-#     Nfeat = X.shape[1]
-#     pvec = np.zeros((Nfeat,))
-#     pvec[0] = 1  # for the constant term
-#     for ii in xrange(1, Nfeat):
-#         """ pearsonr returns tuples with the pearson correlation
-#         and the P-value (chance of observing the data
-#         if the null hypothesis is true). I'm going to throw away
-#         the p-value"""
-#         pvec[ii] = pearsonr(X[:, ii], y)[0]
-
-#     return pvec
-
-
-def preanalysis(loc_tot, cov_tot):
+def preanalysis(loc_tot, var_tot):
 
     C = const()
-    npc = loc_tot.shape[1]
-    ns = loc_tot.shape[0]
-
-    """extract names from mean loc info"""
-    mean_only_names = []
-    for ii in xrange(npc):
-        mean_only_names += ['m%s' % str(ii+1)]
-
-    """extract variance info from covariance matrix"""
-    var_only = np.zeros((ns, npc))
-    var_only_names = []
-    for ii in xrange(npc):
-        var_only[:, ii] = cov_tot[:, ii, ii]
-        var_only_names += ['c%s_%s' % (str(ii+1), str(ii+1))]
-
-    """extract unique, off-diagonal co-variance info from
-    covariance matrix"""
-    nc = (npc**2-npc)/2
-    cov_only = np.zeros((ns, nc))
-    cov_only_names = []
-    c = 0
-    for ii in xrange(npc):
-        for jj in xrange(ii+1, npc):
-            cov_only[:, c] = cov_tot[:, ii, jj]
-            cov_only_names += ['c%s_%s' % (str(ii+1), str(jj+1))]
-            c += 1
-
-    """concatenate all the features into one array"""
-    X_pre = np.concatenate((loc_tot, var_only, cov_only), axis=1)
-    # X_pre = np.concatenate((loc_tot, var_only), axis=1)
 
     """get the polynomial features"""
     poly = PolynomialFeatures(C['deg_max'])
+    totvar = np.sum(var_tot[:, :C['n_pc_max']], axis=1)
+
+    X_pre = np.concatenate((loc_tot[:, :C['n_pc_max']],
+                            totvar[:, None]), axis=1)
     poly.fit(X_pre)
     X = poly.transform(X_pre)
 
     """get the names of the polynomial features"""
-    names_pre = mean_only_names + var_only_names + cov_only_names
-    # names_pre = mean_only_names + var_only_names
+    tmploc = []
+    for ii in xrange(C['n_pc_max']):
+        tmploc += ['m%s' % str(ii+1)]
+    names_pre = tmploc + ['tv']  # add in the total variatin term
     names = poly.get_feature_names(names_pre)
+
+    print "# order 1 features: " + str(len(names_pre))
+    print "# deg " + str(C['deg_max']) + \
+          " polynomial features: " + str(len(names))
 
     return X, names
 
@@ -113,8 +79,8 @@ def prepare(par):
     ns_tot = n_tot*p
     groups = np.zeros(ns_tot, dtype='int16')
     response_tot = np.zeros(ns_tot, dtype='float64')
-    loc_tot = np.zeros((ns_tot, C['n_pc_max']), dtype='float64')
-    cov_tot = np.zeros((ns_tot, C['n_pc_max'], C['n_pc_max']), dtype='float64')
+    loc_tot = np.zeros((ns_tot, C['n_pc_tot']), dtype='float64')
+    var_tot = np.zeros((ns_tot, C['n_pc_tot']), dtype='float64')
     iscal = np.zeros((ns_tot,), dtype='bool')
 
     c = 0
@@ -132,18 +98,16 @@ def prepare(par):
         dset_name = "%s_%s" % (par, sid)
         response_tot[c:c_] = f_link.get(dset_name)[...]
 
-        tmp = f_link.get('samp_%s' % sid)[:, :, :C['n_pc_max']]
+        tmp = f_link.get('samp_%s' % sid)[...]
 
         loc_tot[c:c_, :] = np.mean(tmp, 1)
-
-        for jj in xrange(p):
-            cov_tot[c+jj, ...] = np.cov(tmp[jj, ...], rowvar=False)
+        var_tot[c:c_, :] = np.var(tmp, 1)
 
         c = c_
 
     f_link.close()
 
-    return groups, response_tot, loc_tot, cov_tot, iscal
+    return groups, response_tot, loc_tot, var_tot, iscal
 
 
 def linkage(par):
@@ -186,7 +150,7 @@ def linkage(par):
     X, names = preanalysis(loc_tot, var_tot)
     f_reg.create_dataset('featurenames_%s' % par, data=names)
 
-    """perform the pearson correlation"""    
+    """perform the pearson correlation"""
     pvec = pearson_eval(X[iscal, :], response_tot[iscal])
     f_reg.create_dataset('pearsonscores_%s' % par, data=pvec)
 
@@ -196,17 +160,10 @@ def linkage(par):
     f_reg.create_dataset('indxsel_%s' % par, data=indxv)
     Xp = X[:, indxv]
 
-    tmp = pearson_eval(Xp[:, 1:], Xp[:, 6])
-    print tmp
-    print np.array(names)[indxv]
-
-    # import matplotlib.pyplot as plt
-    # plt.plot(np.arange(pvec.size), np.abs(pvec[np.argsort(np.abs(pvec))[::-1]]))
-    # plt.show()
-
-    print "top 10 scoring features"
-    for ii in xrange(10):
+    print "\ntop 20 scoring features"
+    for ii in xrange(20):
         print "%s: %s" % (names[indxv[ii]], pvec[indxv[ii]])
+    print "\n"
 
     """create and evaluate the final linkages"""
 
@@ -223,10 +180,9 @@ def linkage(par):
         RpredCV_set[ii, :] = RpredCV
         Rpred_set[ii, :] = Rpred
 
-        msg = "%s feature linkage complete" % str(ii+1)
+        err = np.mean(np.abs(RpredCV - response_tot[iscal]))/meanc
+        msg = "%s features: cv.mean(): %s" % (str(ii+1), str(err))
         rr.WP(msg, C['wrt_file'])
-        print "cv.mean(): %s" % str(np.mean(np.abs(RpredCV -
-                                                   response_tot[iscal]))/meanc)
 
     f_reg.close()
 

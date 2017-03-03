@@ -5,7 +5,7 @@ import scipy.stats as ss
 import matplotlib.cm as cm
 from constants import const
 from matplotlib.ticker import AutoMinorLocator
-import get_linkage_alt as gl
+import get_linkage as gl
 import reg_functions as rf
 import h5py
 import sys
@@ -24,7 +24,7 @@ def predict_evd_full(H, par, flvl):
 
     """obtain centers and spreads for microstructure classes"""
     loc = np.zeros((n_sid, C['n_pc_max']))
-    cov = np.zeros((n_sid, C['n_pc_max'], C['n_pc_max']))
+    var = np.zeros((n_sid, C['n_pc_max']))
 
     f_red = h5py.File("spatial_reduced_L%s.hdf5" % H, 'r')
 
@@ -32,27 +32,12 @@ def predict_evd_full(H, par, flvl):
         sid = C['sid'][ii]
         reduced = f_red.get('reduced_%s' % sid)[:, :C['n_pc_max']]
         loc[ii, :] = np.mean(reduced, 0)
-        cov[ii, ...] = np.cov(reduced, rowvar=False)
+        var[ii, :] = np.var(reduced, 0)
 
     f_red.close()
 
     """do preanalysis on centers and spreads"""
-
-    tmp = gl.preanalysis(loc, cov)
-    var_only = tmp[1]
-    cov_only = tmp[2]
-    mean_only_names = tmp[3]
-    var_only_names = tmp[4]
-    cov_only_names = tmp[5]
-
-    # X_pre = np.concatenate((loc, var_only, cov_only), axis=1)
-    # names_pre = mean_only_names + var_only_names + cov_only_names
-    # X_pre = np.concatenate((loc, var_only), axis=1)
-    # names_pre = mean_only_names + var_only_names
-    X_pre = loc
-    names_pre = mean_only_names
-
-    X, names = gl.get_poly(X_pre, names_pre)
+    X, names = gl.preanalysis(loc, var)
 
     """predict parameter values"""
     Rpred = rf.prediction(X[:, indxsel], coef)

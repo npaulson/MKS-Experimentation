@@ -29,34 +29,34 @@ deg = 3
 # iB = 1
 # pltcorr.pltcorr(ns_cal[0], sid_cal[0], sn, iA, iB)
 
-"""Plot the percentage explained variance"""
-pev.variance([.5, 15, 40, 105], Hvec)
+# """Plot the percentage explained variance"""
+# pev.variance([.5, 15, 40, 105], Hvec)
 
-"""Plot the microstructures in PC space"""
-pcA = 0
-pcB = 1
-pcC = 2
-pltmap.pltmap(H, pcA, pcB)
-pltmap3d.pltmap(H, pcA, pcB, pcC)
+# """Plot the microstructures in PC space"""
+# pcA = 0
+# pcB = 1
+# pcC = 2
+# pltmap.pltmap(H, pcA, pcB)
+# pltmap3d.pltmap(H, pcA, pcB, pcC)
 
-"""Plot the EV count in each SVE"""
-pltcount.pltcount(H, pcA, pcB)
+# """Plot the EV count in each SVE"""
+# pltcount.pltcount(H, pcA, pcB)
 
-"""Plot a dendrogram"""
-pd.pltdend(ns, sid, H)
+# """Plot a dendrogram"""
+# pd.pltdend(ns, sid, H)
 
-"""Plot the errors versus number of PCs and polynomial order"""
-emax = 2
-pevp.plterr('mu', emax, deg, ['cal'], Hvec)
-pevp.plterr('mu', emax, deg, ['val'], Hvec)
-pevp.plterr('mu', emax, deg, ['loocv'], Hvec)
-pevp.plterr('sigma', emax, deg, ['cal'], Hvec)
-pevp.plterr('sigma', emax, deg, ['val'], Hvec)
-pevp.plterr('sigma', emax, deg, ['loocv'], Hvec)
+# """Plot the errors versus number of PCs and polynomial order"""
+# emax = 2
+# pevp.plterr('mu', emax, deg, ['cal'], Hvec)
+# pevp.plterr('mu', emax, deg, ['val'], Hvec)
+# pevp.plterr('mu', emax, deg, ['loocv'], Hvec)
+# pevp.plterr('sigma', emax, deg, ['cal'], Hvec)
+# pevp.plterr('sigma', emax, deg, ['val'], Hvec)
+# pevp.plterr('sigma', emax, deg, ['loocv'], Hvec)
 
 """Plot the predicted versus actual values of the property of interest"""
-indx1 = plc.plot_check('mu', n_pc=4, deg=deg, H=H, erv=2)
-indx2 = plc.plot_check('sigma', n_pc=4, deg=deg, H=H, erv=2)
+indx1 = plc.plot_check('mu', n_pc=5, deg=deg, H=H, erv=2)
+indx2 = plc.plot_check('sigma', n_pc=5, deg=deg, H=H, erv=2)
 
 """Plot the FIP EVDs versus the predicted FIP EVDs"""
 pe.pltevd(H)

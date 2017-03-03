@@ -108,9 +108,9 @@ def plot_check(par, flvl, H, erv):
     plt.axis([minbnd, maxbnd, minbnd, maxbnd])
     plt.axes().set_aspect('equal')
 
-    plt.xlabel(r'$\mathrm{simulation,} ln\left(\%s_g\right)$' % par,
+    plt.xlabel(r'$\mathrm{simulation,} ln\left(\%s\right)$' % par,
                fontsize=16)
-    plt.ylabel(r'$\mathrm{prediction,} ln\left(\%s_g\right)$' % par,
+    plt.ylabel(r'$\mathrm{prediction,} ln\left(\%s\right)$' % par,
                fontsize=16)
 
     plt.xticks(fontsize=13, rotation=45)

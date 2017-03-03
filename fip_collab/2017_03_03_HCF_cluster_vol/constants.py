@@ -30,7 +30,7 @@ def const():
     C['deuler'] = 'euler'
     C['dfip'] = 'fip'
 
-    C['H'] = 41 # max number of gsh functions
+    C['H'] = 41  # max number of gsh functions
 
     """select the 2-pt spatial correlations"""
     cmat = []
@@ -56,7 +56,7 @@ def const():
     C['pcnt'] = .99
 
     C['fmax'] = 200
-    C['n_pc_max'] = 50
+    C['n_pc_max'] = 25
     C['deg_max'] = 2
     # C['n_pc_max'] = 10
     # C['deg_max'] = 3

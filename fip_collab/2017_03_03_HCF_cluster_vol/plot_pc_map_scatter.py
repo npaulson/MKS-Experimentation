@@ -29,6 +29,49 @@ def pltmap(H, pcA, pcB):
     f_red = h5py.File("spatial_reduced_L%s.hdf5" % H, 'r')
 
     """plot SVE sets for cal"""
+    ns_tot = np.sum(C['ns'])
+    posA = np.zeros((ns_tot,))
+    posB = np.zeros((ns_tot,))
+    m_v = np.zeros((ns_tot,), dtype='str')
+    s_v = np.zeros((ns_tot,))
+    mfc_v = np.zeros((ns_tot, 4))
+    mec_v = np.zeros((ns_tot, 4))
+
+    c = 0
+    for ii in xrange(len(C['sid'])):
+        c_ = c + C['ns'][ii]
+
+        sid = C['sid'][ii]
+        reduced = f_red.get('reduced_%s' % sid)[...]
+
+        posA[c:c_] = reduced[:, pcA]
+        posB[c:c_] = reduced[:, pcB]
+        m_v[c:c_] = markermat[ii]
+        s_v[c:c_] = sizemat[ii]
+
+        mfc = np.zeros((4,))
+        mfc[:3] = colormat[ii, :3] + .3*(1-colormat[ii, :3])
+        mfc[3] = 1  # marker face alpha
+
+        mec = np.zeros((4,))
+        mec[:3] = 0.7*colormat[ii, :3]
+        mec[3] = 1  # marker edge alpha
+
+        mfc_v[c:c_, :] = mfc
+        mec_v[c:c_, :] = mec
+
+        # plt.plot(reduced[:, pcA], reduced[:, pcB],
+        #          marker=markermat[ii], markersize=sizemat[ii],
+        #          mfc=mfc, mec=mec,
+        #          linestyle='')
+
+        c = c_
+
+    idxvec = np.arange(ns_tot)
+    np.random.shuffle(idxvec)
+    for ii in idxvec:
+        plt.scatter(posA[ii], posB[ii], s=s_v[ii]**2, marker=m_v[ii],
+                    c=mfc_v[ii, :], edgecolors=mec_v[ii, :])
 
     for ii in xrange(len(C['sid'])):
 
@@ -47,42 +90,8 @@ def pltmap(H, pcA, pcB):
                  color=[0.15, 0.15, 0.15],
                  alpha=0.99)
 
-        # mfc = np.zeros((4,))
-        # mfc[:3] = 0.999*colormat[ii, :3]
-        # mfc[3] = 0.2  # marker face alpha
-
-        # mec = np.zeros((4,))
-        # mec[:3] = 0.7*colormat[ii, :3]
-        # mec[3] = 0.8  # marker edge alpha
-
-        mfc = np.zeros((4,))
-        mfc[:3] = colormat[ii, :3] + .3*(1-colormat[ii, :3])
-        mfc[3] = 1  # marker face alpha
-
-        mec = np.zeros((4,))
-        mec[:3] = 0.7*colormat[ii, :3]
-        mec[3] = 1  # marker edge alpha
-
-        plt.plot(reduced[:, pcA], reduced[:, pcB],
-                 marker=markermat[ii], markersize=sizemat[ii],
-                 mfc=mfc, mec=mec,
-                 linestyle='', label=C['names_plt'][ii])
-
-        # plt.plot(reduced[:, pcA], reduced[:, pcB],
-        #          marker='o', markersize=6, color=colormat[ii, :],
-        #          alpha=0.2, linestyle='')
-        # plt.plot(meanA, meanB,
-        #          marker='D', markersize=8, color=colormat[ii, :],
-        #          linestyle='')
-
-        # varmat = np.var(reduced, axis=0)
-        # msg = "total variance for %s: %s" % (sid, varmat.sum())
-        # rr.WP(msg, C['wrt_file'])
-
     plt.margins(.1)
 
-    # plt.xlabel("PC%s" % str(pcA+1))
-    # plt.ylabel("PC%s" % str(pcB+1))
     plt.xlabel("PC%s" % str(pcA+1), fontsize='large')
     plt.ylabel("PC%s" % str(pcB+1), fontsize='large')
     plt.xticks(fontsize='large')

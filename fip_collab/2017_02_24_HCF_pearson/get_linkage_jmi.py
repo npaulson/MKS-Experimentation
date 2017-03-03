@@ -6,6 +6,7 @@ from scipy.stats import pearsonr
 import h5py
 import time
 from sklearn.preprocessing import PolynomialFeatures
+from mifs import MutualInformationFeatureSelector as fs
 
 
 def analysis(X, response_tot, groups, iscal):
@@ -35,20 +36,6 @@ def pearson_eval(X, y):
             pvec[ii] = pearsonr(X[:, ii], y)[0]
 
     return pvec
-
-# def pearson_eval(X, y):
-
-#     Nfeat = X.shape[1]
-#     pvec = np.zeros((Nfeat,))
-#     pvec[0] = 1  # for the constant term
-#     for ii in xrange(1, Nfeat):
-#         """ pearsonr returns tuples with the pearson correlation
-#         and the P-value (chance of observing the data
-#         if the null hypothesis is true). I'm going to throw away
-#         the p-value"""
-#         pvec[ii] = pearsonr(X[:, ii], y)[0]
-
-#     return pvec
 
 
 def preanalysis(loc_tot, cov_tot):
@@ -81,9 +68,12 @@ def preanalysis(loc_tot, cov_tot):
             cov_only_names += ['c%s_%s' % (str(ii+1), str(jj+1))]
             c += 1
 
-    """concatenate all the features into one array"""
-    X_pre = np.concatenate((loc_tot, var_only, cov_only), axis=1)
-    # X_pre = np.concatenate((loc_tot, var_only), axis=1)
+    return loc_tot, var_only, cov_only, mean_only_names, var_only_names, cov_only_names
+
+
+def get_poly(X_pre, names_pre):
+
+    C = const()
 
     """get the polynomial features"""
     poly = PolynomialFeatures(C['deg_max'])
@@ -91,8 +81,6 @@ def preanalysis(loc_tot, cov_tot):
     X = poly.transform(X_pre)
 
     """get the names of the polynomial features"""
-    names_pre = mean_only_names + var_only_names + cov_only_names
-    # names_pre = mean_only_names + var_only_names
     names = poly.get_feature_names(names_pre)
 
     return X, names
@@ -160,7 +148,7 @@ def linkage(par):
     groups = precursors[0]
     response_tot = precursors[1]
     loc_tot = precursors[2]
-    var_tot = precursors[3]
+    cov_tot = precursors[3]
     iscal = precursors[4]
 
     f_reg = h5py.File("regression_results_L%s.hdf5" % C['H'], 'a')
@@ -183,30 +171,70 @@ def linkage(par):
                                        dtype='float64')
 
     """get the polynomial features"""
-    X, names = preanalysis(loc_tot, var_tot)
-    f_reg.create_dataset('featurenames_%s' % par, data=names)
 
-    """perform the pearson correlation"""    
-    pvec = pearson_eval(X[iscal, :], response_tot[iscal])
-    f_reg.create_dataset('pearsonscores_%s' % par, data=pvec)
+    tmp = preanalysis(loc_tot, cov_tot)
+    mean_only = tmp[0]
+    var_only = tmp[1]
+    cov_only = tmp[2]
+    mean_only_names = tmp[3]
+    var_only_names = tmp[4]
+    cov_only_names = tmp[5]
 
-    """select the most highly correlated features"""
-    indxv = np.argsort(np.abs(pvec))[::-1]
-    indxv = indxv[:C['fmax']]
+    # pvec = pearson_eval(mean_only[iscal, :], response_tot[iscal])
+    # indxv = np.argsort(np.abs(pvec))[::-1]
+    # print "\ntop 10 scoring means"
+    # for ii in xrange(20):
+    #     print "%s: %s" % (mean_only_names[indxv[ii]], pvec[indxv[ii]])
+    # print np.sum(np.abs(pvec) > 0.1)
+
+    # pvec = pearson_eval(var_only[iscal, :], response_tot[iscal])
+    # indxv = np.argsort(np.abs(pvec))[::-1]
+    # print "\ntop 10 scoring variances"
+    # for ii in xrange(20):
+    #     print "%s: %s" % (var_only_names[indxv[ii]], pvec[indxv[ii]])
+    # print np.sum(np.abs(pvec) > 0.1)
+
+    # pvec = pearson_eval(cov_only[iscal, :], response_tot[iscal])
+    # indxv = np.argsort(np.abs(pvec))[::-1]
+    # print "\ntop 10 scoring covariances"
+    # for ii in xrange(20):
+    #     print "%s: %s" % (cov_only_names[indxv[ii]], pvec[indxv[ii]])
+    # print np.sum(np.abs(pvec) > 0.1)
+
+    X_pre = np.concatenate((loc_tot, var_only, cov_only), axis=1)
+    names_pre = mean_only_names + var_only_names + cov_only_names
+
+    f_reg.create_dataset('featurenames_%s' % par, data=names_pre)
+    X, names = get_poly(X_pre, names_pre)
+    print "number of polynomial features: " + str(X.shape[1])
+
+    X[:, 1:] = (X[:, 1:]-np.mean(X[:, 1:], 0))/np.std(X[:, 1:], 0)
+    feat_selector = fs(method='JMIM', n_features=20, categorical=False)
+    feat_selector.fit(X[iscal, :], response_tot[iscal, None])
+    indxv = feat_selector.ranking_
+    pvec = feat_selector.mi_
+    Xp = feat_selector.transform(X)
+
+    # # """perform the pearson correlation"""
+    # st = time.time()
+    # pvec = pearson_eval(X[iscal, :], response_tot[iscal])
+    # print time.time()-st
+
+    f_reg.create_dataset('scores_%s' % par, data=pvec)
+
+    # """select the most highly correlated features"""
+    # indxv = np.argsort(np.abs(pvec))[::-1]
+    # indxv = indxv[:C['fmax']]
     f_reg.create_dataset('indxsel_%s' % par, data=indxv)
-    Xp = X[:, indxv]
-
-    tmp = pearson_eval(Xp[:, 1:], Xp[:, 6])
-    print tmp
-    print np.array(names)[indxv]
+    # Xp = X[:, indxv]
 
     # import matplotlib.pyplot as plt
     # plt.plot(np.arange(pvec.size), np.abs(pvec[np.argsort(np.abs(pvec))[::-1]]))
     # plt.show()
 
-    print "top 10 scoring features"
-    for ii in xrange(10):
-        print "%s: %s" % (names[indxv[ii]], pvec[indxv[ii]])
+    print "\ntop 20 scoring features"
+    for ii in xrange(20):
+        print "%s: %s" % (names[indxv[ii]], pvec[ii])
 
     """create and evaluate the final linkages"""
 
