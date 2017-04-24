@@ -12,7 +12,8 @@ from sklearn.neighbors.kde import KernelDensity
 
 
 def fit_gamma_robust(tail):
-    s_f = 0.8
+    C = const()
+    s_f = C['alpha']
 
     # fit 4 (alternate)
     stats = ss.gamma.fit(tail, fa=s_f, floc=np.min(tail)*.99999)

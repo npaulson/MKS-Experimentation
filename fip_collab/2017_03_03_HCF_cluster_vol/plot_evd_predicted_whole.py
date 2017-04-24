@@ -93,6 +93,10 @@ def pltevd(flvl_mu, H_mu, flvl_sigma, H_sigma):
         ll = np.int8(np.mod(ii, 3))
         nn = np.int8(np.floor(ii/3.))
 
+        # plt.plot(np.log(x_), y_,
+        #          linestyle=linemat[ll], color=colormat[nn, :],
+        #          lw=1.5, alpha=.99, label=name)
+
         plt.semilogy(np.log(x_), 1-y_,
                      linestyle=linemat[ll], color=colormat[nn, :],
                      lw=1.5, alpha=.99, label=name)

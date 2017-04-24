@@ -17,21 +17,21 @@ strt_val = C['strt_val']
 ns_val = C['ns_val']
 dir_val = C['dir_val']
 
-"""get the data for the linkage"""
+# """get the data for the linkage"""
 
-f = h5py.File("responses.hdf5", 'w')
-f.close()
+# f = h5py.File("responses.hdf5", 'w')
+# f.close()
 
-bc = 'bc1'
+bc = 'bc2'
 
-for ii in xrange(len(set_id_cal)):
-    gr.resp(ns_cal[ii], strt_cal[ii], names_cal[ii],
-            set_id_cal[ii], bc, C['dir_resp'])
-for ii in xrange(len(set_id_val)):
-    gr.resp(ns_val[ii], strt_val[ii], names_val[ii],
-            set_id_val[ii], bc, C['dir_resp'])
+# for ii in xrange(len(set_id_cal)):
+#     gr.resp(ns_cal[ii], strt_cal[ii], names_cal[ii],
+#             set_id_cal[ii], bc, C['dir_resp'])
+# for ii in xrange(len(set_id_val)):
+#     gr.resp(ns_val[ii], strt_val[ii], names_val[ii],
+#             set_id_val[ii], bc, C['dir_resp'])
 
-"""create the specified array of linkages and cross validate"""
+# """create the specified array of linkages and cross validate"""
 
 prop = 'yield'
 gl.linkage(prop, bc)

@@ -52,6 +52,7 @@ def const():
     C['n_sc'] = 20
     """number of points to sample for each subcluster"""
     C['n_samp'] = 100
+    C['alpha'] = 0.85
 
     C['pcnt'] = .99
 

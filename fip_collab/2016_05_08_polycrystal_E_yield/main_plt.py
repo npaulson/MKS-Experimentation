@@ -22,7 +22,7 @@ strt_val = C['strt_val']
 ns_val = C['ns_val']
 dir_val = C['dir_val']
 
-bc = 'bc1'
+bc = 'bc2'
 prop = 'yield'
 
 # """Plot an autocorrelation"""
@@ -44,9 +44,9 @@ pltmap.pltmap(ns_val, set_id_val, pcA, pcB)
 # pcA = 0
 # pr.pltresponse(ns_val, set_id_val, prop, bc, pcA)
 
-# """Plot the error in predicitons of calibration and validation data
-# versus number of PCs and polynomial order"""
-# pltpcpoly.pltpcpoly(prop, bc)
+"""Plot the error in predicitons of calibration and validation data
+versus number of PCs and polynomial order"""
+pltpcpoly.pltpcpoly(prop, bc)
 
 """Plot the predicted versus actual values of the property of interest"""
 plc.plot_check(ns_val, names_val, prop, bc)

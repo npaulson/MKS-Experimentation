@@ -65,7 +65,7 @@ def pltevd():
         """plot the original data and the fits"""
         # plt.plot(np.log(x), y,
         #          linestyle=linemat[ll], color=colormat[nn, :],
-        #          lw=1.5, label=sid)
+        #          lw=1.5, label=name)
 
         plt.semilogy(np.log(x), 1-y,
                      linestyle=linemat[ll], color=colormat[nn, :],
@@ -74,7 +74,7 @@ def pltevd():
     f.close()
 
     plt.xlabel("ln(FIP)", fontsize=14)
-    plt.ylabel("Probability of exceedance", fontsize= 14)
+    plt.ylabel("Probability of exceedance", fontsize=14)
     lgd = plt.legend(bbox_to_anchor=(1, 1), loc='upper left',
                      ncol=1, fontsize=12, fancybox=False)
 
